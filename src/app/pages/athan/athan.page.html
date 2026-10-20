@@ -1,0 +1,199 @@
+<ion-header
+  ><ion-toolbar
+    ><ion-buttons slot="start"
+      ><ion-back-button
+        defaultHref="/settings"
+        [text]="''"
+        [attr.aria-label]="'common.back' | translate" /></ion-buttons
+    ><ion-title>{{ 'athan.title' | translate }}</ion-title></ion-toolbar
+  ></ion-header
+>
+<ion-content>
+  <main>
+    <section class="summary" [attr.aria-label]="'athan.nextPrayer' | translate">
+      <h2>{{ 'athan.nextPrayer' | translate }}</h2>
+      @for (p of athan.upcoming(); track p.name) {
+        <div class="prayer-time">
+          <span>{{ 'athan.prayers.' + p.name | translate }}</span
+          ><time [attr.datetime]="p.at.toISOString()">{{ time(p.at) }}</time>
+        </div>
+      } @empty {
+        <p>{{ 'athan.needLocation' | translate }}</p>
+      }
+      <ion-button fill="clear" routerLink="/reminders">{{
+        'athan.locationSettings' | translate
+      }}</ion-button>
+    </section>
+    @if (error()) {
+      <p class="banner" role="alert">{{ error() }}</p>
+    }
+    <ion-list
+      ><ion-item
+        ><ion-toggle
+          [checked]="settings().enabled"
+          (ionChange)="update({ enabled: $event.detail.checked })"
+          >{{ 'athan.enabled' | translate }}</ion-toggle
+        ></ion-item
+      ></ion-list
+    >
+    @if (!exactGranted()) {
+      <aside class="banner">
+        <p>{{ 'athan.exactHelp' | translate }}</p>
+        <ion-button (click)="exactSettings()">{{ 'athan.exactSettings' | translate }}</ion-button>
+      </aside>
+    }
+    @if (!notificationsGranted()) {
+      <aside class="banner">
+        <p>{{ 'athan.notificationHelp' | translate }}</p>
+        <ion-button (click)="notifications()">{{
+          'athan.allowNotifications' | translate
+        }}</ion-button>
+      </aside>
+    }
+    @if (!native) {
+      <p class="note">{{ 'athan.webNote' | translate }}</p>
+    }
+    <p class="note">{{ 'athan.fajrNote' | translate }}</p>
+    <input #soundInput type="file" accept="audio/*" hidden (change)="filePicked($event)" />
+    @for (p of prayers; track p) {
+      <section class="prayer-card" [attr.aria-labelledby]="'prayer-' + p">
+        <h2 [id]="'prayer-' + p">{{ 'athan.prayers.' + p | translate }}</h2>
+        <ion-segment
+          [value]="settings().perPrayer[p].mode"
+          (ionChange)="mode(p, $event.detail.value)"
+          [attr.aria-labelledby]="'prayer-' + p"
+        >
+          <ion-segment-button value="athan"
+            ><ion-label>{{ 'athan.athan' | translate }}</ion-label></ion-segment-button
+          >
+          <ion-segment-button value="notify"
+            ><ion-label>{{ 'athan.notify' | translate }}</ion-label></ion-segment-button
+          >
+          <ion-segment-button value="off"
+            ><ion-label>{{ 'athan.off' | translate }}</ion-label></ion-segment-button
+          >
+        </ion-segment>
+        <ion-item>
+          <ion-select
+            #soundSelect
+            [label]="'athan.sound' | translate"
+            [value]="settings().perPrayer[p].sound"
+            [disabled]="importing()"
+            (ionChange)="sound(p, $event.detail.value, soundInput, soundSelect)"
+          >
+            <ion-select-option value="tone">{{ 'athan.tone' | translate }}</ion-select-option>
+            <ion-select-option value="system">{{ 'athan.system' | translate }}</ion-select-option>
+            <ion-select-option value="none">{{ 'athan.noSound' | translate }}</ion-select-option>
+            @for (s of settings().customSounds; track s.path) {
+              <ion-select-option [value]="'file:' + s.path">{{ s.name }}</ion-select-option>
+            }
+            <ion-select-option value="add">{{ 'athan.addSound' | translate }}</ion-select-option>
+          </ion-select>
+          <ion-button
+            fill="clear"
+            (click)="preview(settings().perPrayer[p].sound)"
+            [attr.aria-label]="
+              ('athan.preview' | translate) + ' ' + ('athan.prayers.' + p | translate)
+            "
+            ><ion-icon name="play" slot="icon-only" aria-hidden="true"
+          /></ion-button>
+        </ion-item>
+        <ion-item
+          ><ion-select
+            [label]="'athan.before' | translate"
+            [value]="settings().perPrayer[p].preMinutes"
+            (ionChange)="patch(p, { preMinutes: +$event.detail.value })"
+          >
+            @for (n of before; track n) {
+              <ion-select-option [value]="n">{{ minutes(n) }}</ion-select-option>
+            }
+          </ion-select></ion-item
+        >
+        <ion-item
+          ><ion-select
+            [label]="'athan.after' | translate"
+            [value]="settings().perPrayer[p].iqamaMinutes"
+            (ionChange)="patch(p, { iqamaMinutes: +$event.detail.value })"
+          >
+            @for (n of after; track n) {
+              <ion-select-option [value]="n">{{ minutes(n) }}</ion-select-option>
+            }
+          </ion-select></ion-item
+        >
+      </section>
+    }
+    <ion-button expand="block" fill="outline" (click)="applyAll()">{{
+      'athan.applyAll' | translate
+    }}</ion-button>
+    <p class="note">{{ 'athan.applyAllHelp' | translate }}</p>
+    <ion-list>
+      <ion-item
+        ><ion-toggle
+          [checked]="settings().sunrise.notify"
+          (ionChange)="update({ sunrise: { notify: $event.detail.checked } })"
+          >{{ 'athan.sunrise' | translate }}</ion-toggle
+        ></ion-item
+      >
+      <ion-item
+        ><ion-range
+          [label]="'athan.volume' | translate"
+          labelPlacement="stacked"
+          [min]="0"
+          [max]="1"
+          [step]="0.05"
+          [value]="settings().volume"
+          (ionChange)="update({ volume: +$event.detail.value })"
+          [attr.aria-label]="'athan.volume' | translate"
+      /></ion-item>
+      <ion-item
+        ><ion-toggle
+          [checked]="settings().silentDuringPrayer"
+          (ionChange)="update({ silentDuringPrayer: $event.detail.checked })"
+          >{{ 'athan.silent' | translate }}</ion-toggle
+        ></ion-item
+      >
+      @if (settings().silentDuringPrayer) {
+        <ion-item
+          ><ion-select
+            [label]="'athan.silentDuration' | translate"
+            [value]="settings().silentMinutes"
+            (ionChange)="update({ silentMinutes: +$event.detail.value })"
+          >
+            @for (n of silentOptions; track n) {
+              <ion-select-option [value]="n">{{ minutes(n) }}</ion-select-option>
+            }
+          </ion-select></ion-item
+        >
+      }
+    </ion-list>
+    @if (settings().silentDuringPrayer && !dndGranted()) {
+      <aside class="banner">
+        <p>{{ 'athan.dndHelp' | translate }}</p>
+        <ion-button (click)="dndSettings()">{{ 'athan.dndSettings' | translate }}</ion-button>
+      </aside>
+    }
+    <ion-button fill="outline" expand="block" (click)="stop()"
+      ><ion-icon name="stop" slot="start" aria-hidden="true" />{{
+        'athan.stop' | translate
+      }}</ion-button
+    >
+    @if (settings().customSounds.length) {
+      <section>
+        <h2>{{ 'athan.customSounds' | translate }}</h2>
+        @for (s of settings().customSounds; track s.path) {
+          <div class="sound-row">
+            <span>{{ s.name }}</span
+            ><ion-button
+              fill="clear"
+              (click)="remove(s.path)"
+              [attr.aria-label]="('athan.remove' | translate) + ' ' + s.name"
+              ><ion-icon name="remove-outline" aria-hidden="true" />{{
+                'athan.remove' | translate
+              }}</ion-button
+            >
+          </div>
+        }
+      </section>
+    }
+  </main>
+</ion-content>

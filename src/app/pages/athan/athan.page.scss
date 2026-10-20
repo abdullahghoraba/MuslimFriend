@@ -1,0 +1,74 @@
+main {
+  max-width: 48rem;
+  margin-inline: auto;
+  padding: 1rem;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+section,
+.banner {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius, 1rem);
+  padding: 1rem;
+  margin-block-end: 1rem;
+}
+h2 {
+  font-size: 1.1rem;
+  margin-block: 0 1rem;
+  color: var(--ion-color-primary);
+}
+.prayer-time,
+.sound-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.4rem;
+}
+.sound-row span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+time {
+  white-space: nowrap;
+}
+.note {
+  color: var(--app-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+.banner {
+  border-inline-start: 4px solid var(--ion-color-primary);
+}
+ion-list {
+  border-radius: var(--app-radius, 1rem);
+  margin-block-end: 1rem;
+}
+ion-item {
+  --background: var(--app-surface);
+  --border-color: var(--app-border);
+  --padding-start: 0;
+}
+ion-segment {
+  margin-block-end: 0.75rem;
+}
+ion-select {
+  width: 100%;
+}
+ion-button {
+  white-space: normal;
+  height: auto;
+  min-height: 44px;
+}
+@media (max-width: 380px) {
+  main {
+    padding: 0.5rem;
+  }
+  section {
+    padding: 0.75rem;
+  }
+  ion-segment-button {
+    min-width: 0;
+    font-size: 0.8rem;
+  }
+}

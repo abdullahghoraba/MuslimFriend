@@ -77,10 +77,24 @@ Expected rating: **Everyone / PEGI 3 / 3+**.
 
 - `SYSTEM_ALERT_WINDOW` — no Play declaration form; explained in the store listing and in-app before requesting.
 - `ACCESS_COARSE_LOCATION` — foreground only, requested on tap; no background location.
-- No `SCHEDULE_EXACT_ALARM` / `USE_EXACT_ALARM`; reminders use inexact alarms.
+- `SCHEDULE_EXACT_ALARM` (user-granted, **not** `USE_EXACT_ALARM`): used only so the athan fires at the exact prayer
+  time; athkar reminders stay inexact. If the user doesn't grant it, the athan falls back to inexact alarms. No Play
+  declaration form is required for SCHEDULE_EXACT_ALARM.
+- `ACCESS_NOTIFICATION_POLICY`: optional "silent during prayer"; the user grants Do Not Disturb access in system settings.
 - No `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`; the app only opens the system battery settings page.
 
 ---
+
+## 12b. Foreground service declaration — `mediaPlayback` (athan)
+
+**Type:** `mediaPlayback` (service `AthanService`).
+**Describe the feature:** At each prayer time the user enabled, the app plays the athan sound the user chose (their own
+audio file, a built-in tone or the system alarm sound) for up to a few minutes, with a notification that has a Stop
+button. The service starts from the user's exact alarm and stops when the sound ends or the user taps Stop.
+**Why a foreground service:** audio must keep playing while the screen is off or another app is open; only a
+foreground service with type mediaPlayback can do that reliably.
+**Demo video:** open Athan settings → enable → set Fajr to "Athan" → tap ▶ preview (sound + notification with Stop) →
+tap Stop.
 
 ## 12. Foreground service declaration (Android 14+)
 

@@ -49,6 +49,62 @@ class AthkarOverlayPlugin : Plugin() {
         }
     }
 
+    // ---- Native athan and widget ---------------------------------------------------------
+    @PluginMethod
+    fun canScheduleExactAlarms(call: PluginCall) { call.resolve(JSObject().put("granted", AthanScheduler.canExact(context))) }
+    @PluginMethod
+    fun openExactAlarmSettings(call: PluginCall) {
+        if (Build.VERSION.SDK_INT < 31) { call.resolve(); return }
+        openAthanSettings(call, Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:" + context.packageName)))
+    }
+    @PluginMethod
+    fun scheduleAthan(call: PluginCall) {
+        val arr = call.getArray("events") ?: return call.reject("events is required")
+        try {
+            val events = (0 until arr.length()).map { AthanEvent.fromJson(arr.getJSONObject(it)) }
+            val exact = AthanScheduler.replaceAll(context, events)
+            call.resolve(JSObject().put("scheduled", AthanScheduler.pending(context).size).put("exact", exact))
+        } catch (e: Exception) { call.reject("Unable to schedule athan: " + e.message) }
+    }
+    @PluginMethod
+    fun cancelAthan(call: PluginCall) { AthanScheduler.cancel(context); call.resolve() }
+    @PluginMethod
+    fun previewAthan(call: PluginCall) {
+        try {
+            val event = AthanEvent.fromJson(org.json.JSONObject().put("id", "preview").put("prayer", "fajr")
+                .put("kind", "athan").put("at", System.currentTimeMillis()).put("title", context.getString(com.muslimfriend.app.R.string.channel_athan))
+                .put("body", "").put("sound", call.getString("sound") ?: "tone").put("volume", call.getFloat("volume") ?: 1f))
+            ContextCompat.startForegroundService(context, AthanService.intent(context, event, true))
+            call.resolve()
+        } catch (e: Exception) { call.reject("Unable to preview athan: " + e.message) }
+    }
+    @PluginMethod
+    fun stopAthan(call: PluginCall) {
+        try { context.startService(Intent(context, AthanService::class.java).setAction(AthanService.ACTION_STOP)); call.resolve() }
+        catch (e: Exception) { call.reject("Unable to stop athan: " + e.message) }
+    }
+    @PluginMethod
+    fun hasDndAccess(call: PluginCall) { call.resolve(JSObject().put("granted", AthanSilence.hasAccess(context))) }
+    @PluginMethod
+    fun openDndAccessSettings(call: PluginCall) { openAthanSettings(call, Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)) }
+    private fun openAthanSettings(call: PluginCall, intent: Intent) {
+        try { context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)); call.resolve() }
+        catch (e: Exception) { call.reject("Unable to open settings: " + e.message) }
+    }
+    @PluginMethod
+    fun setWidgetData(call: PluginCall) {
+        val prayers = call.getArray("prayers") ?: return call.reject("prayers is required")
+        val label = call.getString("nextLabel") ?: return call.reject("nextLabel is required")
+        val appName = call.getString("appName") ?: return call.reject("appName is required")
+        try {
+            for (i in 0 until prayers.length()) {
+                val prayer = prayers.getJSONObject(i)
+                require(prayer.getString("name").isNotBlank() && prayer.getLong("at") > 0)
+            }
+            PrayerWidget.setData(context, prayers, label, appName); call.resolve()
+        } catch (e: Exception) { call.reject("Invalid widget data: " + e.message) }
+    }
+
     // ---- Overlay permission ------------------------------------------------------------
 
     @PluginMethod
@@ -159,6 +215,8 @@ class AthkarOverlayPlugin : Plugin() {
             count = call.getInt("count") ?: current.count,
             target = call.getInt("target") ?: current.target,
             language = call.getString("language", current.language) ?: current.language,
+            sizeDp = (call.getInt("sizeDp") ?: current.sizeDp).coerceIn(44, 120),
+            opacity = (call.getFloat("opacity") ?: current.opacity).coerceIn(0.4f, 1f),
         )
         store.bubble = next
         val started = if (enabled) OverlayController.start(context) else {

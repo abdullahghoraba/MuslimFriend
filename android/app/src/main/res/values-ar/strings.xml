@@ -16,4 +16,11 @@
     <string name="overlay_notification_text">سيظهر ذكر فوق تطبيقاتك من حين لآخر.</string>
     <string name="overlay_action_pause">إيقاف مؤقت لساعة</string>
     <string name="overlay_action_stop">إيقاف</string>
+    <string name="channel_athan">الأذان</string>
+    <string name="channel_athan_pre">تذكيرات الصلاة</string>
+    <string name="athan_stop">إيقاف</string>
+    <string name="widget_description">أداة مواقيت الصلاة</string>
+    <string name="widget_next">الصلاة القادمة</string>
+    <string name="widget_empty">افتح التطبيق لتحميل مواقيت الصلاة</string>
+    <string name="widget_in">خلال %1$d س %2$d د</string>
 </resources>

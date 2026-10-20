@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { DatabaseService, SqlDb } from '../db/database.service';
 import { ContentDataset, CUSTOM_CATEGORY_ID, CustomDhikrInput } from '../models';
 import { createFakeDb, StatementRecordingDb } from '../../testing/fake-sql-db';
+import { ProgressService } from './progress.service';
 import { AthkarRepository, clampRepeat } from './athkar.repository';
 
 function dataset(version = 1): ContentDataset {
@@ -59,6 +60,28 @@ describe('AthkarRepository', () => {
     TestBed.inject(HttpTestingController).expectOne('assets/data/athkar.json').flush(dataset());
     await pending;
   }
+
+  it('sets and clears overrides, preserves them on seed and uses effective counts for progress', async () => {
+    await repository.seed(dataset());
+    await repository.setRepeatOverride('first', 5);
+    expect(await repository.byId('first')).toMatchObject({ repeatCount: 5, originalRepeatCount: 1, repeatOverridden: true });
+    const updated = dataset(2);
+    updated.items[0].repeatCount = 2;
+    await repository.seed(updated);
+    const item = (await repository.byId('first'))!;
+    expect(item).toMatchObject({ repeatCount: 5, originalRepeatCount: 2, repeatOverridden: true });
+    const progress = TestBed.inject(ProgressService);
+    await progress.increment('first', 2);
+    expect((await progress.categoryProgress('morning', [item])).completed).toBe(false);
+    await progress.increment('first', 3);
+    expect((await progress.categoryProgress('morning', [item])).completed).toBe(true);
+    await repository.setRepeatOverride('first', null);
+    expect(await repository.byId('first')).toMatchObject({ repeatCount: 2, originalRepeatCount: 2, repeatOverridden: false });
+    const custom = await repository.addCustom(customInput);
+    await repository.setRepeatOverride(custom.id, 8);
+    expect(await repository.byId(custom.id)).toMatchObject({ repeatCount: 8, originalRepeatCount: 8, repeatOverridden: false });
+    for (const count of [0, 10001, 1.5, NaN]) await expect(repository.setRepeatOverride('first', count)).rejects.toThrow();
+  });
 
   it('creates, updates, reorders and reloads collections after builtins', async () => {
     await init();

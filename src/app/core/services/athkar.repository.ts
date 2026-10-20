@@ -20,6 +20,7 @@ interface AthkarRow {
   transliteration: string;
   meaning_en: string;
   repeat_count: number;
+  repeat_override?: number | null;
   virtue_ar: string;
   virtue_en: string;
   source_ref: string;
@@ -40,7 +41,9 @@ export function rowToDhikr(r: AthkarRow): Dhikr {
     textAr: r.text_ar,
     transliteration: r.transliteration,
     meaningEn: r.meaning_en,
-    repeatCount: Number(r.repeat_count),
+    repeatCount: Number(r.repeat_override ?? r.repeat_count),
+    originalRepeatCount: Number(r.repeat_count),
+    repeatOverridden: r.repeat_override != null,
     virtueAr: r.virtue_ar,
     virtueEn: r.virtue_en,
     sourceRef: r.source_ref,
@@ -290,6 +293,18 @@ export class AthkarRepository {
       [categoryId],
     );
     return rows.map(rowToDhikr);
+  }
+
+  async setRepeatOverride(id: string, count: number | null): Promise<void> {
+    if (count !== null && (!Number.isInteger(count) || count < 1 || count > 10000))
+      throw new Error('Repeat count must be an integer from 1 to 10000');
+    const item = await this.byId(id);
+    if (!item) return;
+    if (item.isCustom) {
+      if (count !== null) await this.db.run('UPDATE athkar SET repeat_count = ? WHERE id = ?', [count, id]);
+    } else {
+      await this.db.run('UPDATE athkar SET repeat_override = ? WHERE id = ?', [count, id]);
+    }
   }
 
   async setHidden(id: string, hidden: boolean): Promise<void> {

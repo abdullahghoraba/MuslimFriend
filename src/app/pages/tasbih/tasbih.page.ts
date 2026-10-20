@@ -1,6 +1,6 @@
 import { Component, OnDestroy, computed, effect, inject, signal, untracked } from '@angular/core';
 import { LifecycleService } from '../../core/services/lifecycle.service';
-import { AlertController, ToastController, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel, IonItem, IonToggle } from '@ionic/angular';
+import { AlertController, ToastController, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel, IonItem, IonToggle, IonRange } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { KeepAwake } from '@capacitor-community/keep-awake';
 import { TasbihService } from '../../core/services/tasbih.service';
@@ -12,7 +12,7 @@ import { AthkarOverlay } from '../../native/athkar-overlay';
 @Component({
   selector: 'app-tasbih',
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel, IonItem, IonToggle, TranslatePipe],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel, IonItem, IonToggle, IonRange, TranslatePipe],
   templateUrl: './tasbih.page.html',
   styleUrl: './tasbih.page.scss',
 })

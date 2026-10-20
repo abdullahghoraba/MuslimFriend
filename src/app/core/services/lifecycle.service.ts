@@ -3,6 +3,7 @@ import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { NavController } from '@ionic/angular';
 import { AthkarOverlay } from '../../native/athkar-overlay';
+import { AthanService } from '../prayer/athan.service';
 import { PrayerService } from '../prayer/prayer.service';
 import { FloatingCounterService } from './floating-counter.service';
 import { OverlayService } from './overlay.service';
@@ -19,6 +20,7 @@ import { ProgressService } from './progress.service';
 export class LifecycleService {
   private readonly overlay = inject(OverlayService);
   private readonly prayer = inject(PrayerService);
+  private readonly athan = inject(AthanService);
   private readonly progress = inject(ProgressService);
   private readonly floating = inject(FloatingCounterService);
   private readonly nav = inject(NavController);
@@ -43,6 +45,7 @@ export class LifecycleService {
       if (synced) this.progress.version.update((v) => v + 1);
       await this.overlay.refreshStatus();
       await this.prayer.reschedule();
+      await this.athan.reschedule();
       // Content or custom athkar may have changed while the service kept an older pool.
       if (this.overlay.overlay().enabled) await this.overlay.syncPool();
       const { route } = await AthkarOverlay.consumeLaunchRoute();

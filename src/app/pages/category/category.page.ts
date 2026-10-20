@@ -1,3 +1,8 @@
+import { NgTemplateOutlet } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { SingleViewComponent } from './single-view.component';
+import { nextDhikrCount } from './counting';
+import { AthkarPrefsService } from '../../core/services/athkar-prefs.service';
 import { Component, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import {
   ActionSheetController,
@@ -20,6 +25,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
+  NavController,
   RangeCustomEvent,
   ReorderEndCustomEvent,
   ToastController,
@@ -44,7 +50,7 @@ const SCROLL_NEXT_MS = 350;
 @Component({
   selector: 'app-category',
   imports: [
-    IonModal, TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonContent,
+    NgTemplateOutlet, RouterLink, SingleViewComponent, IonModal, TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonContent,
     IonList, IonItem, IonLabel, IonNote, IonReorderGroup, IonReorder, IonProgressBar, IonRange,
   ],
   templateUrl: './category.page.html',
@@ -55,6 +61,43 @@ export class CategoryPage {
   readonly id = input<string>('');
   /** Optional ?start= index to scroll to ("continue where you left off"). */
   readonly start = input<string | undefined>();
+
+  readonly preferences = inject(AthkarPrefsService);
+  readonly prefs = this.preferences.prefs;
+  readonly singleIndex = signal(0);
+  private advanceTimer?: ReturnType<typeof setTimeout>;
+
+  async toggleMode(): Promise<void> {
+    clearTimeout(this.advanceTimer);
+    this.reordering.set(false);
+    await this.preferences.update({ readingMode: this.prefs().readingMode === 'list' ? 'single' : 'list' });
+  }
+
+  moveSingle(index: number): void {
+    clearTimeout(this.advanceTimer);
+    this.singleIndex.set(index);
+    void this.settings.setReaderPosition(this.id(), index);
+  }
+
+  ionViewWillLeave(): void { clearTimeout(this.advanceTimer); }
+
+  /** Less frequent list actions live in one menu to keep the header calm. */
+  async openListMenu(): Promise<void> {
+    const t = (k: string) => this.translate.instant(k);
+    const sheet = await this.sheets.create({
+      header: this.title(),
+      buttons: [
+        { text: t('reader.fontSize'), icon: 'text-outline', handler: () => { this.fontPanelOpen.set(!this.fontPanelOpen()); } },
+        { text: t('common.reorder'), icon: 'reorder-three-outline', handler: () => { this.reordering.set(true); } },
+        { text: t('category.resetToday'), icon: 'refresh-outline', handler: () => { void this.resetAll(); } },
+        { text: t('athkarPrefs.title'), icon: 'settings-outline', handler: () => { void this.nav.navigateForward('/athkar-settings'); } },
+        { text: t('common.cancel'), role: 'cancel' },
+      ],
+    });
+    await sheet.present();
+  }
+
+  private readonly nav = inject(NavController);
 
   private readonly athkar = inject(AthkarRepository);
   private readonly progress = inject(ProgressService);
@@ -103,6 +146,7 @@ export class CategoryPage {
 
   async more(d: Dhikr): Promise<void> {
     const sheet = await this.sheets.create({ buttons: [
+      { text: this.translate.instant('category.changeRepeat'), icon: 'repeat-outline', handler: () => { void this.changeRepeat(d); } },
       { text: this.translate.instant('category.saveTo'), icon: 'bookmark-outline', handler: () => { void this.saveTo(d); } },
       d.isCustom
         ? { text: this.translate.instant('common.delete'), icon: 'trash-outline', role: 'destructive', handler: () => { void this.confirmDelete(d); } }
@@ -110,6 +154,32 @@ export class CategoryPage {
       { text: this.translate.instant('common.cancel'), role: 'cancel' },
     ] });
     await sheet.present();
+  }
+
+  async changeRepeat(d: Dhikr): Promise<void> {
+    const alert = await this.alerts.create({
+      header: this.translate.instant('category.changeRepeat'),
+      message: this.translate.instant('category.repeatRange'),
+      inputs: [{ name: 'count', type: 'number', value: d.repeatCount, min: 1, max: 10000, attributes: { step: 1 } }],
+      buttons: [
+        { text: this.translate.instant('common.cancel'), role: 'cancel' },
+        ...(!d.isCustom ? [{ text: this.translate.instant('category.restoreOriginal'), handler: () => { void this.applyRepeat(d, null); } }] : []),
+        { text: this.translate.instant('common.save'), handler: (values: { count: string }) => {
+          const count = Number(values.count);
+          if (!Number.isInteger(count) || count < 1 || count > 10000) return false;
+          void this.applyRepeat(d, count);
+          return true;
+        } },
+      ],
+    });
+    await alert.present();
+  }
+
+  private async applyRepeat(d: Dhikr, count: number | null): Promise<void> {
+    clearTimeout(this.advanceTimer);
+    await this.athkar.setRepeatOverride(d.id, count);
+    const updated = await this.athkar.byId(d.id);
+    if (updated) this.items.update(items => items.map(item => item.id === d.id ? updated : item));
   }
 
   async saveTo(d: Dhikr): Promise<void> {
@@ -191,16 +261,20 @@ export class CategoryPage {
   }
 
   async load(): Promise<void> {
+    clearTimeout(this.advanceTimer);
+    await this.preferences.ready;
     const items = await this.athkar.byCategory(this.id());
+    this.singleIndex.update(i => Math.max(0, Math.min(i, items.length - 1)));
     this.items.set(items);
     this.hiddenItems.set(await this.athkar.hiddenIn(this.id()));
     this.counts.set(await this.progress.countsFor(items.map((i) => i.id)));
     const start = Number(this.start());
-    if (Number.isInteger(start) && start > 0) setTimeout(() => this.scrollTo(start), 300);
+    if (Number.isInteger(start) && start > 0) setTimeout(() => this.scrollTo(Math.min(start, items.length - 1)), 300);
   }
 
   countOf(d: Dhikr): number {
-    return Math.min(this.counts().get(d.id) ?? 0, d.repeatCount);
+    const raw = this.counts().get(d.id) ?? 0;
+    return this.prefs().countPastTarget ? raw : Math.min(raw, d.repeatCount);
   }
 
   isDone(d: Dhikr): boolean {
@@ -208,17 +282,25 @@ export class CategoryPage {
   }
 
   async count(d: Dhikr, index: number): Promise<void> {
-    if (this.reordering() || this.isDone(d) || this.busy.has(d.id)) return;
+    if (this.reordering() || (this.isDone(d) && !this.prefs().countPastTarget) || this.busy.has(d.id)) return;
     this.busy.add(d.id);
     try {
-      const next = this.countOf(d) + 1;
+      const previous = this.counts().get(d.id) ?? 0;
+      const next = nextDhikrCount(previous, d.repeatCount, this.prefs().countPastTarget);
       this.counts.update((m) => new Map(m).set(d.id, next));
       await this.progress.increment(d.id);
       void this.settings.setReaderPosition(this.id(), index);
-      if (next >= d.repeatCount) {
+      if (previous < d.repeatCount && next >= d.repeatCount) {
         this.haptics.complete();
-        const nextUndone = this.items().findIndex((x, i) => i > index && !this.isDone(x));
-        if (nextUndone >= 0) setTimeout(() => this.scrollTo(nextUndone), SCROLL_NEXT_MS);
+        const ordered = [...this.items().slice(index + 1), ...this.items().slice(0, index)];
+        const nextItem = ordered.find(x => !this.isDone(x));
+        if (nextItem && this.prefs().autoAdvance) {
+          clearTimeout(this.advanceTimer);
+          this.advanceTimer = setTimeout(() => {
+            const at = this.items().findIndex(x => x.id === nextItem.id);
+            if (at >= 0 && this.prefs().autoAdvance && !this.reordering()) this.scrollTo(at);
+          }, SCROLL_NEXT_MS);
+        }
         if (this.allDone()) await this.progress.categoryProgress(this.id(), this.items());
       } else {
         this.haptics.tap();
@@ -229,13 +311,14 @@ export class CategoryPage {
   }
 
   onCardKey(event: KeyboardEvent, d: Dhikr, index: number): void {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (this.prefs().tapTarget === 'card' && event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
       event.preventDefault();
       void this.count(d, index);
     }
   }
 
   async resetItem(d: Dhikr): Promise<void> {
+    clearTimeout(this.advanceTimer);
     await this.progress.resetToday(d.id);
     this.counts.update((m) => {
       const copy = new Map(m);
@@ -245,6 +328,8 @@ export class CategoryPage {
   }
 
   async resetAll(): Promise<void> {
+    clearTimeout(this.advanceTimer);
+    this.singleIndex.set(0);
     await this.progress.resetCategoryToday(this.items());
     this.counts.set(new Map());
     await this.content()?.scrollToTop(300);
@@ -260,6 +345,7 @@ export class CategoryPage {
   }
 
   private scrollTo(index: number): void {
+    if (this.prefs().readingMode === 'single') { this.moveSingle(index); return; }
     const el = this.host.nativeElement.querySelector<HTMLElement>(`[data-index="${index}"]`);
     if (!el) return;
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });

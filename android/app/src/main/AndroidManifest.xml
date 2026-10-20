@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
     <application
         android:allowBackup="false"
         android:enableOnBackInvokedCallback="true"
@@ -53,10 +57,20 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
             </intent-filter>
         </receiver>
         <receiver android:name=".overlay.ReminderReceiver" android:exported="false" />
         <receiver android:name=".overlay.PeriodicReceiver" android:exported="false" />
+        <service android:name=".overlay.AthanService" android:exported="false" android:foregroundServiceType="mediaPlayback" />
+        <receiver android:name=".overlay.AthanReceiver" android:exported="false" />
+        <receiver android:name=".overlay.AthanRestoreReceiver" android:exported="false" />
+        <receiver android:name=".overlay.PrayerWidget" android:exported="true" android:label="@string/widget_description">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/prayer_widget_info" />
+        </receiver>
     </application>
 
     <!-- Overlay window and its foreground service -->

@@ -1,0 +1,6 @@
+section { margin: 20px 16px; padding: 16px; border: 1px solid var(--app-border); border-radius: 16px; background: var(--app-surface); color: var(--ion-text-color); }
+h2 { margin: 0 0 8px; font-size: 1.15rem; }
+p { color: var(--app-muted); line-height: 1.6; font-size: .9rem; white-space: normal; }
+ion-item { --background: var(--app-surface); --border-color: var(--app-border); }
+ion-toggle, ion-select { width: 100%; padding-block: 12px; }
+ion-toggle { white-space: normal; }

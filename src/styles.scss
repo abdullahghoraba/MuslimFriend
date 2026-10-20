@@ -57,9 +57,113 @@
 }
 
 ion-card.app-card {
-  border-radius: 18px;
+  border-radius: var(--app-radius);
   margin-inline: 16px;
-  box-shadow: none;
+  box-shadow: var(--app-shadow);
   border: 1px solid var(--app-border);
   background: var(--app-surface);
+}
+
+/* ---- Interface font (IBM Plex Sans Arabic, OFL) ---------------------------------------- */
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  src: url('/assets/fonts/IBMPlexSansArabic-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  src: url('/assets/fonts/IBMPlexSansArabic-SemiBold.ttf') format('truetype');
+  font-weight: 500 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  src: url('/assets/fonts/IBMPlexSansArabic-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* ---- Calm, rounded look shared by every page ------------------------------------------- */
+body {
+  background: var(--ion-background-color);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Page headers: soft gradient in the style's colours. Pages with their own toolbar colours
+   (e.g. the mushaf themes) override this in their component styles. */
+ion-header ion-toolbar:first-of-type {
+  --background: var(--app-header-bg);
+  --color: var(--app-header-fg);
+  --border-width: 0;
+  --min-height: 60px;
+}
+ion-header ion-toolbar:first-of-type ion-title {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+ion-header ion-toolbar:first-of-type ion-button,
+ion-header ion-toolbar:first-of-type ion-back-button {
+  --color: var(--app-header-fg);
+}
+ion-header.header-md {
+  box-shadow: none;
+}
+
+ion-tab-bar {
+  --border: 0;
+  height: 64px;
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.06);
+  border-radius: 22px 22px 0 0;
+  padding-top: 4px;
+}
+ion-tab-button {
+  --color: var(--app-muted);
+  --color-selected: var(--ion-color-primary);
+  font-weight: 600;
+  ion-icon { font-size: 1.45rem; }
+}
+ion-tab-button.tab-selected ion-icon {
+  background: color-mix(in srgb, var(--ion-color-primary) 14%, transparent);
+  border-radius: 999px;
+  padding: 2px 16px;
+}
+
+ion-list[inset],
+ion-list.list-inset {
+  border-radius: var(--app-radius-sm) !important;
+  box-shadow: var(--app-shadow);
+  border: 1px solid var(--app-border);
+}
+ion-list-header {
+  font-weight: 700;
+  color: var(--ion-color-primary);
+}
+
+ion-button {
+  --border-radius: 14px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+ion-segment {
+  --background: var(--app-surface-strong);
+  border-radius: 14px;
+}
+ion-segment-button {
+  --indicator-color: var(--ion-color-primary);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+ion-toggle {
+  --track-background-checked: var(--ion-color-primary);
+}
+ion-modal {
+  --border-radius: 24px;
+}
+ion-toast {
+  --border-radius: 14px;
+  --background: var(--ion-text-color);
+  --color: var(--ion-background-color);
 }

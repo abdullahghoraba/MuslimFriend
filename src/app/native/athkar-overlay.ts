@@ -59,6 +59,10 @@ export interface BubbleState {
   /** 0 = no target. */
   target: number;
   language: 'ar' | 'en';
+  /** Bubble diameter in dp (44–120). */
+  sizeDp: number;
+  /** 0.4–1. */
+  opacity: number;
 }
 
 export interface BubbleCount {
@@ -127,7 +131,7 @@ class AthkarOverlayWeb implements AthkarOverlayPlugin {
   async openBatteryOptimizationSettings() { return { opened: false }; }
   async openAppSettings() {}
   async openStoreListing() { return { opened: false }; }
-  private bubble: BubbleState = { enabled: false, counterId: 0, name: '', count: 0, target: 33, language: 'ar' };
+  private bubble: BubbleState = { enabled: false, counterId: 0, name: '', count: 0, target: 33, language: 'ar', sizeDp: 64, opacity: 1 };
   async setBubble(options: Partial<BubbleState>) {
     this.bubble = { ...this.bubble, ...options };
     return { running: this.bubble.enabled, fallbackReason: null };

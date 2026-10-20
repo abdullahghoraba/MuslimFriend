@@ -9,6 +9,10 @@ interface FloatingSettings {
   enabled: boolean;
   /** Tasbih counter mirrored by the bubble; 0 = the first counter. */
   counterId: number;
+  /** Bubble diameter in dp (44–120). */
+  sizeDp: number;
+  /** 0.4–1. */
+  opacity: number;
 }
 
 const KEY = 'floatingCounter';
@@ -24,7 +28,7 @@ export class FloatingCounterService {
   private readonly settings = inject(SettingsService);
   private readonly translate = inject(TranslateService);
 
-  private readonly state = signal<FloatingSettings>({ enabled: false, counterId: 0 });
+  private readonly state = signal<FloatingSettings>({ enabled: false, counterId: 0, sizeDp: 64, opacity: 1 });
   readonly floating = this.state.asReadonly();
   private loaded = false;
 
@@ -42,7 +46,7 @@ export class FloatingCounterService {
     const { value } = await Preferences.get({ key: KEY });
     if (value) {
       try {
-        this.state.set({ enabled: false, counterId: 0, ...JSON.parse(value) });
+        this.state.set({ enabled: false, counterId: 0, sizeDp: 64, opacity: 1, ...JSON.parse(value) });
       } catch {
         /* keep defaults */
       }
@@ -53,6 +57,9 @@ export class FloatingCounterService {
   /** Merges taps made on the bubble into the counters. Call on app start/resume. */
   async sync(): Promise<void> {
     if (!this.loaded) await this.load();
+    // The user may have closed the bubble outside the app (drag to ✕, or "hide" in its menu).
+    const native = await AthkarOverlay.getBubble();
+    if (this.state().enabled && !native.enabled) await this.save({ ...this.state(), enabled: false });
     const { counts } = await AthkarOverlay.takeBubbleCounts({ clear: true });
     if (counts.length) await this.tasbih.load();
     for (const c of counts) await this.tasbih.applyExternal(c.counterId, c.delta, c.reset);
@@ -63,7 +70,7 @@ export class FloatingCounterService {
   async enable(counterId: number): Promise<{ ok: boolean; needsPermission: boolean; fallbackReason: FallbackReason }> {
     const { granted } = await AthkarOverlay.checkOverlayPermission();
     if (!granted) return { ok: false, needsPermission: true, fallbackReason: null };
-    await this.save({ enabled: true, counterId });
+    await this.save({ ...this.state(), enabled: true, counterId });
     const result = await this.push(true);
     return { ok: result?.running ?? false, needsPermission: false, fallbackReason: result?.fallbackReason ?? null };
   }
@@ -78,6 +85,12 @@ export class FloatingCounterService {
     if (this.state().enabled) await this.push();
   }
 
+  /** Bubble size (dp) and opacity; applied live while the bubble is showing. */
+  async setLook(patch: { sizeDp?: number; opacity?: number }): Promise<void> {
+    await this.save({ ...this.state(), ...patch });
+    if (this.state().enabled) await this.push();
+  }
+
   private async push(forceStart = false) {
     const counters = this.tasbih.counters();
     const counter = counters.find((c) => c.id === this.state().counterId) ?? counters[0];
@@ -89,6 +102,8 @@ export class FloatingCounterService {
       count: counter.count,
       target: counter.target,
       language: this.settings.settings().language,
+      sizeDp: this.state().sizeDp,
+      opacity: this.state().opacity,
     });
   }
 

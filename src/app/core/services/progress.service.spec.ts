@@ -8,7 +8,7 @@ const today = '2026-01-31';
 const tomorrow = '2026-02-01';
 const items: Dhikr[] = [1, 2].map(n => ({
   id: 'item-' + n, categoryId: 'morning', textAr: 'سُبْحَانَ اللَّهِ', transliteration: '', meaningEn: '',
-  repeatCount: n + 1, virtueAr: '', virtueEn: '', sourceRef: 'Test', grade: '', reviewed: false,
+  originalRepeatCount: n + 1, repeatOverridden: false, repeatCount: n + 1, virtueAr: '', virtueEn: '', sourceRef: 'Test', grade: '', reviewed: false,
   isQuran: false, hidden: false, isCustom: false, includeInOverlay: true, sortOrder: n,
 }));
 

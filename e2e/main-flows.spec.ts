@@ -58,11 +58,18 @@ test('all morning items render together and progress can be restarted', async ({
   await expect(page.locator('app-category .position')).toHaveText('0 من ' + items.length);
   await count(page, items[0].repeatCount);
   await expect(page.locator('app-category .position')).toHaveText('1 من ' + items.length);
-  await page.getByRole('button', { name: ar.category.resetToday, exact: true }).click();
+  await listMenu(page, ar.category.resetToday);
   await expect(cards.first()).not.toHaveClass(/done/);
   await expect(cards.first().locator('.of')).toHaveText('0/' + items[0].repeatCount);
   await expect(page.locator('app-category .position')).toHaveText('0 من ' + items.length);
 });
+
+/** Less frequent list actions live in the header's "More options" (⋮) action sheet. */
+async function listMenu(page: import('@playwright/test').Page, action: string) {
+  await page.getByRole('button', { name: ar.category.moreOptions, exact: true }).click();
+  await page.locator('ion-action-sheet').getByRole('button', { name: action, exact: true }).click();
+  await expect(page.locator('ion-action-sheet')).toHaveCount(0);
+}
 
 test('tasbih reaches its default target and records 33 today', async ({ page }) => {
   await onboard(page);
@@ -105,7 +112,7 @@ test('evening reorder mode exposes handles and exits cleanly', async ({ page }) 
   await open(page, '/category/evening');
   const total = content.items.filter(item => item.categoryId === 'evening').length;
   await expect(page.locator('app-category article.card')).toHaveCount(total);
-  await page.getByRole('button', { name: ar.common.reorder, exact: true }).click();
+  await listMenu(page, ar.common.reorder);
   await expect(page.locator('app-category ion-reorder-group')).toHaveJSProperty('disabled', false);
   await expect(page.locator('app-category ion-reorder')).toHaveCount(total);
   await expect(page.locator('app-category ion-reorder').first()).toBeVisible();

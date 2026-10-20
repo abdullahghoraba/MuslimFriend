@@ -76,4 +76,7 @@ export const MIGRATIONS: Migration[] = [
   { version: 4, statements: [
     `ALTER TABLE athkar ADD COLUMN hidden INTEGER NOT NULL DEFAULT 0;`,
   ] },
+  { version: 5, statements: [
+    `ALTER TABLE athkar ADD COLUMN repeat_override INTEGER NULL;`,
+  ] },
 ];

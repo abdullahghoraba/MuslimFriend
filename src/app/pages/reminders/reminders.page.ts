@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import {
   IonBackButton,
@@ -45,7 +46,7 @@ interface City {
 @Component({
   selector: 'app-reminders',
   imports: [
-    FormsModule, TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList,
+    RouterLink, FormsModule, TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList,
     IonListHeader, IonItem, IonLabel, IonNote, IonToggle, IonSelect, IonSelectOption, IonSegment, IonSegmentButton,
     IonButton, IonIcon, IonModal, IonSearchbar, IonInput,
   ],

@@ -24,7 +24,8 @@
     "back": "Back",
     "times": "{{count}}×",
     "reorder": "Reorder",
-    "finishReorder": "Done reordering"
+    "finishReorder": "Done reordering",
+    "pressBackAgain": "Press back again to exit"
   },
   "home": {
     "title": "Muslim Friend",
@@ -59,7 +60,13 @@
     "undo": "Undo",
     "deleted": "Dhikr deleted",
     "hiddenAthkar": "Hidden athkar ({{count}})",
-    "showAgain": "Show again"
+    "showAgain": "Show again",
+    "changeRepeat": "Change repeat count",
+    "restoreOriginal": "Restore original",
+    "repeatRange": "Enter a whole number from 1 to 10000.",
+    "nextDhikr": "Next dhikr",
+    "previousDhikr": "Previous dhikr",
+    "moreOptions": "More options"
   },
   "reader": {
     "tapToCount": "Tap anywhere on the card to count",
@@ -113,7 +120,11 @@
       "grant": "Allow display over other apps",
       "how": "Tap the bubble to count, drag it to move, long-press for reset, open app or hide. It hides while this app is open.",
       "enabled": "Floating counter is on. Leave the app to see it.",
-      "failed": "The floating counter could not start. Open the app and try again."
+      "failed": "The floating counter could not start. Open the app and try again.",
+      "size": "Bubble size",
+      "opacity": "Bubble opacity",
+      "small": "Small",
+      "large": "Large"
     }
   },
   "myAthkar": {
@@ -191,7 +202,14 @@
     "rate": "Rate the app",
     "shareApp": "Share the app",
     "shareText": "Muslim Friend: Quran with tafsir, recitations and bookmarks, sourced athkar and prayer-time reminders. No ads.",
-    "tafsirLibrary": "Tafsir library (offline downloads)"
+    "tafsirLibrary": "Tafsir library (offline downloads)",
+    "colorStyle": "Colour style",
+    "styleCalm": "Calm green & sand",
+    "styleNight": "Night blue & gold",
+    "styleRose": "Soft rose",
+    "styleClassic": "Classic teal",
+    "athkarOptions": "Athkar reading & counting options",
+    "athanSettings": "Athan settings"
   },
   "language": {
     "ar": "العربية",
@@ -424,7 +442,8 @@
       "wirdBody": "Time for today's Quran reading."
     },
     "quran": "Quran",
-    "wird": "Daily Quran reading (wird)"
+    "wird": "Daily Quran reading (wird)",
+    "athanSettings": "Athan settings"
   },
   "stats": {
     "title": "Statistics",
@@ -637,5 +656,87 @@
     "openLibrary": "Open tafsir library",
     "covered": "This passage is explained together with the ayat before it:",
     "note": "Every sura you open while online is saved automatically, so you can read it again offline. Extra tafsirs come from the public quran.com library."
+  },
+  "athan": {
+    "title": "Athan settings",
+    "appName": "Muslim Friend",
+    "locale": "en",
+    "nextPrayer": "Upcoming prayers",
+    "needLocation": "Choose a location to calculate prayer times.",
+    "locationSettings": "Location and calculation settings",
+    "enabled": "Enable athan",
+    "exactHelp": "Allow exact alarms so the athan can play at the prayer time, even when the app is closed.",
+    "exactSettings": "Allow exact alarms",
+    "notificationHelp": "Allow notifications to receive prayer and iqama reminders.",
+    "allowNotifications": "Allow notifications",
+    "webNote": "Scheduled alarms and silent mode work on Android. Imported audio can be previewed here; device alarm sounds are available on your phone.",
+    "fajrNote": "Fajr can use a different sound from the other prayers.",
+    "athan": "Athan",
+    "notify": "Notification",
+    "off": "Off",
+    "sound": "Sound",
+    "tone": "Gentle tone",
+    "system": "System alarm",
+    "noSound": "No sound",
+    "addSound": "Add sound from phone…",
+    "preview": "Preview sound",
+    "before": "Reminder before",
+    "after": "Iqama reminder after",
+    "minutes": "{{count}} min",
+    "applyAll": "Apply the same settings to all prayers",
+    "applyAllHelp": "Copies the Fajr sound, mode and reminder intervals to the other four prayers.",
+    "sunrise": "Sunrise notification",
+    "volume": "Volume",
+    "silent": "Silent during prayer",
+    "silentDuration": "Silent duration",
+    "dndHelp": "Allow Do Not Disturb access to silence your phone during prayer and restore its previous mode afterwards.",
+    "dndSettings": "Allow Do Not Disturb access",
+    "stop": "Stop preview",
+    "customSounds": "Imported sounds",
+    "remove": "Remove sound",
+    "error": "Could not complete this change. Please try again.",
+    "prayers": {
+      "fajr": "Fajr",
+      "dhuhr": "Dhuhr",
+      "asr": "Asr",
+      "maghrib": "Maghrib",
+      "isha": "Isha"
+    },
+    "athanTitle": "It is time for the {{prayer}} athan",
+    "athanBody": "May your prayer bring you peace.",
+    "preTitle": "In {{minutes}} minutes: the {{prayer}} athan",
+    "preBody": "Prepare for the {{prayer}} prayer.",
+    "iqamaTitle": "It is time for the {{prayer}} iqama",
+    "iqamaBody": "Reminder to begin the {{prayer}} prayer.",
+    "sunriseTitle": "Sunrise",
+    "sunriseBody": "The sun has risen.",
+    "minutesFew": "{{count}} min"
+  },
+  "athkarPrefs": {
+    "title": "Athkar options",
+    "reading": "Reading",
+    "readingHelp": "Choose how you read. This choice applies to all categories.",
+    "readingMode": "Reading mode",
+    "list": "All on one page",
+    "single": "One at a time",
+    "counting": "Counting",
+    "countingHelp": "Choose where to tap and what happens when you reach the target.",
+    "tapTarget": "Count by tapping",
+    "card": "Whole card",
+    "button": "Counter button only",
+    "autoAdvance": "Move to the next dhikr automatically",
+    "autoAdvanceHelp": "When the target is reached, move to the next unfinished dhikr.",
+    "countPastTarget": "Keep counting past the target",
+    "countPastTargetHelp": "The dhikr stays marked complete while the counter keeps going.",
+    "vibration": "Vibration",
+    "off": "Off",
+    "light": "Light",
+    "strong": "Strong",
+    "vibrationHelp": "The app’s main vibration setting must also be enabled.",
+    "display": "Visible content",
+    "displayHelp": "These choices apply in both Arabic and English. Arabic text size can be changed in the reader.",
+    "showSource": "Source and virtue button",
+    "showTransliteration": "Transliteration",
+    "showMeaning": "English meaning / translation"
   }
 }

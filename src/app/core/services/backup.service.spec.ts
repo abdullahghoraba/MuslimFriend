@@ -62,6 +62,20 @@ describe('BackupService', () => {
     original = await service.buildBackup();
   });
 
+  it('round trips overrides and accepts older backups without them', async () => {
+    await db.run('UPDATE athkar SET repeat_override = 7 WHERE id = ?', ['builtin']);
+    const backup = await service.buildBackup();
+    expect(backup.data.repeatOverrides).toEqual([{ id: 'builtin', repeat_override: 7 }]);
+    await db.run('UPDATE athkar SET repeat_override = NULL');
+    await service.restore(backup);
+    expect(await db.query('SELECT repeat_override FROM athkar WHERE id = ?', ['builtin'])).toEqual([{ repeat_override: 7 }]);
+    backup.data.repeatOverrides![0]['repeat_override'] = 10001;
+    await expect(service.restore(backup)).rejects.toBeInstanceOf(BackupError);
+    delete backup.data.repeatOverrides;
+    await service.restore(backup);
+    expect(await db.query('SELECT repeat_override FROM athkar WHERE id = ?', ['builtin'])).toEqual([{ repeat_override: null }]);
+  });
+
   it('round trips hidden built-ins and accepts backups without hidden state', async () => {
     await db.run('UPDATE athkar SET hidden = 1 WHERE id = ?', ['builtin']);
     const backup = await service.buildBackup();

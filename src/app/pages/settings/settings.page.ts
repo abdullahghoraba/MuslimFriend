@@ -19,7 +19,7 @@ import {
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Language, ThemeMode } from '../../core/models';
-import { AppearanceService } from '../../core/services/appearance.service';
+import { AppearanceService, COLOR_STYLES, ColorStyle, STYLE_SWATCHES } from '../../core/services/appearance.service';
 import { SettingsService } from '../../core/services/settings.service';
 import { ShareService } from '../../core/services/share.service';
 import { AthkarOverlay } from '../../native/athkar-overlay';
@@ -44,6 +44,17 @@ export class SettingsPage {
   readonly settings = this.settingsService.settings;
   readonly fontScale = computed(() => this.settings().fontScale);
   readonly version = packageJson.version;
+  readonly styles = COLOR_STYLES;
+  readonly swatches = STYLE_SWATCHES;
+  readonly colorStyle = this.appearance.colorStyle;
+
+  styleName(s: ColorStyle): string {
+    return { calm: 'settings.styleCalm', night: 'settings.styleNight', rose: 'settings.styleRose', classic: 'settings.styleClassic' }[s];
+  }
+
+  async setStyle(s: ColorStyle): Promise<void> {
+    await this.appearance.setColorStyle(s);
+  }
 
   async setLanguage(value: unknown): Promise<void> {
     if (value === 'ar' || value === 'en') await this.appearance.setLanguage(value as Language);

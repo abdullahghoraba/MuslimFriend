@@ -57,6 +57,24 @@
         }
         @if (floating.floating().enabled) {
           <p class="floating-note">{{ 'tasbih.floating.how' | translate }}</p>
+          <ion-item lines="none">
+            <ion-range [label]="'tasbih.floating.size' | translate" labelPlacement="stacked"
+                       [min]="44" [max]="120" [step]="4" [value]="floating.floating().sizeDp" [pin]="true"
+                       (ionChange)="floating.setLook({ sizeDp: +$event.detail.value })">
+              <span slot="start" class="range-end">{{ 'tasbih.floating.small' | translate }}</span>
+              <span slot="end" class="range-end">{{ 'tasbih.floating.large' | translate }}</span>
+            </ion-range>
+          </ion-item>
+          <div class="bubble-preview" aria-hidden="true">
+            <span [style.width.px]="floating.floating().sizeDp" [style.height.px]="floating.floating().sizeDp"
+                  [style.opacity]="floating.floating().opacity"
+                  [style.font-size.px]="floating.floating().sizeDp * 0.31">{{ active()?.count ?? 0 }}</span>
+          </div>
+          <ion-item lines="none">
+            <ion-range [label]="'tasbih.floating.opacity' | translate" labelPlacement="stacked"
+                       [min]="0.4" [max]="1" [step]="0.05" [value]="floating.floating().opacity"
+                       (ionChange)="floating.setLook({ opacity: +$event.detail.value })" />
+          </ion-item>
         }
       </section>
     }

@@ -1,7 +1,9 @@
+// Sits on the gradient header, so it uses the header text colour.
 .position {
   font-size: 0.8rem;
   font-weight: 400;
-  color: var(--app-muted);
+  color: var(--app-header-fg);
+  opacity: 0.85;
   margin-inline-start: 8px;
 }
 
@@ -215,3 +217,10 @@
     font-weight: 700;
   }
 }
+
+app-single-view { display: block; margin: -12px; }
+app-single-view .card { min-height: 60dvh; display: flex; flex-direction: column; }
+app-single-view .bar { margin-top: auto; }
+app-single-view .counter { width: 100px; height: 100px; }
+app-single-view .counter .of { font-size: 1rem; }
+app-single-view .counter .remaining { font-size: 2rem; }

@@ -17,27 +17,19 @@
       <ion-button (click)="addDhikr()" [attr.aria-label]="'myAthkar.addHere' | translate">
         <ion-icon slot="icon-only" name="add-outline" aria-hidden="true" />
       </ion-button>
-      <ion-button
-        (click)="fontPanelOpen.set(!fontPanelOpen())"
-        [attr.aria-expanded]="fontPanelOpen()"
-        [attr.aria-label]="'reader.fontSize' | translate"
-      >
-        <ion-icon slot="icon-only" name="text-outline" aria-hidden="true" />
-      </ion-button>
-      <ion-button
-        (click)="reordering.set(!reordering())"
-        [attr.aria-pressed]="reordering()"
-        [attr.aria-label]="(reordering() ? 'common.finishReorder' : 'common.reorder') | translate"
-      >
-        <ion-icon
-          slot="icon-only"
-          [name]="reordering() ? 'checkmark-circle' : 'reorder-three-outline'"
-          aria-hidden="true"
-        />
-      </ion-button>
-      <ion-button (click)="resetAll()" [attr.aria-label]="'category.resetToday' | translate">
-        <ion-icon slot="icon-only" name="refresh-outline" aria-hidden="true" />
-      </ion-button>
+      @if (reordering()) {
+        <ion-button (click)="reordering.set(false)" [attr.aria-label]="'common.finishReorder' | translate">
+          <ion-icon slot="icon-only" name="checkmark-circle" aria-hidden="true" />
+        </ion-button>
+      } @else {
+        <ion-button (click)="toggleMode()"
+                    [attr.aria-label]="(prefs().readingMode === 'list' ? 'athkarPrefs.single' : 'athkarPrefs.list') | translate">
+          <ion-icon slot="icon-only" [name]="prefs().readingMode === 'list' ? 'layers-outline' : 'list-outline'" aria-hidden="true" />
+        </ion-button>
+        <ion-button (click)="openListMenu()" [attr.aria-label]="'category.moreOptions' | translate">
+          <ion-icon slot="icon-only" name="ellipsis-vertical" aria-hidden="true" />
+        </ion-button>
+      }
     </ion-buttons>
   </ion-toolbar>
   <ion-progress-bar
@@ -63,39 +55,14 @@
 </ion-header>
 
 <ion-content>
-  @if (reordering()) {
-    <p class="hint">{{ 'category.reorderHint' | translate }}</p>
-    <ion-list>
-      <ion-reorder-group [disabled]="false" (ionReorderEnd)="onReorder($event)">
-        @for (d of items(); track d.id) {
-          <ion-item>
-            <ion-label class="ion-text-wrap">
-              <p class="preview" dir="auto">{{ d.textAr }}</p>
-              <ion-note>{{ d.isCustom ? ('myAthkar.mine' | translate) : d.sourceRef }}</ion-note>
-            </ion-label>
-            <ion-reorder slot="end" />
-          </ion-item>
-        }
-      </ion-reorder-group>
-    </ion-list>
-  } @else {
-    <div class="cards">
-      @if (!items().length) {
-        <div class="empty">
-          <p>
-            {{ (category()?.isUser ? 'myAthkar.emptyCollection' : 'myAthkar.empty') | translate }}
-          </p>
-          <ion-button (click)="addDhikr()">{{ 'myAthkar.add' | translate }}</ion-button>
-        </div>
-      }
-      @for (d of items(); track d.id; let i = $index) {
+  <ng-template #dhikrCard let-d let-i="index">
         <article
           class="card ion-activatable"
-          role="button"
-          tabindex="0"
+          [attr.role]="prefs().tapTarget === 'card' ? 'button' : null"
+          [attr.tabindex]="prefs().tapTarget === 'card' ? 0 : null"
           [attr.data-index]="i"
           [class.done]="isDone(d)"
-          (click)="count(d, i)"
+          (click)="prefs().tapTarget === 'card' && count(d, i)"
           (keydown)="onCardKey($event, d, i)"
           [attr.aria-label]="
             'reader.counterButton' | translate: { count: countOf(d), total: d.repeatCount }
@@ -103,14 +70,12 @@
         >
           <p class="dhikr-text" lang="ar" dir="rtl">{{ d.textAr }}</p>
 
-          @if (lang() === 'en') {
-            @if (d.transliteration) {
-              <p class="translit" lang="en">{{ d.transliteration }}</p>
+            @if (prefs().showTransliteration && d.transliteration) {
+              <p class="translit" lang="en" dir="ltr">{{ d.transliteration }}</p>
             }
-            @if (d.meaningEn) {
-              <p class="meaning" lang="en">{{ d.meaningEn }}</p>
+            @if (prefs().showMeaning && d.meaningEn) {
+              <p class="meaning" lang="en" dir="ltr">{{ d.meaningEn }}</p>
             }
-          }
 
           <!-- Controls row: taps here never count. -->
           <div class="bar" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
@@ -124,7 +89,7 @@
               >
                 <ion-icon name="pencil-outline" aria-hidden="true" />
               </button>
-            } @else {
+            } @else if (prefs().showSource) {
               <button
                 type="button"
                 class="link"
@@ -174,7 +139,7 @@
             </button>
           </div>
 
-          @if (openDetails().has(d.id)) {
+          @if (prefs().showSource && openDetails().has(d.id)) {
             <dl class="details" (click)="$event.stopPropagation()">
               <dt>{{ 'reader.source' | translate }}</dt>
               <dd>{{ d.sourceRef }}</dd>
@@ -192,8 +157,40 @@
             </dl>
           }
         </article>
+  </ng-template>
+  @if (reordering()) {
+    <p class="hint">{{ 'category.reorderHint' | translate }}</p>
+    <ion-list>
+      <ion-reorder-group [disabled]="false" (ionReorderEnd)="onReorder($event)">
+        @for (d of items(); track d.id) {
+          <ion-item>
+            <ion-label class="ion-text-wrap">
+              <p class="preview" dir="auto">{{ d.textAr }}</p>
+              <ion-note>{{ d.isCustom ? ('myAthkar.mine' | translate) : d.sourceRef }}</ion-note>
+            </ion-label>
+            <ion-reorder slot="end" />
+          </ion-item>
+        }
+      </ion-reorder-group>
+    </ion-list>
+  } @else {
+    <div class="cards">
+      @if (!items().length) {
+        <div class="empty">
+          <p>
+            {{ (category()?.isUser ? 'myAthkar.emptyCollection' : 'myAthkar.empty') | translate }}
+          </p>
+          <ion-button (click)="addDhikr()">{{ 'myAthkar.add' | translate }}</ion-button>
+        </div>
+      }
+      @if (prefs().readingMode === 'single' && items().length) {
+        <app-single-view [items]="items()" [index]="singleIndex()" [rtl]="lang() === 'ar'" [card]="dhikrCard" (moved)="moveSingle($event)" />
+      } @else {
+      @for (d of items(); track d.id; let i = $index) {
+        <ng-container *ngTemplateOutlet="dhikrCard; context: { $implicit: d, index: i }" />
       }
 
+      }
       @if (hiddenItems().length) {
         <ion-button fill="clear" size="small" (click)="hiddenOpen.set(true)">{{ 'category.hiddenAthkar' | translate: { count: hiddenItems().length } }}</ion-button>
       }

@@ -24,6 +24,9 @@ ion-label { white-space: normal; }
 .floating-title { font-weight: 600; }
 .floating small, .floating-note { color: var(--app-muted); font-size: .85rem; line-height: 1.5; white-space: normal; }
 .floating-note { margin: .25rem 0 .5rem; }
+.range-end { font-size: .75rem; color: var(--app-muted); }
+.bubble-preview { display: flex; justify-content: center; align-items: center; min-height: 128px; }
+.bubble-preview span { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--ion-color-primary); color: var(--ion-color-primary-contrast); font-weight: 700; box-shadow: 0 0 0 3px var(--ion-color-secondary) inset; transition: width .15s, height .15s; }
 .visually-hidden { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .pulse { animation: target-pulse .45s ease-out; }
 @keyframes target-pulse { 50% { box-shadow: 0 0 0 10px var(--ion-color-primary); } }

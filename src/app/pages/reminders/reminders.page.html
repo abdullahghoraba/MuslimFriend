@@ -8,6 +8,12 @@
 </ion-header>
 
 <ion-content>
+  <ion-list inset>
+    <ion-item button detail routerLink="/athan">
+      <ion-icon slot="start" name="alarm-outline" aria-hidden="true" />
+      <ion-label>{{ 'reminders.athanSettings' | translate }}</ion-label>
+    </ion-item>
+  </ion-list>
   @if (!notificationsGranted()) {
     <div class="banner" role="status">
       <p>{{ 'reminders.notificationsOff' | translate }}</p>

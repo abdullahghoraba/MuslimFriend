@@ -18,4 +18,11 @@
     <string name="overlay_notification_text">A dhikr will appear over your apps from time to time.</string>
     <string name="overlay_action_pause">Pause 1 hour</string>
     <string name="overlay_action_stop">Stop</string>
+    <string name="channel_athan">Athan</string>
+    <string name="channel_athan_pre">Prayer reminders</string>
+    <string name="athan_stop">Stop</string>
+    <string name="widget_description">Prayer times widget</string>
+    <string name="widget_next">Next prayer</string>
+    <string name="widget_empty">Open the app to load prayer times</string>
+    <string name="widget_in">in %1$dh %2$dm</string>
 </resources>

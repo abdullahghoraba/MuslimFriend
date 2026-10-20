@@ -17,10 +17,13 @@ import java.time.LocalDateTime
  */
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action != Intent.ACTION_BOOT_COMPLETED && intent.action != Intent.ACTION_MY_PACKAGE_REPLACED) return
+        if (intent.action !in setOf(Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_MY_PACKAGE_REPLACED, Intent.ACTION_TIME_CHANGED, Intent.ACTION_TIMEZONE_CHANGED, "android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED")) return
         Channels.ensure(context)
-        OverlayController.start(context)
+        if (intent.action == Intent.ACTION_BOOT_COMPLETED || intent.action == Intent.ACTION_MY_PACKAGE_REPLACED) OverlayController.start(context)
         ReminderScheduler.scheduleNext(context)
+        AthanScheduler.scheduleNext(context)
+        AthanSilence.rearm(context)
+        PrayerWidget.updateAll(context)
     }
 }
 

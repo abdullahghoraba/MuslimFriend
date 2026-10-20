@@ -26,7 +26,10 @@ import android.widget.TextView
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.abs
+import kotlin.math.hypot
 import kotlin.math.min
+
+private const val REMOVE_SIZE_DP = 64
 
 /**
  * Floating tasbih counter ("chat head") over other apps.
@@ -46,6 +49,8 @@ class TasbihBubble(
     private var bubbleView: BubbleView? = null
     private var menu: LinearLayout? = null
     private lateinit var params: WindowManager.LayoutParams
+    /** Current bubble diameter in px (user-adjustable). */
+    private var sizePx = 0
 
     val isShowing: Boolean get() = root != null
 
@@ -56,7 +61,8 @@ class TasbihBubble(
             return
         }
         val state = store.bubble
-        val size = dp(64)
+        val size = dp(state.sizeDp)
+        sizePx = size
         val bubble = BubbleView(context).apply {
             update(state)
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
@@ -93,15 +99,26 @@ class TasbihBubble(
         bubbleView = bubble
         menu = actions
         container.alpha = 0f
-        container.animate().alpha(1f).setDuration(180).start()
+        container.animate().alpha(state.opacity).setDuration(180).start()
     }
 
+    /** Applies count, size and opacity changes made in the app while the bubble is showing. */
     fun refresh() {
-        bubbleView?.update(store.bubble)
+        val state = store.bubble
+        val view = bubbleView ?: return
+        view.update(state)
+        root?.alpha = state.opacity
+        val size = dp(state.sizeDp)
+        if (size != sizePx) {
+            sizePx = size
+            view.layoutParams = LinearLayout.LayoutParams(size, size)
+            snapToEdge()
+        }
     }
 
     fun hide() {
         handler.removeCallbacksAndMessages(null)
+        hideRemoveTarget()
         val view = root ?: return
         root = null
         bubbleView = null
@@ -147,18 +164,26 @@ class TasbihBubble(
                         dragging = true
                         handler.removeCallbacks(longPress)
                         setMenuVisible(false)
+                        showRemoveTarget()
                     }
                     if (dragging) {
                         params.x = (startX + dx).toInt()
                         params.y = (startY + dy).toInt()
                         root?.let { runCatching { wm.updateViewLayout(it, params) } }
+                        updateRemoveTarget(e.rawX, e.rawY)
                     }
                     true
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     handler.removeCallbacks(longPress)
                     bubble.pressed(false)
+                    val dropToRemove = dragging && overRemove
+                    hideRemoveTarget()
                     when {
+                        dropToRemove -> {
+                            vibrate(60)
+                            onHide()
+                        }
                         dragging -> snapToEdge()
                         longPressed -> Unit
                         e.actionMasked == MotionEvent.ACTION_UP -> {
@@ -175,6 +200,67 @@ class TasbihBubble(
         bubble.setOnClickListener { count() }
     }
 
+    // ---- Drag-to-remove target (like Android chat heads) -------------------------------------
+
+    private var removeView: TextView? = null
+    private var overRemove = false
+
+    /** A round ✕ target at the bottom centre while the bubble is dragged; dropping on it turns the counter off. */
+    private fun showRemoveTarget() {
+        if (removeView != null) return
+        val ar = store.bubble.language == "ar"
+        val target = TextView(context).apply {
+            text = "✕"
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f)
+            setTextColor(0xFFFFFFFF.toInt())
+            gravity = Gravity.CENTER
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setColor(0xCC1C1F1E.toInt())
+                setStroke(dp(2), 0x66FFFFFF)
+            }
+            contentDescription = if (ar) "اسحب هنا لإيقاف العداد العائم" else "Drag here to remove the floating counter"
+            alpha = 0f
+        }
+        val size = dp(REMOVE_SIZE_DP)
+        val lp = WindowManager.LayoutParams(
+            size, size,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            // Purely visual: never takes touches, so the drag keeps going to the bubble.
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            PixelFormat.TRANSLUCENT,
+        ).apply {
+            gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+            y = dp(48)
+            title = "Muslim Friend remove target"
+        }
+        runCatching { wm.addView(target, lp) }.onFailure { return }
+        removeView = target
+        overRemove = false
+        target.animate().alpha(1f).setDuration(150).start()
+    }
+
+    private fun updateRemoveTarget(rawX: Float, rawY: Float) {
+        val target = removeView ?: return
+        val metrics = context.resources.displayMetrics
+        val cx = metrics.widthPixels / 2f
+        val cy = metrics.heightPixels - dp(48) - dp(REMOVE_SIZE_DP) / 2f
+        val near = hypot(rawX - cx, rawY - cy) < dp(REMOVE_SIZE_DP)
+        if (near != overRemove) {
+            overRemove = near
+            if (near) vibrate(25)
+            target.animate().scaleX(if (near) 1.25f else 1f).scaleY(if (near) 1.25f else 1f).setDuration(120).start()
+            (target.background as? GradientDrawable)?.setColor(if (near) 0xEED0453B.toInt() else 0xCC1C1F1E.toInt())
+        }
+    }
+
+    private fun hideRemoveTarget() {
+        val target = removeView ?: return
+        removeView = null
+        runCatching { wm.removeViewImmediate(target) }
+    }
+
     private fun count() {
         val next = store.bubbleTap()
         bubbleView?.update(next)
@@ -189,9 +275,8 @@ class TasbihBubble(
 
     private fun snapToEdge() {
         val metrics = context.resources.displayMetrics
-        val width = root?.width ?: dp(64)
-        val toLeft = params.x + width / 2 < metrics.widthPixels / 2
-        params.x = if (toLeft) dp(4) else metrics.widthPixels - dp(64) - dp(4)
+        val toLeft = params.x + sizePx / 2 < metrics.widthPixels / 2
+        params.x = if (toLeft) dp(4) else metrics.widthPixels - sizePx - dp(4)
         params.y = params.y.coerceIn(dp(24), metrics.heightPixels - dp(120))
         root?.let { runCatching { wm.updateViewLayout(it, params) } }
         store.bubble = store.bubble.copy(x = params.x, y = params.y)
@@ -236,9 +321,9 @@ class TasbihBubble(
         val onRight = params.x > context.resources.displayMetrics.widthPixels / 2
         root?.layoutDirection = if (onRight) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
         if (visible && onRight) {
-            params.x = context.resources.displayMetrics.widthPixels - dp(64) - dp(4) - dp(3 * 52 + 12)
+            params.x = context.resources.displayMetrics.widthPixels - sizePx - dp(4) - dp(3 * 52 + 12)
         } else if (!visible && onRight) {
-            params.x = context.resources.displayMetrics.widthPixels - dp(64) - dp(4)
+            params.x = context.resources.displayMetrics.widthPixels - sizePx - dp(4)
         }
         root?.let { runCatching { wm.updateViewLayout(it, params) } }
     }
@@ -307,7 +392,8 @@ class TasbihBubble(
                 val fraction = if (state.count > 0 && inCycle == 0) 1f else inCycle / state.target.toFloat()
                 canvas.drawArc(oval, -90f, 360f * fraction, false, ring)
             }
-            text.textSize = (if (label.length > 3) 15f else 19f) * density
+            // Number scales with the bubble so every size stays readable.
+            text.textSize = min(width, height) * (if (label.length > 3) 0.24f else 0.31f)
             canvas.drawText(label, cx, cy - (text.descent() + text.ascent()) / 2, text)
         }
 

@@ -1,5 +1,5 @@
-// Muslim Friend palette: deep teal with a warm sand accent.
-// Text/background pairs meet WCAG AA (4.5:1) in both themes.
+// Muslim Friend themes. Four colour styles (html class theme-*), each with a light and a dark
+// (.ion-palette-dark) palette. Default: calm green & sand. Text/background pairs meet WCAG AA.
 
 :root {
   // Edge-to-edge: prefer Capacitor's injected insets (accurate on older WebViews), fall back to env().
@@ -8,71 +8,118 @@
   --ion-safe-area-left: var(--safe-area-inset-left, env(safe-area-inset-left));
   --ion-safe-area-right: var(--safe-area-inset-right, env(safe-area-inset-right));
 
-  --ion-color-primary: #0f6b5c;
-  --ion-color-primary-rgb: 15, 107, 92;
-  --ion-color-primary-contrast: #ffffff;
-  --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #0d5e51;
-  --ion-color-primary-tint: #277a6c;
-
-  --ion-color-secondary: #9a6b1f;
-  --ion-color-secondary-rgb: 154, 107, 31;
-  --ion-color-secondary-contrast: #ffffff;
-  --ion-color-secondary-contrast-rgb: 255, 255, 255;
-  --ion-color-secondary-shade: #885e1b;
-  --ion-color-secondary-tint: #a47a35;
-
-  --ion-color-success: #1d7a3a;
-  --ion-color-success-rgb: 29, 122, 58;
-  --ion-color-success-contrast: #ffffff;
-  --ion-color-success-contrast-rgb: 255, 255, 255;
-  --ion-color-success-shade: #1a6b33;
-  --ion-color-success-tint: #34874e;
-
-  --ion-background-color: #f7f5f0;
-  --ion-background-color-rgb: 247, 245, 240;
-  --ion-text-color: #1c1f1e;
-  --ion-text-color-rgb: 28, 31, 30;
-
-  --app-surface: #ffffff;
-  --app-surface-strong: #e9f2ef;
-  --app-border: #e3ded3;
-  --app-muted: #5b6360;
-  --share-bg: #f7f5f0;
-
-  --ion-font-family: system-ui, 'Roboto', 'Noto Sans Arabic', sans-serif;
+  --ion-font-family: 'IBM Plex Sans Arabic', system-ui, 'Roboto', sans-serif;
+  --app-radius: 22px;
+  --app-radius-sm: 16px;
+  --app-shadow: 0 6px 22px rgba(31, 42, 36, 0.06), 0 1px 3px rgba(31, 42, 36, 0.05);
 }
 
-.ion-palette-dark {
-  --ion-color-primary: #5cc2ae;
-  --ion-color-primary-rgb: 92, 194, 174;
-  --ion-color-primary-contrast: #0b1f1b;
-  --ion-color-primary-contrast-rgb: 11, 31, 27;
-  --ion-color-primary-shade: #51ab99;
-  --ion-color-primary-tint: #6cc8b6;
+// ---- helpers ---------------------------------------------------------------------------
+@mixin palette($primary, $primary-rgb, $primary-contrast, $primary-shade, $primary-tint,
+               $secondary, $secondary-rgb, $secondary-contrast,
+               $bg, $bg-rgb, $text, $text-rgb, $surface, $surface-strong, $border, $muted,
+               $header-a, $header-b, $header-fg) {
+  --ion-color-primary: #{$primary};
+  --ion-color-primary-rgb: #{$primary-rgb};
+  --ion-color-primary-contrast: #{$primary-contrast};
+  --ion-color-primary-contrast-rgb: #{if($primary-contrast == #ffffff, '255, 255, 255', '15, 20, 18')};
+  --ion-color-primary-shade: #{$primary-shade};
+  --ion-color-primary-tint: #{$primary-tint};
+  --ion-color-secondary: #{$secondary};
+  --ion-color-secondary-rgb: #{$secondary-rgb};
+  --ion-color-secondary-contrast: #{$secondary-contrast};
+  --ion-color-secondary-contrast-rgb: #{if($secondary-contrast == #ffffff, '255, 255, 255', '30, 22, 8')};
+  --ion-color-secondary-shade: #{$secondary};
+  --ion-color-secondary-tint: #{$secondary};
+  --ion-background-color: #{$bg};
+  --ion-background-color-rgb: #{$bg-rgb};
+  --ion-text-color: #{$text};
+  --ion-text-color-rgb: #{$text-rgb};
+  --ion-item-background: #{$surface};
+  --ion-card-background: #{$surface};
+  --ion-toolbar-background: #{$bg};
+  --ion-tab-bar-background: #{$surface};
+  --ion-tab-bar-color-selected: #{$primary};
+  --app-surface: #{$surface};
+  --app-surface-strong: #{$surface-strong};
+  --app-border: #{$border};
+  --app-muted: #{$muted};
+  --share-bg: #{$bg};
+  --app-header-bg: linear-gradient(135deg, #{$header-a} 0%, #{$header-b} 100%);
+  --app-header-fg: #{$header-fg};
+}
 
-  --ion-color-secondary: #e0b66a;
-  --ion-color-secondary-rgb: 224, 182, 106;
-  --ion-color-secondary-contrast: #1f1606;
-  --ion-color-secondary-contrast-rgb: 31, 22, 6;
-  --ion-color-secondary-shade: #c5a05d;
-  --ion-color-secondary-tint: #e3bd79;
+@mixin success($c, $rgb, $contrast) {
+  --ion-color-success: #{$c};
+  --ion-color-success-rgb: #{$rgb};
+  --ion-color-success-contrast: #{$contrast};
+  --ion-color-success-contrast-rgb: #{if($contrast == #ffffff, '255, 255, 255', '10, 30, 18')};
+  --ion-color-success-shade: #{$c};
+  --ion-color-success-tint: #{$c};
+}
 
-  --ion-color-success: #6fcf8a;
-  --ion-color-success-rgb: 111, 207, 138;
-  --ion-color-success-contrast: #0b1f12;
-  --ion-color-success-contrast-rgb: 11, 31, 18;
-  --ion-color-success-shade: #62b679;
-  --ion-color-success-tint: #7dd496;
+// ---- Calm green & sand (default) -------------------------------------------------------
+:root,
+.theme-calm {
+  @include palette(#2e7d61, '46, 125, 97', #ffffff, #286e55, #438a71,
+                   #a87a2e, '168, 122, 46', #ffffff,
+                   #f4f1e8, '244, 241, 232', #1f2a24, '31, 42, 36', #fffdf7, #e5efe7, #e8e1d1, #5d6a62,
+                   #2e7d61, #4f9c7e, #ffffff);
+  @include success(#2a7a43, '42, 122, 67', #ffffff);
+}
+.ion-palette-dark,
+.ion-palette-dark.theme-calm {
+  @include palette(#73c9a5, '115, 201, 165', #0f1412, #65b191, #81cfae,
+                   #e2b96f, '226, 185, 111', #1e1608,
+                   #111816, '17, 24, 22', #e9efeb, '233, 239, 235', #19221f, #1f2c28, #2a3833, #a9b6af,
+                   #1a3a2e, #24503f, #e9efeb);
+  @include success(#79d29a, '121, 210, 154', #0a1e12);
+}
 
-  --ion-background-color: #101413;
-  --ion-background-color-rgb: 16, 20, 19;
-  --ion-text-color: #e8ecea;
-  --ion-text-color-rgb: 232, 236, 234;
+// ---- Night blue & gold -----------------------------------------------------------------
+.theme-night {
+  @include palette(#24426f, '36, 66, 111', #ffffff, #203a62, #3a557d,
+                   #a77d24, '167, 125, 36', #ffffff,
+                   #eef1f7, '238, 241, 247', #18213a, '24, 33, 58', #ffffff, #e3e9f4, #dbe1ec, #56607a,
+                   #1d3557, #2f5584, #ffffff);
+  @include success(#2a7a43, '42, 122, 67', #ffffff);
+}
+.ion-palette-dark.theme-night {
+  @include palette(#93b4ea, '147, 180, 234', #0f1412, #819ece, #9ebcec,
+                   #e4c277, '228, 194, 119', #1e1608,
+                   #0c1323, '12, 19, 35', #e7ecf7, '231, 236, 247', #141d31, #1a2541, #26324d, #a8b3cc,
+                   #101c36, #1c2f55, #f0e2bd);
+  @include success(#79d29a, '121, 210, 154', #0a1e12);
+}
 
-  --app-surface: #1a201e;
-  --app-surface-strong: #1f2d29;
-  --app-border: #2b3431;
-  --app-muted: #a9b3af;
-  --share-bg: #101413;
+// ---- Soft rose -------------------------------------------------------------------------
+.theme-rose {
+  @include palette(#94435a, '148, 67, 90', #ffffff, #823b4f, #9f566b,
+                   #a87a2e, '168, 122, 46', #ffffff,
+                   #f8f1f1, '248, 241, 241', #2a1d21, '42, 29, 33', #ffffff, #f4e5e8, #ecdde0, #6a5a5f,
+                   #94435a, #b8687d, #ffffff);
+  @include success(#2a7a43, '42, 122, 67', #ffffff);
+}
+.ion-palette-dark.theme-rose {
+  @include palette(#e8a4b6, '232, 164, 182', #0f1412, #cc90a0, #eaadbd,
+                   #e2b96f, '226, 185, 111', #1e1608,
+                   #161012, '22, 16, 18', #f2e8ea, '242, 232, 234', #20181b, #2a1f23, #372a2f, #b9a8ad,
+                   #3a1f28, #5a2f3c, #f2e8ea);
+  @include success(#79d29a, '121, 210, 154', #0a1e12);
+}
+
+// ---- Classic teal (the original look) ----------------------------------------------------
+.theme-classic {
+  @include palette(#0f6b5c, '15, 107, 92', #ffffff, #0d5e51, #277a6c,
+                   #9a6b1f, '154, 107, 31', #ffffff,
+                   #f7f5f0, '247, 245, 240', #1c1f1e, '28, 31, 30', #ffffff, #e9f2ef, #e3ded3, #5b6360,
+                   #0f6b5c, #0f6b5c, #ffffff);
+  @include success(#1d7a3a, '29, 122, 58', #ffffff);
+}
+.ion-palette-dark.theme-classic {
+  @include palette(#5cc2ae, '92, 194, 174', #0f1412, #51ab99, #6cc8b6,
+                   #e0b66a, '224, 182, 106', #1e1608,
+                   #101413, '16, 20, 19', #e8ecea, '232, 236, 234', #1a201e, #1f2d29, #2b3431, #a9b3af,
+                   #1a201e, #1a201e, #e8ecea);
+  @include success(#6fcf8a, '111, 207, 138', #0a1e12);
 }

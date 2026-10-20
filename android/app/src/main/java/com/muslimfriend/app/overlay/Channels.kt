@@ -7,6 +7,8 @@ import com.muslimfriend.app.R
 
 /** Notification channels. Users can tune each one separately in system settings. */
 object Channels {
+    const val ATHAN = "athan"
+    const val ATHAN_PRE = "athan_reminders"
     const val OVERLAY_SERVICE = "overlay_service"
     const val MORNING_EVENING = "morning_evening"
     const val SLEEP = "sleep"
@@ -17,6 +19,8 @@ object Channels {
     fun ensure(context: Context) {
         val nm = context.getSystemService(NotificationManager::class.java)
         val channels = listOf(
+            NotificationChannel(ATHAN, context.getString(R.string.channel_athan), NotificationManager.IMPORTANCE_HIGH).apply { setSound(null, null) },
+            NotificationChannel(ATHAN_PRE, context.getString(R.string.channel_athan_pre), NotificationManager.IMPORTANCE_DEFAULT),
             NotificationChannel(OVERLAY_SERVICE, context.getString(R.string.channel_overlay_service), NotificationManager.IMPORTANCE_LOW).apply {
                 description = context.getString(R.string.channel_overlay_service_desc)
                 setShowBadge(false)

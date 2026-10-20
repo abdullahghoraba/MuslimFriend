@@ -1,8 +1,8 @@
 .section-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--app-muted);
-  margin: 20px 16px 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  margin: 22px 18px 10px;
 }
 
 .daily {
@@ -20,47 +20,50 @@
   align-items: flex-start;
   gap: 6px;
   padding: 16px;
-  border-radius: 18px;
+  border-radius: var(--app-radius);
   border: 1px solid var(--app-border);
   background: var(--app-surface);
+  box-shadow: var(--app-shadow);
   color: var(--ion-text-color);
   font: inherit;
   text-align: start;
   min-height: 48px;
 
   ion-progress-bar {
-    border-radius: 4px;
-    margin-top: 4px;
+    height: 6px;
+    border-radius: 6px;
+    margin-top: 6px;
+    --background: var(--app-surface-strong);
   }
 }
 
 .daily-icon {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   color: var(--ion-color-secondary);
+  background: color-mix(in srgb, var(--ion-color-secondary) 14%, transparent);
+  border-radius: 12px;
+  padding: 6px;
 }
 
 .daily-label {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .status {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   color: var(--app-muted);
 
   &.done {
     color: var(--ion-color-success);
+    font-weight: 600;
   }
 }
 
 .shortcuts {
   margin-top: 16px;
-
-  ion-item {
-    --background: var(--app-surface);
-  }
 
   ion-icon {
     color: var(--ion-color-primary);
@@ -69,9 +72,9 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
   gap: 12px;
-  padding: 0 16px 24px;
+  padding: 0 16px 28px;
 }
 
 .tile {
@@ -81,20 +84,26 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 104px;
-  padding: 12px;
-  border-radius: 18px;
-  background: var(--app-surface-strong);
+  gap: 10px;
+  min-height: 112px;
+  padding: 14px 8px;
+  border-radius: var(--app-radius);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow);
   color: var(--ion-text-color);
   text-decoration: none;
   text-align: center;
   font-weight: 600;
+  font-size: 0.9rem;
   line-height: 1.4;
 
   ion-icon {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     color: var(--ion-color-primary);
+    background: var(--app-surface-strong);
+    border-radius: 50%;
+    padding: 10px;
   }
 }
 
@@ -104,12 +113,26 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin: 16px 16px 0;
-  padding: 16px 18px;
-  border-radius: 18px;
-  background: var(--ion-color-primary);
-  color: var(--ion-color-primary-contrast);
+  margin: 14px 16px 0;
+  padding: 18px 20px;
+  border-radius: var(--app-radius);
+  background: var(--app-header-bg);
+  color: var(--app-header-fg);
   text-decoration: none;
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--ion-color-primary) 28%, transparent);
+
+  // A soft crescent in the corner.
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline-end: -26px;
+    top: -26px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    box-shadow: inset -22px 14px 0 0 color-mix(in srgb, var(--app-header-fg) 16%, transparent);
+    pointer-events: none;
+  }
 }
 
 .prayer-label {
@@ -118,19 +141,20 @@
 }
 
 .prayer-name {
-  font-size: 1.6rem;
+  font-size: 1.75rem;
   font-weight: 700;
 }
 
 .prayer-time {
   font-variant-numeric: tabular-nums;
+  opacity: 0.95;
 }
 
 .fallback {
   display: block;
   margin: 12px 16px 0;
   padding: 12px 14px;
-  border-radius: 14px;
+  border-radius: var(--app-radius-sm);
   border: 1px solid var(--ion-color-secondary);
   background: var(--app-surface-strong);
   color: var(--ion-text-color);

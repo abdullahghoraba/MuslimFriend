@@ -1,0 +1,35 @@
+<ion-header><ion-toolbar>
+  <ion-buttons slot="start"><ion-back-button defaultHref="/settings" [text]="''" [attr.aria-label]="'common.back' | translate" /></ion-buttons>
+  <ion-title>{{ 'athkarPrefs.title' | translate }}</ion-title>
+</ion-toolbar></ion-header>
+<ion-content>
+  <section><h2>{{ 'athkarPrefs.reading' | translate }}</h2><p>{{ 'athkarPrefs.readingHelp' | translate }}</p>
+    <ion-list>
+      <ion-item><ion-select [label]="'athkarPrefs.readingMode' | translate" [value]="prefs().readingMode" (ionChange)="update('readingMode', $event.detail.value)">
+        <ion-select-option value="list">{{ 'athkarPrefs.list' | translate }}</ion-select-option>
+        <ion-select-option value="single">{{ 'athkarPrefs.single' | translate }}</ion-select-option>
+      </ion-select></ion-item>
+    </ion-list>
+  </section>
+  <section><h2>{{ 'athkarPrefs.counting' | translate }}</h2><p>{{ 'athkarPrefs.countingHelp' | translate }}</p>
+    <ion-list>
+      <ion-item><ion-select [label]="'athkarPrefs.tapTarget' | translate" [value]="prefs().tapTarget" (ionChange)="update('tapTarget', $event.detail.value)">
+        <ion-select-option value="card">{{ 'athkarPrefs.card' | translate }}</ion-select-option>
+        <ion-select-option value="button">{{ 'athkarPrefs.button' | translate }}</ion-select-option>
+      </ion-select></ion-item>
+      @for (key of toggles.slice(0, 2); track key) {
+        <ion-item><ion-toggle [checked]="prefs()[key]" (ionChange)="update(key, $event.detail.checked)">{{ ('athkarPrefs.' + key) | translate }}<p>{{ ('athkarPrefs.' + key + 'Help') | translate }}</p></ion-toggle></ion-item>
+      }
+      <ion-item><ion-select [label]="'athkarPrefs.vibration' | translate" [value]="prefs().vibration" (ionChange)="update('vibration', $event.detail.value)">
+        <ion-select-option value="off">{{ 'athkarPrefs.off' | translate }}</ion-select-option>
+        <ion-select-option value="light">{{ 'athkarPrefs.light' | translate }}</ion-select-option>
+        <ion-select-option value="strong">{{ 'athkarPrefs.strong' | translate }}</ion-select-option>
+      </ion-select></ion-item>
+    </ion-list><p>{{ 'athkarPrefs.vibrationHelp' | translate }}</p>
+  </section>
+  <section><h2>{{ 'athkarPrefs.display' | translate }}</h2><p>{{ 'athkarPrefs.displayHelp' | translate }}</p>
+    <ion-list>@for (key of toggles.slice(2); track key) {
+      <ion-item><ion-toggle [checked]="prefs()[key]" (ionChange)="update(key, $event.detail.checked)">{{ ('athkarPrefs.' + key) | translate }}</ion-toggle></ion-item>
+    }</ion-list>
+  </section>
+</ion-content>

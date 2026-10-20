@@ -5,6 +5,7 @@ import { Preferences } from '@capacitor/preferences';
 import { Share } from '@capacitor/share';
 import { DatabaseService, SqlDb } from '../db/database.service';
 import { AppSettings } from '../models';
+import { AthkarPrefsService } from './athkar-prefs.service';
 import { AthkarRepository } from './athkar.repository';
 import { SettingsService } from './settings.service';
 
@@ -21,6 +22,7 @@ export interface BackupFile {
     customAthkar: Row[];
     userOrder: Row[];
     hiddenIds?: Row[];
+    repeatOverrides?: Row[];
     dhikrDaily: Row[];
     categoryDaily: Row[];
     tasbihCounters: Row[];
@@ -58,6 +60,7 @@ const schemas: Record<keyof BackupFile['data'], Record<string, Check>> = {
   },
   homeHidden: { category_id: id },
   hiddenIds: { id },
+  repeatOverrides: { id, repeat_override: (v) => integer(v) && Number(v) >= 1 && Number(v) <= 10000 },
   customAthkar: {
     id,
     category_id: id,
@@ -128,6 +131,7 @@ const optionalTables = [
   'userCategories',
   'homeHidden',
   'hiddenIds',
+  'repeatOverrides',
   'quranBookmarks',
   'quranMarks',
   'khatmah',
@@ -181,6 +185,7 @@ export class BackupService {
   private db: SqlDb = inject(DatabaseService);
   private readonly athkar = inject(AthkarRepository);
   private readonly settings = inject(SettingsService);
+  private readonly athkarPrefs = inject(AthkarPrefsService);
   useDb(db: SqlDb): void {
     this.db = db;
   }
@@ -206,6 +211,7 @@ export class BackupService {
         customAthkar: await this.db.query<Row>(
           'SELECT id, category_id, text_ar, transliteration, meaning_en, repeat_count, virtue_ar, virtue_en, source_ref, grade, reviewed, is_quran, quran_ref, is_custom, include_in_overlay, sort_order, created_at FROM athkar WHERE is_custom = 1 ORDER BY id',
         ),
+        repeatOverrides: await this.db.query<Row>('SELECT id, repeat_override FROM athkar WHERE is_custom = 0 AND repeat_override IS NOT NULL ORDER BY id'),
         hiddenIds: await this.db.query<Row>('SELECT id FROM athkar WHERE hidden = 1 AND is_custom = 0 ORDER BY id'),
         userOrder: await this.db.query<Row>(
           'SELECT id, sort_order, include_in_overlay FROM athkar WHERE is_custom = 0 ORDER BY id',
@@ -234,7 +240,7 @@ export class BackupService {
     validate(json);
     const statements: { sql: string; params?: unknown[] }[] = [
       { sql: 'DELETE FROM athkar WHERE is_custom = 1' },
-      { sql: 'UPDATE athkar SET hidden = 0 WHERE is_custom = 0' },
+      { sql: 'UPDATE athkar SET hidden = 0, repeat_override = NULL WHERE is_custom = 0' },
       ...[
         'user_category',
         'home_hidden',
@@ -281,6 +287,8 @@ export class BackupService {
         sql: 'UPDATE athkar SET sort_order = ?, include_in_overlay = ? WHERE id = ? AND is_custom = 0',
         params: [row['sort_order'], row['include_in_overlay'], row['id']],
       });
+    for (const row of json.data.repeatOverrides ?? [])
+      statements.push({ sql: 'UPDATE athkar SET repeat_override = ? WHERE id = ? AND is_custom = 0', params: [row['repeat_override'], row['id']] });
     for (const row of json.data.hiddenIds ?? [])
       statements.push({ sql: 'UPDATE athkar SET hidden = 1 WHERE id = ? AND is_custom = 0', params: [row['id']] });
     await this.db.batch(statements);
@@ -290,6 +298,8 @@ export class BackupService {
     await this.settings.update(json.settings);
     for (const [key, value] of Object.entries(json.extraPreferences))
       await Preferences.set({ key, value });
+    await this.athkarPrefs.ready;
+    await this.athkarPrefs.load();
   }
 
   async exportToFile(): Promise<void> {
