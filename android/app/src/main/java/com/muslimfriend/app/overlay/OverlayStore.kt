@@ -81,7 +81,7 @@ data class OverlayConfig(
  */
 class OverlayStore(context: Context) {
     private val prefs: SharedPreferences =
-        context.applicationContext.getSharedPreferences("athkar_overlay", Context.MODE_PRIVATE)
+        context.applicationContext.getSharedPreferences("muslimfriend_overlay", Context.MODE_PRIVATE)
 
     var config: OverlayConfig
         get() = OverlayConfig.fromJson(prefs.getString(KEY_CONFIG, null)?.let { runCatching { JSONObject(it) }.getOrNull() })

@@ -16,7 +16,7 @@ data class Reminder(val id: String, val kind: String, val title: String, val bod
  * The app re-sends the list on every launch and resume, which keeps the times current.
  */
 object ReminderScheduler {
-    private const val PREFS = "athkar_reminders"
+    private const val PREFS = "muslimfriend_reminders"
     private const val KEY_LIST = "list"
     /** Reminders more than this late (e.g. phone was off) are dropped instead of shown. */
     private const val STALE_MS = 2 * 60 * 60_000L

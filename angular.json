@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "muslim-athkar": {
+    "muslim-friend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -66,10 +66,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "muslim-athkar:build:production"
+              "buildTarget": "muslim-friend:build:production"
             },
             "development": {
-              "buildTarget": "muslim-athkar:build:development"
+              "buildTarget": "muslim-friend:build:development"
             }
           },
           "defaultConfiguration": "development"

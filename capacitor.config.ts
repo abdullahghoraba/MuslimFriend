@@ -4,7 +4,7 @@ const config: CapacitorConfig = {
   // Permanent once published on Google Play — change it before the first upload if needed.
   appId: 'com.muslimfriend.app',
   appName: 'Muslim Friend',
-  webDir: 'dist/muslim-athkar/browser',
+  webDir: 'dist/muslim-friend/browser',
   android: {
     // No remote content is ever loaded. WebView debugging stays at Capacitor's default (debug builds only).
     allowMixedContent: false,

@@ -3,7 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite';
 import { MIGRATIONS } from './migrations';
 
-const DB_NAME = 'athkar';
+const DB_NAME = 'muslimfriend';
 
 /** Minimal SQL surface the repositories depend on, so they can be unit-tested with a fake. */
 export interface SqlDb {

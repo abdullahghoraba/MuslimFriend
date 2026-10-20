@@ -10,7 +10,7 @@ import { SettingsService } from './settings.service';
 
 type Row = Record<string, string | number | null>;
 export interface BackupFile {
-  app: 'muslim-athkar';
+  app: 'muslim-friend' | 'muslim-athkar';
   formatVersion: 1;
   exportedAt: string;
   settings: AppSettings;
@@ -139,7 +139,8 @@ function fields(value: unknown, schema: Record<string, Check>): boolean {
 }
 function validate(value: unknown): asserts value is BackupFile {
   if (!record(value)) throw new BackupError('invalid');
-  if (value['app'] !== 'muslim-athkar') throw new BackupError('app');
+  // 'muslim-athkar' = backups made before the app was renamed.
+  if (value['app'] !== 'muslim-friend' && value['app'] !== 'muslim-athkar') throw new BackupError('app');
   if (value['formatVersion'] !== 1) throw new BackupError('version');
   if (
     !fields(value, {
@@ -189,7 +190,7 @@ export class BackupService {
       if (value !== null) extraPreferences[key] = value;
     }
     return {
-      app: 'muslim-athkar',
+      app: 'muslim-friend',
       formatVersion: 1,
       exportedAt: new Date().toISOString(),
       settings: { ...this.settings.settings() },
