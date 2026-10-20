@@ -86,6 +86,21 @@
   flex: 1;
 }
 
+.mine {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  color: var(--ion-color-secondary);
+  border: 1px solid var(--ion-color-secondary);
+}
+
+.empty {
+  text-align: center;
+  padding: 15vh 16px 0;
+  color: var(--app-muted);
+}
+
 .link,
 .icon-btn {
   display: inline-flex;

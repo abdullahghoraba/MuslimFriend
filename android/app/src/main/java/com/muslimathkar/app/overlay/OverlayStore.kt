@@ -152,6 +152,59 @@ class OverlayStore(context: Context) {
     private fun readCounts(): JSONObject =
         prefs.getString(KEY_COUNTS, null)?.let { runCatching { JSONObject(it) }.getOrNull() } ?: JSONObject()
 
+    // ---- Floating tasbih bubble -----------------------------------------------------------
+
+    var bubble: BubbleState
+        get() = BubbleState.fromJson(prefs.getString(KEY_BUBBLE, null)?.let { runCatching { JSONObject(it) }.getOrNull() })
+        set(value) = prefs.edit().putString(KEY_BUBBLE, value.toJson().toString()).apply()
+
+    /** True while the app's own UI is on screen; the bubble hides so it does not cover the app. */
+    var appVisible: Boolean
+        get() = prefs.getBoolean(KEY_APP_VISIBLE, false)
+        set(value) = prefs.edit().putBoolean(KEY_APP_VISIBLE, value).apply()
+
+    /** Records one bubble tap: bumps the displayed count and the pending delta for the app to sync. */
+    @Synchronized
+    fun bubbleTap(): BubbleState {
+        val b = bubble
+        val next = b.copy(count = b.count + 1)
+        bubble = next
+        val p = readBubblePending()
+        val key = b.counterId.toString()
+        val entry = p.optJSONObject(key) ?: JSONObject().put("delta", 0).put("reset", false)
+        entry.put("delta", entry.optInt("delta") + 1)
+        p.put(key, entry)
+        prefs.edit().putString(KEY_BUBBLE_PENDING, p.toString()).apply()
+        return next
+    }
+
+    /** Reset from the bubble menu: later taps count from zero, and the app resets its counter on sync. */
+    @Synchronized
+    fun bubbleReset(): BubbleState {
+        val b = bubble.copy(count = 0)
+        bubble = b
+        val p = readBubblePending()
+        p.put(b.counterId.toString(), JSONObject().put("delta", 0).put("reset", true))
+        prefs.edit().putString(KEY_BUBBLE_PENDING, p.toString()).apply()
+        return b
+    }
+
+    /** Returns [{counterId, delta, reset}] and clears them if [clear]. */
+    @Synchronized
+    fun takeBubblePending(clear: Boolean): JSONArray {
+        val p = readBubblePending()
+        val out = JSONArray()
+        p.keys().forEach { key ->
+            val e = p.optJSONObject(key) ?: return@forEach
+            out.put(JSONObject().put("counterId", key.toLongOrNull() ?: 0L).put("delta", e.optInt("delta")).put("reset", e.optBoolean("reset")))
+        }
+        if (clear) prefs.edit().remove(KEY_BUBBLE_PENDING).apply()
+        return out
+    }
+
+    private fun readBubblePending(): JSONObject =
+        prefs.getString(KEY_BUBBLE_PENDING, null)?.let { runCatching { JSONObject(it) }.getOrNull() } ?: JSONObject()
+
     companion object {
         private const val KEY_CONFIG = "config"
         private const val KEY_POOL = "pool"
@@ -160,5 +213,42 @@ class OverlayStore(context: Context) {
         private const val KEY_FALLBACK = "fallbackReason"
         private const val KEY_COUNTS = "counts"
         private const val KEY_LAST_SHOWN = "lastShownAt"
+        private const val KEY_BUBBLE = "bubble"
+        private const val KEY_BUBBLE_PENDING = "bubblePending"
+        private const val KEY_APP_VISIBLE = "appVisible"
+    }
+}
+
+/** Floating tasbih counter shown over other apps. */
+data class BubbleState(
+    val enabled: Boolean = false,
+    val counterId: Long = 0,
+    val name: String = "",
+    val count: Int = 0,
+    /** 0 = open-ended. */
+    val target: Int = 33,
+    /** Last position in px; -1 = not placed yet. */
+    val x: Int = -1,
+    val y: Int = -1,
+    val language: String = "ar",
+) {
+    fun toJson(): JSONObject = JSONObject()
+        .put("enabled", enabled).put("counterId", counterId).put("name", name).put("count", count)
+        .put("target", target).put("x", x).put("y", y).put("language", language)
+
+    companion object {
+        fun fromJson(o: JSONObject?): BubbleState {
+            if (o == null) return BubbleState()
+            return BubbleState(
+                enabled = o.optBoolean("enabled", false),
+                counterId = o.optLong("counterId", 0),
+                name = o.optString("name", ""),
+                count = o.optInt("count", 0).coerceAtLeast(0),
+                target = o.optInt("target", 33).coerceIn(0, 100_000),
+                x = o.optInt("x", -1),
+                y = o.optInt("y", -1),
+                language = o.optString("language", "ar"),
+            )
+        }
     }
 }

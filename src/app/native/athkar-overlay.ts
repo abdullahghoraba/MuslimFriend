@@ -50,6 +50,24 @@ export interface NativeCount {
 
 export type FallbackReason = 'fgs_not_allowed' | 'no_overlay_permission' | null;
 
+/** Floating tasbih counter over other apps (mirrors BubbleState in OverlayStore.kt). */
+export interface BubbleState {
+  enabled: boolean;
+  counterId: number;
+  name: string;
+  count: number;
+  /** 0 = no target. */
+  target: number;
+  language: 'ar' | 'en';
+}
+
+export interface BubbleCount {
+  counterId: number;
+  delta: number;
+  /** The counter was reset from the bubble before [delta] more taps. */
+  reset: boolean;
+}
+
 export interface AthkarOverlayPlugin {
   checkOverlayPermission(): Promise<{ granted: boolean }>;
   requestOverlayPermission(): Promise<void>;
@@ -71,6 +89,10 @@ export interface AthkarOverlayPlugin {
   openBatteryOptimizationSettings(): Promise<{ opened: boolean }>;
   openAppSettings(): Promise<void>;
   openStoreListing(): Promise<{ opened: boolean }>;
+  setBubble(options: Partial<BubbleState>): Promise<{ running: boolean; fallbackReason: FallbackReason }>;
+  getBubble(): Promise<BubbleState & { running: boolean }>;
+  takeBubbleCounts(options?: { clear?: boolean }): Promise<{ counts: BubbleCount[] }>;
+  setAppVisible(options: { visible: boolean }): Promise<void>;
   getDeviceInfo(): Promise<{ manufacturer: string; sdkInt: number }>;
   getApproximateLocation(): Promise<{ latitude: number; longitude: number }>;
   addListener(event: 'launchRoute', listener: (e: { route: string }) => void): Promise<PluginListenerHandle>;
@@ -105,6 +127,14 @@ class AthkarOverlayWeb implements AthkarOverlayPlugin {
   async openBatteryOptimizationSettings() { return { opened: false }; }
   async openAppSettings() {}
   async openStoreListing() { return { opened: false }; }
+  private bubble: BubbleState = { enabled: false, counterId: 0, name: '', count: 0, target: 33, language: 'ar' };
+  async setBubble(options: Partial<BubbleState>) {
+    this.bubble = { ...this.bubble, ...options };
+    return { running: this.bubble.enabled, fallbackReason: null };
+  }
+  async getBubble() { return { ...this.bubble, running: this.bubble.enabled }; }
+  async takeBubbleCounts() { return { counts: [] }; }
+  async setAppVisible() {}
   async getDeviceInfo() { return { manufacturer: 'web', sdkInt: 0 }; }
   async getApproximateLocation(): Promise<{ latitude: number; longitude: number }> {
     throw new Error('UNAVAILABLE');

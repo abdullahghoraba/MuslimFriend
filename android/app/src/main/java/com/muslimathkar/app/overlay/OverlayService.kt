@@ -38,6 +38,7 @@ class OverlayService : Service() {
     private var ticker: Job? = null
     private lateinit var store: OverlayStore
     private lateinit var window: OverlayWindow
+    private lateinit var bubble: TasbihBubble
     private var receiverRegistered = false
 
     private val screenReceiver = object : BroadcastReceiver() {
@@ -46,6 +47,7 @@ class OverlayService : Service() {
                 Intent.ACTION_SCREEN_OFF -> {
                     stopTicker()
                     window.hide(animate = false)
+                    bubble.hide()
                 }
                 Intent.ACTION_USER_PRESENT -> onUnlocked()
                 // Devices without a secure lock screen never send USER_PRESENT.
@@ -59,6 +61,15 @@ class OverlayService : Service() {
         running = true
         store = OverlayStore(this)
         window = OverlayWindow(this) { dhikr -> store.addCount(dhikr.id) }
+        bubble = TasbihBubble(
+            this, store,
+            onOpenApp = { openApp("/tasbih") },
+            onHide = {
+                store.bubble = store.bubble.copy(enabled = false)
+                bubble.hide()
+                stopIfIdle()
+            },
+        )
         Channels.ensure(this)
     }
 
@@ -74,8 +85,13 @@ class OverlayService : Service() {
         when (intent?.action) {
             ACTION_STOP -> {
                 store.config = store.config.copy(enabled = false)
+                store.bubble = store.bubble.copy(enabled = false)
                 stopSelf()
                 return START_NOT_STICKY
+            }
+            ACTION_BUBBLE_CHANGED, ACTION_APP_VISIBILITY -> {
+                if (stopIfIdle()) return START_NOT_STICKY
+                updateBubble()
             }
             ACTION_PAUSE_HOUR -> {
                 store.pausedUntil = System.currentTimeMillis() + 60 * 60_000L
@@ -84,10 +100,7 @@ class OverlayService : Service() {
             ACTION_RESUME -> store.pausedUntil = 0L
             ACTION_SHOW_NOW -> showNext(force = true)
             ACTION_CONFIG_CHANGED -> {
-                if (!store.config.enabled) {
-                    stopSelf()
-                    return START_NOT_STICKY
-                }
+                if (stopIfIdle()) return START_NOT_STICKY
                 restartTicker()
             }
         }
@@ -102,14 +115,40 @@ class OverlayService : Service() {
             ContextCompat.registerReceiver(this, screenReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
             receiverRegistered = true
         }
-        if (isScreenUsable() && ticker == null) startTicker()
+        if (isScreenUsable() && ticker == null && store.config.enabled) startTicker()
+        updateBubble()
         return START_STICKY
     }
 
     private fun onUnlocked() {
         val now = System.currentTimeMillis()
-        if (OverlayRules.shouldShowOnUnlock(store.config, now, store.lastShownAt)) showNext()
-        startTicker()
+        if (store.config.enabled) {
+            if (OverlayRules.shouldShowOnUnlock(store.config, now, store.lastShownAt)) showNext()
+            startTicker()
+        }
+        updateBubble()
+    }
+
+    /** The bubble shows while enabled, the screen is unlocked and the app itself is not on screen. */
+    private fun updateBubble() {
+        val b = store.bubble
+        val visible = b.enabled && isScreenUsable() && !store.appVisible && OverlayController.canDrawOverlays(this)
+        if (visible) bubble.show() else bubble.hide()
+    }
+
+    /** Stops the service when neither the athkar overlay nor the floating counter is on. */
+    private fun stopIfIdle(): Boolean {
+        if (store.config.enabled || store.bubble.enabled) return false
+        stopSelf()
+        return true
+    }
+
+    private fun openApp(route: String) {
+        val intent = Intent(this, MainActivity::class.java)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            .putExtra(Notifications.EXTRA_ROUTE, route)
+        // Allowed from the background because the app holds SYSTEM_ALERT_WINDOW and has a visible overlay.
+        runCatching { startActivity(intent) }
     }
 
     private fun startTicker() {
@@ -129,7 +168,7 @@ class OverlayService : Service() {
 
     private fun restartTicker() {
         stopTicker()
-        if (isScreenUsable()) startTicker()
+        if (isScreenUsable() && store.config.enabled) startTicker()
     }
 
     private fun showNext(force: Boolean = false) {
@@ -188,6 +227,7 @@ class OverlayService : Service() {
         scope.cancel()
         if (receiverRegistered) runCatching { unregisterReceiver(screenReceiver) }
         window.hide(animate = false)
+        bubble.hide()
         super.onDestroy()
     }
 
@@ -200,6 +240,8 @@ class OverlayService : Service() {
         const val ACTION_RESUME = "com.muslimathkar.app.overlay.RESUME"
         const val ACTION_SHOW_NOW = "com.muslimathkar.app.overlay.SHOW_NOW"
         const val ACTION_CONFIG_CHANGED = "com.muslimathkar.app.overlay.CONFIG_CHANGED"
+        const val ACTION_BUBBLE_CHANGED = "com.muslimathkar.app.overlay.BUBBLE_CHANGED"
+        const val ACTION_APP_VISIBILITY = "com.muslimathkar.app.overlay.APP_VISIBILITY"
         private const val TICK_MS = 30_000L
 
         @Volatile

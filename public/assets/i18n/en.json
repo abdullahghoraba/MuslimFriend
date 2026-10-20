@@ -91,7 +91,16 @@
     "countButton": "Count. {{count}} of {{target}}",
     "error": "Could not save your changes. Please try again.",
     "targetRange": "Enter a whole number from 0 to 100000 (0 means no target).",
-    "countButtonOpen": "Count. {{count}}"
+    "countButtonOpen": "Count. {{count}}",
+    "floating": {
+      "title": "Floating counter over other apps",
+      "hint": "Keep counting tasbih while you use Facebook or any other app.",
+      "permission": "Allow \"Display over other apps\" so the counter can float over your apps, then come back here.",
+      "grant": "Allow display over other apps",
+      "how": "Tap the bubble to count, drag it to move, long-press for reset, open app or hide. It hides while this app is open.",
+      "enabled": "Floating counter is on. Leave the app to see it.",
+      "failed": "The floating counter could not start. Open the app and try again."
+    }
   },
   "myAthkar": {
     "title": "My Athkar",
@@ -107,7 +116,13 @@
     "read": "Read my athkar",
     "required": "The dhikr text is required.",
     "builtInOrder": "Reorder built-in lists",
-    "builtInOrderHint": "Open any category and use Reorder to change the order of its athkar."
+    "builtInOrderHint": "Open any category and use Reorder to change the order of its athkar.",
+    "list": "List",
+    "mine": "My dhikr",
+    "addHere": "Add a dhikr to this list",
+    "openList": "Open list",
+    "positionHint": "New athkar are added at the end of the list. Use Reorder on the list to move them.",
+    "addAnywhereHint": "You can also add your own dhikr inside any list (for example Morning athkar) with the + button at the top of that list."
   },
   "settings": {
     "title": "Settings",

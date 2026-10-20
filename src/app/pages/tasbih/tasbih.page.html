@@ -42,6 +42,23 @@
         <ion-button fill="clear" (click)="editName()"><ion-icon slot="start" name="pencil-outline" aria-hidden="true" />{{ 'tasbih.rename' | translate }}</ion-button>
         <ion-button fill="clear" [disabled]="tasbih.counters().length <= 1" (click)="confirm('delete')"><ion-icon slot="start" name="trash-outline" aria-hidden="true" />{{ 'tasbih.delete' | translate }}</ion-button>
       </div>
+
+      <section class="floating" [attr.aria-label]="'tasbih.floating.title' | translate">
+        <ion-item lines="none">
+          <ion-toggle [checked]="floating.floating().enabled" (ionChange)="toggleFloating($event.detail.checked)">
+            <span class="floating-title">{{ 'tasbih.floating.title' | translate }}</span>
+            <br />
+            <small>{{ 'tasbih.floating.hint' | translate }}</small>
+          </ion-toggle>
+        </ion-item>
+        @if (floatingNeedsPermission()) {
+          <p class="floating-note">{{ 'tasbih.floating.permission' | translate }}</p>
+          <ion-button size="small" (click)="grantOverlay()">{{ 'tasbih.floating.grant' | translate }}</ion-button>
+        }
+        @if (floating.floating().enabled) {
+          <p class="floating-note">{{ 'tasbih.floating.how' | translate }}</p>
+        }
+      </section>
     }
   </main>
 </ion-content>

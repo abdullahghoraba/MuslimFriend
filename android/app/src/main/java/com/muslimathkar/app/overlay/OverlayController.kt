@@ -1,11 +1,9 @@
 package com.muslimathkar.app.overlay
 
 import android.app.AlarmManager
-import android.app.ForegroundServiceStartNotAllowedException
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.SystemClock
 import android.provider.Settings
 import androidx.core.content.ContextCompat
@@ -28,10 +26,15 @@ object OverlayController {
     /** Returns true if the foreground service was started. */
     fun start(context: Context): Boolean {
         val store = OverlayStore(context)
-        if (!store.config.enabled) return false
+        // The service hosts both the athkar overlay and the floating tasbih counter.
+        if (!store.config.enabled && !store.bubble.enabled) return false
         if (!canDrawOverlays(context)) {
-            enableFallback(context, FALLBACK_NO_OVERLAY_PERMISSION)
+            if (store.config.enabled) enableFallback(context, FALLBACK_NO_OVERLAY_PERMISSION)
             return false
+        }
+        if (OverlayService.running) {
+            sendToService(context, OverlayService.ACTION_BUBBLE_CHANGED)
+            return true
         }
         return try {
             ContextCompat.startForegroundService(context, Intent(context, OverlayService::class.java))
@@ -39,12 +42,11 @@ object OverlayController {
             cancelPeriodic(context)
             true
         } catch (e: Exception) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && e is ForegroundServiceStartNotAllowedException) {
-                enableFallback(context, FALLBACK_FGS_NOT_ALLOWED)
-                false
-            } else if (e is IllegalStateException) {
-                // Pre-Android 12 equivalent of a disallowed background start.
-                enableFallback(context, FALLBACK_FGS_NOT_ALLOWED)
+            // ForegroundServiceStartNotAllowedException (Android 12+) extends IllegalStateException,
+            // which older versions throw for a disallowed background start.
+            if (e is IllegalStateException) {
+                if (store.config.enabled) enableFallback(context, FALLBACK_FGS_NOT_ALLOWED)
+                else store.fallbackReason = FALLBACK_FGS_NOT_ALLOWED
                 false
             } else {
                 throw e

@@ -16,12 +16,14 @@ import {
   IonReorderGroup,
   IonTitle,
   IonToolbar,
+  ModalController,
   RangeCustomEvent,
   ReorderEndCustomEvent,
   ToastController,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Dhikr } from '../../core/models';
+import { DhikrEditorComponent } from '../../shared/dhikr-editor.component';
 import { AthkarRepository } from '../../core/services/athkar.repository';
 import { HapticsService } from '../../core/services/haptics.service';
 import { ProgressService } from '../../core/services/progress.service';
@@ -59,6 +61,7 @@ export class CategoryPage {
   private readonly toast = inject(ToastController);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly content = viewChild(IonContent);
+  private readonly modals = inject(ModalController);
 
   readonly items = signal<Dhikr[]>([]);
   readonly counts = signal<Map<string, number>>(new Map());
@@ -78,6 +81,27 @@ export class CategoryPage {
   readonly allDone = computed(() => this.items().length > 0 && this.doneCount() === this.items().length);
 
   private busy = new Set<string>();
+
+  /** Adds the user's own dhikr to this list (it appears at the end; reorder to move it). */
+  async addDhikr(): Promise<void> {
+    const saved = await this.openEditor({ categoryId: this.id() });
+    if (saved) setTimeout(() => this.scrollTo(this.items().length - 1), 300);
+  }
+
+  async editDhikr(d: Dhikr): Promise<void> {
+    await this.openEditor({ dhikr: d });
+  }
+
+  private async openEditor(props: { dhikr?: Dhikr; categoryId?: string }): Promise<boolean> {
+    const modal = await this.modals.create({ component: DhikrEditorComponent, componentProps: props });
+    await modal.present();
+    const { role } = await modal.onWillDismiss();
+    if (role === 'saved' || role === 'deleted') {
+      await this.load();
+      return role === 'saved';
+    }
+    return false;
+  }
 
   constructor() {
     // Route inputs may bind after the first ionViewWillEnter when the page is opened directly.

@@ -8,6 +8,9 @@
       <span class="position">{{ 'category.itemProgress' | translate: { count: doneCount(), total: items().length } }}</span>
     </ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="addDhikr()" [attr.aria-label]="'myAthkar.addHere' | translate">
+        <ion-icon slot="icon-only" name="add-outline" aria-hidden="true" />
+      </ion-button>
       <ion-button (click)="fontPanelOpen.set(!fontPanelOpen())" [attr.aria-expanded]="fontPanelOpen()"
                   [attr.aria-label]="'reader.fontSize' | translate">
         <ion-icon slot="icon-only" name="text-outline" aria-hidden="true" />
@@ -42,8 +45,8 @@
         @for (d of items(); track d.id) {
           <ion-item>
             <ion-label class="ion-text-wrap">
-              <p class="preview" lang="ar" dir="rtl">{{ d.textAr }}</p>
-              <ion-note>{{ d.sourceRef }}</ion-note>
+              <p class="preview" dir="auto">{{ d.textAr }}</p>
+              <ion-note>{{ d.isCustom ? ('myAthkar.mine' | translate) : d.sourceRef }}</ion-note>
             </ion-label>
             <ion-reorder slot="end" />
           </ion-item>
@@ -52,6 +55,12 @@
     </ion-list>
   } @else {
     <div class="cards">
+      @if (!items().length) {
+        <div class="empty">
+          <p>{{ 'myAthkar.empty' | translate }}</p>
+          <ion-button (click)="addDhikr()">{{ 'myAthkar.add' | translate }}</ion-button>
+        </div>
+      }
       @for (d of items(); track d.id; let i = $index) {
         <article class="card ion-activatable" role="button" tabindex="0" [attr.data-index]="i"
                  [class.done]="isDone(d)"
@@ -70,10 +79,17 @@
 
           <!-- Controls row: taps here never count. -->
           <div class="bar" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
-            <button type="button" class="link" (click)="toggleDetails(d)" [attr.aria-expanded]="openDetails().has(d.id)">
-              <ion-icon name="information-circle-outline" aria-hidden="true" />
-              {{ 'reader.details' | translate }}
-            </button>
+            @if (d.isCustom) {
+              <span class="mine">{{ 'myAthkar.mine' | translate }}</span>
+              <button type="button" class="icon-btn" (click)="editDhikr(d)" [attr.aria-label]="'myAthkar.edit' | translate">
+                <ion-icon name="pencil-outline" aria-hidden="true" />
+              </button>
+            } @else {
+              <button type="button" class="link" (click)="toggleDetails(d)" [attr.aria-expanded]="openDetails().has(d.id)">
+                <ion-icon name="information-circle-outline" aria-hidden="true" />
+                {{ 'reader.details' | translate }}
+              </button>
+            }
             <span class="spacer"></span>
             <button type="button" class="icon-btn" (click)="shareImage(d)" [attr.aria-label]="'reader.shareImage' | translate">
               <ion-icon name="share-social-outline" aria-hidden="true" />

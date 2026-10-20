@@ -159,28 +159,40 @@ export class AthkarRepository {
     await this.db.run('UPDATE athkar SET include_in_overlay = ? WHERE id = ?', [include ? 1 : 0, id]);
   }
 
-  async addCustom(input: CustomDhikrInput): Promise<Dhikr> {
+  /** Adds the user's own dhikr at the END of [categoryId] (built-in categories included). */
+  async addCustom(input: CustomDhikrInput, categoryId: string = CUSTOM_CATEGORY_ID): Promise<Dhikr> {
     const id = `custom-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
-    const max = await this.db.query<{ m: number | null }>(
-      'SELECT MAX(sort_order) AS m FROM athkar WHERE category_id = ?',
-      [CUSTOM_CATEGORY_ID],
-    );
-    const sortOrder = (max[0]?.m ?? -1) + 1;
     await this.db.run(
       `INSERT INTO athkar (id, category_id, text_ar, meaning_en, repeat_count, is_custom, include_in_overlay, sort_order, created_at)
        VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?)`,
-      [id, CUSTOM_CATEGORY_ID, input.textAr.trim(), input.meaningEn.trim(), clampRepeat(input.repeatCount),
-        input.includeInOverlay ? 1 : 0, sortOrder, Date.now()],
+      [id, categoryId, input.textAr.trim(), input.meaningEn.trim(), clampRepeat(input.repeatCount),
+        input.includeInOverlay ? 1 : 0, await this.nextSortOrder(categoryId), Date.now()],
     );
     return (await this.byId(id))!;
   }
 
-  async updateCustom(id: string, input: CustomDhikrInput): Promise<void> {
+  /** Updates a custom dhikr; passing another [categoryId] moves it to the end of that list. */
+  async updateCustom(id: string, input: CustomDhikrInput, categoryId?: string): Promise<void> {
+    const current = await this.byId(id);
+    if (!current?.isCustom) return;
+    const move = categoryId && categoryId !== current.categoryId;
     await this.db.run(
-      `UPDATE athkar SET text_ar = ?, meaning_en = ?, repeat_count = ?, include_in_overlay = ?
+      `UPDATE athkar SET text_ar = ?, meaning_en = ?, repeat_count = ?, include_in_overlay = ?, category_id = ?, sort_order = ?
        WHERE id = ? AND is_custom = 1`,
-      [input.textAr.trim(), input.meaningEn.trim(), clampRepeat(input.repeatCount), input.includeInOverlay ? 1 : 0, id],
+      [input.textAr.trim(), input.meaningEn.trim(), clampRepeat(input.repeatCount), input.includeInOverlay ? 1 : 0,
+        move ? categoryId : current.categoryId, move ? await this.nextSortOrder(categoryId!) : current.sortOrder, id],
     );
+  }
+
+  /** Every dhikr the user added, in any category. */
+  async listCustom(): Promise<Dhikr[]> {
+    const rows = await this.db.query<AthkarRow>('SELECT * FROM athkar WHERE is_custom = 1 ORDER BY category_id, sort_order, created_at');
+    return rows.map(rowToDhikr);
+  }
+
+  private async nextSortOrder(categoryId: string): Promise<number> {
+    const max = await this.db.query<{ m: number | null }>('SELECT MAX(sort_order) AS m FROM athkar WHERE category_id = ?', [categoryId]);
+    return (max[0]?.m ?? -1) + 1;
   }
 
   async deleteCustom(id: string): Promise<void> {

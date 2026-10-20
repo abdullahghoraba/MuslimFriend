@@ -116,6 +116,24 @@ export class TasbihService {
     });
   }
 
+  /** Applies counts taken on the floating counter (over other apps) since the last sync. */
+  applyExternal(id: number, delta: number, reset: boolean): Promise<void> {
+    return this.enqueue(async () => {
+      if (!this.items().some(c => c.id === id)) return;
+      const statements: { sql: string; params: unknown[] }[] = [];
+      if (reset) statements.push({ sql: 'UPDATE tasbih_counter SET count = 0 WHERE id = ?', params: [id] });
+      if (delta > 0) {
+        statements.push(
+          { sql: 'UPDATE tasbih_counter SET count = count + ? WHERE id = ?', params: [delta, id] },
+          { sql: 'INSERT INTO tasbih_daily (date, counter_id, count) VALUES (?, ?, ?) ON CONFLICT(date, counter_id) DO UPDATE SET count = count + excluded.count', params: [dateKey(), id, delta] },
+        );
+      }
+      if (!statements.length) return;
+      await this.db.batch(statements);
+      await this.read();
+    });
+  }
+
   increment(id: number): Promise<{ count: number; reachedTarget: boolean }> {
     const counter = this.items().find(c => c.id === id);
     if (!counter) return Promise.reject(new Error('Unknown counter'));

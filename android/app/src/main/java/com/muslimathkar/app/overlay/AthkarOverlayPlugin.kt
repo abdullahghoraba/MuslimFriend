@@ -142,6 +142,52 @@ class AthkarOverlayPlugin : Plugin() {
         call.resolve(JSObject().put("counts", JSArray(counts.toString())))
     }
 
+    // ---- Floating tasbih counter ------------------------------------------------------
+
+    /**
+     * Turns the floating counter on/off and pushes the counter it mirrors.
+     * Turning it on must come from a user action in the foreground (it may start the service).
+     */
+    @PluginMethod
+    fun setBubble(call: PluginCall) {
+        val current = store.bubble
+        val enabled = call.getBoolean("enabled", current.enabled) ?: current.enabled
+        val next = current.copy(
+            enabled = enabled,
+            counterId = call.getLong("counterId") ?: current.counterId,
+            name = call.getString("name", current.name) ?: current.name,
+            count = call.getInt("count") ?: current.count,
+            target = call.getInt("target") ?: current.target,
+            language = call.getString("language", current.language) ?: current.language,
+        )
+        store.bubble = next
+        val started = if (enabled) OverlayController.start(context) else {
+            OverlayController.sendToService(context, OverlayService.ACTION_BUBBLE_CHANGED)
+            false
+        }
+        call.resolve(JSObject().put("running", started || OverlayService.running).put("fallbackReason", store.fallbackReason))
+    }
+
+    @PluginMethod
+    fun getBubble(call: PluginCall) {
+        call.resolve(JSObject(store.bubble.toJson().toString()).put("running", OverlayService.running))
+    }
+
+    /** Taps (and resets) made on the bubble since the last sync: [{counterId, delta, reset}]. */
+    @PluginMethod
+    fun takeBubbleCounts(call: PluginCall) {
+        val pending = store.takeBubblePending(call.getBoolean("clear", true) ?: true)
+        call.resolve(JSObject().put("counts", JSArray(pending.toString())))
+    }
+
+    /** The bubble hides while the app itself is on screen. */
+    @PluginMethod
+    fun setAppVisible(call: PluginCall) {
+        store.appVisible = call.getBoolean("visible", false) ?: false
+        OverlayController.sendToService(context, OverlayService.ACTION_APP_VISIBILITY)
+        call.resolve()
+    }
+
     // ---- Reminders ----------------------------------------------------------------------
 
     @PluginMethod

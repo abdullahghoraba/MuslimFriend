@@ -29,7 +29,8 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideHttpClient(),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular({ mode: 'md' }),
+    // useSetInputAPI: modal componentProps are passed through setInput, so signal inputs work.
+    provideIonicAngular({ mode: 'md', useSetInputAPI: true }),
     provideRouter(routes, withPreloading(PreloadAllModules), withComponentInputBinding()),
     provideTranslateService({
       loader: provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: '.json' }),

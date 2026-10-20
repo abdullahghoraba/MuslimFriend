@@ -4,6 +4,7 @@ import { Capacitor } from '@capacitor/core';
 import { NavController } from '@ionic/angular';
 import { AthkarOverlay } from '../../native/athkar-overlay';
 import { PrayerService } from '../prayer/prayer.service';
+import { FloatingCounterService } from './floating-counter.service';
 import { OverlayService } from './overlay.service';
 import { ProgressService } from './progress.service';
 
@@ -19,6 +20,7 @@ export class LifecycleService {
   private readonly overlay = inject(OverlayService);
   private readonly prayer = inject(PrayerService);
   private readonly progress = inject(ProgressService);
+  private readonly floating = inject(FloatingCounterService);
   private readonly nav = inject(NavController);
   /** Increments after each resume so pages can refresh. */
   readonly resumed = signal(0);
@@ -28,11 +30,15 @@ export class LifecycleService {
     await this.onForeground();
     if (!Capacitor.isNativePlatform()) return;
     await App.addListener('resume', () => void this.onForeground());
+    // The floating tasbih counter hides while the app itself is on screen.
+    await App.addListener('pause', () => void AthkarOverlay.setAppVisible({ visible: false }));
     await AthkarOverlay.addListener('launchRoute', ({ route }) => this.openRoute(route));
   }
 
   private async onForeground(): Promise<void> {
     try {
+      await AthkarOverlay.setAppVisible({ visible: true });
+      await this.floating.sync();
       const synced = await this.overlay.syncCounters();
       if (synced) this.progress.version.update((v) => v + 1);
       await this.overlay.refreshStatus();

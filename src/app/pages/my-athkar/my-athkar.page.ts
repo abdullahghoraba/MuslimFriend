@@ -1,7 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, computed, inject, signal } from '@angular/core';
 import {
-  AlertController,
   IonButton,
   IonButtons,
   IonContent,
@@ -9,113 +7,94 @@ import {
   IonFabButton,
   IonHeader,
   IonIcon,
-  IonInput,
   IonItem,
-  IonItemOption,
-  IonItemOptions,
-  IonItemSliding,
   IonLabel,
   IonList,
-  IonModal,
+  IonListHeader,
   IonNote,
   IonReorder,
   IonReorderGroup,
-  IonTextarea,
   IonTitle,
-  IonToggle,
   IonToolbar,
+  ModalController,
   NavController,
   ReorderEndCustomEvent,
 } from '@ionic/angular';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { CUSTOM_CATEGORY_ID, CustomDhikrInput, Dhikr } from '../../core/models';
+import { TranslatePipe } from '@ngx-translate/core';
+import { CUSTOM_CATEGORY_ID, Dhikr } from '../../core/models';
 import { AthkarRepository } from '../../core/services/athkar.repository';
+import { SettingsService } from '../../core/services/settings.service';
+import { DhikrEditorComponent } from '../../shared/dhikr-editor.component';
 
-interface DraftForm extends CustomDhikrInput {
-  id?: string;
+interface Group {
+  categoryId: string;
+  name: string;
+  items: Dhikr[];
 }
 
-const emptyDraft = (): DraftForm => ({ textAr: '', meaningEn: '', repeatCount: 1, includeInOverlay: true });
-
+/** Every dhikr the user added, grouped by the list it lives in (My Athkar, Morning athkar, ...). */
 @Component({
   selector: 'app-my-athkar',
   imports: [
-    FormsModule, TranslatePipe, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonContent,
-    IonList, IonItem, IonLabel, IonNote, IonToggle, IonReorderGroup, IonReorder, IonItemSliding, IonItemOptions,
-    IonItemOption, IonFab, IonFabButton, IonModal, IonTextarea, IonInput,
+    TranslatePipe, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonContent, IonList,
+    IonListHeader, IonItem, IonLabel, IonNote, IonReorderGroup, IonReorder, IonFab, IonFabButton,
   ],
   templateUrl: './my-athkar.page.html',
   styleUrl: './my-athkar.page.scss',
 })
 export class MyAthkarPage {
   private readonly athkar = inject(AthkarRepository);
-  private readonly alerts = inject(AlertController);
-  private readonly translate = inject(TranslateService);
+  private readonly settings = inject(SettingsService);
+  private readonly modals = inject(ModalController);
   private readonly nav = inject(NavController);
 
   readonly items = signal<Dhikr[]>([]);
   readonly reordering = signal(false);
-  readonly editorOpen = signal(false);
-  readonly draft = signal<DraftForm>(emptyDraft());
-  readonly showError = signal(false);
+  readonly customId = CUSTOM_CATEGORY_ID;
+
+  readonly groups = computed<Group[]>(() => {
+    const ar = this.settings.settings().language === 'ar';
+    const byCategory = new Map<string, Dhikr[]>();
+    for (const d of this.items()) byCategory.set(d.categoryId, [...(byCategory.get(d.categoryId) ?? []), d]);
+    // My Athkar first, then the built-in categories in their usual order.
+    const order = [CUSTOM_CATEGORY_ID, ...this.athkar.categories().map((c) => c.id)];
+    return order
+      .filter((id) => byCategory.has(id))
+      .map((id) => {
+        const c = this.athkar.category(id)!;
+        return { categoryId: id, name: ar ? c.nameAr : c.nameEn, items: byCategory.get(id)! };
+      });
+  });
+
+  readonly customCount = computed(() => this.items().filter((d) => d.categoryId === CUSTOM_CATEGORY_ID).length);
 
   ionViewWillEnter(): void {
     void this.load();
   }
 
   async load(): Promise<void> {
-    this.items.set(await this.athkar.byCategory(CUSTOM_CATEGORY_ID));
+    this.items.set(await this.athkar.listCustom());
   }
 
-  openEditor(d?: Dhikr): void {
-    this.draft.set(
-      d
-        ? { id: d.id, textAr: d.textAr, meaningEn: d.meaningEn, repeatCount: d.repeatCount, includeInOverlay: d.includeInOverlay }
-        : emptyDraft(),
-    );
-    this.showError.set(false);
-    this.editorOpen.set(true);
+  async open(d?: Dhikr): Promise<void> {
+    const modal = await this.modals.create({
+      component: DhikrEditorComponent,
+      componentProps: d ? { dhikr: d } : { categoryId: CUSTOM_CATEGORY_ID },
+    });
+    await modal.present();
+    const { role } = await modal.onWillDismiss();
+    if (role === 'saved' || role === 'deleted') await this.load();
   }
 
-  patchDraft(patch: Partial<DraftForm>): void {
-    this.draft.update((d) => ({ ...d, ...patch }));
-  }
-
-  async save(): Promise<void> {
-    const draft = this.draft();
-    if (!draft.textAr.trim()) {
-      this.showError.set(true);
-      return;
-    }
-    if (draft.id) await this.athkar.updateCustom(draft.id, draft);
-    else await this.athkar.addCustom(draft);
-    this.editorOpen.set(false);
+  /** Only the My Athkar list is reordered here; other lists are reordered on their own page. */
+  async onReorder(event: ReorderEndCustomEvent, group: Group): Promise<void> {
+    const reordered = event.detail.complete(group.items) as Dhikr[];
+    await this.athkar.reorder(reordered.map((i) => i.id));
     await this.load();
   }
 
-  async confirmDelete(id: string, sliding?: IonItemSliding): Promise<void> {
-    await sliding?.close();
-    const alert = await this.alerts.create({
-      header: this.translate.instant('myAthkar.deleteConfirm'),
-      buttons: [
-        { text: this.translate.instant('common.cancel'), role: 'cancel' },
-        {
-          text: this.translate.instant('common.delete'),
-          role: 'destructive',
-          handler: async () => {
-            await this.athkar.deleteCustom(id);
-            await this.load();
-          },
-        },
-      ],
-    });
-    await alert.present();
-  }
-
-  async onReorder(event: ReorderEndCustomEvent): Promise<void> {
-    const reordered = event.detail.complete(this.items()) as Dhikr[];
-    this.items.set(reordered);
-    await this.athkar.reorder(reordered.map((i) => i.id));
+  openList(categoryId: string): void {
+    void this.nav.navigateForward(['/category', categoryId]);
   }
 
   read(): void {

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>{{ 'myAthkar.title' | translate }}</ion-title>
-    @if (items().length > 1) {
+    @if (customCount() > 1) {
       <ion-buttons slot="end">
         <ion-button (click)="reordering.set(!reordering())" [attr.aria-pressed]="reordering()"
                     [attr.aria-label]="(reordering() ? 'common.finishReorder' : 'common.reorder') | translate">
@@ -17,14 +17,20 @@
     <div class="empty">
       <ion-icon name="create-outline" aria-hidden="true" />
       <p>{{ 'myAthkar.empty' | translate }}</p>
-      <ion-button (click)="openEditor()">{{ 'myAthkar.add' | translate }}</ion-button>
+      <ion-button (click)="open()">{{ 'myAthkar.add' | translate }}</ion-button>
     </div>
   } @else {
-    <ion-list>
-      <ion-reorder-group [disabled]="!reordering()" (ionReorderEnd)="onReorder($event)">
-        @for (d of items(); track d.id) {
-          <ion-item-sliding #sliding [disabled]="reordering()">
-            <ion-item [button]="!reordering()" [detail]="false" (click)="!reordering() && openEditor(d)">
+    @for (g of groups(); track g.categoryId) {
+      <ion-list inset>
+        <ion-list-header>
+          <ion-label>{{ g.name }}</ion-label>
+          @if (g.categoryId !== customId) {
+            <ion-button size="small" (click)="openList(g.categoryId)">{{ 'myAthkar.openList' | translate }}</ion-button>
+          }
+        </ion-list-header>
+        <ion-reorder-group [disabled]="!reordering() || g.categoryId !== customId" (ionReorderEnd)="onReorder($event, g)">
+          @for (d of g.items; track d.id) {
+            <ion-item [button]="!reordering()" [detail]="false" (click)="!reordering() && open(d)">
               <ion-label class="ion-text-wrap">
                 <p class="text" dir="auto">{{ d.textAr }}</p>
                 @if (d.meaningEn) {
@@ -34,83 +40,25 @@
               <ion-note slot="end" class="repeat">{{ 'common.times' | translate: { count: d.repeatCount } }}</ion-note>
               <ion-reorder slot="end" />
             </ion-item>
-            <ion-item-options side="end">
-              <ion-item-option (click)="openEditor(d); sliding.close()">
-                <ion-icon slot="icon-only" name="pencil-outline" [attr.aria-label]="'common.edit' | translate" />
-              </ion-item-option>
-              <ion-item-option color="danger" (click)="confirmDelete(d.id, sliding)">
-                <ion-icon slot="icon-only" name="trash-outline" [attr.aria-label]="'common.delete' | translate" />
-              </ion-item-option>
-            </ion-item-options>
-          </ion-item-sliding>
-        }
-      </ion-reorder-group>
-    </ion-list>
+          }
+        </ion-reorder-group>
+      </ion-list>
+    }
 
-    <div class="ion-padding">
-      <ion-button expand="block" fill="outline" (click)="read()" [disabled]="reordering()">
-        {{ 'myAthkar.read' | translate }}
-      </ion-button>
-    </div>
+    @if (customCount()) {
+      <div class="ion-padding">
+        <ion-button expand="block" fill="outline" (click)="read()" [disabled]="reordering()">
+          {{ 'myAthkar.read' | translate }}
+        </ion-button>
+      </div>
+    }
   }
 
-  <p class="hint">
-    <strong>{{ 'myAthkar.builtInOrder' | translate }}:</strong>
-    {{ 'myAthkar.builtInOrderHint' | translate }}
-  </p>
+  <p class="hint">{{ 'myAthkar.addAnywhereHint' | translate }}</p>
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button (click)="openEditor()" [attr.aria-label]="'myAthkar.add' | translate">
+    <ion-fab-button (click)="open()" [attr.aria-label]="'myAthkar.add' | translate">
       <ion-icon name="add-outline" aria-hidden="true" />
     </ion-fab-button>
   </ion-fab>
-
-  <ion-modal [isOpen]="editorOpen()" (didDismiss)="editorOpen.set(false)">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-buttons slot="start">
-            <ion-button (click)="editorOpen.set(false)">{{ 'common.cancel' | translate }}</ion-button>
-          </ion-buttons>
-          <ion-title>{{ (draft().id ? 'myAthkar.edit' : 'myAthkar.add') | translate }}</ion-title>
-          <ion-buttons slot="end">
-            <ion-button strong (click)="save()">{{ 'common.save' | translate }}</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content class="ion-padding">
-        <ion-list lines="full">
-          <ion-item>
-            <ion-textarea class="dhikr-input" dir="auto" [autoGrow]="true" [rows]="4"
-                          labelPlacement="stacked" [label]="'myAthkar.text' | translate"
-                          [placeholder]="'myAthkar.textPlaceholder' | translate"
-                          [value]="draft().textAr" (ionInput)="patchDraft({ textAr: $event.detail.value ?? '' })"
-                          [errorText]="'myAthkar.required' | translate"
-                          [class.ion-invalid]="showError()" [class.ion-touched]="showError()" />
-          </ion-item>
-          <ion-item>
-            <ion-textarea dir="auto" [autoGrow]="true" labelPlacement="stacked" [label]="'myAthkar.meaning' | translate"
-                          [value]="draft().meaningEn" (ionInput)="patchDraft({ meaningEn: $event.detail.value ?? '' })" />
-          </ion-item>
-          <ion-item>
-            <ion-input type="number" inputmode="numeric" [min]="1" [max]="10000" labelPlacement="stacked"
-                       [label]="'myAthkar.repeat' | translate" [value]="draft().repeatCount"
-                       (ionInput)="patchDraft({ repeatCount: +($event.detail.value ?? 1) })" />
-          </ion-item>
-          <ion-item>
-            <ion-toggle [checked]="draft().includeInOverlay" (ionChange)="patchDraft({ includeInOverlay: $event.detail.checked })">
-              {{ 'myAthkar.includeInOverlay' | translate }}
-            </ion-toggle>
-          </ion-item>
-        </ion-list>
-        @if (draft().id) {
-          <ion-button expand="block" color="danger" fill="clear" class="ion-margin-top"
-                      (click)="editorOpen.set(false); confirmDelete(draft().id!)">
-            <ion-icon slot="start" name="trash-outline" aria-hidden="true" />
-            {{ 'common.delete' | translate }}
-          </ion-button>
-        }
-      </ion-content>
-    </ng-template>
-  </ion-modal>
 </ion-content>

@@ -1,15 +1,18 @@
-import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
-import { AlertController, ToastController, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel } from '@ionic/angular';
+import { Component, OnDestroy, computed, effect, inject, signal, untracked } from '@angular/core';
+import { LifecycleService } from '../../core/services/lifecycle.service';
+import { AlertController, ToastController, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel, IonItem, IonToggle } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { KeepAwake } from '@capacitor-community/keep-awake';
 import { TasbihService } from '../../core/services/tasbih.service';
 import { TasbihCounter } from '../../core/models';
 import { HapticsService } from '../../core/services/haptics.service';
+import { FloatingCounterService } from '../../core/services/floating-counter.service';
+import { AthkarOverlay } from '../../native/athkar-overlay';
 
 @Component({
   selector: 'app-tasbih',
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel, TranslatePipe],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel, IonItem, IonToggle, TranslatePipe],
   templateUrl: './tasbih.page.html',
   styleUrl: './tasbih.page.scss',
 })
@@ -43,6 +46,8 @@ export class TasbihPage implements OnDestroy {
       if (!this.visible) await KeepAwake.allowSleep();
     } catch { /* Unsupported on web. */ }
     await this.run(() => this.tasbih.load());
+    await this.floating.load();
+    await this.onPermissionReturn();
   }
 
   async ionViewWillLeave(): Promise<void> {
@@ -53,6 +58,53 @@ export class TasbihPage implements OnDestroy {
   }
 
   ngOnDestroy(): void { clearTimeout(this.pulseTimer); }
+
+  // ---- Floating counter over other apps ----
+  readonly floating = inject(FloatingCounterService);
+  readonly floatingNeedsPermission = signal(false);
+  private readonly lifecycle = inject(LifecycleService);
+
+  private readonly followResume = effect(() => {
+    this.lifecycle.resumed();
+    untracked(() => void this.onPermissionReturn());
+  });
+
+  /** The bubble mirrors whichever counter is selected here. */
+  private readonly followCounter = effect(() => {
+    const id = this.active()?.id;
+    untracked(() => {
+      const f = this.floating.floating();
+      if (id && f.enabled && f.counterId !== id) void this.floating.setCounter(id);
+    });
+  });
+
+  /** Turning it on is a user action in the foreground, which Android requires to start the service. */
+  async toggleFloating(on: boolean): Promise<void> {
+    await this.run(async () => {
+      if (!on) {
+        this.floatingNeedsPermission.set(false);
+        await this.floating.disable();
+        return;
+      }
+      const counter = this.active();
+      if (!counter) return;
+      const result = await this.floating.enable(counter.id);
+      this.floatingNeedsPermission.set(result.needsPermission);
+      if (result.ok) await this.notify('tasbih.floating.enabled');
+      else if (!result.needsPermission) await this.notify('tasbih.floating.failed');
+    });
+  }
+
+  async grantOverlay(): Promise<void> {
+    await AthkarOverlay.requestOverlayPermission();
+  }
+
+  /** When the user returns from the permission screen, finish turning the bubble on. */
+  async onPermissionReturn(): Promise<void> {
+    if (!this.floatingNeedsPermission()) return;
+    const { granted } = await AthkarOverlay.checkOverlayPermission();
+    if (granted) await this.toggleFloating(true);
+  }
 
   private async notify(key: string): Promise<void> {
     const toast = await this.toasts.create({ message: this.translate.instant(key), duration: 1600, position: 'bottom' });
