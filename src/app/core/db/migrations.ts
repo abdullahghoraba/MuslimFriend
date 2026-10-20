@@ -73,4 +73,7 @@ export const MIGRATIONS: Migration[] = [
     `CREATE TABLE IF NOT EXISTS user_category (id TEXT PRIMARY KEY, name TEXT NOT NULL, icon TEXT NOT NULL DEFAULT 'layers-outline', show_on_home INTEGER NOT NULL DEFAULT 1, sort_order INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL);`,
     `CREATE TABLE IF NOT EXISTS home_hidden (category_id TEXT PRIMARY KEY);`,
   ] },
+  { version: 4, statements: [
+    `ALTER TABLE athkar ADD COLUMN hidden INTEGER NOT NULL DEFAULT 0;`,
+  ] },
 ];

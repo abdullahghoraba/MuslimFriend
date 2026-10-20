@@ -49,7 +49,17 @@
     "start": "ابدأ القراءة",
     "resetToday": "إعادة تقدم اليوم",
     "reorderHint": "اسحب المقابض لإعادة ترتيب القائمة.",
-    "itemProgress": "{{count}} من {{total}}"
+    "itemProgress": "{{count}} من {{total}}",
+    "more": "المزيد من الخيارات",
+    "saveTo": "حفظ في…",
+    "newCollection": "مجموعة جديدة…",
+    "savedTo": "تم الحفظ في {{name}}",
+    "hide": "إخفاء من هذه القائمة",
+    "hidden": "تم إخفاء الذكر",
+    "undo": "تراجع",
+    "deleted": "تم حذف الذكر",
+    "hiddenAthkar": "الأذكار المخفية ({{count}})",
+    "showAgain": "إظهار مجددًا"
   },
   "reader": {
     "tapToCount": "اضغط في أي مكان على البطاقة للعد",

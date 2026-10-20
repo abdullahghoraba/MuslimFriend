@@ -1,5 +1,8 @@
 import { Component, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import {
+  ActionSheetController,
+  AlertController,
+  IonModal,
   IonBackButton,
   IonButton,
   IonButtons,
@@ -22,7 +25,8 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Dhikr } from '../../core/models';
+import { Category, CUSTOM_CATEGORY_ID, Dhikr } from '../../core/models';
+import { CollectionEditorComponent } from '../../shared/collection-editor.component';
 import { DhikrEditorComponent } from '../../shared/dhikr-editor.component';
 import { AthkarRepository } from '../../core/services/athkar.repository';
 import { HapticsService } from '../../core/services/haptics.service';
@@ -40,7 +44,7 @@ const SCROLL_NEXT_MS = 350;
 @Component({
   selector: 'app-category',
   imports: [
-    TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonContent,
+    IonModal, TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonContent,
     IonList, IonItem, IonLabel, IonNote, IonReorderGroup, IonReorder, IonProgressBar, IonRange,
   ],
   templateUrl: './category.page.html',
@@ -62,6 +66,11 @@ export class CategoryPage {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly content = viewChild(IonContent);
   private readonly modals = inject(ModalController);
+
+  private readonly sheets = inject(ActionSheetController);
+  private readonly alerts = inject(AlertController);
+  readonly hiddenItems = signal<Dhikr[]>([]);
+  readonly hiddenOpen = signal(false);
 
   readonly items = signal<Dhikr[]>([]);
   readonly counts = signal<Map<string, number>>(new Map());
@@ -86,6 +95,73 @@ export class CategoryPage {
   async addDhikr(): Promise<void> {
     const saved = await this.openEditor({ categoryId: this.id() });
     if (saved) setTimeout(() => this.scrollTo(this.items().length - 1), 300);
+  }
+
+  private name(c: Category): string {
+    return this.lang() === 'ar' ? c.nameAr : c.nameEn;
+  }
+
+  async more(d: Dhikr): Promise<void> {
+    const sheet = await this.sheets.create({ buttons: [
+      { text: this.translate.instant('category.saveTo'), icon: 'bookmark-outline', handler: () => { void this.saveTo(d); } },
+      d.isCustom
+        ? { text: this.translate.instant('common.delete'), icon: 'trash-outline', role: 'destructive', handler: () => { void this.confirmDelete(d); } }
+        : { text: this.translate.instant('category.hide'), icon: 'eye-outline', handler: () => { void this.hide(d); } },
+      { text: this.translate.instant('common.cancel'), role: 'cancel' },
+    ] });
+    await sheet.present();
+  }
+
+  async saveTo(d: Dhikr): Promise<void> {
+    const targets = [this.athkar.category(CUSTOM_CATEGORY_ID)!, ...this.athkar.categories().filter(c => c.isUser)]
+      .filter(c => c.id !== this.id());
+    const sheet = await this.sheets.create({ header: this.translate.instant('category.saveTo'), buttons: [
+      ...targets.map(c => ({ text: this.name(c), icon: c.icon, handler: () => { void this.saveInto(d, c); } })),
+      { text: this.translate.instant('category.newCollection'), icon: 'add-outline', handler: () => { void this.newCollection(d); } },
+      { text: this.translate.instant('common.cancel'), role: 'cancel' },
+    ] });
+    await sheet.present();
+  }
+
+  private async newCollection(d: Dhikr): Promise<void> {
+    const modal = await this.modals.create({ component: CollectionEditorComponent });
+    await modal.present();
+    const { data, role } = await modal.onDidDismiss<Category>();
+    if (role === 'saved' && data) await this.saveInto(d, data);
+  }
+
+  private async saveInto(d: Dhikr, target: Category): Promise<void> {
+    await this.athkar.saveCopy(d.id, target.id);
+    const t = await this.toast.create({ message: this.translate.instant('category.savedTo', { name: this.name(target) }), duration: 2500 });
+    await t.present();
+  }
+
+  private async hide(d: Dhikr): Promise<void> {
+    await this.athkar.setHidden(d.id, true);
+    await this.load();
+    const t = await this.toast.create({ message: this.translate.instant('category.hidden'), duration: 5000,
+      buttons: [{ text: this.translate.instant('category.undo'), handler: () => { void this.showAgain(d); } }] });
+    await t.present();
+  }
+
+  async showAgain(d: Dhikr): Promise<void> {
+    await this.athkar.setHidden(d.id, false);
+    await this.load();
+  }
+
+  private async confirmDelete(d: Dhikr): Promise<void> {
+    const alert = await this.alerts.create({ header: this.translate.instant('myAthkar.deleteConfirm'), buttons: [
+      { text: this.translate.instant('common.cancel'), role: 'cancel' },
+      { text: this.translate.instant('common.delete'), role: 'destructive', handler: () => { void this.deleteDhikr(d); } },
+    ] });
+    await alert.present();
+  }
+
+  private async deleteDhikr(d: Dhikr): Promise<void> {
+    await this.athkar.deleteCustom(d.id);
+    await this.load();
+    const t = await this.toast.create({ message: this.translate.instant('category.deleted'), duration: 2500 });
+    await t.present();
   }
 
   async editDhikr(d: Dhikr): Promise<void> {
@@ -117,6 +193,7 @@ export class CategoryPage {
   async load(): Promise<void> {
     const items = await this.athkar.byCategory(this.id());
     this.items.set(items);
+    this.hiddenItems.set(await this.athkar.hiddenIn(this.id()));
     this.counts.set(await this.progress.countsFor(items.map((i) => i.id)));
     const start = Number(this.start());
     if (Number.isInteger(start) && start > 0) setTimeout(() => this.scrollTo(start), 300);

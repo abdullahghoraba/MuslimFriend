@@ -49,7 +49,17 @@
     "start": "Start reading",
     "resetToday": "Restart today's progress",
     "reorderHint": "Drag the handles to reorder this list.",
-    "itemProgress": "{{count}} of {{total}}"
+    "itemProgress": "{{count}} of {{total}}",
+    "more": "More actions",
+    "saveTo": "Save to…",
+    "newCollection": "New collection…",
+    "savedTo": "Saved to {{name}}",
+    "hide": "Hide from this list",
+    "hidden": "Dhikr hidden",
+    "undo": "Undo",
+    "deleted": "Dhikr deleted",
+    "hiddenAthkar": "Hidden athkar ({{count}})",
+    "showAgain": "Show again"
   },
   "reader": {
     "tapToCount": "Tap anywhere on the card to count",

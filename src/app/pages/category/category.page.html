@@ -136,6 +136,9 @@
               </button>
             }
             <span class="spacer"></span>
+            <button type="button" class="icon-btn" (click)="more(d)" [attr.aria-label]="'category.more' | translate">
+              <ion-icon name="ellipsis-vertical" aria-hidden="true" />
+            </button>
             <button
               type="button"
               class="icon-btn"
@@ -191,6 +194,9 @@
         </article>
       }
 
+      @if (hiddenItems().length) {
+        <ion-button fill="clear" size="small" (click)="hiddenOpen.set(true)">{{ 'category.hiddenAthkar' | translate: { count: hiddenItems().length } }}</ion-button>
+      }
       @if (allDone()) {
         <section class="finished" aria-live="polite">
           <ion-icon name="checkmark-circle" aria-hidden="true" />
@@ -203,6 +209,22 @@
       }
     </div>
   }
+
+  <ion-modal [isOpen]="hiddenOpen()" (didDismiss)="hiddenOpen.set(false)">
+    <ng-template>
+      <ion-header><ion-toolbar>
+        <ion-title>{{ 'category.hiddenAthkar' | translate: { count: hiddenItems().length } }}</ion-title>
+        <ion-buttons slot="end"><ion-button (click)="hiddenOpen.set(false)" [attr.aria-label]="'common.close' | translate"><ion-icon slot="icon-only" name="close-outline" /></ion-button></ion-buttons>
+      </ion-toolbar></ion-header>
+      <ion-content><ion-list>
+        @for (d of hiddenItems(); track d.id) {
+          <ion-item><ion-label class="ion-text-wrap"><p dir="rtl" lang="ar">{{ d.textAr }}</p>
+            <ion-button fill="clear" (click)="showAgain(d)">{{ 'category.showAgain' | translate }}</ion-button>
+          </ion-label></ion-item>
+        }
+      </ion-list></ion-content>
+    </ng-template>
+  </ion-modal>
 
   <!-- Off-screen layout used only to render the "share as image" PNG. -->
   @if (sharing(); as s) {

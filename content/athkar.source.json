@@ -1,5 +1,5 @@
 {
-  "contentVersion": 2,
+  "contentVersion": 3,
   "notes": "Source file for the bundled dataset. Quran items reference Tanzil Uthmani text by surah/ayah (and optional 1-based word range); scripts/build-content.mjs copies the text verbatim. Every item ships with reviewed=false until a qualified reviewer signs it off in content/review.csv. Virtue fields are summaries of meaning, not hadith wording.",
   "items": [
     {
@@ -88,6 +88,18 @@
       "grade": "Sahih"
     },
     {
+      "id": "morning-bika-asbahna",
+      "categoryId": "morning",
+      "textAr": "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ",
+      "transliteration": "Allahumma bika asbahna, wa bika amsayna, wa bika nahya, wa bika namutu, wa ilaykan-nushur.",
+      "meaningEn": "O Allah, by You we enter the morning and by You we enter the evening, by You we live and by You we die, and to You is the resurrection.",
+      "repeatCount": 1,
+      "virtueAr": "",
+      "virtueEn": "",
+      "sourceRef": "at-Tirmidhi 3391; Abu Dawud 5068",
+      "grade": "Hasan (at-Tirmidhi); Sahih (al-Albani)"
+    },
+    {
       "id": "morning-sayyid-al-istighfar",
       "categoryId": "morning",
       "textAr": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي، فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
@@ -100,16 +112,66 @@
       "grade": "Sahih"
     },
     {
-      "id": "morning-bika-asbahna",
+      "id": "morning-ushhiduka",
       "categoryId": "morning",
-      "textAr": "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ",
-      "transliteration": "Allahumma bika asbahna, wa bika amsayna, wa bika nahya, wa bika namutu, wa ilaykan-nushur.",
-      "meaningEn": "O Allah, by You we enter the morning and by You we enter the evening, by You we live and by You we die, and to You is the resurrection.",
+      "repeatCount": 4,
+      "textAr": "اللَّهُمَّ إِنِّي أَصْبَحْتُ أُشْهِدُكَ، وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلَائِكَتَكَ، وَجَمِيعَ خَلْقِكَ، أَنَّكَ أَنْتَ اللَّهُ لَا إِلَهَ إِلَّا أَنْتَ وَحْدَكَ لَا شَرِيكَ لَكَ، وَأَنَّ مُحَمَّدًا عَبْدُكَ وَرَسُولُكَ",
+      "transliteration": "Allahumma inni asbahtu ush-hiduka, wa ush-hidu hamalata 'arshik, wa mala'ikatak, wa jami'a khalqik, annaka antallahu la ilaha illa anta wahdaka la sharika lak, wa anna Muhammadan 'abduka wa rasuluk.",
+      "meaningEn": "O Allah, I have entered the morning calling You to witness, and the bearers of Your Throne, Your angels and all Your creation to witness, that You are Allah — there is no god but You alone, without partner — and that Muhammad is Your servant and Messenger.",
+      "virtueAr": "ورد أن من قالها أعتق الله ربعه من النار، ومن قالها أربعًا أعتقه الله من النار.",
+      "virtueEn": "It is reported that whoever says it, Allah frees a quarter of him from the Fire, and whoever says it four times, Allah frees him from the Fire.",
+      "sourceRef": "Abu Dawud 5069; at-Tirmidhi 3501",
+      "grade": "Disputed: graded hasan by Ibn Baz; graded da'if by al-Albani",
+      "reviewNote": "Grading differs between scholars; confirm the wording and numbering."
+    },
+    {
+      "id": "morning-ma-asbaha-bi",
+      "categoryId": "morning",
       "repeatCount": 1,
-      "virtueAr": "",
-      "virtueEn": "",
-      "sourceRef": "at-Tirmidhi 3391; Abu Dawud 5068",
-      "grade": "Hasan (at-Tirmidhi); Sahih (al-Albani)"
+      "textAr": "اللَّهُمَّ مَا أَصْبَحَ بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ فَمِنْكَ وَحْدَكَ لَا شَرِيكَ لَكَ، فَلَكَ الْحَمْدُ وَلَكَ الشُّكْرُ",
+      "transliteration": "Allahumma ma asbaha bi min ni'matin aw bi-ahadin min khalqika faminka wahdaka la sharika lak, falakal-hamdu wa lakash-shukr.",
+      "meaningEn": "O Allah, whatever blessing I or any of Your creation have this morning is from You alone, without partner; so to You is the praise and to You is the thanks.",
+      "virtueAr": "ورد أن من قالها حين يصبح فقد أدّى شكر يومه.",
+      "virtueEn": "It is reported that whoever says it in the morning has given thanks for that day.",
+      "sourceRef": "Abu Dawud 5073",
+      "grade": "Disputed: graded hasan by Ibn Baz; graded da'if by al-Albani",
+      "reviewNote": "Grading differs between scholars; confirm the wording."
+    },
+    {
+      "id": "morning-afini-fi-badani",
+      "categoryId": "morning",
+      "repeatCount": 3,
+      "textAr": "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي، لَا إِلَهَ إِلَّا أَنْتَ. اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْكُفْرِ وَالْفَقْرِ، وَأَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ، لَا إِلَهَ إِلَّا أَنْتَ",
+      "transliteration": "Allahumma 'afini fi badani, Allahumma 'afini fi sam'i, Allahumma 'afini fi basari, la ilaha illa ant. Allahumma inni a'udhu bika minal-kufri wal-faqr, wa a'udhu bika min 'adhabil-qabr, la ilaha illa ant.",
+      "meaningEn": "O Allah, grant me well-being in my body; O Allah, grant me well-being in my hearing; O Allah, grant me well-being in my sight. There is no god but You. O Allah, I seek refuge in You from disbelief and poverty, and I seek refuge in You from the punishment of the grave. There is no god but You.",
+      "virtueAr": "كان النبي ﷺ يدعو بها ثلاثًا حين يصبح وثلاثًا حين يمسي.",
+      "virtueEn": "The Prophet ﷺ used to supplicate with it three times in the morning and three times in the evening.",
+      "sourceRef": "Abu Dawud 5090; Musnad Ahmad 20430",
+      "grade": "Disputed: graded hasan by Ibn Baz; al-Albani graded its chain hasan in one work and da'if in another",
+      "reviewNote": "Confirm Abu Dawud number (5090 is also cited for the distress supplication) and the grading."
+    },
+    {
+      "id": "morning-hasbiyallah",
+      "categoryId": "morning",
+      "repeatCount": 7,
+      "quran": [
+        {
+          "s": 9,
+          "from": 129,
+          "to": 129,
+          "words": [
+            4,
+            17
+          ]
+        }
+      ],
+      "transliteration": "Hasbiyallahu la ilaha illa huwa, 'alayhi tawakkaltu, wa huwa rabbul-'arshil-'azim.",
+      "meaningEn": "Allah is sufficient for me; there is no god but He. In Him I have put my trust, and He is the Lord of the Mighty Throne.",
+      "virtueAr": "ورد أن من قالها حين يصبح وحين يمسي سبع مرات كفاه الله ما أهمّه من أمر الدنيا والآخرة.",
+      "virtueEn": "It is reported that whoever says it seven times in the morning and evening, Allah will suffice him in whatever concerns him of this world and the Hereafter.",
+      "sourceRef": "Quran 9:129 — virtue: Abu Dawud 5081 (mawquf, from Abu ad-Darda')",
+      "grade": "The text is Quran 9:129. The virtue narration is disputed: accepted as mawquf by some; al-Albani graded the marfu' version very weak.",
+      "reviewNote": "Confirm virtue wording and grading."
     },
     {
       "id": "morning-al-afiyah",
@@ -149,6 +211,19 @@
       "grade": "Hasan sahih (at-Tirmidhi); Sahih (al-Albani)"
     },
     {
+      "id": "morning-raditu",
+      "categoryId": "morning",
+      "repeatCount": 3,
+      "textAr": "رَضِيتُ بِاللَّهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ ﷺ نَبِيًّا",
+      "transliteration": "Raditu billahi rabba, wa bil-islami dina, wa bi-Muhammadin ﷺ nabiyya.",
+      "meaningEn": "I am pleased with Allah as Lord, with Islam as religion, and with Muhammad ﷺ as Prophet.",
+      "virtueAr": "ورد أن من قالها ثلاثًا حين يصبح وحين يمسي كان حقًّا على الله أن يرضيه يوم القيامة.",
+      "virtueEn": "It is reported that whoever says it three times in the morning and evening, it is a right upon Allah to please him on the Day of Resurrection.",
+      "sourceRef": "Abu Dawud 5072; at-Tirmidhi 3389; Ibn Majah 3870",
+      "grade": "Disputed: graded hasan by Ibn Baz and others; graded da'if by al-Albani",
+      "reviewNote": "at-Tirmidhi has \"rasula\"; confirm wording and grading."
+    },
+    {
       "id": "morning-ya-hayyu-ya-qayyum",
       "categoryId": "morning",
       "textAr": "يَا حَيُّ يَا قَيُّومُ، بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ",
@@ -160,6 +235,19 @@
       "sourceRef": "an-Nasa'i, as-Sunan al-Kubra 10405; al-Hakim 2000",
       "grade": "Hasan (al-Albani, Sahih at-Targhib 661)",
       "reviewNote": "Verify al-Hakim number (edition differs)."
+    },
+    {
+      "id": "morning-fathahu-wa-nasrahu",
+      "categoryId": "morning",
+      "repeatCount": 1,
+      "textAr": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ رَبِّ الْعَالَمِينَ، اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ هَذَا الْيَوْمِ: فَتْحَهُ، وَنَصْرَهُ، وَنُورَهُ، وَبَرَكَتَهُ، وَهُدَاهُ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِيهِ وَشَرِّ مَا بَعْدَهُ",
+      "transliteration": "Asbahna wa asbahal-mulku lillahi rabbil-'alamin. Allahumma inni as'aluka khayra hadhal-yawm: fathahu, wa nasrahu, wa nurahu, wa barakatahu, wa hudah, wa a'udhu bika min sharri ma fihi wa sharri ma ba'dah.",
+      "meaningEn": "We have entered the morning and the dominion belongs to Allah, Lord of the worlds. O Allah, I ask You for the good of this day: its openings, its victory, its light, its blessing and its guidance; and I seek refuge in You from the evil in it and the evil after it.",
+      "virtueAr": "",
+      "virtueEn": "",
+      "sourceRef": "Abu Dawud 5084",
+      "grade": "Disputed: graded hasan by Ibn Baz and others; graded da'if by al-Albani",
+      "reviewNote": "Confirm wording and grading."
     },
     {
       "id": "morning-fitrat-al-islam",
@@ -187,16 +275,17 @@
       "grade": "Sahih"
     },
     {
-      "id": "morning-la-ilaha-illallah-100",
+      "id": "morning-tahlil-10",
       "categoryId": "morning",
+      "repeatCount": 10,
       "textAr": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
       "transliteration": "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa 'ala kulli shay'in qadir.",
-      "meaningEn": "There is no god but Allah alone, without partner. His is the dominion and His is the praise, and He has power over all things.",
-      "repeatCount": 100,
-      "virtueAr": "ورد أن من قالها في يوم مائة مرة كانت له عدل عشر رقاب، وكتبت له مائة حسنة، ومحيت عنه مائة سيئة، وكانت له حرزًا من الشيطان يومه ذلك حتى يمسي.",
-      "virtueEn": "It is reported that whoever says it a hundred times in a day receives the reward of freeing ten slaves, a hundred good deeds are recorded for him, a hundred sins are erased, and it is a protection from Shaytan that day until evening.",
-      "sourceRef": "Sahih al-Bukhari 3293; Sahih Muslim 2691",
-      "grade": "Sahih"
+      "meaningEn": "There is no god but Allah alone, without partner. His is the dominion and His is the praise, and He has power over all things. (Ten times in the morning.)",
+      "virtueAr": "ورد أن من قالها عشر مرات حين يصبح كُتبت له عشر حسنات، ومُحيت عنه عشر سيئات، ورُفعت له عشر درجات، وكانت له عدل عشر رقاب، وحُفظ بها من الشيطان حتى يمسي.",
+      "virtueEn": "It is reported that whoever says it ten times in the morning has ten good deeds recorded, ten sins erased, is raised ten degrees, receives the reward of freeing ten slaves, and is protected from Shaytan until evening.",
+      "sourceRef": "Musnad Ahmad (from Abu Ayyash az-Zuraqi); an-Nasa'i, as-Sunan al-Kubra; Ibn Hibban",
+      "grade": "Sahih (al-Albani, as-Silsilah as-Sahihah)",
+      "reviewNote": "Add exact hadith numbers for the edition used."
     },
     {
       "id": "morning-adada-khalqih",
@@ -221,6 +310,43 @@
       "virtueEn": "The Prophet ﷺ used to say it after the Fajr prayer when he gave the salam.",
       "sourceRef": "Ibn Majah 925",
       "grade": "Sahih (al-Albani)"
+    },
+    {
+      "id": "morning-astaghfirullah-100",
+      "categoryId": "morning",
+      "repeatCount": 100,
+      "textAr": "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+      "transliteration": "Astaghfirullaha wa atubu ilayh.",
+      "meaningEn": "I seek the forgiveness of Allah and I repent to Him. (A hundred times in the day.)",
+      "virtueAr": "كان النبي ﷺ يستغفر الله ويتوب إليه في اليوم أكثر من سبعين مرة، وفي رواية: مائة مرة.",
+      "virtueEn": "The Prophet ﷺ sought Allah's forgiveness and repented to Him more than seventy times a day; in another narration, a hundred times.",
+      "sourceRef": "Sahih al-Bukhari 6307; Sahih Muslim 2702",
+      "grade": "Sahih"
+    },
+    {
+      "id": "morning-la-ilaha-illallah-100",
+      "categoryId": "morning",
+      "textAr": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+      "transliteration": "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa 'ala kulli shay'in qadir.",
+      "meaningEn": "There is no god but Allah alone, without partner. His is the dominion and His is the praise, and He has power over all things.",
+      "repeatCount": 100,
+      "virtueAr": "ورد أن من قالها في يوم مائة مرة كانت له عدل عشر رقاب، وكتبت له مائة حسنة، ومحيت عنه مائة سيئة، وكانت له حرزًا من الشيطان يومه ذلك حتى يمسي.",
+      "virtueEn": "It is reported that whoever says it a hundred times in a day receives the reward of freeing ten slaves, a hundred good deeds are recorded for him, a hundred sins are erased, and it is a protection from Shaytan that day until evening.",
+      "sourceRef": "Sahih al-Bukhari 3293; Sahih Muslim 2691",
+      "grade": "Sahih"
+    },
+    {
+      "id": "morning-salawat-10",
+      "categoryId": "morning",
+      "repeatCount": 10,
+      "textAr": "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ",
+      "transliteration": "Allahumma salli wa sallim 'ala nabiyyina Muhammad.",
+      "meaningEn": "O Allah, send prayers and peace upon our Prophet Muhammad.",
+      "virtueAr": "ورد أن من صلى على النبي ﷺ حين يصبح عشرًا وحين يمسي عشرًا أدركته شفاعته يوم القيامة.",
+      "virtueEn": "It is reported that whoever sends prayers upon the Prophet ﷺ ten times in the morning and ten in the evening will attain his intercession on the Day of Resurrection.",
+      "sourceRef": "at-Tabarani (via al-Mundhiri, at-Targhib wa at-Tarhib)",
+      "grade": "Disputed: al-Albani graded it hasan in Sahih at-Targhib, then later da'if",
+      "reviewNote": "Confirm grading; sending salawat itself is established in the Quran (33:56)."
     },
     {
       "id": "evening-ayat-al-kursi",
@@ -273,11 +399,6 @@
       "grade": "Sahih"
     },
     {
-      "id": "evening-sayyid-al-istighfar",
-      "categoryId": "evening",
-      "copyOf": "morning-sayyid-al-istighfar"
-    },
-    {
       "id": "evening-bika-amsayna",
       "categoryId": "evening",
       "textAr": "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ",
@@ -288,6 +409,47 @@
       "virtueEn": "",
       "sourceRef": "at-Tirmidhi 3391; Abu Dawud 5068",
       "grade": "Hasan (at-Tirmidhi); Sahih (al-Albani)"
+    },
+    {
+      "id": "evening-sayyid-al-istighfar",
+      "categoryId": "evening",
+      "copyOf": "morning-sayyid-al-istighfar"
+    },
+    {
+      "id": "evening-ushhiduka",
+      "categoryId": "evening",
+      "repeatCount": 4,
+      "textAr": "اللَّهُمَّ إِنِّي أَمْسَيْتُ أُشْهِدُكَ، وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلَائِكَتَكَ، وَجَمِيعَ خَلْقِكَ، أَنَّكَ أَنْتَ اللَّهُ لَا إِلَهَ إِلَّا أَنْتَ وَحْدَكَ لَا شَرِيكَ لَكَ، وَأَنَّ مُحَمَّدًا عَبْدُكَ وَرَسُولُكَ",
+      "transliteration": "Allahumma inni amsaytu ush-hiduka, wa ush-hidu hamalata 'arshik, wa mala'ikatak, wa jami'a khalqik, annaka antallahu la ilaha illa anta wahdaka la sharika lak, wa anna Muhammadan 'abduka wa rasuluk.",
+      "meaningEn": "O Allah, I have entered the evening calling You to witness, and the bearers of Your Throne, Your angels and all Your creation to witness, that You are Allah — there is no god but You alone, without partner — and that Muhammad is Your servant and Messenger.",
+      "virtueAr": "ورد أن من قالها أعتق الله ربعه من النار، ومن قالها أربعًا أعتقه الله من النار.",
+      "virtueEn": "It is reported that whoever says it, Allah frees a quarter of him from the Fire, and whoever says it four times, Allah frees him from the Fire.",
+      "sourceRef": "Abu Dawud 5069; at-Tirmidhi 3501",
+      "grade": "Disputed: graded hasan by Ibn Baz; graded da'if by al-Albani",
+      "reviewNote": "Grading differs between scholars; confirm the wording and numbering."
+    },
+    {
+      "id": "evening-ma-amsa-bi",
+      "categoryId": "evening",
+      "repeatCount": 1,
+      "textAr": "اللَّهُمَّ مَا أَمْسَى بِي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ فَمِنْكَ وَحْدَكَ لَا شَرِيكَ لَكَ، فَلَكَ الْحَمْدُ وَلَكَ الشُّكْرُ",
+      "transliteration": "Allahumma ma amsa bi min ni'matin aw bi-ahadin min khalqika faminka wahdaka la sharika lak, falakal-hamdu wa lakash-shukr.",
+      "meaningEn": "O Allah, whatever blessing I or any of Your creation have this evening is from You alone, without partner; so to You is the praise and to You is the thanks.",
+      "virtueAr": "ورد أن من قالها حين يمسي فقد أدّى شكر ليلته.",
+      "virtueEn": "It is reported that whoever says it in the evening has given thanks for that night.",
+      "sourceRef": "Abu Dawud 5073",
+      "grade": "Disputed: graded hasan by Ibn Baz; graded da'if by al-Albani",
+      "reviewNote": "Grading differs between scholars; confirm the wording."
+    },
+    {
+      "id": "evening-afini-fi-badani",
+      "categoryId": "evening",
+      "copyOf": "morning-afini-fi-badani"
+    },
+    {
+      "id": "evening-hasbiyallah",
+      "categoryId": "evening",
+      "copyOf": "morning-hasbiyallah"
     },
     {
       "id": "evening-al-afiyah",
@@ -305,9 +467,27 @@
       "copyOf": "morning-bismillah-la-yadurr"
     },
     {
+      "id": "evening-raditu",
+      "categoryId": "evening",
+      "copyOf": "morning-raditu"
+    },
+    {
       "id": "evening-ya-hayyu-ya-qayyum",
       "categoryId": "evening",
       "copyOf": "morning-ya-hayyu-ya-qayyum"
+    },
+    {
+      "id": "evening-fathaha-wa-nasraha",
+      "categoryId": "evening",
+      "repeatCount": 1,
+      "textAr": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ رَبِّ الْعَالَمِينَ، اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ هَذِهِ اللَّيْلَةِ: فَتْحَهَا، وَنَصْرَهَا، وَنُورَهَا، وَبَرَكَتَهَا، وَهُدَاهَا، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِيهَا وَشَرِّ مَا بَعْدَهَا",
+      "transliteration": "Amsayna wa amsal-mulku lillahi rabbil-'alamin. Allahumma inni as'aluka khayra hadhihil-laylah: fathaha, wa nasraha, wa nuraha, wa barakataha, wa hudaha, wa a'udhu bika min sharri ma fiha wa sharri ma ba'daha.",
+      "meaningEn": "We have entered the evening and the dominion belongs to Allah, Lord of the worlds. O Allah, I ask You for the good of this night: its openings, its victory, its light, its blessing and its guidance; and I seek refuge in You from the evil in it and the evil after it.",
+      "virtueAr": "",
+      "virtueEn": "",
+      "sourceRef": "Abu Dawud 5084",
+      "grade": "Disputed: graded hasan by Ibn Baz and others; graded da'if by al-Albani",
+      "reviewNote": "Confirm wording and grading."
     },
     {
       "id": "evening-fitrat-al-islam",
@@ -320,6 +500,11 @@
       "virtueEn": "",
       "sourceRef": "Musnad Ahmad 15360",
       "grade": "Sahih (al-Albani, Sahih al-Jami' 4674)"
+    },
+    {
+      "id": "evening-subhanallahi-wa-bihamdih-100",
+      "categoryId": "evening",
+      "copyOf": "morning-subhanallahi-wa-bihamdih-100"
     },
     {
       "id": "evening-audhu-bikalimat",
@@ -335,9 +520,9 @@
       "reviewNote": "Muslim 2709 has no count; the three-times count is from at-Tirmidhi 3604 — confirm."
     },
     {
-      "id": "evening-subhanallahi-wa-bihamdih-100",
+      "id": "evening-salawat-10",
       "categoryId": "evening",
-      "copyOf": "morning-subhanallahi-wa-bihamdih-100"
+      "copyOf": "morning-salawat-10"
     },
     {
       "id": "sleep-bismika-amutu",

@@ -62,6 +62,17 @@ describe('BackupService', () => {
     original = await service.buildBackup();
   });
 
+  it('round trips hidden built-ins and accepts backups without hidden state', async () => {
+    await db.run('UPDATE athkar SET hidden = 1 WHERE id = ?', ['builtin']);
+    const backup = await service.buildBackup();
+    await db.run('UPDATE athkar SET hidden = 0');
+    await service.restore(backup);
+    expect(await db.query('SELECT hidden FROM athkar WHERE id = ?', ['builtin'])).toEqual([{ hidden: 1 }]);
+    delete backup.data.hiddenIds;
+    await service.restore(backup);
+    expect(await db.query('SELECT hidden FROM athkar WHERE id = ?', ['builtin'])).toEqual([{ hidden: 0 }]);
+  });
+
   it('round trips all user tables, settings and extra preferences', async () => {
     await db.batch([
       ...[

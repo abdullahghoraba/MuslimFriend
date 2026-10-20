@@ -117,8 +117,8 @@ export class CollectionEditorComponent implements OnInit {
           icon: this.icon(),
           showOnHome: this.showOnHome(),
         });
-      else await this.athkar.addCollection(this.name(), this.icon(), this.showOnHome());
-      await this.modalCtrl.dismiss(undefined, 'saved');
+      const saved = c ?? await this.athkar.addCollection(this.name(), this.icon(), this.showOnHome());
+      await this.modalCtrl.dismiss(saved, 'saved');
     } finally {
       this.busy.set(false);
     }

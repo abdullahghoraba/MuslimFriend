@@ -134,6 +134,39 @@ describe('AthkarRepository', () => {
     expect(repository.homeCategories().map((c) => c.id)).toEqual(['morning', c.id]);
   });
 
+  it('hides and restores list and overlay items, preserving hidden state on content update', async () => {
+    await repository.seed(dataset());
+    await repository.setHidden('first', true);
+    expect((await repository.byCategory('morning')).map(d => d.id)).toEqual(['second', 'third']);
+    expect((await repository.overlayPool()).some(d => d.id === 'first')).toBe(false);
+    expect((await repository.hiddenIn('morning')).map(d => d.id)).toEqual(['first']);
+    expect(await repository.byCategory('morning', true)).toHaveLength(3);
+    await repository.seed(dataset(2));
+    expect((await repository.byId('first'))?.hidden).toBe(true);
+    await repository.setHidden('first', false);
+    expect(await repository.hiddenIn('morning')).toEqual([]);
+    expect(await repository.byCategory('morning')).toHaveLength(3);
+    expect((await repository.overlayPool()).some(d => d.id === 'first')).toBe(true);
+  });
+
+  it('appends independent built-in and custom copies to target lists with exact text', async () => {
+    const content = dataset();
+    content.items[0].isQuran = true;
+    content.items[0].textAr = '  بِسْمِ  ٱللَّهِ\nالرَّحْمَٰنِ  ';
+    await repository.seed(content);
+    const target = await repository.addCollection('الرقية الشرعية', 'book-outline');
+    const existing = await repository.addCustom(customInput, target.id);
+    const copy = await repository.saveCopy('first', target.id);
+    expect(copy).toMatchObject({ textAr: content.items[0].textAr, meaningEn: content.items[0].meaningEn,
+      repeatCount: content.items[0].repeatCount, isCustom: true, includeInOverlay: true, hidden: false });
+    expect((await repository.byCategory(target.id)).map(d => d.id)).toEqual([existing.id, copy.id]);
+    const customCopy = await repository.saveCopy(existing.id, CUSTOM_CATEGORY_ID);
+    await repository.updateCustom(customCopy.id, { ...customInput, textAr: 'معدل' });
+    expect((await repository.byId(existing.id))?.textAr).toBe(customInput.textAr.trim());
+    await repository.deleteCustom(copy.id);
+    expect(await repository.byId('first')).toBeDefined();
+  });
+
   it('seeds every item and does no writes for the same content version', async () => {
     const content = dataset();
     await repository.seed(content);

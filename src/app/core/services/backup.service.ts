@@ -20,6 +20,7 @@ export interface BackupFile {
     homeHidden?: Row[];
     customAthkar: Row[];
     userOrder: Row[];
+    hiddenIds?: Row[];
     dhikrDaily: Row[];
     categoryDaily: Row[];
     tasbihCounters: Row[];
@@ -56,6 +57,7 @@ const schemas: Record<keyof BackupFile['data'], Record<string, Check>> = {
     created_at: nonnegative,
   },
   homeHidden: { category_id: id },
+  hiddenIds: { id },
   customAthkar: {
     id,
     category_id: id,
@@ -125,6 +127,7 @@ const schemas: Record<keyof BackupFile['data'], Record<string, Check>> = {
 const optionalTables = [
   'userCategories',
   'homeHidden',
+  'hiddenIds',
   'quranBookmarks',
   'quranMarks',
   'khatmah',
@@ -201,8 +204,9 @@ export class BackupService {
         ),
         homeHidden: await this.db.query<Row>('SELECT * FROM home_hidden ORDER BY category_id'),
         customAthkar: await this.db.query<Row>(
-          'SELECT * FROM athkar WHERE is_custom = 1 ORDER BY id',
+          'SELECT id, category_id, text_ar, transliteration, meaning_en, repeat_count, virtue_ar, virtue_en, source_ref, grade, reviewed, is_quran, quran_ref, is_custom, include_in_overlay, sort_order, created_at FROM athkar WHERE is_custom = 1 ORDER BY id',
         ),
+        hiddenIds: await this.db.query<Row>('SELECT id FROM athkar WHERE hidden = 1 AND is_custom = 0 ORDER BY id'),
         userOrder: await this.db.query<Row>(
           'SELECT id, sort_order, include_in_overlay FROM athkar WHERE is_custom = 0 ORDER BY id',
         ),
@@ -230,6 +234,7 @@ export class BackupService {
     validate(json);
     const statements: { sql: string; params?: unknown[] }[] = [
       { sql: 'DELETE FROM athkar WHERE is_custom = 1' },
+      { sql: 'UPDATE athkar SET hidden = 0 WHERE is_custom = 0' },
       ...[
         'user_category',
         'home_hidden',
@@ -276,6 +281,8 @@ export class BackupService {
         sql: 'UPDATE athkar SET sort_order = ?, include_in_overlay = ? WHERE id = ? AND is_custom = 0',
         params: [row['sort_order'], row['include_in_overlay'], row['id']],
       });
+    for (const row of json.data.hiddenIds ?? [])
+      statements.push({ sql: 'UPDATE athkar SET hidden = 1 WHERE id = ? AND is_custom = 0', params: [row['id']] });
     await this.db.batch(statements);
     await this.athkar.refreshCategories();
     // Preferences are separate storage and cannot participate in the SQLite transaction.

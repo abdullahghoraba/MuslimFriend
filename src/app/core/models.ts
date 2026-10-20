@@ -39,6 +39,7 @@ export interface ContentDataset {
 
 /** A dhikr as stored in SQLite: built-in content plus user state, or a custom dhikr. */
 export interface Dhikr extends DhikrContent {
+  hidden: boolean;
   isCustom: boolean;
   includeInOverlay: boolean;
   sortOrder: number;

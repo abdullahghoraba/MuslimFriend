@@ -27,6 +27,7 @@ interface AthkarRow {
   reviewed: number;
   is_quran: number;
   quran_ref: string | null;
+  hidden: number;
   is_custom: number;
   include_in_overlay: number;
   sort_order: number;
@@ -47,6 +48,7 @@ export function rowToDhikr(r: AthkarRow): Dhikr {
     reviewed: !!r.reviewed,
     isQuran: !!r.is_quran,
     quranRef: r.quran_ref ?? undefined,
+    hidden: !!r.hidden,
     isCustom: !!r.is_custom,
     includeInOverlay: !!r.include_in_overlay,
     sortOrder: Number(r.sort_order),
@@ -151,7 +153,7 @@ export class AthkarRepository {
   private async placeNewItems(dataset: ContentDataset, added: Set<string>): Promise<void> {
     for (const categoryId of new Set(dataset.items.filter((i) => added.has(i.id)).map((i) => i.categoryId))) {
       const bundled = dataset.items.filter((i) => i.categoryId === categoryId).map((i) => i.id);
-      const ordered = (await this.byCategory(categoryId)).map((d) => d.id).filter((id) => !added.has(id));
+      const ordered = (await this.byCategory(categoryId, true)).map((d) => d.id).filter((id) => !added.has(id));
       for (const id of bundled.filter((x) => added.has(x))) {
         const prev = bundled[bundled.indexOf(id) - 1];
         const at = prev ? ordered.indexOf(prev) + 1 : 0;
@@ -227,7 +229,7 @@ export class AthkarRepository {
 
   async deleteCollection(id: string, mode: 'move' | 'delete'): Promise<void> {
     if (!(await this.db.query('SELECT id FROM user_category WHERE id = ?', [id])).length) return;
-    const items = await this.byCategory(id);
+    const items = await this.byCategory(id, true);
     const statements: { sql: string; params?: unknown[] }[] = [];
     let order = await this.nextSortOrder(CUSTOM_CATEGORY_ID);
     for (const item of items) {
@@ -282,12 +284,33 @@ export class AthkarRepository {
     return this.categoriesState().find((c) => c.id === id);
   }
 
-  async byCategory(categoryId: string): Promise<Dhikr[]> {
+  async byCategory(categoryId: string, includeHidden = false): Promise<Dhikr[]> {
     const rows = await this.db.query<AthkarRow>(
-      'SELECT * FROM athkar WHERE category_id = ? ORDER BY sort_order, created_at',
+      `SELECT * FROM athkar WHERE category_id = ? ${includeHidden ? '' : 'AND hidden = 0'} ORDER BY sort_order, created_at`,
       [categoryId],
     );
     return rows.map(rowToDhikr);
+  }
+
+  async setHidden(id: string, hidden: boolean): Promise<void> {
+    await this.db.run('UPDATE athkar SET hidden = ? WHERE id = ?', [hidden ? 1 : 0, id]);
+  }
+
+  async hiddenIn(categoryId: string): Promise<Dhikr[]> {
+    return (await this.byCategory(categoryId, true)).filter((d) => d.hidden);
+  }
+
+  async saveCopy(id: string, targetCategoryId: string): Promise<Dhikr> {
+    const source = await this.byId(id);
+    if (!source) throw new Error('Dhikr not found');
+    const copy = await this.addCustom({
+      textAr: source.textAr, meaningEn: source.meaningEn,
+      repeatCount: source.repeatCount, includeInOverlay: true,
+    }, targetCategoryId);
+    // Preserve the original Unicode and whitespace, including Quran text, exactly.
+    await this.db.run('UPDATE athkar SET text_ar = ?, meaning_en = ? WHERE id = ?',
+      [source.textAr, source.meaningEn, copy.id]);
+    return (await this.byId(copy.id))!;
   }
 
   async byId(id: string): Promise<Dhikr | undefined> {
@@ -297,7 +320,7 @@ export class AthkarRepository {
 
   async overlayPool(): Promise<Dhikr[]> {
     const rows = await this.db.query<AthkarRow>(
-      'SELECT * FROM athkar WHERE include_in_overlay = 1 ORDER BY category_id, sort_order',
+      'SELECT * FROM athkar WHERE include_in_overlay = 1 AND hidden = 0 ORDER BY category_id, sort_order',
     );
     return rows.map(rowToDhikr);
   }
