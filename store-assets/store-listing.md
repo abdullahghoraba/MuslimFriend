@@ -1,4 +1,4 @@
-# Google Play store listing — Muslim Athkar / أذكار المسلم
+# Google Play store listing — Muslim Friend / رفيق المسلم
 
 Character limits are checked by `node scripts/check-listing.mjs` (title ≤ 30, short description ≤ 80).
 
@@ -7,35 +7,33 @@ Character limits are checked by `node scripts/check-listing.mjs` (title ≤ 30, 
 ## Arabic (ar) — default listing
 
 **App name (title)**
-أذكار المسلم
+رفيق المسلم: قرآن وأذكار
 
 **Short description**
-أذكار الصباح والمساء بمصادرها، تذكيرات مع مواقيت الصلاة، بلا إعلانات ودون إنترنت
+المصحف بالتفسير والتلاوات، أذكار بمصادرها، تذكيرات مع مواقيت الصلاة، بلا إعلانات
 
 **Full description**
 
-أذكار المسلم تطبيق هادئ يعينك على ذكر الله طوال يومك، بلا إعلانات ولا تتبّع، ويعمل كاملًا دون إنترنت.
+رفيق المسلم يرافقك طوال يومك: المصحف الشريف بالتفسير والتلاوات، وأذكار الصباح والمساء بمصادرها، وتذكيرات مرتبطة بمواقيت الصلاة، بلا إعلانات ولا تتبّع.
 
-لماذا أذكار المسلم؟
-• بلا إعلانات إطلاقًا، ولا يجمع أي بيانات. التطبيق لا يملك إذن الإنترنت أصلًا.
-• كل ذكر معروض مع مصدره ودرجته، مثل: صحيح مسلم 2723.
-• نص القرآن الكريم من مشروع تنزيل الموثّق، بالرسم العثماني ودون أي تعديل.
-• تذكيرات مرتبطة بمواقيت الصلاة: أذكار الصباح بعد الفجر، وأذكار المساء بعد العصر أو قبل المغرب.
-• عربي وإنجليزي مع النطق بالحروف اللاتينية والمعنى.
+القرآن الكريم
+• مصحف بتقسيم صفحات مصحف المدينة (٦٠٤ صفحات) والأجزاء والأحزاب، بنص تنزيل الموثّق بالرسم العثماني.
+• التفسير الميسر وتفسير الجلالين، والترجمة الإنجليزية (صحيح إنترناشونال)، لكل آية.
+• الاستماع لأكثر من ١٤ قارئًا آية بآية مع تظليل الآية، وتكرار الآية أو المقطع للحفظ، والتحكم في السرعة، وتنزيل السور للاستماع دون إنترنت.
+• علامات ملونة متعددة لمواضع القراءة، وتمييز الآيات بنجمة، وتظليلها بالألوان مع تصنيفها حسب الموضوع، وكتابة تدبّراتك.
+• الختمة: خطة بعدد الأيام الذي تختاره، وورد يومي محسوب تلقائيًا، وتذكير يومي بالورد.
+• بحث سريع في القرآن دون الحاجة للتشكيل، وآية اليوم، واتجاه القبلة، والتاريخ الهجري.
 
-المزايا
-• أذكار الصباح والمساء في صفحة واحدة، مع عدّاد لكل ذكر: اضغط على البطاقة للعدّ، مع اهتزاز خفيف وانتقال تلقائي للذكر التالي.
-• أذكار النوم، والاستيقاظ، ودخول المسجد والخروج منه، وأذكار بعد الصلاة، والتسبيح، والاستغفار، وأدعية مختارة، وأدعية الكرب، والسفر، والطعام.
-• الأذكار فوق التطبيقات: بطاقة ذكر قصيرة تظهر فوق تطبيقاتك كل فترة تختارها أو عند فتح القفل، مع زر «+١» للعدّ، وساعات هدوء، وإيقاف مؤقت.
-• السبحة: أهداف 33 و100 أو هدف مخصص، وعدادات متعددة بأسماء، ومجموع يومي، واهتزاز عند الإكمال، وإبقاء الشاشة مضاءة.
-• أذكاري: أضف أذكارك الخاصة بعدد التكرار، وأعِد ترتيب أي قائمة بالسحب والإفلات.
-• مواقيت الصلاة تُحسب على جهازك: طرق حساب متعددة (الهيئة المصرية، أم القرى، رابطة العالم الإسلامي وغيرها)، ومذهب العصر، وتعديل الدقائق.
-• تذكيرات الجمعة: سورة الكهف والصلاة على النبي ﷺ.
-• إحصاءات على جهازك فقط: عدد يومي وأسبوعي، وسلسلة أيام إتمام أذكار الصباح والمساء.
-• حجم خط قابل للتعديل، والوضع الداكن، ومشاركة الذكر كصورة، ونسخة احتياطية في ملف.
+الأذكار
+• أذكار الصباح والمساء وكل قسم في صفحة واحدة مع عدّاد لكل ذكر، وانتقال تلقائي للذكر التالي.
+• كل ذكر مع مصدره ودرجته، مثل: صحيح مسلم 2723.
+• أضف أذكارك داخل أي قائمة، وأنشئ مجموعاتك الخاصة (مثل الرقية الشرعية)، وأعد ترتيب أي قائمة.
+• الأذكار فوق التطبيقات: بطاقة ذكر قصيرة تظهر كل فترة تختارها أو عند فتح القفل.
+• عدّاد تسبيح عائم فوق أي تطبيق: سبّح وأنت تتصفح.
+• السبحة بأهداف وعدادات متعددة، وإحصاءات وسلاسل أيام على جهازك فقط.
 
 الخصوصية أولًا
-لا حسابات، ولا إعلانات، ولا تحليلات، ولا اتصال بالإنترنت. كل بياناتك تبقى على جهازك.
+لا حسابات ولا إعلانات ولا تحليلات. كل شيء يعمل دون إنترنت ما عدا الاستماع للتلاوة عند طلبك.
 
 نسأل الله أن يجعله خالصًا لوجهه الكريم، وأن ينفع به.
 
@@ -44,53 +42,52 @@ Character limits are checked by `node scripts/check-listing.mjs` (title ≤ 30, 
 ## English (en-US)
 
 **App name (title)**
-Muslim Athkar
+Muslim Friend: Quran & Athkar
 
 **Short description**
-Sourced morning & evening athkar, prayer-time reminders. No ads, fully offline.
+Quran with tafsir & recitations, sourced athkar, prayer-time reminders. No ads.
 
 **Full description**
 
-Muslim Athkar helps you remember Allah throughout the day. It has no ads, no tracking, and works completely offline.
+Muslim Friend keeps you company all day: the Holy Quran with tafsir and recitations, sourced morning and evening athkar, and reminders tied to prayer times. No ads, no tracking.
 
-Why Muslim Athkar?
-• No ads, ever, and no data collection. The app does not even have internet permission.
+The Holy Quran
+• Mushaf with the Madinah page layout (604 pages), juz and hizb, using the verified Tanzil Uthmani text.
+• Tafsir al-Muyassar, Tafsir al-Jalalayn and the Saheeh International English translation for every ayah.
+• 14+ reciters, verse by verse with highlighting; repeat an ayah or a range for memorisation, speed control, and sura downloads for offline listening.
+• Multiple coloured bookmarks, starred ayat, colour highlights grouped by topic, and personal notes.
+• Khatmah plans with an automatic daily wird and a daily reminder.
+• Fast search without diacritics, verse of the day, Qibla direction and Hijri date.
+
+Athkar
+• Morning, evening and every category on one page with a counter on each dhikr.
 • Every dhikr shows its source and grade, e.g. Sahih Muslim 2723.
-• Quran text from the verified Tanzil project, Uthmani script, unaltered.
-• Reminders tied to prayer times: morning athkar after Fajr, evening athkar after Asr or before Maghrib.
-• Arabic and English, with transliteration and meaning.
-
-Features
-• Morning and evening athkar on one page, with a counter on every dhikr: tap the card to count, gentle haptics, and auto-scroll to the next one.
-• Before sleep, waking up, entering and leaving the mosque, after prayer, tasbih, istighfar, selected du'a, distress, travel and eating.
-• Athkar over other apps: a short dhikr card appears over your apps at the interval you choose or when you unlock, with a "+1" counter, quiet hours and pause.
-• Tasbih: 33, 100 or custom targets, multiple named counters, daily totals, vibration on completion, keeps the screen awake.
-• My Athkar: add your own athkar with a repeat count, and reorder any list by drag and drop.
-• Prayer times calculated on your device: Egyptian, Umm al-Qura, Muslim World League and more, Asr madhab, and minute adjustments.
-• Friday reminders: Surat Al-Kahf and salawat upon the Prophet ﷺ.
-• Local-only statistics: daily and weekly counts, morning and evening streaks.
-• Adjustable text size, dark mode, share a dhikr as an image, and a backup file.
+• Add your own dhikr to any list, create your own collections (e.g. Ruqyah), and reorder anything.
+• Athkar over other apps at the interval you choose or on unlock.
+• A floating tasbih counter over any app.
+• Tasbih with targets and multiple counters; local-only stats and streaks.
 
 Privacy first
-No accounts, no ads, no analytics, no internet connection. Your data stays on your phone.
+No accounts, no ads, no analytics. Everything works offline except recitation audio you choose to play.
 
 ---
 
-## Feature list (for "What's new" / promo)
+## Feature list (for promo)
 
 | Arabic | English |
 | --- | --- |
-| بلا إعلانات ولا تتبّع | No ads, no tracking |
-| يعمل دون إنترنت | Works fully offline |
-| مصدر لكل ذكر | A source for every dhikr |
+| المصحف بالتفسير | Quran with tafsir |
+| أكثر من ١٤ قارئًا مع تنزيل السور | 14+ reciters with downloads |
+| علامات ملونة وتظليل وتدبّرات | Coloured bookmarks, highlights, notes |
+| ختمة بورد يومي | Khatmah with daily wird |
+| أذكار بمصادرها | Sourced athkar |
 | تذكيرات مع مواقيت الصلاة | Prayer-time reminders |
-| الأذكار فوق التطبيقات | Athkar over other apps |
-| قوائم قابلة لإعادة الترتيب | Reorderable lists |
-| عربي وإنجليزي | Arabic and English |
+| عدّاد تسبيح عائم | Floating tasbih counter |
+| بلا إعلانات ولا تتبّع | No ads, no tracking |
 
 **Release notes 1.0.0**
-- ar: الإصدار الأول من أذكار المسلم. نسأل الله القبول.
-- en: First release of Muslim Athkar.
+- ar: الإصدار الأول من رفيق المسلم. نسأل الله القبول.
+- en: First release of Muslim Friend.
 
 ---
 
@@ -102,17 +99,13 @@ No accounts, no ads, no analytics, no internet connection. Your data stays on yo
 | Feature graphic | `store-assets/feature-graphic-1024x500.png` | 1024×500 PNG |
 | Icon source | `store-assets/icon.svg` (generated by `scripts/make-icon.mjs`) | vector |
 
-## Screenshot plan (phone, 1080×2400 portrait, Arabic first, then the same set in English)
+## Screenshot plan (phone, 1080×2400 portrait, Arabic first, then English)
 
-Capture on an Android 14–16 emulator or device with real content, dark and light mixed. Add a one-line caption band at the top of each in the listing language.
-
-1. **Home** — next-prayer card, morning/evening progress, categories. Caption: «ذكرك اليومي في مكان واحد» / "Your daily remembrance in one place".
-2. **Morning athkar page** — several cards with counters, one completed (✓). Caption: «كل الأذكار في صفحة واحدة مع العدّاد» / "Every dhikr on one page, with a counter".
-3. **Source panel open** on a hadith card (source + grade + virtue). Caption: «مصدر لكل ذكر» / "A source for every dhikr".
-4. **Overlay** over the home screen or another app (top position). Caption: «ذكرٌ يذكّرك فوق تطبيقاتك» / "A gentle reminder over your apps".
-5. **Overlay settings** — frequency, quiet hours. Caption: «أنت تتحكم في التوقيت» / "You control the timing".
-6. **Prayer times & reminders** page. Caption: «تذكيرات مع مواقيت الصلاة» / "Reminders tied to prayer times".
-7. **Tasbih** with the progress ring. Caption: «سبحة بعدادات متعددة» / "Tasbih with multiple counters".
-8. **Statistics** — streaks and 7-day chart. Caption: «تقدّمك يبقى على جهازك» / "Your progress stays on your device".
-
-Optional 7" and 10" tablet screenshots: Home and Morning athkar in landscape.
+1. **Mushaf page** with a highlighted ayah and the recitation bar — «المصحف بالتفسير والتلاوات» / "Quran with tafsir and recitations".
+2. **Tafsir sheet** (Muyassar) — «تفسير كل آية» / "Tafsir for every ayah".
+3. **Khatmah** with today's wird — «ختمتك بورد يومي» / "Your khatmah, one wird a day".
+4. **Home** — next prayer, verse of the day, morning/evening progress — «يومك مع ذكر الله» / "Your day with the remembrance of Allah".
+5. **Morning athkar page** with counters — «كل الأذكار في صفحة واحدة» / "Every dhikr on one page".
+6. **Floating tasbih counter** over another app — «سبّح وأنت تتصفح» / "Tasbih over any app".
+7. **Marks** (coloured bookmarks and highlights) — «علاماتك وتدبّراتك» / "Your bookmarks and reflections".
+8. **Prayer times & Qibla** — «المواقيت والقبلة» / "Prayer times and Qibla".

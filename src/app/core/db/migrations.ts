@@ -63,4 +63,10 @@ export const MIGRATIONS: Migration[] = [
       );`,
     ],
   },
+  { version: 2, statements: [
+    `CREATE TABLE IF NOT EXISTS quran_bookmark (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, color TEXT, sura INTEGER, aya INTEGER, page INTEGER, updated_at INTEGER);`,
+    `CREATE TABLE IF NOT EXISTS quran_mark (sura INTEGER, aya INTEGER, kind TEXT CHECK(kind IN ('star','highlight','note')), color TEXT, tag TEXT, note TEXT, created_at INTEGER, PRIMARY KEY (sura, aya, kind));`,
+    `CREATE TABLE IF NOT EXISTS khatmah (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, start_page INTEGER, target_days INTEGER, started_on TEXT, current_page INTEGER, completed_at INTEGER NULL, created_at INTEGER);`,
+    `CREATE TABLE IF NOT EXISTS quran_reading_log (date TEXT, page INTEGER, PRIMARY KEY(date, page));`,
+  ] },
 ];

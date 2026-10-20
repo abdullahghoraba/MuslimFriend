@@ -169,6 +169,21 @@
     }
   </ion-list>
 
+  <ion-list inset>
+    <ion-list-header>{{ 'reminders.quran' | translate }}</ion-list-header>
+    <ion-item>
+      <ion-toggle [checked]="reminders().wird.enabled" (ionChange)="patch('wird', { enabled: $event.detail.checked })">
+        {{ 'reminders.wird' | translate }}
+      </ion-toggle>
+    </ion-item>
+    @if (reminders().wird.enabled) {
+      <ion-item>
+        <ion-input type="time" [label]="'reminders.at' | translate" [value]="reminders().wird.time"
+                   (ionChange)="patch('wird', { time: '' + $event.detail.value })" />
+      </ion-item>
+    }
+  </ion-list>
+
   @if (!prayer().location) {
     <p class="note">{{ 'reminders.needLocation' | translate }}</p>
   }

@@ -1,4 +1,4 @@
-package com.muslimathkar.app.overlay
+package com.muslimfriend.app.overlay
 
 import android.app.KeyguardManager
 import android.app.Notification
@@ -15,8 +15,8 @@ import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
-import com.muslimathkar.app.MainActivity
-import com.muslimathkar.app.R
+import com.muslimfriend.app.MainActivity
+import com.muslimfriend.app.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -235,13 +235,13 @@ class OverlayService : Service() {
 
     companion object {
         const val NOTIFICATION_ID = 1001
-        const val ACTION_STOP = "com.muslimathkar.app.overlay.STOP"
-        const val ACTION_PAUSE_HOUR = "com.muslimathkar.app.overlay.PAUSE_HOUR"
-        const val ACTION_RESUME = "com.muslimathkar.app.overlay.RESUME"
-        const val ACTION_SHOW_NOW = "com.muslimathkar.app.overlay.SHOW_NOW"
-        const val ACTION_CONFIG_CHANGED = "com.muslimathkar.app.overlay.CONFIG_CHANGED"
-        const val ACTION_BUBBLE_CHANGED = "com.muslimathkar.app.overlay.BUBBLE_CHANGED"
-        const val ACTION_APP_VISIBILITY = "com.muslimathkar.app.overlay.APP_VISIBILITY"
+        const val ACTION_STOP = "com.muslimfriend.app.overlay.STOP"
+        const val ACTION_PAUSE_HOUR = "com.muslimfriend.app.overlay.PAUSE_HOUR"
+        const val ACTION_RESUME = "com.muslimfriend.app.overlay.RESUME"
+        const val ACTION_SHOW_NOW = "com.muslimfriend.app.overlay.SHOW_NOW"
+        const val ACTION_CONFIG_CHANGED = "com.muslimfriend.app.overlay.CONFIG_CHANGED"
+        const val ACTION_BUBBLE_CHANGED = "com.muslimfriend.app.overlay.BUBBLE_CHANGED"
+        const val ACTION_APP_VISIBILITY = "com.muslimfriend.app.overlay.APP_VISIBILITY"
         private const val TICK_MS = 30_000L
 
         @Volatile

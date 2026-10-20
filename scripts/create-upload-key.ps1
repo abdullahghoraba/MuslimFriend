@@ -30,7 +30,7 @@ if ($plain -ne $plain2) { Write-Host 'Passwords do not match.' -ForegroundColor 
 if ($plain.Length -lt 8) { Write-Host 'Password too short.' -ForegroundColor Red; exit 1 }
 
 $name = Read-Host 'Your name or organisation (shown in the certificate)'
-if (-not $name) { $name = 'Muslim Athkar' }
+if (-not $name) { $name = 'Muslim Friend' }
 
 & $keytool -genkeypair -v `
     -keystore $keystore -storetype JKS `

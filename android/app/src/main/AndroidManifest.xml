@@ -44,7 +44,7 @@
             android:foregroundServiceType="specialUse">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="User-enabled reminder overlay: while the user has turned it on, the app periodically (at a user-chosen interval, or on unlock) shows a short card with an Islamic remembrance (dhikr) over other apps for a few seconds. The service only listens for screen on/off/unlock and runs a timer; it does no networking and collects no data. The user can pause or stop it from the persistent notification." />
+                android:value="User-enabled overlays over other apps: (1) a reminder card that periodically (at a user-chosen interval, or on unlock) shows a short Islamic remembrance (dhikr) for a few seconds, and (2) a small floating tasbih counter the user taps to count while using other apps. The service only listens for screen on/off/unlock, runs a timer and hosts these windows; it does no networking and collects no data. The user can pause or stop it from the persistent notification." />
         </service>
 
         <receiver
@@ -72,8 +72,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-feature android:name="android.hardware.location" android:required="false" />
 
-    <!-- Fully offline: the WebView is served from local assets, so no network access is declared. -->
-    <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
+    <!-- Used only to stream or download Quran recitation audio when the user asks for it.
+         Everything else works offline, and no user data is ever sent. -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- Added by the SQLite plugin for its optional biometric DB lock, which this app does not use. -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" tools:node="remove" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" tools:node="remove" />

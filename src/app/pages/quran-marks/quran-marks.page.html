@@ -1,0 +1,120 @@
+<ion-header
+  ><ion-toolbar
+    ><ion-buttons slot="start"
+      ><ion-back-button
+        defaultHref="/quran"
+        [text]="''"
+        [attr.aria-label]="'marks.back' | translate" /></ion-buttons
+    ><ion-title>{{ 'marks.title' | translate }}</ion-title></ion-toolbar
+  ></ion-header
+>
+<ion-content>
+  @if (error()) {
+    <p role="alert">{{ error() | translate }}</p>
+  }
+  <ion-segment
+    [scrollable]="true"
+    [value]="segment()"
+    (ionChange)="segment.set($event.detail.value?.toString() || 'bookmarks')"
+  >
+    @for (s of segments; track s) {
+      <ion-segment-button [value]="s"
+        ><ion-label>{{ 'marks.' + s | translate }}</ion-label></ion-segment-button
+      >
+    }
+  </ion-segment>
+  @if (ready()) {
+    @if (segment() === 'highlights') {
+      <div class="filters" role="group" [attr.aria-label]="'marks.colour' | translate">
+        <button type="button" [attr.aria-pressed]="!color()" (click)="color.set(null)">
+          {{ 'marks.all' | translate }}
+        </button>
+        @for (c of colors; track c.id) {
+          <button
+            type="button"
+            [style.border-color]="c.hex"
+            [attr.aria-pressed]="color() === c.id"
+            (click)="color.set(c.id)"
+          >
+            <span class="dot" [style.background]="c.hex"></span>{{ 'marks.' + c.id | translate }}
+          </button>
+        }
+      </div>
+      <div class="filters" role="group" [attr.aria-label]="'marks.tags' | translate">
+        <button type="button" [attr.aria-pressed]="!tag()" (click)="tag.set(null)">
+          {{ 'marks.allTags' | translate }}
+        </button>
+        @for (t of service.tags(); track t) {
+          <button type="button" dir="auto" [attr.aria-pressed]="tag() === t" (click)="tag.set(t)">
+            {{ t }}
+          </button>
+        }
+      </div>
+    }
+    <div class="cards">
+      @if (segment() === 'bookmarks') {
+        @for (b of service.bookmarks(); track b.id) {
+          <article class="card">
+            <button type="button" class="open" (click)="open(b, b.page)">
+              <ion-icon name="bookmark" [style.color]="hex(b.color)" aria-hidden="true" /><span
+                ><strong dir="auto">{{ b.name }}</strong
+                ><small
+                  >{{ sura(b) }} · {{ 'marks.ayah' | translate }} {{ b.aya }} ·
+                  {{ 'marks.page' | translate }} {{ b.page }}</small
+                ></span
+              >
+            </button>
+            <div class="actions">
+              <ion-button
+                fill="clear"
+                (click)="edit(b)"
+                [attr.aria-label]="'marks.edit' | translate"
+                ><ion-icon name="pencil-outline" slot="icon-only" aria-hidden="true" /></ion-button
+              ><ion-button
+                fill="clear"
+                (click)="removeBookmark(b)"
+                [attr.aria-label]="'marks.delete' | translate"
+                ><ion-icon name="trash-outline" slot="icon-only" aria-hidden="true"
+              /></ion-button>
+            </div>
+          </article>
+        } @empty {
+          <div class="empty">
+            <p>{{ 'marks.empty' | translate }}</p>
+            <p>{{ 'marks.hint' | translate }}</p>
+          </div>
+        }
+      } @else {
+        @for (m of visible(); track m.sura + ':' + m.aya + ':' + m.kind) {
+          <article class="card" [style.border-inline-start-color]="hex(m.color)">
+            <button type="button" class="open ayah-open" (click)="open(m)">
+              <span
+                ><span class="ayah" lang="ar" dir="rtl">{{ quran.ayah(m).text }}</span
+                ><small>{{ sura(m) }} · {{ 'marks.ayah' | translate }} {{ m.aya }}</small></span
+              >
+            </button>
+            @if (m.tag) {
+              <p class="tag" dir="auto">
+                <ion-icon name="pricetag-outline" aria-hidden="true" /> {{ m.tag }}
+              </p>
+            }
+            @if (m.note) {
+              <p class="note" dir="auto">{{ m.note }}</p>
+            }
+            <ion-button
+              fill="clear"
+              (click)="removeMark(m)"
+              [attr.aria-label]="'marks.delete' | translate"
+              ><ion-icon name="trash-outline" slot="icon-only" aria-hidden="true"
+            /></ion-button>
+          </article>
+        } @empty {
+          <div class="empty">
+            <p>{{ 'marks.empty' | translate }}</p>
+            <p>{{ 'marks.hint' | translate }}</p>
+          </div>
+        }
+      }
+    </div>
+  }
+</ion-content>

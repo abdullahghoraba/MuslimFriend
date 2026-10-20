@@ -63,6 +63,7 @@ export class PrayerService {
       sleepTitle: t('sleepTitle'), sleepBody: t('sleepBody'),
       kahfTitle: t('kahfTitle'), kahfBody: t('kahfBody'),
       salawatTitle: t('salawatTitle'), salawatBody: t('salawatBody'),
+      wirdTitle: t('wirdTitle'), wirdBody: t('wirdBody'),
     }, new Date(), PLAN_DAYS);
     if (!list.length) {
       await AthkarOverlay.cancelReminders();

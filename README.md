@@ -1,4 +1,4 @@
-# Muslim Athkar · أذكار المسلم
+# Muslim Friend · رفيق المسلم
 
 An ad-free, tracking-free, fully offline athkar app for Android, built with Ionic + Angular + Capacitor
 and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
@@ -107,7 +107,7 @@ src/app/core/prayer/        adhan wrapper, next prayer, 30-day reminder planner 
 src/app/native/             TypeScript API of the AthkarOverlay plugin (+ browser stand-in)
 src/app/pages/              home, category (all athkar on one page with counters), tasbih, my-athkar,
                             overlay, reminders, stats, onboarding, settings, privacy
-android/app/src/main/java/com/muslimathkar/app/overlay/
+android/app/src/main/java/com/muslimfriend/app/overlay/
   AthkarOverlayPlugin.kt    Capacitor bridge (permissions, start/stop, pool, counters, reminders, location)
   OverlayService.kt         foreground service (specialUse): screen on/off/unlock receiver + coroutine timer
   OverlayWindow.kt          TYPE_APPLICATION_OVERLAY card (not focusable, not touch-modal), Amiri font, RTL

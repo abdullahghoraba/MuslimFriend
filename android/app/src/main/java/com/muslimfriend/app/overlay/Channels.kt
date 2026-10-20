@@ -1,9 +1,9 @@
-package com.muslimathkar.app.overlay
+package com.muslimfriend.app.overlay
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import com.muslimathkar.app.R
+import com.muslimfriend.app.R
 
 /** Notification channels. Users can tune each one separately in system settings. */
 object Channels {
@@ -12,6 +12,7 @@ object Channels {
     const val SLEEP = "sleep"
     const val FRIDAY = "friday"
     const val PERIODIC = "periodic_athkar"
+    const val QURAN = "quran_wird"
 
     fun ensure(context: Context) {
         val nm = context.getSystemService(NotificationManager::class.java)
@@ -23,6 +24,7 @@ object Channels {
             NotificationChannel(MORNING_EVENING, context.getString(R.string.channel_morning_evening), NotificationManager.IMPORTANCE_DEFAULT),
             NotificationChannel(SLEEP, context.getString(R.string.channel_sleep), NotificationManager.IMPORTANCE_DEFAULT),
             NotificationChannel(FRIDAY, context.getString(R.string.channel_friday), NotificationManager.IMPORTANCE_DEFAULT),
+            NotificationChannel(QURAN, context.getString(R.string.channel_quran), NotificationManager.IMPORTANCE_DEFAULT),
             NotificationChannel(PERIODIC, context.getString(R.string.channel_periodic), NotificationManager.IMPORTANCE_LOW).apply {
                 description = context.getString(R.string.channel_periodic_desc)
             },
@@ -35,6 +37,7 @@ object Channels {
         "morning", "evening" -> MORNING_EVENING
         "sleep" -> SLEEP
         "friday-kahf", "friday-salawat" -> FRIDAY
+        "wird" -> QURAN
         else -> PERIODIC
     }
 }

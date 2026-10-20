@@ -2,8 +2,8 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   // Permanent once published on Google Play — change it before the first upload if needed.
-  appId: 'com.muslimathkar.app',
-  appName: 'Muslim Athkar',
+  appId: 'com.muslimfriend.app',
+  appName: 'Muslim Friend',
   webDir: 'dist/muslim-athkar/browser',
   android: {
     // No remote content is ever loaded. WebView debugging stays at Capacitor's default (debug builds only).

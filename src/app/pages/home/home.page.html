@@ -5,6 +5,7 @@
 </ion-header>
 
 <ion-content>
+  <app-hijri-date />
   <a class="prayer-card ion-activatable" routerLink="/reminders">
     @if (next(); as n) {
       <span class="prayer-label">{{ 'prayer.next' | translate }}</span>
@@ -41,6 +42,8 @@
       </button>
     }
   </div>
+
+  <app-verse-of-day />
 
   <ion-list lines="none" class="shortcuts" inset>
     @if (position(); as p) {

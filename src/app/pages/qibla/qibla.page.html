@@ -1,0 +1,27 @@
+<ion-header><ion-toolbar><ion-buttons slot="start"><ion-back-button defaultHref="/quran" /></ion-buttons><ion-title>{{ 'qibla.title' | translate }}</ion-title></ion-toolbar></ion-header>
+<ion-content [attr.dir]="lang() === 'ar' ? 'rtl' : 'ltr'">
+  <main>
+    @if (failed()) { <p role="alert">{{ 'qibla.loadFailed' | translate }}</p> }
+    @if (!location()) { <section class="empty"><h2>{{ 'qibla.locationTitle' | translate }}</h2><p>{{ 'qibla.locationHint' | translate }}</p><ion-button routerLink="/reminders">{{ 'qibla.setCity' | translate }}</ion-button></section> }
+    @else {
+      <h1>{{ number(bearing()) }}°</h1><p>{{ 'qibla.distance' | translate: {km:number(distance())} }}</p>
+      <div class="compass" [class.facing]="facing()" role="img" [attr.aria-label]="'qibla.fromNorth' | translate: {degrees:number(bearing())}">
+        <svg viewBox="0 0 300 300" aria-hidden="true" focusable="false">
+          <circle cx="150" cy="150" r="138" class="ring" />
+          <g [attr.transform]="'rotate(' + (-(heading() ?? 0)) + ' 150 150)'">
+            <path d="M150 20v20 M280 150h-20 M150 280v-20 M20 150h20" class="ticks" />
+            <text x="150" y="65" text-anchor="middle">{{ 'qibla.north' | translate }}</text>
+            <g [attr.transform]="'rotate(' + bearing() + ' 150 150)'">
+              <path d="M150 78 L171 160 L150 149 L129 160 Z" class="arrow" /><path d="M150 150v78" class="tail" />
+            </g>
+          </g>
+          <circle cx="150" cy="150" r="6" class="arrow" />
+        </svg>
+        <span class="phone-top" aria-hidden="true">▲</span>
+      </div>
+      <p class="status" role="status">@if (facing()) { {{ 'qibla.facing' | translate }} } @else if (heading() !== null) { {{ 'qibla.turn' | translate }} } @else if (staticMode()) { {{ 'qibla.noSensor' | translate }} } @else { {{ 'qibla.waiting' | translate }} }</p>
+      <p>{{ 'qibla.fromNorth' | translate: {degrees:number(bearing())} }}</p>
+      <p class="hint">{{ 'qibla.calibrate' | translate }}</p>
+    }
+  </main>
+</ion-content>

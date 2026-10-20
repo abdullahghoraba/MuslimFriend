@@ -1,0 +1,165 @@
+<ion-header [class]="'theme-' + theme()">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/quran" [text]="''" [attr.aria-label]="'common.back' | translate" />
+    </ion-buttons>
+    <ion-title>
+      <span class="h-sura">{{ header().sura }}</span>
+      <span class="h-meta">{{ header().juz }} · {{ header().hizb }}</span>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToPrompt()" [attr.aria-label]="'mushaf.goTo' | translate">
+        <ion-icon slot="icon-only" name="search-outline" aria-hidden="true" />
+      </ion-button>
+      <ion-button (click)="bookmark()" [attr.aria-label]="'mushaf.bookmarkHere' | translate">
+        <ion-icon slot="icon-only" name="bookmark-outline" aria-hidden="true" />
+      </ion-button>
+      <ion-button (click)="settingsOpen.set(!settingsOpen())" [attr.aria-expanded]="settingsOpen()"
+                  [attr.aria-label]="'mushaf.viewSettings' | translate">
+        <ion-icon slot="icon-only" name="text-outline" aria-hidden="true" />
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  @if (settingsOpen()) {
+    <ion-toolbar class="view-settings">
+      <div class="settings-grid">
+        <ion-segment [value]="theme()" (ionChange)="setTheme($event.detail.value)" [attr.aria-label]="'mushaf.theme' | translate">
+          <ion-segment-button value="paper"><ion-label>{{ 'mushaf.paper' | translate }}</ion-label></ion-segment-button>
+          <ion-segment-button value="sepia"><ion-label>{{ 'mushaf.sepia' | translate }}</ion-label></ion-segment-button>
+          <ion-segment-button value="night"><ion-label>{{ 'mushaf.night' | translate }}</ion-label></ion-segment-button>
+        </ion-segment>
+        <ion-range [min]="0.8" [max]="1.8" [step]="0.05" [value]="quranScale()" (ionChange)="setScale($event)"
+                   [attr.aria-label]="'reader.fontSize' | translate">
+          <ion-icon slot="start" name="remove-outline" aria-hidden="true" />
+          <ion-icon slot="end" name="add-outline" aria-hidden="true" />
+        </ion-range>
+        <ion-select [label]="'mushaf.reciter' | translate" interface="action-sheet" [value]="recitation.prefs().reciterId"
+                    (ionChange)="recitation.setPrefs({ reciterId: $event.detail.value })">
+          @for (r of reciters; track r.id) {
+            <ion-select-option [value]="r.id">{{ reciterName(r.id) }}</ion-select-option>
+          }
+        </ion-select>
+        <div class="row-actions">
+          <ion-button size="small" fill="outline" (click)="playPage()">
+            <ion-icon slot="start" name="play" aria-hidden="true" />{{ 'mushaf.playPage' | translate }}
+          </ion-button>
+          @if (recitation.download(); as d) {
+            <ion-button size="small" fill="clear" (click)="recitation.cancelSuraDownload()">
+              <ion-spinner name="crescent" />
+              {{ d.done }}/{{ d.total }} · {{ 'common.cancel' | translate }}
+            </ion-button>
+          } @else {
+            <ion-button size="small" fill="clear" (click)="download()">
+              <ion-icon slot="start" name="cloud-download-outline" aria-hidden="true" />{{ 'mushaf.downloadSura' | translate }}
+            </ion-button>
+          }
+        </div>
+      </div>
+    </ion-toolbar>
+  }
+</ion-header>
+
+<ion-content [class]="'mushaf theme-' + theme()" (click)="selected.set(null)">
+  @if (!quran.ready()) {
+    <div class="loading"><ion-spinner /></div>
+  } @else {
+    <div class="page-surface" [class.slide-next]="slide() === 'next'" [class.slide-prev]="slide() === 'prev'"
+         [style.--quran-font-scale]="quranScale()">
+      @for (bm of pageBookmarks(); track bm.id) {
+        <span class="ribbon" [attr.data-color]="bm.color" [attr.aria-label]="bm.name" role="img"></span>
+      }
+
+      <div class="quran-text page-text" lang="ar" dir="rtl">
+        @for (b of blocks(); track b.ayah.index) {
+          @if (b.suraHeader; as h) {
+            <div class="sura-frame" role="heading" aria-level="2">
+              <span class="sura-name">سورة {{ h.name }}</span>
+              <span class="sura-info">{{ h.type === 'Meccan' ? 'مكية' : 'مدنية' }} · آياتها {{ h.ayas }}</span>
+            </div>
+            @if (b.basmala) {
+              <div class="basmala">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
+            }
+          }
+          <span class="ayah" role="button" tabindex="0" [attr.data-ayah]="b.ayah.sura + ':' + b.ayah.aya"
+                [class.selected]="isSelected(b.ayah)" [class.playing]="isPlaying(b.ayah)"
+                [style.--hl]="highlightColor(b.ayah)" [class.hl]="!!highlightColor(b.ayah)"
+                (click)="select(b.ayah, $event)" (keydown.enter)="select(b.ayah, $event)"
+                [attr.aria-label]="quran.sura(b.ayah.sura).name + ' ' + b.ayah.aya">{{ b.text }}<span class="end">&nbsp;﴿{{ b.num }}﴾</span>@if (isStarred(b.ayah)) {<span class="mark star" aria-hidden="true">★</span>}@if (hasNote(b.ayah)) {<span class="mark note" aria-hidden="true">✎</span>}</span>
+          {{ ' ' }}
+        }
+      </div>
+
+      <div class="page-footer">
+        <button type="button" class="turn" (click)="next(); $event.stopPropagation()" [disabled]="page() >= 604"
+                [attr.aria-label]="'mushaf.nextPage' | translate">‹</button>
+        <span class="page-num">{{ pageLabel() }}</span>
+        <button type="button" class="turn" (click)="prev(); $event.stopPropagation()" [disabled]="page() <= 1"
+                [attr.aria-label]="'mushaf.prevPage' | translate">›</button>
+      </div>
+    </div>
+  }
+</ion-content>
+
+@if (selected() || recitation.current()) {
+  <ion-footer [class]="'theme-' + theme()">
+    @if (selected(); as sel) {
+      <div class="ayah-actions" role="toolbar" [attr.aria-label]="'mushaf.ayahActions' | translate">
+        <button type="button" (click)="openTafsir()"><ion-icon name="book-outline" aria-hidden="true" /><span>{{ 'mushaf.tafsir' | translate }}</span></button>
+        <button type="button" (click)="playFromSelected()"><ion-icon name="play" aria-hidden="true" /><span>{{ 'mushaf.listen' | translate }}</span></button>
+        <button type="button" (click)="bookmark()"><ion-icon name="bookmark-outline" aria-hidden="true" /><span>{{ 'mushaf.bookmark' | translate }}</span></button>
+        <button type="button" (click)="toggleStar()"><ion-icon [name]="isStarred(sel) ? 'star' : 'star-outline'" aria-hidden="true" /><span>{{ 'mushaf.star' | translate }}</span></button>
+        <button type="button" (click)="editNote()"><ion-icon name="document-text-outline" aria-hidden="true" /><span>{{ 'mushaf.note' | translate }}</span></button>
+        <button type="button" (click)="copy()"><ion-icon name="copy-outline" aria-hidden="true" /><span>{{ 'mushaf.copy' | translate }}</span></button>
+        <button type="button" (click)="shareAyah()"><ion-icon name="share-social-outline" aria-hidden="true" /><span>{{ 'common.share' | translate }}</span></button>
+      </div>
+      <div class="colors" role="group" [attr.aria-label]="'mushaf.highlight' | translate">
+        @for (c of colors; track c.id) {
+          <button type="button" class="swatch" [style.background]="c.hex" (click)="highlight(c.id)"
+                  [attr.aria-label]="('mushaf.highlight' | translate) + ': ' + ('mushaf.colors.' + c.id | translate)"></button>
+        }
+        <button type="button" class="swatch clear" (click)="highlight(null)" [attr.aria-label]="'mushaf.clearHighlight' | translate">✕</button>
+      </div>
+    }
+    @if (recitation.current(); as cur) {
+      <div class="player" role="group" [attr.aria-label]="'mushaf.player' | translate">
+        <div class="now">
+          <strong>{{ quran.sura(cur.sura).name }} · {{ cur.aya }}</strong>
+          <small>{{ reciterName(recitation.prefs().reciterId) }}</small>
+        </div>
+        <ion-button fill="clear" (click)="recitation.previous()" [attr.aria-label]="'mushaf.prevAyah' | translate">
+          <ion-icon slot="icon-only" [name]="lang() === 'ar' ? 'play-skip-forward' : 'play-skip-back'" aria-hidden="true" />
+        </ion-button>
+        <ion-button fill="clear" (click)="recitation.toggle()" [attr.aria-label]="(recitation.playing() ? 'mushaf.pause' : 'mushaf.listen') | translate">
+          @if (recitation.loading()) {
+            <ion-spinner name="crescent" />
+          } @else {
+            <ion-icon slot="icon-only" [name]="recitation.playing() ? 'pause' : 'play'" aria-hidden="true" />
+          }
+        </ion-button>
+        <ion-button fill="clear" (click)="recitation.next()" [attr.aria-label]="'mushaf.nextAyah' | translate">
+          <ion-icon slot="icon-only" [name]="lang() === 'ar' ? 'play-skip-back' : 'play-skip-forward'" aria-hidden="true" />
+        </ion-button>
+        <ion-select class="small-select" interface="popover" [value]="recitation.prefs().repeatEach"
+                    (ionChange)="recitation.setPrefs({ repeatEach: $event.detail.value })" [attr.aria-label]="'mushaf.repeat' | translate">
+          @for (r of repeatOptions; track r) {
+            <ion-select-option [value]="r">{{ repeatLabel(r) }}</ion-select-option>
+          }
+        </ion-select>
+        <ion-select class="small-select" interface="popover" [value]="recitation.prefs().speed"
+                    (ionChange)="recitation.setPrefs({ speed: $event.detail.value })" [attr.aria-label]="'mushaf.speed' | translate">
+          @for (s of speeds; track s) {
+            <ion-select-option [value]="s">{{ s }}×</ion-select-option>
+          }
+        </ion-select>
+        <ion-button fill="clear" (click)="recitation.loopRange.set(!recitation.loopRange())" [attr.aria-pressed]="recitation.loopRange()"
+                    [attr.aria-label]="'mushaf.loop' | translate" [class.active]="recitation.loopRange()">
+          <ion-icon slot="icon-only" name="repeat-outline" aria-hidden="true" />
+        </ion-button>
+        <ion-button fill="clear" (click)="recitation.stop()" [attr.aria-label]="'mushaf.stop' | translate">
+          <ion-icon slot="icon-only" name="stop" aria-hidden="true" />
+        </ion-button>
+      </div>
+    }
+  </ion-footer>
+}

@@ -14,7 +14,7 @@ export interface BackupFile {
   exportedAt: string;
   settings: AppSettings;
   extraPreferences: Record<string, string>;
-  data: { customAthkar: Row[]; userOrder: Row[]; dhikrDaily: Row[]; categoryDaily: Row[]; tasbihCounters: Row[]; tasbihDaily: Row[] };
+  data: { customAthkar: Row[]; userOrder: Row[]; dhikrDaily: Row[]; categoryDaily: Row[]; tasbihCounters: Row[]; tasbihDaily: Row[]; quranBookmarks?: Row[]; quranMarks?: Row[]; khatmah?: Row[]; quranReadingLog?: Row[] };
 }
 export class BackupError extends Error {
   constructor(readonly code: 'invalid' | 'version' | 'app') { super(code); this.name = 'BackupError'; }
@@ -40,7 +40,12 @@ const schemas: Record<keyof BackupFile['data'], Record<string, Check>> = {
   tasbihCounters: { id: v => integer(v) && (v as number) > 0, name: str,
     target: v => nonnegative(v) && (v as number) <= 100000, count: nonnegative, sort_order: integer, created_at: nonnegative },
   tasbihDaily: { date, counter_id: v => integer(v) && (v as number) > 0, count: nonnegative },
+  quranBookmarks: { id: nonnegative, name: str, color: v => ['green','blue','gold','red','purple'].includes(v as string), sura: v => integer(v) && Number(v) >= 1 && Number(v) <= 114, aya: v => integer(v) && Number(v) >= 1 && Number(v) <= 286, page: v => integer(v) && Number(v) >= 1 && Number(v) <= 604, updated_at: nonnegative },
+  quranMarks: { sura: v => integer(v) && Number(v) >= 1 && Number(v) <= 114, aya: v => integer(v) && Number(v) >= 1 && Number(v) <= 286, kind: v => ['star','highlight','note'].includes(v as string), color: v => v === null || ['green','blue','gold','red','purple'].includes(v as string), tag: v => v === null || str(v), note: v => v === null || str(v), created_at: nonnegative },
+  khatmah: { id: nonnegative, name: str, start_page: v => integer(v) && Number(v) >= 1 && Number(v) <= 604, target_days: v => integer(v) && Number(v) >= 1, started_on: date, current_page: v => integer(v) && Number(v) >= 0 && Number(v) <= 604, completed_at: v => v === null || nonnegative(v), created_at: nonnegative },
+  quranReadingLog: { date, page: v => integer(v) && Number(v) >= 1 && Number(v) <= 604 },
 };
+const optionalTables = ['quranBookmarks', 'quranMarks', 'khatmah', 'quranReadingLog'];
 function fields(value: unknown, schema: Record<string, Check>): boolean {
   return record(value) && Object.keys(value).length === Object.keys(schema).length &&
     Object.entries(schema).every(([key, check]) => Object.hasOwn(value, key) && check(value[key]));
@@ -55,8 +60,8 @@ function validate(value: unknown): asserts value is BackupFile {
       fontScale: x => typeof x === 'number' && Number.isFinite(x) && x >= 0.8 && x <= 2,
       haptics: x => typeof x === 'boolean', onboardingDone: x => typeof x === 'boolean' }),
     extraPreferences: v => record(v) && Object.entries(v).every(([k, x]) => k !== 'settings' && str(x)),
-    data: v => record(v) && Object.keys(v).length === Object.keys(schemas).length &&
-      Object.entries(schemas).every(([key, schema]) => Array.isArray(v[key]) && (v[key] as unknown[]).every(row => fields(row, schema))),
+    data: v => record(v) && Object.keys(v).every(key => Object.hasOwn(schemas, key)) &&
+      Object.entries(schemas).every(([key, schema]) => (!Object.hasOwn(v, key) && optionalTables.includes(key)) || (Array.isArray(v[key]) && (v[key] as unknown[]).every(row => fields(row, schema)))),
   })) throw new BackupError('invalid');
 }
 
@@ -83,6 +88,10 @@ export class BackupService {
         categoryDaily: await this.db.query<Row>('SELECT * FROM category_daily ORDER BY date, category_id'),
         tasbihCounters: await this.db.query<Row>('SELECT * FROM tasbih_counter ORDER BY id'),
         tasbihDaily: await this.db.query<Row>('SELECT * FROM tasbih_daily ORDER BY date, counter_id'),
+        quranBookmarks: await this.db.query<Row>('SELECT * FROM quran_bookmark ORDER BY id'),
+        quranMarks: await this.db.query<Row>('SELECT * FROM quran_mark ORDER BY sura, aya, kind'),
+        khatmah: await this.db.query<Row>('SELECT * FROM khatmah ORDER BY id'),
+        quranReadingLog: await this.db.query<Row>('SELECT * FROM quran_reading_log ORDER BY date, page'),
       },
     };
   }
@@ -91,12 +100,12 @@ export class BackupService {
     validate(json);
     const statements: { sql: string; params?: unknown[] }[] = [
       { sql: 'DELETE FROM athkar WHERE is_custom = 1' },
-      ...['dhikr_daily', 'category_daily', 'tasbih_counter', 'tasbih_daily'].map(table => ({ sql: 'DELETE FROM ' + table })),
+      ...['dhikr_daily', 'category_daily', 'tasbih_counter', 'tasbih_daily', 'quran_bookmark', 'quran_mark', 'khatmah', 'quran_reading_log'].map(table => ({ sql: 'DELETE FROM ' + table })),
     ];
-    const tables = { customAthkar: 'athkar', dhikrDaily: 'dhikr_daily', categoryDaily: 'category_daily', tasbihCounters: 'tasbih_counter', tasbihDaily: 'tasbih_daily' } as const;
+    const tables = { customAthkar: 'athkar', dhikrDaily: 'dhikr_daily', categoryDaily: 'category_daily', tasbihCounters: 'tasbih_counter', tasbihDaily: 'tasbih_daily', quranBookmarks: 'quran_bookmark', quranMarks: 'quran_mark', khatmah: 'khatmah', quranReadingLog: 'quran_reading_log' } as const;
     for (const key of Object.keys(tables) as (keyof typeof tables)[]) {
       const columns = Object.keys(schemas[key]);
-      for (const row of json.data[key]) statements.push({
+      for (const row of json.data[key] ?? []) statements.push({
         sql: 'INSERT INTO ' + tables[key] + ' (' + columns.join(',') + ') VALUES (' + columns.map(() => '?').join(',') + ')',
         params: columns.map(column => row[column]),
       });
@@ -114,7 +123,7 @@ export class BackupService {
 
   async exportToFile(): Promise<void> {
     const data = JSON.stringify(await this.buildBackup(), null, 2);
-    const name = 'muslim-athkar-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    const name = 'muslim-friend-backup-' + new Date().toISOString().slice(0, 10) + '.json';
     if (Capacitor.isNativePlatform()) {
       const { uri } = await Filesystem.writeFile({ path: name, data, directory: Directory.Cache, encoding: Encoding.UTF8 });
       await Share.share({ files: [uri] });

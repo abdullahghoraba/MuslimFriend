@@ -34,6 +34,11 @@ describe('BackupService', () => {
       { sql: "INSERT INTO category_daily VALUES ('2026-10-20', 'morning', 123)" },
       { sql: "INSERT INTO tasbih_counter VALUES (4, 'تسبيح', 33, 7, 0, 123)" },
       { sql: "INSERT INTO tasbih_daily VALUES ('2026-10-20', 4, 7)" },
+      { sql: "INSERT INTO quran_bookmark VALUES (1, 'موضعي', 'green', 2, 1, 2, 123)" },
+      { sql: "INSERT INTO quran_mark VALUES (2, 1, 'highlight', 'gold', 'تدبر', NULL, 123)" },
+      { sql: "INSERT INTO quran_mark VALUES (2, 1, 'note', NULL, NULL, 'ملاحظة', 123)" },
+      { sql: "INSERT INTO khatmah VALUES (1, 'ختمة', 1, 30, '2026-10-20', 21, NULL, 123)" },
+      { sql: "INSERT INTO quran_reading_log VALUES ('2026-10-20', 21)" },
     ]);
     await TestBed.inject(SettingsService).update({ language: 'en', fontScale: 1.2 });
     await Preferences.set({ key: 'overlay', value: '{"enabled":true}' });
@@ -42,7 +47,7 @@ describe('BackupService', () => {
 
   it('round trips all user tables, settings and extra preferences', async () => {
     await db.batch([
-      ...['dhikr_daily', 'category_daily', 'tasbih_daily', 'tasbih_counter'].map(table => ({ sql: 'DELETE FROM ' + table })),
+      ...['dhikr_daily', 'category_daily', 'tasbih_daily', 'tasbih_counter', 'quran_bookmark', 'quran_mark', 'khatmah', 'quran_reading_log'].map(table => ({ sql: 'DELETE FROM ' + table })),
       { sql: 'DELETE FROM athkar WHERE is_custom = 1' },
       { sql: 'UPDATE athkar SET sort_order = 0' },
     ]);
@@ -90,6 +95,15 @@ describe('BackupService', () => {
     expect((await service.buildBackup()).data).toEqual(original.data);
   });
 
+  it('restores legacy formatVersion 1 without the optional Quran arrays', async () => {
+    const old = structuredClone(original); delete old.data.quranBookmarks; delete old.data.quranMarks; delete old.data.khatmah; delete old.data.quranReadingLog;
+    await service.restore(old); const restored = await service.buildBackup();
+    expect(restored.data.quranBookmarks).toEqual([]); expect(restored.data.quranMarks).toEqual([]); expect(restored.data.khatmah).toEqual([]); expect(restored.data.quranReadingLog).toEqual([]);
+  });
+  it('rejects malformed new arrays without deleting existing data', async () => {
+    const bad = structuredClone(original); bad.data.quranReadingLog = [{ date: '2026-10-20', page: 605 }];
+    await expect(service.restore(bad)).rejects.toBeInstanceOf(BackupError); expect((await service.buildBackup()).data).toEqual(original.data);
+  });
   it('maps JSON parse errors to invalid', async () => {
     await expect(service.importFromFile({ text: async () => '{' } as File)).rejects.toMatchObject({ code: 'invalid' });
   });

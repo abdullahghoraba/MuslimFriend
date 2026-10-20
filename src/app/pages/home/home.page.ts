@@ -20,6 +20,8 @@ import { CategoryProgress, ProgressService } from '../../core/services/progress.
 import { SettingsService } from '../../core/services/settings.service';
 import { PrayerService } from '../../core/prayer/prayer.service';
 import { OverlayService } from '../../core/services/overlay.service';
+import { HijriDateComponent } from '../../shared/hijri-date.component';
+import { VerseOfDayComponent } from '../../shared/verse-of-day.component';
 
 interface DailyStatus {
   categoryId: 'morning' | 'evening';
@@ -31,7 +33,7 @@ interface DailyStatus {
 @Component({
   selector: 'app-home',
   imports: [
-    RouterLink, TranslatePipe, IonHeader, IonToolbar, IonTitle, IonContent,
+    RouterLink, TranslatePipe, IonHeader, IonToolbar, IonTitle, IonContent, HijriDateComponent, VerseOfDayComponent,
     IonIcon, IonList, IonItem, IonLabel, IonProgressBar, IonRippleEffect,
   ],
   templateUrl: './home.page.html',

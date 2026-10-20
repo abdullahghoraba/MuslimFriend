@@ -1,4 +1,4 @@
-package com.muslimathkar.app.overlay
+package com.muslimfriend.app.overlay
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

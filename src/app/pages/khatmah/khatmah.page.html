@@ -1,0 +1,175 @@
+<ion-header
+  ><ion-toolbar
+    ><ion-buttons slot="start"
+      ><ion-back-button
+        defaultHref="/quran"
+        [text]="''"
+        [attr.aria-label]="'khatmah.back' | translate" /></ion-buttons
+    ><ion-title>{{ 'khatmah.title' | translate }}</ion-title></ion-toolbar
+  ></ion-header
+>
+<ion-content
+  ><main>
+    @if (error()) {
+      <p role="alert">{{ error() | translate }}</p>
+    }
+    @if (ready()) {
+      @if (service.active(); as p) {
+        <section class="card summary">
+          <h1 dir="auto">{{ p.name }}</h1>
+          <svg
+            class="ring"
+            viewBox="0 0 120 120"
+            role="img"
+            [attr.aria-label]="
+              ('khatmah.progress' | translate) + ' ' + (service.progress() * 100).toFixed(0) + '%'
+            "
+          >
+            <circle class="track" cx="60" cy="60" r="50" />
+            <circle
+              class="value"
+              cx="60"
+              cy="60"
+              r="50"
+              pathLength="100"
+              [attr.stroke-dasharray]="service.progress() * 100 + ' 100'"
+            />
+            <text x="60" y="65" text-anchor="middle">
+              {{ (service.progress() * 100).toFixed(0) }}%
+            </text>
+          </svg>
+          <p>{{ 'khatmah.currentPage' | translate }} {{ p.currentPage }} / 604</p>
+          <p>{{ 'khatmah.daysLeft' | translate: { count: daysLeft() } }}</p>
+        </section>
+        @if (wird(); as w) {
+          <section class="card">
+            <h2>{{ 'khatmah.today' | translate }}</h2>
+            <p>{{ 'khatmah.pages' | translate: { from: w.fromPage, to: w.toPage } }}</p>
+            @if (w.done) {
+              <p class="success" aria-live="polite">
+                <ion-icon name="checkmark-circle" aria-hidden="true" />
+                {{ 'khatmah.done' | translate }}
+              </p>
+            }
+            <ion-button expand="block" (click)="read(w.fromPage)">{{
+              'khatmah.read' | translate
+            }}</ion-button>
+            <ion-button expand="block" fill="outline" (click)="setPage()">{{
+              'khatmah.setPage' | translate
+            }}</ion-button>
+            <ion-button expand="block" fill="clear" (click)="end()">{{
+              'khatmah.end' | translate
+            }}</ion-button>
+          </section>
+        }
+      } @else {
+        @if (completed().length) {
+          <p class="celebration" role="status">
+            <ion-icon name="trophy-outline" aria-hidden="true" />
+            {{ 'khatmah.celebration' | translate }}
+          </p>
+        }
+        <form class="card" (ngSubmit)="create()">
+          <h1>{{ 'khatmah.create' | translate }}</h1>
+          <label for="plan-name">{{ 'khatmah.name' | translate }}</label
+          ><input id="plan-name" name="name" [(ngModel)]="name" dir="auto" required />
+          <fieldset>
+            <legend>{{ 'khatmah.duration' | translate }}</legend>
+            <div class="chips">
+              @for (d of days; track d) {
+                <button
+                  type="button"
+                  [attr.aria-pressed]="targetDays === d"
+                  (click)="targetDays = d"
+                >
+                  {{ 'khatmah.durationDays' | translate: { count: d } }}
+                </button>
+              }
+            </div>
+          </fieldset>
+          <label for="duration">{{ 'khatmah.customDays' | translate }}</label
+          ><input
+            id="duration"
+            name="duration"
+            type="number"
+            min="1"
+            step="1"
+            [(ngModel)]="targetDays"
+            required
+          />
+          <label for="start">{{ 'khatmah.startPage' | translate }}</label
+          ><input
+            id="start"
+            name="start"
+            type="number"
+            min="1"
+            max="604"
+            step="1"
+            [(ngModel)]="startPage"
+            required
+          />
+          <ion-button type="submit" expand="block" [disabled]="busy()">{{
+            'khatmah.create' | translate
+          }}</ion-button>
+        </form>
+      }
+      <section class="card">
+        <h2>{{ 'khatmah.week' | translate }}</h2>
+        <svg
+          class="chart"
+          viewBox="0 0 350 140"
+          role="img"
+          [attr.aria-label]="'khatmah.week' | translate"
+        >
+          @for (day of chart(); track day.date; let i = $index) {
+            <g>
+              <title>{{ day.date }}: {{ day.pages }} {{ 'khatmah.pageCount' | translate }}</title>
+              <rect
+                [attr.x]="i * 50 + 12"
+                [attr.y]="100 - (day.pages / maxPages()) * 75"
+                width="26"
+                [attr.height]="(day.pages / maxPages()) * 75"
+                rx="4"
+              />
+              <text [attr.x]="i * 50 + 25" y="15" text-anchor="middle">{{ day.pages }}</text>
+              <text [attr.x]="i * 50 + 25" y="125" text-anchor="middle">
+                {{ day.date.slice(5) }}
+              </text>
+            </g>
+          }
+        </svg>
+        <ul class="sr-only">
+          @for (day of chart(); track day.date) {
+            <li>{{ day.date }}: {{ day.pages }}</li>
+          }
+        </ul>
+      </section>
+      @if (service.history().length) {
+        <section class="card">
+          <h2>{{ 'khatmah.history' | translate }}</h2>
+          <ul class="history">
+            @for (p of service.history(); track p.id) {
+              <li>
+                <ion-icon
+                  [name]="p.completedAt ? 'trophy-outline' : 'flag-outline'"
+                  aria-hidden="true"
+                />
+                <div>
+                  <strong dir="auto">{{ p.name }}</strong>
+                  <p>
+                    {{ p.startedOn }}
+                    @if (p.completedAt) {
+                      — {{ p.completedAt | date: 'yyyy-MM-dd' }}
+                    } @else {
+                      · {{ 'khatmah.ended' | translate }}
+                    }
+                  </p>
+                </div>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+    }
+  </main></ion-content
+>

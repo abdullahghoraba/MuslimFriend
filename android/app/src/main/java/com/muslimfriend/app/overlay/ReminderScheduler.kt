@@ -1,4 +1,4 @@
-package com.muslimathkar.app.overlay
+package com.muslimfriend.app.overlay
 
 import android.app.AlarmManager
 import android.app.PendingIntent

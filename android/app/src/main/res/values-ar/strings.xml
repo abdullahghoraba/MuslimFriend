@@ -1,13 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">أذكار المسلم</string>
-    <string name="title_activity_main">أذكار المسلم</string>
+    <string name="app_name">رفيق المسلم</string>
+    <string name="title_activity_main">رفيق المسلم</string>
 
     <string name="channel_overlay_service">الأذكار فوق التطبيقات</string>
     <string name="channel_overlay_service_desc">يُبقي ظهور الأذكار فوق التطبيقات يعمل. يمكنك إخفاء هذا الإشعار من هنا.</string>
     <string name="channel_morning_evening">أذكار الصباح والمساء</string>
     <string name="channel_sleep">أذكار النوم</string>
     <string name="channel_friday">تذكيرات الجمعة</string>
+    <string name="channel_quran">الورد القرآني اليومي</string>
     <string name="channel_periodic">أذكار دورية</string>
     <string name="channel_periodic_desc">تُستخدم عندما يتعذّر عرض الأذكار فوق التطبيقات، فيظهر الذكر كإشعار بدلًا من ذلك.</string>
 

@@ -1,4 +1,4 @@
-package com.muslimathkar.app.overlay
+package com.muslimfriend.app.overlay
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -152,7 +152,7 @@ class OverlayWindow(
                 else -> Gravity.TOP
             }
             y = if (config.position == "center") 0 else dp(56)
-            title = "Muslim Athkar overlay"
+            title = "Muslim Friend overlay"
         }
 
         runCatching { wm.addView(card, params) }.onFailure { return }

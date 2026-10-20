@@ -1,0 +1,19 @@
+<ion-header><ion-toolbar><ion-buttons slot="start"><ion-back-button defaultHref="/quran" /></ion-buttons><ion-title>{{ 'quran.search' | translate }}</ion-title></ion-toolbar></ion-header>
+<ion-content [attr.dir]="lang() === 'ar' ? 'rtl' : 'ltr'">
+  <main>
+    <ion-searchbar [autofocus]="true" [debounce]="300" [value]="query()" (ionInput)="query.set($event.detail.value ?? '')" (keydown.enter)="submit()" [placeholder]="'quran.searchHint' | translate" [attr.aria-label]="'quran.search' | translate" />
+    @if (failed()) { <p class="empty" role="alert">{{ 'quran.loadFailed' | translate }}</p> }
+    @else if (!quran.ready()) { <div class="empty"><ion-spinner [attr.aria-label]="'quran.loading' | translate" /></div> }
+    @else if (direct(); as ref) {
+      <ion-button expand="block" (click)="open(ref)">{{ 'quran.go' | translate }} · {{ quran.sura(ref.sura).name }} {{ digits(ref.aya) }}</ion-button>
+    } @else if (!searching()) {
+      <section class="empty"><h2>{{ 'quran.searchHint' | translate }}</h2><p>{{ 'quran.searchExamples' | translate }}</p><ion-button fill="outline" (click)="query.set('الرحمن')">الرحمن</ion-button><ion-button fill="outline" (click)="query.set('صبر')">صبر</ion-button></section>
+    } @else {
+      <p role="status">{{ 'quran.results' | translate: {count:digits(count())} }}</p>
+      @if (count() > 300) { <p class="muted">{{ 'quran.limitedResults' | translate }}</p> }
+      @for (hit of hits(); track hit.index) {
+        <button class="result card" (click)="open(hit)"><span class="reference"><span lang="ar">{{ quran.sura(hit.sura).name }}</span> · {{ 'quran.ayah' | translate }} {{ digits(hit.aya) }} · {{ 'quran.page' | translate }} {{ digits(hit.page) }}</span><span class="verse" lang="ar" dir="rtl">@for (part of hit.parts; track $index) {@if (part.match) {<mark>{{ part.text }}</mark>} @else {<span>{{ part.text }}</span>}}</span></button>
+      } @empty { <p class="empty">{{ 'quran.noResults' | translate }}</p> }
+    }
+  </main>
+</ion-content>

@@ -1,0 +1,36 @@
+<ion-header><ion-toolbar><ion-title>{{ 'quran.title' | translate }}</ion-title></ion-toolbar></ion-header>
+<ion-content [attr.dir]="lang() === 'ar' ? 'rtl' : 'ltr'">
+  @if (failed()) { <p role="alert" class="empty">{{ 'quran.loadFailed' | translate }}</p> }
+  @else if (!quran.ready()) { <div class="empty"><ion-spinner [attr.aria-label]="'quran.loading' | translate" /></div> }
+  @else {
+    <main>
+      <button class="continue card" (click)="continue()"><ion-icon name="book-outline" aria-hidden="true" /><span>
+        @if (quran.lastRead(); as last) { <strong>{{ 'quran.continue' | translate }}</strong><span class="arabic" lang="ar">{{ quran.sura(last.sura).name }}</span><small>{{ 'quran.ayah' | translate }} {{ digits(last.aya) }} · {{ 'quran.page' | translate }} {{ digits(last.page) }}</small> }
+        @else { <strong>{{ 'quran.start' | translate }}</strong> }
+      </span></button>
+      <nav class="actions" [attr.aria-label]="'quran.actions' | translate">
+        @for (a of actions; track a.key) { <ion-button fill="outline" [routerLink]="a.route"><ion-icon slot="start" [name]="a.icon" aria-hidden="true" />{{ ('quran.' + a.key) | translate }}</ion-button> }
+        <ion-button fill="outline" (click)="goToPage()"><ion-icon slot="start" name="list-outline" aria-hidden="true" />{{ 'quran.goToPage' | translate }}</ion-button>
+      </nav>
+      <ion-segment [value]="segment()" (ionChange)="segment.set($event.detail.value?.toString() ?? 'suras')">
+        @for (s of ['suras','juz','hizb']; track s) { <ion-segment-button [value]="s"><ion-label>{{ ('quran.'+s) | translate }}</ion-label></ion-segment-button> }
+      </ion-segment>
+      @if (segment() === 'suras') {
+        <ion-searchbar [value]="filter()" (ionInput)="filter.set($event.detail.value ?? '')" [placeholder]="'quran.filter' | translate" [attr.aria-label]="'quran.filter' | translate" />
+        @for (s of suras(); track s.index) {
+          <button class="row card" (click)="open({sura:s.index,aya:1})"><span class="badge">{{ digits(s.index) }}</span><span class="body"><strong class="arabic" lang="ar" dir="rtl">{{ s.name }}</strong>
+            @if (lang() === 'en') { <small>{{ s.tname }} · {{ s.ename }}</small> } @else { <small>{{ (s.type === 'Meccan' ? 'quran.meccan' : 'quran.medinan') | translate }} · {{ digits(s.ayas) }} {{ 'quran.ayahs' | translate }}</small> }
+          </span><small>{{ 'quran.page' | translate }} {{ digits(quran.suraPage(s.index)) }}</small></button>
+        } @empty { <p class="empty">{{ 'quran.noResults' | translate }}</p> }
+      } @else if (segment() === 'juz') {
+        @for (j of juz; track j) { <button class="row card" (click)="open(quran.meta.juz[j-1])"><span class="body"><strong>{{ 'quran.juzItem' | translate }} {{ digits(j) }}</strong><span class="arabic" lang="ar" dir="rtl">{{ words(quran.meta.juz[j-1]) }}</span></span><small>{{ 'quran.page' | translate }} {{ digits(quran.juzPage(j)) }}</small></button> }
+      } @else {
+        @for (h of hizbs; track h) {
+          <div class="card"><div class="hizb-head"><button class="row" (click)="open(quran.meta.quarters[(h-1)*4])"><span class="body"><strong>{{ 'quran.hizbItem' | translate }} {{ digits(h) }}</strong><span class="arabic" dir="rtl" lang="ar">{{ words(quran.meta.quarters[(h-1)*4]) }}</span></span><small>{{ 'quran.page' | translate }} {{ digits(quran.quarterPage((h-1)*4+1)) }}</small></button><button class="expand" [attr.aria-expanded]="expanded() === h" [attr.aria-label]="('quran.quarters' | translate) + ' ' + digits(h)" (click)="expanded.set(expanded() === h ? null : h)"><ion-icon name="layers-outline" aria-hidden="true" /></button></div>
+          @if (expanded() === h) { @for (q of quarters(h); track q) { <button class="row quarter" (click)="open(quran.meta.quarters[q-1])"><span class="body"><small>{{ 'quran.quarter' | translate }} {{ digits((q-1)%4+1) }}</small><span class="arabic" lang="ar" dir="rtl">{{ words(quran.meta.quarters[q-1]) }}</span></span><small>{{ 'quran.page' | translate }} {{ digits(quran.quarterPage(q)) }}</small></button> } }
+          </div>
+        }
+      }
+    </main>
+  }
+</ion-content>

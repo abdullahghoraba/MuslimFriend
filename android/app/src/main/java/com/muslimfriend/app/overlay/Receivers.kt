@@ -1,4 +1,4 @@
-package com.muslimathkar.app.overlay
+package com.muslimfriend.app.overlay
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -6,8 +6,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.muslimathkar.app.MainActivity
-import com.muslimathkar.app.R
+import com.muslimfriend.app.MainActivity
+import com.muslimfriend.app.R
 import java.time.LocalDateTime
 
 /**
@@ -58,7 +58,7 @@ class ReminderReceiver : BroadcastReceiver() {
 }
 
 object Notifications {
-    const val EXTRA_ROUTE = "com.muslimathkar.app.ROUTE"
+    const val EXTRA_ROUTE = "com.muslimfriend.app.ROUTE"
 
     fun post(context: Context, channel: String, id: Int, title: String?, text: String, route: String?) {
         Channels.ensure(context)

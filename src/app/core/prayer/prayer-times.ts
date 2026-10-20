@@ -84,6 +84,8 @@ export interface ReminderSettings {
   sleep: { enabled: boolean; time: string };
   fridayKahf: { enabled: boolean; time: string };
   fridaySalawat: { enabled: boolean; time: string };
+  /** Daily Quran reading (wird / khatmah) reminder. */
+  wird: { enabled: boolean; time: string };
 }
 
 export const DEFAULT_REMINDER_SETTINGS: ReminderSettings = {
@@ -92,6 +94,7 @@ export const DEFAULT_REMINDER_SETTINGS: ReminderSettings = {
   sleep: { enabled: false, time: '22:30' },
   fridayKahf: { enabled: true, time: '10:00' },
   fridaySalawat: { enabled: true, time: '16:00' },
+  wird: { enabled: false, time: '20:00' },
 };
 
 export interface ReminderTexts {
@@ -100,6 +103,7 @@ export interface ReminderTexts {
   sleepTitle: string; sleepBody: string;
   kahfTitle: string; kahfBody: string;
   salawatTitle: string; salawatBody: string;
+  wirdTitle?: string; wirdBody?: string;
 }
 
 export function atTime(day: Date, hhmm: string): Date {
@@ -150,6 +154,12 @@ export function planReminders(
       out.push({
         id: `sleep-${key}`, kind: 'sleep', title: texts.sleepTitle, body: texts.sleepBody,
         at: atTime(day, r.sleep.time).getTime(), route: '/category/sleep',
+      });
+    }
+    if (r.wird?.enabled) {
+      out.push({
+        id: `wird-${key}`, kind: 'wird', title: texts.wirdTitle ?? '', body: texts.wirdBody ?? '',
+        at: atTime(day, r.wird.time).getTime(), route: '/khatmah',
       });
     }
     // Friday = 5 in JS (Sunday = 0).

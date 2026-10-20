@@ -1,9 +1,9 @@
-package com.muslimathkar.app;
+package com.muslimfriend.app;
 
 import android.os.Bundle;
 import androidx.core.splashscreen.SplashScreen;
 import com.getcapacitor.BridgeActivity;
-import com.muslimathkar.app.overlay.AthkarOverlayPlugin;
+import com.muslimfriend.app.overlay.AthkarOverlayPlugin;
 
 public class MainActivity extends BridgeActivity {
     @Override

@@ -1,4 +1,4 @@
-package com.muslimathkar.app.overlay
+package com.muslimfriend.app.overlay
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -84,7 +84,7 @@ class TasbihBubble(
             gravity = Gravity.TOP or Gravity.LEFT
             x = if (state.x >= 0) state.x else metrics.widthPixels - size - dp(8)
             y = if (state.y >= 0) state.y else (metrics.heightPixels * 0.35f).toInt()
-            title = "Muslim Athkar tasbih"
+            title = "Muslim Friend tasbih"
         }
 
         attachTouch(bubble, container)

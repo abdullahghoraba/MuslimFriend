@@ -68,7 +68,7 @@ export class SettingsPage {
   }
 
   async shareApp(): Promise<void> {
-    const link = 'https://play.google.com/store/apps/details?id=com.muslimathkar.app';
+    const link = 'https://play.google.com/store/apps/details?id=com.muslimfriend.app';
     const text = `${this.translate.instant('settings.shareText')}\n${link}`;
     await this.share.shareText(this.translate.instant('app.name'), text);
   }

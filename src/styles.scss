@@ -23,6 +23,19 @@
   font-display: swap;
 }
 
+/* Quran text: Amiri Quran (OFL), designed for the Quranic script and its marks. */
+@font-face {
+  font-family: 'AmiriQuran';
+  src: url('/assets/fonts/AmiriQuran-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
+.quran-text {
+  font-family: 'AmiriQuran', 'Amiri', serif;
+  direction: rtl;
+  line-height: 2.25;
+}
+
 /* Dhikr text: Amiri, scaled by the in-app slider on top of the system font scale. */
 .dhikr-text {
   font-family: 'Amiri', serif;

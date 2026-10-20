@@ -12,6 +12,10 @@ import { TranslatePipe } from '@ngx-translate/core';
           <ion-icon name="home-outline" aria-hidden="true" />
           <ion-label>{{ 'tabs.home' | translate }}</ion-label>
         </ion-tab-button>
+        <ion-tab-button tab="quran">
+          <ion-icon name="book-outline" aria-hidden="true" />
+          <ion-label>{{ 'tabs.quran' | translate }}</ion-label>
+        </ion-tab-button>
         <ion-tab-button tab="tasbih">
           <ion-icon name="ellipse-outline" aria-hidden="true" />
           <ion-label>{{ 'tabs.tasbih' | translate }}</ion-label>

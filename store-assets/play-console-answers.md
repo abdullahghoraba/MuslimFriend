@@ -1,7 +1,8 @@
-# Play Console answers — Muslim Athkar
+# Play Console answers — Muslim Friend
 
 Copy these into **Play Console → Policy → App content**. Everything below matches the code as shipped:
-no INTERNET permission, no SDKs that send data, `allowBackup="false"`.
+INTERNET is used only to fetch Quran recitation MP3s from everyayah.com on the user's request, no SDKs that send data,
+`allowBackup="false"`.
 
 ---
 
@@ -23,11 +24,15 @@ URL: `https://<your-github-user>.github.io/<repo>/privacy-policy.html`
 | Question | Answer |
 | --- | --- |
 | Does your app collect or share any of the required user data types? | **No** |
-| Is all of the user data collected by your app encrypted in transit? | Not applicable — no data is collected or transmitted. (If the form still requires it, answer **Yes**; nothing is transmitted.) |
+| Is all of the user data collected by your app encrypted in transit? | Not applicable — no user data is collected. (If the form still requires it, answer **Yes**: the only network traffic is HTTPS downloads of recitation audio.) |
 | Do you provide a way for users to request that their data is deleted? | Not applicable — no data is collected. (Users can delete local data in-app: Settings → Reset all data.) |
 
 Why "no collection" is accurate (Google's definition: data transmitted off the device):
-- The app has **no `INTERNET` permission** (removed from the merged manifest with `tools:node="remove"`), so it cannot transmit anything.
+- The only network use is **downloading public recitation MP3s** (HTTPS GET to everyayah.com) when the user plays or
+  downloads a sura. No user data, identifiers or usage events are sent; the request contains only the file path. Google's
+  definition of "collected" covers data transmitted to the developer or a third party *about the user* — fetching public
+  content is not collection. (The audio host sees the device IP like any web request; this is disclosed in the privacy policy.)
+- Everything else (Quran text, tafsir, athkar, prayer times, Qibla) is bundled and works offline.
 - Approximate location (optional) is used **on-device only** to compute prayer times; it is never transmitted, which Google defines as not collected.
 - Backup export is a **user-initiated** share of a file the user chooses where to send; the app sends nothing itself.
 - No analytics, crash reporting, ads or Firebase SDKs (verify: `cd android && gradlew.bat app:dependencies`).
@@ -42,7 +47,7 @@ Resulting label: **"No data collected" · "No data shared with third parties"**.
 - Users can interact or exchange content: **No**.
 - Shares user location with other users: **No**.
 - Digital purchases: **No**.
-- Unrestricted internet access / web browser: **No**.
+- Unrestricted internet access / web browser: **No** (the app only downloads recitation audio from one fixed host).
 
 Expected rating: **Everyone / PEGI 3 / 3+**.
 
@@ -81,10 +86,10 @@ Expected rating: **Everyone / PEGI 3 / 3+**.
 **Foreground service type:** `specialUse`
 
 **Subtype (declared in the manifest as `PROPERTY_SPECIAL_USE_FGS_SUBTYPE`):**
-> User-enabled reminder overlay: while the user has turned it on, the app periodically (at a user-chosen interval, or on unlock) shows a short card with an Islamic remembrance (dhikr) over other apps for a few seconds. The service only listens for screen on/off/unlock and runs a timer; it does no networking and collects no data. The user can pause or stop it from the persistent notification.
+> User-enabled overlays over other apps: (1) a reminder card that periodically (at a user-chosen interval, or on unlock) shows a short Islamic remembrance (dhikr) for a few seconds, and (2) a small floating tasbih counter the user taps to count while using other apps. The service only listens for screen on/off/unlock, runs a timer and hosts these windows; it does no networking and collects no data. The user can pause or stop it from the persistent notification.
 
 **Describe the feature (Play Console text box):**
-> "Athkar over other apps" is an optional feature the user turns on in the app's Overlay settings. While it is on, a small card with a short Islamic remembrance (dhikr) appears over whatever app the user is using, every 5–60 minutes (user's choice) or each time the phone is unlocked, and disappears after a few seconds. It never blocks touches outside the card, can be dismissed with a tap or swipe, and respects quiet hours set by the user. A persistent notification lets the user pause it for an hour or stop it. The app has no internet access and collects no data.
+> "Athkar over other apps" is an optional feature the user turns on in the app's Overlay settings. While it is on, a small card with a short Islamic remembrance (dhikr) appears over whatever app the user is using, every 5–60 minutes (user's choice) or each time the phone is unlocked, and disappears after a few seconds. It never blocks touches outside the card, can be dismissed with a tap or swipe, and respects quiet hours set by the user. A persistent notification lets the user pause it for an hour or stop it. The same service also hosts the optional "floating tasbih counter": a small round counter the user drags anywhere and taps to count dhikr while using other apps (it hides while our app is open). The service does no networking and collects no data.
 
 **Why a foreground service is needed and why no other type fits:**
 > The feature must keep running while the app is in the background so it can react to unlock events (USER_PRESENT/SCREEN_ON broadcasts are only delivered to a registered, running component) and show an overlay window at user-chosen intervals. WorkManager/JobScheduler cannot run at short, user-chosen intervals or react to unlock immediately, and exact alarms are not appropriate for this use. None of the predefined types (dataSync, mediaPlayback, location, etc.) describe a user-visible reminder overlay, so `specialUse` is used. The service is started only by an explicit user action in the app (or restored after reboot if the user left it on), shows a persistent notification with Pause and Stop actions, and stops when the user turns the feature off.
@@ -96,7 +101,7 @@ Expected rating: **Everyone / PEGI 3 / 3+**.
 
 ### Demo video script (≤ 60 s, screen recording; upload unlisted to YouTube and paste the link)
 
-1. **0–5 s** Open Muslim Athkar → Settings → "Athkar over other apps". Caption: "The overlay is off by default."
+1. **0–5 s** Open Muslim Friend → Settings → "Athkar over other apps". Caption: "The overlay is off by default."
 2. **5–15 s** Turn on "Show athkar over other apps". Android opens "Display over other apps" → allow → return. Allow notifications when asked.
 3. **15–22 s** Show the settings: frequency (choose "Every unlock" for the demo), display duration, position, quiet hours.
 4. **22–28 s** Pull down the notification shade: show the persistent "Athkar overlay is on" notification with **Pause 1 hour** and **Stop**.

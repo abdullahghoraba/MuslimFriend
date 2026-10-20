@@ -1,4 +1,4 @@
-package com.muslimathkar.app.overlay
+package com.muslimfriend.app.overlay
 
 /** Pure decision logic for the overlay, kept free of Android types so it can be unit-tested. */
 object OverlayRules {
