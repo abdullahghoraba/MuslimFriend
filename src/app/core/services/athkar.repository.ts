@@ -141,6 +141,24 @@ export class AthkarRepository {
       params: [CONTENT_VERSION_KEY, String(dataset.contentVersion)],
     });
     await this.db.batch(statements);
+
+    // On a content update (not the first install), slot new built-in items in right after the item that
+    // precedes them in the bundled list, keeping the user's own order of everything else.
+    const added = dataset.items.filter((i) => !existing.has(i.id));
+    if (existing.size && added.length) await this.placeNewItems(dataset, new Set(added.map((i) => i.id)));
+  }
+
+  private async placeNewItems(dataset: ContentDataset, added: Set<string>): Promise<void> {
+    for (const categoryId of new Set(dataset.items.filter((i) => added.has(i.id)).map((i) => i.categoryId))) {
+      const bundled = dataset.items.filter((i) => i.categoryId === categoryId).map((i) => i.id);
+      const ordered = (await this.byCategory(categoryId)).map((d) => d.id).filter((id) => !added.has(id));
+      for (const id of bundled.filter((x) => added.has(x))) {
+        const prev = bundled[bundled.indexOf(id) - 1];
+        const at = prev ? ordered.indexOf(prev) + 1 : 0;
+        ordered.splice(at, 0, id);
+      }
+      await this.reorder(ordered);
+    }
   }
 
   async refreshCategories(): Promise<void> {

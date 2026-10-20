@@ -1,5 +1,5 @@
 {
-  "contentVersion": 1,
+  "contentVersion": 2,
   "notes": "Source file for the bundled dataset. Quran items reference Tanzil Uthmani text by surah/ayah (and optional 1-based word range); scripts/build-content.mjs copies the text verbatim. Every item ships with reviewed=false until a qualified reviewer signs it off in content/review.csv. Virtue fields are summaries of meaning, not hadith wording.",
   "items": [
     {
@@ -22,30 +22,56 @@
       "reviewNote": "Verify an-Nasa'i al-Kubra and al-Hakim numbers (editions differ)."
     },
     {
-      "id": "morning-three-quls",
+      "id": "morning-ikhlas",
       "categoryId": "morning",
       "quran": [
         {
           "s": 112,
           "from": 1,
           "to": 4
-        },
+        }
+      ],
+      "transliteration": "Qul huwa Allahu ahad, Allahus-samad, lam yalid wa lam yulad, wa lam yakun lahu kufuwan ahad.",
+      "meaningEn": "Surat al-Ikhlas: Say, He is Allah, the One; Allah, the Eternal Refuge. He neither begets nor is born, and there is none comparable to Him.",
+      "repeatCount": 3,
+      "virtueAr": "ورد أن قراءة الإخلاص والمعوذتين ثلاث مرات حين يمسي وحين يصبح تكفي العبد من كل شيء.",
+      "virtueEn": "It is reported that reciting al-Ikhlas and the two Mu'awwidhat three times in the evening and morning suffices a person against everything.",
+      "sourceRef": "Abu Dawud 5082; at-Tirmidhi 3575",
+      "grade": "Hasan sahih (at-Tirmidhi); Hasan (al-Albani)"
+    },
+    {
+      "id": "morning-falaq",
+      "categoryId": "morning",
+      "quran": [
         {
           "s": 113,
           "from": 1,
           "to": 5
-        },
+        }
+      ],
+      "transliteration": "Qul a'udhu bi-rabbil-falaq, min sharri ma khalaq, wa min sharri ghasiqin idha waqab, wa min sharrin-naffathati fil-'uqad, wa min sharri hasidin idha hasad.",
+      "meaningEn": "Surat al-Falaq: Say, I seek refuge in the Lord of daybreak from the evil of what He created, from the evil of darkness when it settles, from the evil of those who blow on knots, and from the evil of an envier when he envies.",
+      "repeatCount": 3,
+      "virtueAr": "ورد أن قراءة الإخلاص والمعوذتين ثلاث مرات حين يمسي وحين يصبح تكفي العبد من كل شيء.",
+      "virtueEn": "It is reported that reciting al-Ikhlas and the two Mu'awwidhat three times in the evening and morning suffices a person against everything.",
+      "sourceRef": "Abu Dawud 5082; at-Tirmidhi 3575",
+      "grade": "Hasan sahih (at-Tirmidhi); Hasan (al-Albani)"
+    },
+    {
+      "id": "morning-nas",
+      "categoryId": "morning",
+      "quran": [
         {
           "s": 114,
           "from": 1,
           "to": 6
         }
       ],
-      "transliteration": "Qul huwa Allahu ahad... Qul a'udhu bi-rabbil-falaq... Qul a'udhu bi-rabbin-nas...",
-      "meaningEn": "Surat al-Ikhlas, Surat al-Falaq and Surat an-Nas (the three protective surahs).",
+      "transliteration": "Qul a'udhu bi-rabbin-nas, malikin-nas, ilahin-nas, min sharril-waswasil-khannas, alladhi yuwaswisu fi sudurin-nas, minal-jinnati wan-nas.",
+      "meaningEn": "Surat an-Nas: Say, I seek refuge in the Lord of mankind, the King of mankind, the God of mankind, from the evil of the retreating whisperer who whispers in the hearts of mankind, from among the jinn and mankind.",
       "repeatCount": 3,
-      "virtueAr": "ورد أن قراءتها ثلاث مرات حين يمسي وحين يصبح تكفي العبد من كل شيء.",
-      "virtueEn": "It is reported that reciting them three times in the evening and morning suffices a person against everything.",
+      "virtueAr": "ورد أن قراءة الإخلاص والمعوذتين ثلاث مرات حين يمسي وحين يصبح تكفي العبد من كل شيء.",
+      "virtueEn": "It is reported that reciting al-Ikhlas and the two Mu'awwidhat three times in the evening and morning suffices a person against everything.",
       "sourceRef": "Abu Dawud 5082; at-Tirmidhi 3575",
       "grade": "Hasan sahih (at-Tirmidhi); Hasan (al-Albani)"
     },
@@ -220,9 +246,19 @@
       "grade": "Virtue hadith: Sahih"
     },
     {
-      "id": "evening-three-quls",
+      "id": "evening-ikhlas",
       "categoryId": "evening",
-      "copyOf": "morning-three-quls"
+      "copyOf": "morning-ikhlas"
+    },
+    {
+      "id": "evening-falaq",
+      "categoryId": "evening",
+      "copyOf": "morning-falaq"
+    },
+    {
+      "id": "evening-nas",
+      "categoryId": "evening",
+      "copyOf": "morning-nas"
     },
     {
       "id": "evening-amsayna-wa-amsa-al-mulk",
