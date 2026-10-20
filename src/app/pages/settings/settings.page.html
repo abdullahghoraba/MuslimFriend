@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ 'settings.title' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list inset>
+    <ion-list-header>{{ 'settings.appearance' | translate }}</ion-list-header>
+
+    <ion-item lines="none">
+      <ion-label id="lang-label">{{ 'settings.language' | translate }}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-segment [value]="settings().language" (ionChange)="setLanguage($event.detail.value)" aria-labelledby="lang-label">
+        <ion-segment-button value="ar"><ion-label lang="ar">{{ 'language.ar' | translate }}</ion-label></ion-segment-button>
+        <ion-segment-button value="en"><ion-label lang="en">{{ 'language.en' | translate }}</ion-label></ion-segment-button>
+      </ion-segment>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label id="theme-label">{{ 'settings.theme' | translate }}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-segment [value]="settings().theme" (ionChange)="setTheme($event.detail.value)" aria-labelledby="theme-label">
+        <ion-segment-button value="system"><ion-label>{{ 'settings.themeSystem' | translate }}</ion-label></ion-segment-button>
+        <ion-segment-button value="light"><ion-label>{{ 'settings.themeLight' | translate }}</ion-label></ion-segment-button>
+        <ion-segment-button value="dark"><ion-label>{{ 'settings.themeDark' | translate }}</ion-label></ion-segment-button>
+      </ion-segment>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label>{{ 'settings.fontSize' | translate }}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-range [min]="0.8" [max]="2" [step]="0.1" [value]="fontScale()" (ionChange)="setFontScale($event)"
+                 [attr.aria-label]="'settings.fontSize' | translate" />
+    </ion-item>
+    <ion-item>
+      <p class="dhikr-text preview" lang="ar">{{ 'settings.fontPreview' | translate }}</p>
+    </ion-item>
+
+    <ion-item>
+      <ion-toggle [checked]="settings().haptics" (ionChange)="setHaptics($event.detail.checked)">
+        {{ 'settings.haptics' | translate }}
+      </ion-toggle>
+    </ion-item>
+  </ion-list>
+
+  <!-- Phase 4 adds backup export/import, reset data, rate and share. -->
+
+  <ion-list inset>
+    <ion-list-header>{{ 'settings.privacy' | translate }}</ion-list-header>
+    <ion-item lines="none">
+      <ion-label class="ion-text-wrap">{{ 'settings.privacyText' | translate }}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list inset>
+    <ion-list-header>{{ 'settings.about' | translate }}</ion-list-header>
+    <ion-item>
+      <ion-label>{{ 'settings.version' | translate }}</ion-label>
+      <ion-note slot="end">{{ version }}</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <h3>{{ 'settings.credits' | translate }}</h3>
+        <p>{{ 'settings.quranCredit' | translate }}</p>
+        <p>{{ 'settings.fontCredit' | translate }}</p>
+        <p>{{ 'settings.contentNote' | translate }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

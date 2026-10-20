@@ -1,0 +1,25 @@
+:host { color: var(--ion-text-color); }
+main { max-inline-size: 40rem; margin-inline: auto; padding: 1rem; padding-block-end: calc(1.5rem + env(safe-area-inset-bottom)); }
+.counter-picker { display: flex; align-items: center; gap: .5rem; }
+.counter-picker ion-segment { min-inline-size: 0; }
+.dial { position: relative; inline-size: clamp(240px, 72vw, 320px); block-size: clamp(240px, 72vw, 320px); margin: 2rem auto; border-radius: 50%; }
+svg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; pointer-events: none; transform: rotate(-90deg); }
+circle { fill: none; stroke-width: 3; }
+.track { stroke: var(--app-border); }
+.progress { stroke: var(--ion-color-primary); stroke-linecap: round; transition: stroke-dashoffset .15s ease; }
+.count { position: absolute; inset: 10px; min-inline-size: 220px; min-block-size: 220px; border: 0; border-radius: 50%; background: var(--app-surface); color: var(--ion-text-color); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; touch-action: manipulation; font: inherit; }
+.count:focus-visible { outline: 3px solid var(--ion-color-primary); outline-offset: 3px; }
+.count:active { background: var(--app-border); }
+.number { font-size: clamp(2.5rem, 12vw, 4rem); font-weight: 700; line-height: 1.2; }
+.target, .hint { color: var(--app-muted); }
+.hint { margin-block-start: .75rem; font-size: .9rem; }
+h2 { font-size: 1rem; font-weight: 500; }
+ion-segment-button { min-inline-size: 0; --padding-start: .3rem; --padding-end: .3rem; }
+ion-label { white-space: normal; }
+.totals { text-align: center; padding-block: .5rem; color: var(--app-muted); }
+.totals strong { color: var(--ion-text-color); }
+.actions { display: flex; flex-wrap: wrap; justify-content: center; gap: .25rem; }
+.visually-hidden { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pulse { animation: target-pulse .45s ease-out; }
+@keyframes target-pulse { 50% { box-shadow: 0 0 0 10px var(--ion-color-primary); } }
+@media (prefers-reduced-motion: reduce) { .pulse { animation: none; outline: 3px solid var(--ion-color-primary); } .progress { transition: none; } }

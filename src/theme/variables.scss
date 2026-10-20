@@ -2,6 +2,12 @@
 // Text/background pairs meet WCAG AA (4.5:1) in both themes.
 
 :root {
+  // Edge-to-edge: prefer Capacitor's injected insets (accurate on older WebViews), fall back to env().
+  --ion-safe-area-top: var(--safe-area-inset-top, env(safe-area-inset-top));
+  --ion-safe-area-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom));
+  --ion-safe-area-left: var(--safe-area-inset-left, env(safe-area-inset-left));
+  --ion-safe-area-right: var(--safe-area-inset-right, env(safe-area-inset-right));
+
   --ion-color-primary: #0f6b5c;
   --ion-color-primary-rgb: 15, 107, 92;
   --ion-color-primary-contrast: #ffffff;

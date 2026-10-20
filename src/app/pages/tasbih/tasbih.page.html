@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar><ion-title>{{ 'tasbih.title' | translate }}</ion-title></ion-toolbar>
+</ion-header>
+<ion-content>
+  <main>
+    <div class="counter-picker">
+      <ion-segment scrollable [value]="active()?.id" (ionChange)="selectedId.set(+$any($event.detail.value))" [attr.aria-label]="'tasbih.counters' | translate">
+        @for (counter of tasbih.counters(); track counter.id) {
+          <ion-segment-button [value]="counter.id"><ion-label>{{ counter.name || ('tasbih.defaultName' | translate) }}</ion-label></ion-segment-button>
+        }
+      </ion-segment>
+      <ion-button fill="clear" (click)="editName(true)" [attr.aria-label]="'tasbih.addCounter' | translate"><ion-icon slot="icon-only" name="add-outline" aria-hidden="true" /></ion-button>
+    </div>
+    @if (active(); as counter) {
+      <div class="dial" [class.pulse]="pulse()">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="track" cx="50" cy="50" r="46" />
+          <circle class="progress" cx="50" cy="50" r="46" [attr.stroke-dasharray]="circumference" [attr.stroke-dashoffset]="offset()" />
+        </svg>
+        <button class="count" type="button" (click)="increment()" [attr.aria-label]="(counter.target ? 'tasbih.countButton' : 'tasbih.countButtonOpen') | translate: { count: counter.count, target: counter.target }">
+          <span class="number">{{ counter.count }}</span>
+          @if (counter.target) { <span class="target" dir="ltr">/ {{ counter.target }}</span> }
+          <span class="hint">{{ 'tasbih.tapToCount' | translate }}</span>
+        </button>
+      </div>
+      <span class="visually-hidden" aria-live="polite" aria-atomic="true">{{ 'tasbih.countButtonOpen' | translate: { count: counter.count } }}</span>
+      <section [attr.aria-label]="'tasbih.target' | translate">
+        <h2>{{ 'tasbih.target' | translate }}</h2>
+        <ion-segment #targets [value]="targetChoice()" (ionChange)="$event.detail.value !== 'custom' && chooseTarget($event.detail.value)">
+          <ion-segment-button value="33"><ion-label>33</ion-label></ion-segment-button>
+          <ion-segment-button value="100"><ion-label>100</ion-label></ion-segment-button>
+          <ion-segment-button value="custom" (click)="chooseTarget('custom', targets)"><ion-label>{{ 'tasbih.custom' | translate }}</ion-label></ion-segment-button>
+          <ion-segment-button value="0"><ion-label>{{ 'tasbih.noTarget' | translate }}</ion-label></ion-segment-button>
+        </ion-segment>
+      </section>
+      <div class="totals">
+        <p>{{ 'tasbih.today' | translate }}: <strong>{{ tasbih.todayTotals().get(counter.id) ?? 0 }}</strong></p>
+        <p>{{ 'tasbih.todayTotal' | translate: { count: tasbih.todayGrandTotal() } }}</p>
+      </div>
+      <div class="actions">
+        <ion-button fill="outline" (click)="confirm('reset')"><ion-icon slot="start" name="refresh-outline" aria-hidden="true" />{{ 'tasbih.reset' | translate }}</ion-button>
+        <ion-button fill="clear" (click)="editName()"><ion-icon slot="start" name="pencil-outline" aria-hidden="true" />{{ 'tasbih.rename' | translate }}</ion-button>
+        <ion-button fill="clear" [disabled]="tasbih.counters().length <= 1" (click)="confirm('delete')"><ion-icon slot="start" name="trash-outline" aria-hidden="true" />{{ 'tasbih.delete' | translate }}</ion-button>
+      </div>
+    }
+  </main>
+</ion-content>

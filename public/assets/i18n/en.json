@@ -1,10 +1,29 @@
 {
-  "app": { "name": "Muslim Athkar" },
-  "tabs": { "home": "Home", "tasbih": "Tasbih", "myAthkar": "My Athkar", "settings": "Settings" },
+  "app": {
+    "name": "Muslim Athkar"
+  },
+  "tabs": {
+    "home": "Home",
+    "tasbih": "Tasbih",
+    "myAthkar": "My Athkar",
+    "settings": "Settings"
+  },
   "common": {
-    "save": "Save", "cancel": "Cancel", "delete": "Delete", "edit": "Edit", "add": "Add",
-    "reset": "Reset", "done": "Done", "close": "Close", "next": "Next", "previous": "Previous",
-    "share": "Share", "back": "Back", "times": "{{count}}×", "reorder": "Reorder", "finishReorder": "Done reordering"
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "reset": "Reset",
+    "done": "Done",
+    "close": "Close",
+    "next": "Next",
+    "previous": "Previous",
+    "share": "Share",
+    "back": "Back",
+    "times": "{{count}}×",
+    "reorder": "Reorder",
+    "finishReorder": "Done reordering"
   },
   "home": {
     "title": "Muslim Athkar",
@@ -43,7 +62,8 @@
     "backToList": "Back to list",
     "readAgain": "Read again",
     "quranAttribution": "Quran text: Tanzil Project (tanzil.net)",
-    "counterButton": "Count. {{count}} of {{total}}"
+    "counterButton": "Count. {{count}} of {{total}}",
+    "shareFailed": "Could not create the image."
   },
   "tasbih": {
     "title": "Tasbih",
@@ -66,6 +86,8 @@
     "tapToCount": "Tap to count",
     "counters": "Counters",
     "countButton": "Count. {{count}} of {{target}}",
+    "error": "Could not save your changes. Please try again.",
+    "targetRange": "Enter a whole number from 0 to 100000 (0 means no target).",
     "countButtonOpen": "Count. {{count}}"
   },
   "myAthkar": {
@@ -104,5 +126,8 @@
     "fontCredit": "Arabic font: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
     "contentNote": "Every hadith shows its source. Content is being reviewed by qualified people before release."
   },
-  "language": { "ar": "العربية", "en": "English" }
+  "language": {
+    "ar": "العربية",
+    "en": "English"
+  }
 }

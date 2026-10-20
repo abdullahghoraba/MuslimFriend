@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ 'home.title' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Phase 3 adds the next-prayer card here. -->
+
+  <h2 class="section-title">{{ 'home.today' | translate }}</h2>
+  <div class="daily">
+    @for (d of daily(); track d.categoryId) {
+      <button type="button" class="daily-card ion-activatable" (click)="openReader(d.categoryId)"
+              [attr.aria-label]="(d.labelKey | translate) + ', ' + ((d.progress.completed ? 'home.statusDone' : 'home.statusPending') | translate) + ', ' + ('home.progress' | translate: { done: d.progress.done, total: d.progress.total })">
+        <ion-icon [name]="d.icon" aria-hidden="true" class="daily-icon" />
+        <span class="daily-label">{{ d.labelKey | translate }}</span>
+        <span class="status" [class.done]="d.progress.completed">
+          @if (d.progress.completed) {
+            <ion-icon name="checkmark-circle" aria-hidden="true" />
+            {{ 'home.statusDone' | translate }}
+          } @else {
+            {{ 'home.progress' | translate: { done: d.progress.done, total: d.progress.total } }}
+          }
+        </span>
+        <ion-progress-bar [value]="d.progress.total ? d.progress.done / d.progress.total : 0"
+                          [color]="d.progress.completed ? 'success' : 'primary'" aria-hidden="true" />
+        <ion-ripple-effect />
+      </button>
+    }
+  </div>
+
+  <ion-list lines="none" class="shortcuts" inset>
+    @if (position(); as p) {
+      <ion-item button detail (click)="openReader(p.categoryId, p.index)">
+        <ion-icon slot="start" name="play-forward-outline" aria-hidden="true" />
+        <ion-label>
+          <h3>{{ 'home.continue' | translate }}</h3>
+          <p>{{ 'home.continueItem' | translate: { category: categoryName(positionCategory(p)), index: p.index + 1 } }}</p>
+        </ion-label>
+      </ion-item>
+    }
+    <ion-item button detail routerLink="/tasbih">
+      <ion-icon slot="start" name="ellipse-outline" aria-hidden="true" />
+      <ion-label>{{ 'home.quickTasbih' | translate }}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <h2 class="section-title">{{ 'home.categories' | translate }}</h2>
+  <div class="grid">
+    @for (c of categories(); track c.id) {
+      <a class="tile ion-activatable" [routerLink]="['/category', c.id]">
+        <ion-icon [name]="c.icon" aria-hidden="true" />
+        <span>{{ categoryName(c) }}</span>
+        <ion-ripple-effect />
+      </a>
+    }
+  </div>
+</ion-content>

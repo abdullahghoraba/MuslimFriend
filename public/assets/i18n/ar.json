@@ -1,10 +1,29 @@
 {
-  "app": { "name": "أذكار المسلم" },
-  "tabs": { "home": "الرئيسية", "tasbih": "السبحة", "myAthkar": "أذكاري", "settings": "الإعدادات" },
+  "app": {
+    "name": "أذكار المسلم"
+  },
+  "tabs": {
+    "home": "الرئيسية",
+    "tasbih": "السبحة",
+    "myAthkar": "أذكاري",
+    "settings": "الإعدادات"
+  },
   "common": {
-    "save": "حفظ", "cancel": "إلغاء", "delete": "حذف", "edit": "تعديل", "add": "إضافة",
-    "reset": "تصفير", "done": "تم", "close": "إغلاق", "next": "التالي", "previous": "السابق",
-    "share": "مشاركة", "back": "رجوع", "times": "{{count}} مرة", "reorder": "ترتيب", "finishReorder": "إنهاء الترتيب"
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "add": "إضافة",
+    "reset": "تصفير",
+    "done": "تم",
+    "close": "إغلاق",
+    "next": "التالي",
+    "previous": "السابق",
+    "share": "مشاركة",
+    "back": "رجوع",
+    "times": "{{count}} مرة",
+    "reorder": "ترتيب",
+    "finishReorder": "إنهاء الترتيب"
   },
   "home": {
     "title": "أذكار المسلم",
@@ -43,7 +62,8 @@
     "backToList": "العودة إلى القائمة",
     "readAgain": "اقرأ مرة أخرى",
     "quranAttribution": "نص القرآن: مشروع تنزيل (tanzil.net)",
-    "counterButton": "عدّ. {{count}} من {{total}}"
+    "counterButton": "عدّ. {{count}} من {{total}}",
+    "shareFailed": "تعذّر إنشاء الصورة."
   },
   "tasbih": {
     "title": "السبحة",
@@ -66,6 +86,8 @@
     "tapToCount": "اضغط للعد",
     "counters": "العدادات",
     "countButton": "عدّ. {{count}} من {{target}}",
+    "error": "تعذر حفظ التغييرات. يرجى المحاولة مرة أخرى.",
+    "targetRange": "أدخل عددًا صحيحًا من 0 إلى 100000 (0 يعني بلا هدف).",
     "countButtonOpen": "عدّ. {{count}}"
   },
   "myAthkar": {
@@ -104,5 +126,8 @@
     "fontCredit": "الخط العربي: أميري، © مؤلفو مشروع أميري، رخصة SIL المفتوحة للخطوط 1.1",
     "contentNote": "كل حديث معروض مع مصدره. تتم مراجعة المحتوى من قِبل متخصصين قبل الإصدار."
   },
-  "language": { "ar": "العربية", "en": "English" }
+  "language": {
+    "ar": "العربية",
+    "en": "English"
+  }
 }

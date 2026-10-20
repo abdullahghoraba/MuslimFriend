@@ -1,0 +1,99 @@
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--app-muted);
+  margin: 20px 16px 8px;
+}
+
+.daily {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding-inline: 16px;
+}
+
+.daily-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+  color: var(--ion-text-color);
+  font: inherit;
+  text-align: start;
+  min-height: 48px;
+
+  ion-progress-bar {
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+}
+
+.daily-icon {
+  font-size: 1.6rem;
+  color: var(--ion-color-secondary);
+}
+
+.daily-label {
+  font-weight: 600;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.875rem;
+  color: var(--app-muted);
+
+  &.done {
+    color: var(--ion-color-success);
+  }
+}
+
+.shortcuts {
+  margin-top: 16px;
+
+  ion-item {
+    --background: var(--app-surface);
+  }
+
+  ion-icon {
+    color: var(--ion-color-primary);
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  padding: 0 16px 24px;
+}
+
+.tile {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 104px;
+  padding: 12px;
+  border-radius: 18px;
+  background: var(--app-surface-strong);
+  color: var(--ion-text-color);
+  text-decoration: none;
+  text-align: center;
+  font-weight: 600;
+  line-height: 1.4;
+
+  ion-icon {
+    font-size: 1.75rem;
+    color: var(--ion-color-primary);
+  }
+}
