@@ -69,4 +69,8 @@ export const MIGRATIONS: Migration[] = [
     `CREATE TABLE IF NOT EXISTS khatmah (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, start_page INTEGER, target_days INTEGER, started_on TEXT, current_page INTEGER, completed_at INTEGER NULL, created_at INTEGER);`,
     `CREATE TABLE IF NOT EXISTS quran_reading_log (date TEXT, page INTEGER, PRIMARY KEY(date, page));`,
   ] },
+  { version: 3, statements: [
+    `CREATE TABLE IF NOT EXISTS user_category (id TEXT PRIMARY KEY, name TEXT NOT NULL, icon TEXT NOT NULL DEFAULT 'layers-outline', show_on_home INTEGER NOT NULL DEFAULT 1, sort_order INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL);`,
+    `CREATE TABLE IF NOT EXISTS home_hidden (category_id TEXT PRIMARY KEY);`,
+  ] },
 ];

@@ -78,7 +78,7 @@
               <span class="sura-info">{{ h.type === 'Meccan' ? 'مكية' : 'مدنية' }} · آياتها {{ h.ayas }}</span>
             </div>
             @if (b.basmala) {
-              <div class="basmala">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
+              <div class="basmala">{{ b.basmalaText }}</div>
             }
           }
           <span class="ayah" role="button" tabindex="0" [attr.data-ayah]="b.ayah.sura + ':' + b.ayah.aya"

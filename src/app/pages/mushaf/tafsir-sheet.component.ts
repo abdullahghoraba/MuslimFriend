@@ -8,26 +8,32 @@ import {
   IonLabel,
   IonSegment,
   IonSegmentButton,
+  IonSelect,
+  IonSelectOption,
   IonSpinner,
   IonTitle,
   IonToolbar,
   ModalController,
+  NavController,
 } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AyahRef, TAFSIR_IDS, TafsirId, arabicDigits, splitBasmala } from '../../core/quran/quran-utils';
 import { QuranService } from '../../core/quran/quran.service';
+import { REMOTE_TAFSIRS, TafsirLibraryService } from '../../core/quran/tafsir-library.service';
 import { SettingsService } from '../../core/services/settings.service';
 import { ShareService } from '../../core/services/share.service';
 
 const TAFSIR_PREF = 'tafsirChoice';
+/** Bundled id ('muyassar' | 'jalalayn' | 'sahih') or a downloadable one ('r14', 'r91', ...). */
+type Source = TafsirId | `r${number}`;
 
 /** Tafsir / translation for one ayah, with next/previous ayah navigation. Opened as a sheet modal. */
 @Component({
   selector: 'app-tafsir-sheet',
   imports: [
     TranslatePipe, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonContent, IonSegment,
-    IonSegmentButton, IonLabel, IonSpinner,
+    IonSegmentButton, IonLabel, IonSpinner, IonSelect, IonSelectOption,
   ],
   template: `
     <ion-header>
@@ -40,31 +46,50 @@ const TAFSIR_PREF = 'tafsirChoice';
         </ion-buttons>
       </ion-toolbar>
       <ion-toolbar>
-        <ion-segment [value]="source()" (ionChange)="setSource($event.detail.value)">
+        <ion-segment [value]="isRemote() ? 'more' : source()" (ionChange)="onSegment($event.detail.value)">
           @for (id of ids; track id) {
             <ion-segment-button [value]="id">
               <ion-label>{{ sourceName(id) }}</ion-label>
             </ion-segment-button>
           }
+          <ion-segment-button value="more">
+            <ion-label>{{ 'tafsirLib.more' | translate }}</ion-label>
+          </ion-segment-button>
         </ion-segment>
       </ion-toolbar>
+      @if (isRemote() || showMore()) {
+        <ion-toolbar>
+          <ion-select [label]="'tafsirLib.choose' | translate" interface="action-sheet" [value]="source()"
+                      (ionChange)="setSource($event.detail.value)">
+            @for (t of remote; track t.apiId) {
+              <ion-select-option [value]="'r' + t.apiId">{{ lang() === 'ar' ? t.nameAr : t.nameEn }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-toolbar>
+      }
     </ion-header>
     <ion-content class="ion-padding">
       <p class="quran-text ayah">{{ ayahText() }} <span class="num">﴿{{ num() }}﴾</span></p>
       @if (loading()) {
         <ion-spinner />
+      } @else if (unavailable()) {
+        <div class="offline">
+          <p>{{ 'tafsirLib.offlineMissing' | translate }}</p>
+          <ion-button size="small" (click)="openLibrary()">{{ 'tafsirLib.openLibrary' | translate }}</ion-button>
+        </div>
       } @else {
-        <p class="tafsir" [attr.dir]="source() === 'sahih' ? 'ltr' : 'rtl'" [attr.lang]="source() === 'sahih' ? 'en' : 'ar'">
-          {{ text() }}
-        </p>
+        @if (covered()) {
+          <p class="covered">{{ 'tafsirLib.covered' | translate }}</p>
+        }
+        <p class="tafsir" [attr.dir]="textLang() === 'en' ? 'ltr' : 'rtl'" [attr.lang]="textLang()">{{ text() }}</p>
       }
-      <p class="source">{{ sourceBy() }} · tanzil.net</p>
+      <p class="source">{{ sourceBy() }}</p>
       <div class="nav">
         <ion-button fill="clear" (click)="step(-1)" [disabled]="index() === 0">
           <ion-icon slot="start" name="chevron-forward" class="prev" aria-hidden="true" />
           {{ 'mushaf.prevAyah' | translate }}
         </ion-button>
-        <ion-button fill="clear" (click)="share()">
+        <ion-button fill="clear" (click)="share()" [disabled]="!text()">
           <ion-icon slot="icon-only" name="share-social-outline" [attr.aria-label]="'common.share' | translate" />
         </ion-button>
         <ion-button fill="clear" (click)="step(1)" [disabled]="index() === 6235">
@@ -79,7 +104,8 @@ const TAFSIR_PREF = 'tafsirChoice';
     .num { color: var(--ion-color-secondary); }
     .tafsir { font-size: calc(1.05rem * var(--dhikr-font-scale, 1)); line-height: 1.9; white-space: pre-line; }
     .tafsir[dir='rtl'] { font-family: 'Amiri', serif; font-size: calc(1.2rem * var(--dhikr-font-scale, 1)); }
-    .source { font-size: 0.8rem; color: var(--app-muted); }
+    .covered, .source { font-size: 0.8rem; color: var(--app-muted); }
+    .offline { text-align: center; color: var(--app-muted); padding: 16px 0; }
     .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
     :host-context([dir='ltr']) .prev, :host-context([dir='ltr']) .next { transform: scaleX(-1); }
   `,
@@ -88,43 +114,66 @@ export class TafsirSheetComponent implements OnInit {
   readonly ayahRef = input.required<AyahRef>();
 
   private readonly quran = inject(QuranService);
+  private readonly library = inject(TafsirLibraryService);
   private readonly settings = inject(SettingsService);
   private readonly modalCtrl = inject(ModalController);
+  private readonly nav = inject(NavController);
   private readonly share$ = inject(ShareService);
 
   readonly ids = TAFSIR_IDS;
+  readonly remote = REMOTE_TAFSIRS;
   readonly index = signal(0);
-  readonly source = signal<TafsirId>('muyassar');
+  readonly source = signal<Source>('muyassar');
+  readonly showMore = signal(false);
   readonly text = signal('');
+  readonly covered = signal(false);
+  readonly unavailable = signal(false);
   readonly loading = signal(true);
 
+  readonly lang = computed(() => this.settings.settings().language);
+  readonly isRemote = computed(() => this.source().startsWith('r'));
+  readonly remoteInfo = computed(() => (this.isRemote() ? this.library.find(Number(this.source().slice(1))) : undefined));
+  readonly textLang = computed(() => (this.isRemote() ? this.remoteInfo()?.lang : this.source() === 'sahih' ? 'en' : 'ar') ?? 'ar');
   readonly ref = computed(() => this.quran.ayahAt(this.index()));
   readonly ayahText = computed(() => splitBasmala(this.ref(), this.ref().text).text);
   readonly num = computed(() => arabicDigits(this.ref().aya));
   readonly title = computed(() => {
     const r = this.ref();
     const s = this.quran.sura(r.sura);
-    return this.settings.settings().language === 'ar' ? `${s.name} · ${arabicDigits(r.aya)}` : `${s.tname} ${r.sura}:${r.aya}`;
+    return this.lang() === 'ar' ? `${s.name} · ${arabicDigits(r.aya)}` : `${s.tname} ${r.sura}:${r.aya}`;
   });
-  readonly sourceBy = computed(() => this.quran.meta.sources.tafsir[this.source()].by);
+  readonly sourceBy = computed(() => {
+    const r = this.remoteInfo();
+    if (r) return `${this.lang() === 'ar' ? r.nameAr : r.nameEn} · quran.com`;
+    return `${this.quran.meta.sources.tafsir[this.source() as TafsirId].by} · tanzil.net`;
+  });
 
   async ngOnInit(): Promise<void> {
     const { value } = await Preferences.get({ key: TAFSIR_PREF });
-    if (value && (TAFSIR_IDS as string[]).includes(value)) this.source.set(value as TafsirId);
-    else if (this.settings.settings().language === 'en') this.source.set('sahih');
+    if (value && (isBundled(value) || this.library.find(Number(value.slice(1))))) this.source.set(value as Source);
+    else if (this.lang() === 'en') this.source.set('sahih');
     this.index.set(this.quran.ayah(this.ayahRef()).index);
     await this.loadText();
   }
 
   sourceName(id: TafsirId): string {
     const s = this.quran.meta.sources.tafsir[id];
-    return this.settings.settings().language === 'ar' ? s.nameAr : s.nameEn;
+    return this.lang() === 'ar' ? s.nameAr : s.nameEn;
+  }
+
+  async onSegment(value: unknown): Promise<void> {
+    if (value === 'more') {
+      this.showMore.set(true);
+      return;
+    }
+    this.showMore.set(false);
+    await this.setSource(value);
   }
 
   async setSource(value: unknown): Promise<void> {
-    if (!(TAFSIR_IDS as unknown[]).includes(value)) return;
-    this.source.set(value as TafsirId);
-    await Preferences.set({ key: TAFSIR_PREF, value: value as string });
+    if (typeof value !== 'string' || !(isBundled(value) || this.library.find(Number(value.slice(1))))) return;
+    this.source.set(value as Source);
+    await Preferences.set({ key: TAFSIR_PREF, value });
     await this.loadText();
   }
 
@@ -135,20 +184,43 @@ export class TafsirSheetComponent implements OnInit {
 
   private async loadText(): Promise<void> {
     this.loading.set(true);
+    this.unavailable.set(false);
+    this.covered.set(false);
     try {
-      this.text.set(await this.quran.tafsir(this.source(), this.ref()));
+      const src = this.source();
+      if (src.startsWith('r')) {
+        const r = this.ref();
+        const result = await this.library.ayah(Number(src.slice(1)), r.sura, r.aya);
+        this.text.set(result.text);
+        this.covered.set(result.covered);
+      } else {
+        this.text.set(await this.quran.tafsir(src as TafsirId, this.ref()));
+      }
+    } catch {
+      this.text.set('');
+      this.unavailable.set(true);
     } finally {
       this.loading.set(false);
     }
   }
 
+  async openLibrary(): Promise<void> {
+    await this.close();
+    void this.nav.navigateForward('/tafsir-library');
+  }
+
   async share(): Promise<void> {
     const r = this.ref();
-    const body = `${this.ayahText()} ﴿${this.num()}﴾\n[${this.quran.sura(r.sura).name}: ${r.aya}]\n\n${this.sourceName(this.source())}:\n${this.text()}`;
+    const name = this.isRemote() ? (this.lang() === 'ar' ? this.remoteInfo()?.nameAr : this.remoteInfo()?.nameEn) : this.sourceName(this.source() as TafsirId);
+    const body = `${this.ayahText()} ﴿${this.num()}﴾\n[${this.quran.sura(r.sura).name}: ${r.aya}]\n\n${name}:\n${this.text()}`;
     await this.share$.shareText(this.title(), body);
   }
 
   close(): Promise<boolean> {
     return this.modalCtrl.dismiss();
   }
+}
+
+function isBundled(v: string): v is TafsirId {
+  return (TAFSIR_IDS as string[]).includes(v);
 }

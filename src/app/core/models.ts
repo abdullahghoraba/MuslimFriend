@@ -6,6 +6,8 @@ export interface Category {
   icon: string;
   nameAr: string;
   nameEn: string;
+  isUser?: boolean;
+  showOnHome?: boolean;
 }
 
 /** A dhikr as shipped in the bundled dataset (public/assets/data/athkar.json). */

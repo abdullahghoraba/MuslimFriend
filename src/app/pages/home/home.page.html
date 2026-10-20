@@ -10,7 +10,9 @@
     @if (next(); as n) {
       <span class="prayer-label">{{ 'prayer.next' | translate }}</span>
       <span class="prayer-name">{{ 'prayer.' + n.name | translate }}</span>
-      <span class="prayer-time">{{ time(n.at) }} · {{ 'prayer.in' | translate: { time: countdown(n.at) } }}</span>
+      <span class="prayer-time"
+        >{{ time(n.at) }} · {{ 'prayer.in' | translate: { time: countdown(n.at) } }}</span
+      >
     } @else {
       <span class="prayer-label">{{ 'prayer.setLocation' | translate }}</span>
     }
@@ -18,14 +20,26 @@
   </a>
 
   @if (overlayFallback()) {
-    <a class="fallback" routerLink="/overlay" role="status">{{ 'home.overlayFallback' | translate }}</a>
+    <a class="fallback" routerLink="/overlay" role="status">{{
+      'home.overlayFallback' | translate
+    }}</a>
   }
 
   <h2 class="section-title">{{ 'home.today' | translate }}</h2>
   <div class="daily">
     @for (d of daily(); track d.categoryId) {
-      <button type="button" class="daily-card ion-activatable" (click)="openReader(d.categoryId)"
-              [attr.aria-label]="(d.labelKey | translate) + ', ' + ((d.progress.completed ? 'home.statusDone' : 'home.statusPending') | translate) + ', ' + ('home.progress' | translate: { done: d.progress.done, total: d.progress.total })">
+      <button
+        type="button"
+        class="daily-card ion-activatable"
+        (click)="openReader(d.categoryId)"
+        [attr.aria-label]="
+          (d.labelKey | translate) +
+          ', ' +
+          ((d.progress.completed ? 'home.statusDone' : 'home.statusPending') | translate) +
+          ', ' +
+          ('home.progress' | translate: { done: d.progress.done, total: d.progress.total })
+        "
+      >
         <ion-icon [name]="d.icon" aria-hidden="true" class="daily-icon" />
         <span class="daily-label">{{ d.labelKey | translate }}</span>
         <span class="status" [class.done]="d.progress.completed">
@@ -36,8 +50,11 @@
             {{ 'home.progress' | translate: { done: d.progress.done, total: d.progress.total } }}
           }
         </span>
-        <ion-progress-bar [value]="d.progress.total ? d.progress.done / d.progress.total : 0"
-                          [color]="d.progress.completed ? 'success' : 'primary'" aria-hidden="true" />
+        <ion-progress-bar
+          [value]="d.progress.total ? d.progress.done / d.progress.total : 0"
+          [color]="d.progress.completed ? 'success' : 'primary'"
+          aria-hidden="true"
+        />
         <ion-ripple-effect />
       </button>
     }
@@ -51,7 +68,12 @@
         <ion-icon slot="start" name="play-forward-outline" aria-hidden="true" />
         <ion-label>
           <h3>{{ 'home.continue' | translate }}</h3>
-          <p>{{ 'home.continueItem' | translate: { category: categoryName(positionCategory(p)), index: p.index + 1 } }}</p>
+          <p>
+            {{
+              'home.continueItem'
+                | translate: { category: categoryName(positionCategory(p)), index: p.index + 1 }
+            }}
+          </p>
         </ion-label>
       </ion-item>
     }
@@ -61,7 +83,12 @@
     </ion-item>
   </ion-list>
 
-  <h2 class="section-title">{{ 'home.categories' | translate }}</h2>
+  <div class="categories-heading">
+    <h2 class="section-title">{{ 'home.categories' | translate }}</h2>
+    <ion-button size="small" fill="clear" (click)="customizeCategories()">{{
+      'home.customize' | translate
+    }}</ion-button>
+  </div>
   <div class="grid">
     @for (c of categories(); track c.id) {
       <a class="tile ion-activatable" [routerLink]="['/category', c.id]">

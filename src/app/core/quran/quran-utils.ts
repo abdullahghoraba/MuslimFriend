@@ -38,7 +38,10 @@ export const TOTAL_AYAT = 6236;
 export const TOTAL_PAGES = 604;
 
 /** The basmala exactly as it prefixes the first ayah of suras 2–114 (except 9) in the Tanzil Uthmani text. */
-export const BASMALA = 'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ';
+// Written with escapes so editors cannot reorder the marks: Tanzil puts shadda (0651) before fatha (064E).
+export const BASMALA =
+  'بِسْمِ ٱللَّهِ ' +
+  'ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ';
 
 export function globalIndex(meta: QuranMeta, ref: AyahRef): number {
   return meta.suras[ref.sura - 1].start + ref.aya - 1;
@@ -80,12 +83,20 @@ export function pageRange(meta: QuranMeta, page: number): [number, number] {
   return [from, to];
 }
 
-/** Splits the basmala off the first ayah of a sura for display (the text itself is unchanged). */
-export function splitBasmala(ref: AyahRef, text: string): { basmala: boolean; text: string } {
-  if (ref.aya === 1 && ref.sura !== 1 && ref.sura !== 9 && text.startsWith(BASMALA + ' ')) {
-    return { basmala: true, text: text.slice(BASMALA.length + 1) };
+/** Tanzil writes the basmala of suras 95 and 97 with a shadda on the first letter (بِّسْمِ). */
+const BASMALA_SHADDA = BASMALA[0] + 'ّ' + BASMALA.slice(1);
+
+/**
+ * Splits the basmala off the first ayah of a sura for display. Nothing is altered: `basmalaText`
+ * is the exact prefix found in the text (two spellings occur in Tanzil).
+ */
+export function splitBasmala(ref: AyahRef, text: string): { basmala: boolean; basmalaText: string; text: string } {
+  if (ref.aya === 1 && ref.sura !== 1 && ref.sura !== 9) {
+    for (const b of [BASMALA, BASMALA_SHADDA]) {
+      if (text.startsWith(b + ' ')) return { basmala: true, basmalaText: b, text: text.slice(b.length + 1) };
+    }
   }
-  return { basmala: false, text };
+  return { basmala: false, basmalaText: '', text };
 }
 
 /**

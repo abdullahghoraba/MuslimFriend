@@ -1,3 +1,4 @@
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { Preferences } from '@capacitor/preferences';
@@ -8,12 +9,18 @@ import { SettingsService } from './settings.service';
 
 vi.mock('@capacitor/preferences', () => {
   const values = new Map<string, string>();
-  return { Preferences: {
-    keys: async () => ({ keys: [...values.keys()] }),
-    get: async ({ key }: { key: string }) => ({ value: values.get(key) ?? null }),
-    set: async ({ key, value }: { key: string; value: string }) => { values.set(key, value); },
-    clear: async () => { values.clear(); },
-  } };
+  return {
+    Preferences: {
+      keys: async () => ({ keys: [...values.keys()] }),
+      get: async ({ key }: { key: string }) => ({ value: values.get(key) ?? null }),
+      set: async ({ key, value }: { key: string; value: string }) => {
+        values.set(key, value);
+      },
+      clear: async () => {
+        values.clear();
+      },
+    },
+  };
 });
 
 describe('BackupService', () => {
@@ -24,12 +31,22 @@ describe('BackupService', () => {
     await Preferences.clear();
     db = await createFakeDb();
     expect(db).not.toBeInstanceOf(StatementRecordingDb);
-    TestBed.configureTestingModule({ providers: [{ provide: DatabaseService, useValue: db }] });
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), { provide: DatabaseService, useValue: db }],
+    });
     service = TestBed.inject(BackupService);
     service.useDb(db);
     await db.batch([
-      { sql: "INSERT INTO athkar (id, category_id, text_ar, sort_order) VALUES ('builtin', 'morning', 'ذكر', 9)" },
-      { sql: "INSERT INTO athkar (id, category_id, text_ar, repeat_count, is_custom) VALUES ('custom', 'custom', 'سُبْحَانَ اللَّهِ', 3, 1)" },
+      {
+        sql: "INSERT INTO user_category VALUES ('col-test', 'الرقية الشرعية', 'book-outline', 0, 2, 123)",
+      },
+      { sql: "INSERT INTO home_hidden VALUES ('morning')" },
+      {
+        sql: "INSERT INTO athkar (id, category_id, text_ar, sort_order) VALUES ('builtin', 'morning', 'ذكر', 9)",
+      },
+      {
+        sql: "INSERT INTO athkar (id, category_id, text_ar, repeat_count, is_custom) VALUES ('custom', 'col-test', 'سُبْحَانَ اللَّهِ', 3, 1)",
+      },
       { sql: "INSERT INTO dhikr_daily VALUES ('2026-10-20', 'custom', 'app', 2)" },
       { sql: "INSERT INTO category_daily VALUES ('2026-10-20', 'morning', 123)" },
       { sql: "INSERT INTO tasbih_counter VALUES (4, 'تسبيح', 33, 7, 0, 123)" },
@@ -47,7 +64,18 @@ describe('BackupService', () => {
 
   it('round trips all user tables, settings and extra preferences', async () => {
     await db.batch([
-      ...['dhikr_daily', 'category_daily', 'tasbih_daily', 'tasbih_counter', 'quran_bookmark', 'quran_mark', 'khatmah', 'quran_reading_log'].map(table => ({ sql: 'DELETE FROM ' + table })),
+      ...[
+        'user_category',
+        'home_hidden',
+        'dhikr_daily',
+        'category_daily',
+        'tasbih_daily',
+        'tasbih_counter',
+        'quran_bookmark',
+        'quran_mark',
+        'khatmah',
+        'quran_reading_log',
+      ].map((table) => ({ sql: 'DELETE FROM ' + table })),
       { sql: 'DELETE FROM athkar WHERE is_custom = 1' },
       { sql: 'UPDATE athkar SET sort_order = 0' },
     ]);
@@ -60,13 +88,20 @@ describe('BackupService', () => {
     expect(original.extraPreferences).not.toHaveProperty('settings');
   });
 
-  it.each([['app', 'other', 'app'], ['formatVersion', 2, 'version']])('rejects incorrect %s', async (field, value, code) => {
+  it.each([
+    ['app', 'other', 'app'],
+    ['formatVersion', 2, 'version'],
+  ])('rejects incorrect %s', async (field, value, code) => {
     await expect(service.restore({ ...original, [field]: value })).rejects.toMatchObject({ code });
   });
 
   it.each([
-    { ...{ repeat_count: 0 } }, { repeat_count: 10001 }, { repeat_count: '3' }, { is_custom: 0 }, { created_at: -1 },
-  ])('rejects malformed custom row %j without changing data', async patch => {
+    { ...{ repeat_count: 0 } },
+    { repeat_count: 10001 },
+    { repeat_count: '3' },
+    { is_custom: 0 },
+    { created_at: -1 },
+  ])('rejects malformed custom row %j without changing data', async (patch) => {
     const file = structuredClone(original);
     Object.assign(file.data.customAthkar[0], patch);
     await expect(service.restore(file)).rejects.toBeInstanceOf(BackupError);
@@ -74,10 +109,21 @@ describe('BackupService', () => {
   });
 
   it('rejects malformed arrays, dates, settings and preferences', async () => {
-    const files: unknown[] = [null, { ...original, data: [] }, { ...original, settings: { ...original.settings, haptics: 'yes' } },
+    const files: unknown[] = [
+      null,
+      { ...original, data: [] },
+      { ...original, settings: { ...original.settings, haptics: 'yes' } },
       { ...original, extraPreferences: { settings: '{}' } },
-      { ...original, data: { ...original.data, dhikrDaily: [{ ...original.data.dhikrDaily[0], date: '20/10/2026' }] } }];
-    for (const file of files) await expect(service.restore(file)).rejects.toMatchObject({ code: 'invalid' });
+      {
+        ...original,
+        data: {
+          ...original.data,
+          dhikrDaily: [{ ...original.data.dhikrDaily[0], date: '20/10/2026' }],
+        },
+      },
+    ];
+    for (const file of files)
+      await expect(service.restore(file)).rejects.toMatchObject({ code: 'invalid' });
   });
 
   it('rolls back deletes and inserts if a validly typed row causes a SQL constraint failure', async () => {
@@ -90,21 +136,40 @@ describe('BackupService', () => {
 
   it('ignores unknown and custom ids in builtin userOrder', async () => {
     const file = structuredClone(original);
-    file.data.userOrder.push({ id: 'unknown', sort_order: 88, include_in_overlay: 0 }, { id: 'custom', sort_order: 99, include_in_overlay: 0 });
+    file.data.userOrder.push(
+      { id: 'unknown', sort_order: 88, include_in_overlay: 0 },
+      { id: 'custom', sort_order: 99, include_in_overlay: 0 },
+    );
     await service.restore(file);
     expect((await service.buildBackup()).data).toEqual(original.data);
   });
 
   it('restores legacy formatVersion 1 without the optional Quran arrays', async () => {
-    const old = structuredClone(original); delete old.data.quranBookmarks; delete old.data.quranMarks; delete old.data.khatmah; delete old.data.quranReadingLog;
-    await service.restore(old); const restored = await service.buildBackup();
-    expect(restored.data.quranBookmarks).toEqual([]); expect(restored.data.quranMarks).toEqual([]); expect(restored.data.khatmah).toEqual([]); expect(restored.data.quranReadingLog).toEqual([]);
+    const old = structuredClone(original);
+    delete old.data.userCategories;
+    delete old.data.homeHidden;
+    delete old.data.quranBookmarks;
+    delete old.data.quranMarks;
+    delete old.data.khatmah;
+    delete old.data.quranReadingLog;
+    await service.restore(old);
+    const restored = await service.buildBackup();
+    expect(restored.data.userCategories).toEqual([]);
+    expect(restored.data.homeHidden).toEqual([]);
+    expect(restored.data.quranBookmarks).toEqual([]);
+    expect(restored.data.quranMarks).toEqual([]);
+    expect(restored.data.khatmah).toEqual([]);
+    expect(restored.data.quranReadingLog).toEqual([]);
   });
   it('rejects malformed new arrays without deleting existing data', async () => {
-    const bad = structuredClone(original); bad.data.quranReadingLog = [{ date: '2026-10-20', page: 605 }];
-    await expect(service.restore(bad)).rejects.toBeInstanceOf(BackupError); expect((await service.buildBackup()).data).toEqual(original.data);
+    const bad = structuredClone(original);
+    bad.data.quranReadingLog = [{ date: '2026-10-20', page: 605 }];
+    await expect(service.restore(bad)).rejects.toBeInstanceOf(BackupError);
+    expect((await service.buildBackup()).data).toEqual(original.data);
   });
   it('maps JSON parse errors to invalid', async () => {
-    await expect(service.importFromFile({ text: async () => '{' } as File)).rejects.toMatchObject({ code: 'invalid' });
+    await expect(service.importFromFile({ text: async () => '{' } as File)).rejects.toMatchObject({
+      code: 'invalid',
+    });
   });
 });

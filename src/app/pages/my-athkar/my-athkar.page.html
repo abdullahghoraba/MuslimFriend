@@ -3,9 +3,16 @@
     <ion-title>{{ 'myAthkar.title' | translate }}</ion-title>
     @if (customCount() > 1) {
       <ion-buttons slot="end">
-        <ion-button (click)="reordering.set(!reordering())" [attr.aria-pressed]="reordering()"
-                    [attr.aria-label]="(reordering() ? 'common.finishReorder' : 'common.reorder') | translate">
-          <ion-icon slot="icon-only" [name]="reordering() ? 'checkmark-circle' : 'reorder-three-outline'" aria-hidden="true" />
+        <ion-button
+          (click)="reordering.set(!reordering())"
+          [attr.aria-pressed]="reordering()"
+          [attr.aria-label]="(reordering() ? 'common.finishReorder' : 'common.reorder') | translate"
+        >
+          <ion-icon
+            slot="icon-only"
+            [name]="reordering() ? 'checkmark-circle' : 'reorder-three-outline'"
+            aria-hidden="true"
+          />
         </ion-button>
       </ion-buttons>
     }
@@ -13,6 +20,41 @@
 </ion-header>
 
 <ion-content>
+  <ion-list inset>
+    <ion-list-header
+      ><ion-label>{{ 'myAthkar.collections' | translate }}</ion-label
+      ><ion-button size="small" (click)="editCollection()"
+        ><ion-icon slot="start" name="add-outline" aria-hidden="true" />{{
+          'myAthkar.newCollection' | translate
+        }}</ion-button
+      ></ion-list-header
+    >
+    @for (c of collections(); track c.id) {
+      <ion-item button [detail]="false" (click)="openList(c.id)">
+        <ion-icon slot="start" [name]="c.icon" aria-hidden="true" />
+        <ion-label dir="auto"
+          >{{ c.nameAr }}
+          <p>
+            {{ 'myAthkar.collectionCount' | translate: { count: collectionCount(c.id) } }}
+          </p></ion-label
+        >
+        <ion-button
+          slot="end"
+          fill="clear"
+          (click)="$event.stopPropagation(); collectionMenu(c)"
+          [attr.aria-label]="'myAthkar.collectionOptions' | translate"
+          ><ion-icon slot="icon-only" name="ellipsis-vertical" aria-hidden="true"
+        /></ion-button>
+      </ion-item>
+      <ion-item
+        ><ion-toggle
+          [checked]="c.showOnHome"
+          (ionChange)="toggleCollection(c, $event.detail.checked)"
+          >{{ 'myAthkar.showOnHome' | translate }}</ion-toggle
+        ></ion-item
+      >
+    }
+  </ion-list>
   @if (!items().length) {
     <div class="empty">
       <ion-icon name="create-outline" aria-hidden="true" />
@@ -25,10 +67,15 @@
         <ion-list-header>
           <ion-label>{{ g.name }}</ion-label>
           @if (g.categoryId !== customId) {
-            <ion-button size="small" (click)="openList(g.categoryId)">{{ 'myAthkar.openList' | translate }}</ion-button>
+            <ion-button size="small" (click)="openList(g.categoryId)">{{
+              'myAthkar.openList' | translate
+            }}</ion-button>
           }
         </ion-list-header>
-        <ion-reorder-group [disabled]="!reordering() || g.categoryId !== customId" (ionReorderEnd)="onReorder($event, g)">
+        <ion-reorder-group
+          [disabled]="!reordering() || g.categoryId !== customId"
+          (ionReorderEnd)="onReorder($event, g)"
+        >
           @for (d of g.items; track d.id) {
             <ion-item [button]="!reordering()" [detail]="false" (click)="!reordering() && open(d)">
               <ion-label class="ion-text-wrap">
@@ -37,7 +84,9 @@
                   <ion-note dir="auto">{{ d.meaningEn }}</ion-note>
                 }
               </ion-label>
-              <ion-note slot="end" class="repeat">{{ 'common.times' | translate: { count: d.repeatCount } }}</ion-note>
+              <ion-note slot="end" class="repeat">{{
+                'common.times' | translate: { count: d.repeatCount }
+              }}</ion-note>
               <ion-reorder slot="end" />
             </ion-item>
           }

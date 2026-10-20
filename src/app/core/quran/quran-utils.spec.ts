@@ -27,14 +27,14 @@ describe('Quran reference helpers',()=> {
 describe('splitBasmala',()=> {
   const text=BASMALA+' الم';
   it('removes only a prefixed basmala on the first ayah',()=> {
-    expect(splitBasmala({sura:2,aya:1},text)).toEqual({basmala:true,text:'الم'});
-    expect(splitBasmala({sura:114,aya:1},text)).toEqual({basmala:true,text:'الم'});
-    expect(splitBasmala({sura:2,aya:2},text)).toEqual({basmala:false,text});
+    expect(splitBasmala({sura:2,aya:1},text)).toEqual({basmala:true,basmalaText:BASMALA,text:'الم'});
+    expect(splitBasmala({sura:114,aya:1},text)).toEqual({basmala:true,basmalaText:BASMALA,text:'الم'});
+    expect(splitBasmala({sura:2,aya:2},text)).toEqual({basmala:false,basmalaText:'',text});
   });
   it('preserves Al-Fatiha, At-Tawbah, unprefixed and standalone basmala text',()=> {
-    for(const sura of [1,9]) expect(splitBasmala({sura,aya:1},text)).toEqual({basmala:false,text});
-    expect(splitBasmala({sura:2,aya:1},'الم')).toEqual({basmala:false,text:'الم'});
-    expect(splitBasmala({sura:2,aya:1},BASMALA)).toEqual({basmala:false,text:BASMALA});
+    for(const sura of [1,9]) expect(splitBasmala({sura,aya:1},text)).toEqual({basmala:false,basmalaText:'',text});
+    expect(splitBasmala({sura:2,aya:1},'الم')).toEqual({basmala:false,basmalaText:'',text:'الم'});
+    expect(splitBasmala({sura:2,aya:1},BASMALA)).toEqual({basmala:false,basmalaText:'',text:BASMALA});
   });
 });
 describe('Arabic search and digits',()=> {

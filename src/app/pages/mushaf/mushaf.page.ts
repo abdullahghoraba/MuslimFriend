@@ -42,6 +42,8 @@ interface PageBlock {
   /** Sura heading before this ayah (first ayah of a sura). */
   suraHeader?: { sura: number; name: string; ayas: number; type: string };
   basmala: boolean;
+  /** The basmala exactly as written before this ayah in the source text. */
+  basmalaText: string;
   ayah: Ayah;
   text: string;
   num: string;
@@ -107,6 +109,7 @@ export class MushafPage {
       return {
         suraHeader: ayah.aya === 1 ? { sura: s.index, name: s.name, ayas: s.ayas, type: s.type } : undefined,
         basmala: split.basmala,
+        basmalaText: split.basmalaText,
         ayah,
         text: split.text,
         num: arabicDigits(ayah.aya),

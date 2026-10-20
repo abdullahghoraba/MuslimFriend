@@ -1,6 +1,8 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
+  IonButton,
+  ModalController,
   IonContent,
   IonHeader,
   IonIcon,
@@ -21,6 +23,7 @@ import { SettingsService } from '../../core/services/settings.service';
 import { PrayerService } from '../../core/prayer/prayer.service';
 import { OverlayService } from '../../core/services/overlay.service';
 import { HijriDateComponent } from '../../shared/hijri-date.component';
+import { HomeCategoriesComponent } from '../../shared/home-categories.component';
 import { VerseOfDayComponent } from '../../shared/verse-of-day.component';
 
 interface DailyStatus {
@@ -33,8 +36,21 @@ interface DailyStatus {
 @Component({
   selector: 'app-home',
   imports: [
-    RouterLink, TranslatePipe, IonHeader, IonToolbar, IonTitle, IonContent, HijriDateComponent, VerseOfDayComponent,
-    IonIcon, IonList, IonItem, IonLabel, IonProgressBar, IonRippleEffect,
+    RouterLink,
+    TranslatePipe,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    HijriDateComponent,
+    VerseOfDayComponent,
+    IonButton,
+    IonIcon,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonProgressBar,
+    IonRippleEffect,
   ],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss',
@@ -47,12 +63,20 @@ export class HomePage {
   private readonly prayer = inject(PrayerService);
   private readonly overlay = inject(OverlayService);
 
-  readonly categories = this.athkar.categories;
+  readonly categories = this.athkar.homeCategories;
+  private readonly modals = inject(ModalController);
+
+  async customizeCategories(): Promise<void> {
+    const modal = await this.modals.create({ component: HomeCategoriesComponent });
+    await modal.present();
+  }
   readonly lang = computed(() => this.settings.settings().language);
   readonly daily = signal<DailyStatus[]>([]);
   readonly position = signal<ReaderPosition | null>(null);
   readonly next = this.prayer.next;
-  readonly overlayFallback = computed(() => this.overlay.overlay().enabled && !!this.overlay.fallbackReason());
+  readonly overlayFallback = computed(
+    () => this.overlay.overlay().enabled && !!this.overlay.fallbackReason(),
+  );
 
   ionViewWillEnter(): void {
     void this.refresh();
@@ -65,14 +89,22 @@ export class HomePage {
       ['evening', 'home.evening', 'moon-outline'],
     ] as const) {
       const items = await this.athkar.byCategory(categoryId);
-      statuses.push({ categoryId, labelKey, icon, progress: await this.progress.categoryProgress(categoryId, items) });
+      statuses.push({
+        categoryId,
+        labelKey,
+        icon,
+        progress: await this.progress.categoryProgress(categoryId, items),
+      });
     }
     this.daily.set(statuses);
     this.position.set(await this.settings.getReaderPosition());
   }
 
   time(d: Date): string {
-    return new Intl.DateTimeFormat(this.lang() === 'ar' ? 'ar-EG' : 'en-GB', { hour: 'numeric', minute: '2-digit' }).format(d);
+    return new Intl.DateTimeFormat(this.lang() === 'ar' ? 'ar-EG' : 'en-GB', {
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(d);
   }
 
   /** Hours and minutes until [d], relative to the prayer service's minute tick. */

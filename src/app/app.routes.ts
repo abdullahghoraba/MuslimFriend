@@ -57,6 +57,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/khatmah/khatmah.page').then((m) => m.KhatmahPage),
   },
   {
+    path: 'tafsir-library',
+    loadComponent: () => import('./pages/tafsir-library/tafsir-library.page').then((m) => m.TafsirLibraryPage),
+  },
+  {
     path: 'qibla',
     loadComponent: () => import('./pages/qibla/qibla.page').then((m) => m.QiblaPage),
   },

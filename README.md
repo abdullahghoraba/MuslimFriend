@@ -8,6 +8,27 @@ Arabic (default, RTL) and English.
 - Every dhikr shows its source; Quran text is copied verbatim from Tanzil at build time.
 - Athkar shown over other apps, reminders tied to prayer times, reorderable lists, tasbih, local stats.
 
+## Features
+
+- **Quran:** 604-page Madani layout (Tanzil Uthmani text, Amiri Quran font), juz/hizb/rub', paper/sepia/night themes,
+  tafsir per ayah (al-Muyassar, al-Jalalayn and Saheeh International bundled; 7 more downloadable for offline use),
+  14 reciters verse-by-verse (EveryAyah) with highlighting, repeat, range loop, speed and offline sura downloads,
+  coloured bookmarks, starred ayat, colour highlights with topics, notes, khatmah plans with daily wird, search
+  without diacritics, verse of the day, Qibla, Hijri date.
+- **Athkar:** every category on one page with a counter per dhikr, sources and grades, add your own dhikr to any list,
+  your own collections (e.g. Ruqyah) shown on Home, reorder anything, overlay over other apps, floating tasbih counter,
+  tasbih with targets, reminders tied to prayer times, statistics, backup.
+
+### Quran data pipeline
+
+`content/quran-sources/` holds the Tanzil metadata, tafsir and translation files (non-commercial use) and the Amiri
+Quran font. `node scripts/build-quran.mjs` validates them (114 suras, 30 juz, 240 rub', 604 pages, 15 sajdas) and writes
+`public/assets/quran/`. The basmala is displayed on its own line but the stored text is never altered
+(`src/app/core/quran/basmala.spec.ts` checks the split re-joins to the exact Tanzil text).
+
+Network use (the only one): recitation MP3s from everyayah.com and extra tafsirs from api.quran.com, both only on the
+user's request and cached on the device. Confirm the reciters' and tafsir publishers' terms before publishing.
+
 ## Stack (all versions pinned exactly)
 
 | Part | Version |

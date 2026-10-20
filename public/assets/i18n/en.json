@@ -40,7 +40,10 @@
     "continueItem": "{{category}} · item {{index}}",
     "overlayOn": "Overlay on",
     "overlayOff": "Overlay off",
-    "overlayFallback": "The overlay couldn't run, so athkar are shown as notifications. Tap to fix."
+    "overlayFallback": "The overlay couldn't run, so athkar are shown as notifications. Tap to fix.",
+    "customize": "Customize",
+    "customizeCategories": "Home categories",
+    "doneCustomizing": "Done"
   },
   "category": {
     "start": "Start reading",
@@ -123,7 +126,33 @@
     "addHere": "Add a dhikr to this list",
     "openList": "Open list",
     "positionHint": "New athkar are added at the end of the list. Use Reorder on the list to move them.",
-    "addAnywhereHint": "You can also add your own dhikr inside any list (for example Morning athkar) with the + button at the top of that list."
+    "addAnywhereHint": "You can also add your own dhikr inside any list (for example Morning athkar) with the + button at the top of that list.",
+    "collections": "My collections",
+    "newCollection": "New collection",
+    "editCollection": "Rename / icon",
+    "collectionName": "Collection name",
+    "collectionIcon": "Choose an icon",
+    "showOnHome": "Show on Home",
+    "emptyCollection": "Add the first dhikr to this collection",
+    "collectionCount": "{{count}} athkar",
+    "collectionOptions": "Collection options",
+    "deleteCollection": "Delete collection",
+    "deleteCollectionMove": "Delete and move its athkar to My Athkar",
+    "deleteCollectionAll": "Delete with its athkar",
+    "collectionIcons": {
+      "heart-outline": "Heart",
+      "star-outline": "Star",
+      "book-outline": "Book",
+      "moon-outline": "Moon",
+      "sunny-outline": "Sun",
+      "flag-outline": "Flag",
+      "layers-outline": "Layers",
+      "bookmark-outline": "Bookmark",
+      "hand-left-outline": "Hand",
+      "cloud-outline": "Cloud",
+      "pricetag-outline": "Tag",
+      "list-outline": "List"
+    }
   },
   "settings": {
     "title": "Settings",
@@ -151,7 +180,8 @@
     "privacyPolicy": "Privacy policy",
     "rate": "Rate the app",
     "shareApp": "Share the app",
-    "shareText": "Muslim Friend: Quran with tafsir, recitations and bookmarks, sourced athkar and prayer-time reminders. No ads."
+    "shareText": "Muslim Friend: Quran with tafsir, recitations and bookmarks, sourced athkar and prayer-time reminders. No ads.",
+    "tafsirLibrary": "Tafsir library (offline downloads)"
   },
   "language": {
     "ar": "العربية",
@@ -580,5 +610,22 @@
     "cancel": "Cancel",
     "error": "Could not load or save your plan. Please try again.",
     "invalid": "Enter a whole page number (1–604) and a positive whole number of days. End any active plan first."
+  },
+  "tafsirLib": {
+    "title": "Tafsir library",
+    "more": "More",
+    "choose": "Tafsir",
+    "bundled": "Included — always offline",
+    "alwaysOffline": "Offline",
+    "downloadable": "Download once, read offline",
+    "offlineCount": "{{n}} of {{total}} suras offline",
+    "download": "Download",
+    "done": "Downloaded. This tafsir now works offline.",
+    "failed": "Download stopped. Check your connection; already-saved suras stay offline.",
+    "deleteConfirm": "Delete the offline copy of {{name}}?",
+    "offlineMissing": "This sura of this tafsir isn't saved yet. Connect to the internet once, or download the whole tafsir from the library.",
+    "openLibrary": "Open tafsir library",
+    "covered": "This passage is explained together with the ayat before it:",
+    "note": "Every sura you open while online is saved automatically, so you can read it again offline. Extra tafsirs come from the public quran.com library."
   }
 }
