@@ -48,3 +48,4 @@ Thumbs.db
 *.keystore
 keystore.properties
 android/keystore.properties
+.gradle-build.log

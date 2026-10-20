@@ -35,9 +35,42 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
+
+        <!-- Shows athkar over other apps. specialUse: no other FGS type covers a user-enabled
+             reminder overlay. The subtype text is reviewed in the Play Console. -->
+        <service
+            android:name=".overlay.OverlayService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="User-enabled reminder overlay: while the user has turned it on, the app periodically (at a user-chosen interval, or on unlock) shows a short card with an Islamic remembrance (dhikr) over other apps for a few seconds. The service only listens for screen on/off/unlock and runs a timer; it does no networking and collects no data. The user can pause or stop it from the persistent notification." />
+        </service>
+
+        <receiver
+            android:name=".overlay.BootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".overlay.ReminderReceiver" android:exported="false" />
+        <receiver android:name=".overlay.PeriodicReceiver" android:exported="false" />
     </application>
 
-    <!-- Permissions -->
+    <!-- Overlay window and its foreground service -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- Reminders and the service notification (runtime permission on Android 13+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Restart the overlay and re-arm reminders after reboot -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Requested at runtime only if the user chooses automatic location for prayer times -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-feature android:name="android.hardware.location" android:required="false" />
 
     <!-- Fully offline: the WebView is served from local assets, so no network access is declared. -->
     <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />

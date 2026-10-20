@@ -20,12 +20,13 @@ import { Language, ThemeMode } from '../../core/models';
 import { AppearanceService } from '../../core/services/appearance.service';
 import { SettingsService } from '../../core/services/settings.service';
 import packageJson from '../../../../package.json';
+import { DataSectionComponent } from './data-section.component';
 
 @Component({
   selector: 'app-settings',
   imports: [
     TranslatePipe, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonLabel,
-    IonNote, IonSegment, IonSegmentButton, IonToggle, IonRange,
+    IonNote, IonSegment, IonSegmentButton, IonToggle, IonRange, DataSectionComponent,
   ],
   templateUrl: './settings.page.html',
   styleUrl: './settings.page.scss',

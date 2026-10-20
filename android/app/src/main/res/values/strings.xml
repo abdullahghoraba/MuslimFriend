@@ -4,4 +4,17 @@
     <string name="title_activity_main">Muslim Athkar</string>
     <string name="package_name">com.muslimathkar.app</string>
     <string name="custom_url_scheme">com.muslimathkar.app</string>
+
+    <string name="channel_overlay_service">Athkar over other apps</string>
+    <string name="channel_overlay_service_desc">Keeps the athkar overlay running. You can hide this notification here.</string>
+    <string name="channel_morning_evening">Morning and evening athkar</string>
+    <string name="channel_sleep">Sleep athkar</string>
+    <string name="channel_friday">Friday reminders</string>
+    <string name="channel_periodic">Periodic athkar</string>
+    <string name="channel_periodic_desc">Used when the overlay cannot run: shows a dhikr as a notification instead.</string>
+
+    <string name="overlay_notification_title">Athkar overlay is on</string>
+    <string name="overlay_notification_text">A dhikr will appear over your apps from time to time.</string>
+    <string name="overlay_action_pause">Pause 1 hour</string>
+    <string name="overlay_action_stop">Stop</string>
 </resources>

@@ -129,5 +129,21 @@
   "language": {
     "ar": "العربية",
     "en": "English"
+  },
+  "backup": {
+    "title": "Your data",
+    "export": "Export backup",
+    "import": "Import backup",
+    "reset": "Reset all data",
+    "resetWarning": "This will erase all your custom athkar, progress, counters and settings. This cannot be undone.",
+    "cancel": "Cancel",
+    "exportSuccess": "Backup is ready.",
+    "importSuccess": "Backup restored. The app will reload.",
+    "error": {
+      "invalid": "This backup file is invalid.",
+      "version": "This backup version is not supported.",
+      "app": "This backup belongs to another app.",
+      "generic": "The operation could not be completed. Please try again."
+    }
   }
 }
