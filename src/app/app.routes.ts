@@ -12,6 +12,7 @@ export const routes: Routes = [
     canActivate: [onboardingDone],
     children: [
       { path: 'home', loadComponent: () => import('./pages/home/home.page').then((m) => m.HomePage) },
+      { path: 'quran', loadComponent: () => import('./pages/quran/quran-index.page').then((m) => m.QuranIndexPage) },
       { path: 'tasbih', loadComponent: () => import('./pages/tasbih/tasbih.page').then((m) => m.TasbihPage) },
       { path: 'my-athkar', loadComponent: () => import('./pages/my-athkar/my-athkar.page').then((m) => m.MyAthkarPage) },
       { path: 'settings', loadComponent: () => import('./pages/settings/settings.page').then((m) => m.SettingsPage) },
@@ -37,6 +38,27 @@ export const routes: Routes = [
   {
     path: 'onboarding',
     loadComponent: () => import('./pages/onboarding/onboarding.page').then((m) => m.OnboardingPage),
+  },
+  {
+    // Mushaf reader: /mushaf/12 (page), optional ?sura=&aya= to highlight an ayah.
+    path: 'mushaf/:page',
+    loadComponent: () => import('./pages/mushaf/mushaf.page').then((m) => m.MushafPage),
+  },
+  {
+    path: 'quran-search',
+    loadComponent: () => import('./pages/quran-search/quran-search.page').then((m) => m.QuranSearchPage),
+  },
+  {
+    path: 'quran-marks',
+    loadComponent: () => import('./pages/quran-marks/quran-marks.page').then((m) => m.QuranMarksPage),
+  },
+  {
+    path: 'khatmah',
+    loadComponent: () => import('./pages/khatmah/khatmah.page').then((m) => m.KhatmahPage),
+  },
+  {
+    path: 'qibla',
+    loadComponent: () => import('./pages/qibla/qibla.page').then((m) => m.QiblaPage),
   },
   {
     path: 'privacy',
