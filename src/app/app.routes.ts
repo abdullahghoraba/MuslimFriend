@@ -16,9 +16,5 @@ export const routes: Routes = [
     path: 'category/:id',
     loadComponent: () => import('./pages/category/category.page').then((m) => m.CategoryPage),
   },
-  {
-    path: 'reader/:categoryId',
-    loadComponent: () => import('./pages/reader/reader.page').then((m) => m.ReaderPage),
-  },
   { path: '**', redirectTo: 'home' },
 ];

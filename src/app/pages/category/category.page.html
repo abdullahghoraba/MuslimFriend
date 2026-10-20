@@ -3,45 +3,134 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home" [text]="''" [attr.aria-label]="'common.back' | translate" />
     </ion-buttons>
-    <ion-title>{{ title() }}</ion-title>
+    <ion-title>
+      {{ title() }}
+      <span class="position">{{ 'category.itemProgress' | translate: { count: doneCount(), total: items().length } }}</span>
+    </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="reordering.set(!reordering())"
-                  [attr.aria-pressed]="reordering()"
+      <ion-button (click)="fontPanelOpen.set(!fontPanelOpen())" [attr.aria-expanded]="fontPanelOpen()"
+                  [attr.aria-label]="'reader.fontSize' | translate">
+        <ion-icon slot="icon-only" name="text-outline" aria-hidden="true" />
+      </ion-button>
+      <ion-button (click)="reordering.set(!reordering())" [attr.aria-pressed]="reordering()"
                   [attr.aria-label]="(reordering() ? 'common.finishReorder' : 'common.reorder') | translate">
         <ion-icon slot="icon-only" [name]="reordering() ? 'checkmark-circle' : 'reorder-three-outline'" aria-hidden="true" />
       </ion-button>
-      <ion-button (click)="resetToday()" [attr.aria-label]="'category.resetToday' | translate">
+      <ion-button (click)="resetAll()" [attr.aria-label]="'category.resetToday' | translate">
         <ion-icon slot="icon-only" name="refresh-outline" aria-hidden="true" />
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <ion-progress-bar [value]="items().length ? doneCount() / items().length : 0"
+                    [color]="allDone() ? 'success' : 'primary'" aria-hidden="true" />
+  @if (fontPanelOpen()) {
+    <ion-toolbar class="font-panel">
+      <ion-range [min]="0.8" [max]="2" [step]="0.1" [value]="fontScale()" (ionChange)="setFontScale($event)"
+                 [attr.aria-label]="'reader.fontSize' | translate">
+        <ion-icon slot="start" name="remove-outline" aria-hidden="true" />
+        <ion-icon slot="end" name="add-outline" aria-hidden="true" />
+      </ion-range>
+    </ion-toolbar>
+  }
 </ion-header>
 
 <ion-content>
   @if (reordering()) {
     <p class="hint">{{ 'category.reorderHint' | translate }}</p>
-  }
-  <ion-list>
-    <ion-reorder-group [disabled]="!reordering()" (ionReorderEnd)="onReorder($event)">
+    <ion-list>
+      <ion-reorder-group [disabled]="false" (ionReorderEnd)="onReorder($event)">
+        @for (d of items(); track d.id) {
+          <ion-item>
+            <ion-label class="ion-text-wrap">
+              <p class="preview" lang="ar" dir="rtl">{{ d.textAr }}</p>
+              <ion-note>{{ d.sourceRef }}</ion-note>
+            </ion-label>
+            <ion-reorder slot="end" />
+          </ion-item>
+        }
+      </ion-reorder-group>
+    </ion-list>
+  } @else {
+    <div class="cards">
       @for (d of items(); track d.id; let i = $index) {
-        <ion-item [button]="!reordering()" [detail]="false" (click)="open(i)">
-          <ion-label class="ion-text-wrap">
-            <p class="preview" lang="ar" dir="rtl">{{ preview(d) }}</p>
-            <ion-note>{{ d.sourceRef }}</ion-note>
-          </ion-label>
-          <ion-note slot="end" class="count" [class.done]="countOf(d) >= d.repeatCount"
-                    [attr.aria-label]="'category.itemProgress' | translate: { count: countOf(d), total: d.repeatCount }">
-            {{ countOf(d) }}/{{ d.repeatCount }}
-          </ion-note>
-          <ion-reorder slot="end" />
-        </ion-item>
-      }
-    </ion-reorder-group>
-  </ion-list>
-</ion-content>
+        <article class="card ion-activatable" role="button" tabindex="0" [attr.data-index]="i"
+                 [class.done]="isDone(d)"
+                 (click)="count(d, i)" (keydown)="onCardKey($event, d, i)"
+                 [attr.aria-label]="'reader.counterButton' | translate: { count: countOf(d), total: d.repeatCount }">
+          <p class="dhikr-text" lang="ar" dir="rtl">{{ d.textAr }}</p>
 
-<ion-footer class="ion-padding">
-  <ion-button expand="block" (click)="open(0)" [disabled]="!items().length || reordering()">
-    {{ 'category.start' | translate }}
-  </ion-button>
-</ion-footer>
+          @if (lang() === 'en') {
+            @if (d.transliteration) {
+              <p class="translit" lang="en">{{ d.transliteration }}</p>
+            }
+            @if (d.meaningEn) {
+              <p class="meaning" lang="en">{{ d.meaningEn }}</p>
+            }
+          }
+
+          <!-- Controls row: taps here never count. -->
+          <div class="bar" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+            <button type="button" class="link" (click)="toggleDetails(d)" [attr.aria-expanded]="openDetails().has(d.id)">
+              <ion-icon name="information-circle-outline" aria-hidden="true" />
+              {{ 'reader.details' | translate }}
+            </button>
+            <span class="spacer"></span>
+            <button type="button" class="icon-btn" (click)="shareImage(d)" [attr.aria-label]="'reader.shareImage' | translate">
+              <ion-icon name="share-social-outline" aria-hidden="true" />
+            </button>
+            @if (countOf(d) > 0) {
+              <button type="button" class="icon-btn" (click)="resetItem(d)" [attr.aria-label]="'reader.resetItem' | translate">
+                <ion-icon name="refresh-outline" aria-hidden="true" />
+              </button>
+            }
+            <button type="button" class="counter" (click)="count(d, i)"
+                    [attr.aria-label]="'reader.counterButton' | translate: { count: countOf(d), total: d.repeatCount }">
+              @if (isDone(d)) {
+                <ion-icon name="checkmark-circle" aria-hidden="true" />
+              } @else {
+                <span class="remaining">{{ d.repeatCount - countOf(d) }}</span>
+              }
+              <span class="of">{{ countOf(d) }}/{{ d.repeatCount }}</span>
+            </button>
+          </div>
+
+          @if (openDetails().has(d.id)) {
+            <dl class="details" (click)="$event.stopPropagation()">
+              <dt>{{ 'reader.source' | translate }}</dt>
+              <dd>{{ d.sourceRef }}</dd>
+              @if (d.grade) {
+                <dt>{{ 'reader.grade' | translate }}</dt>
+                <dd>{{ d.grade }}</dd>
+              }
+              @if (lang() === 'ar' ? d.virtueAr : d.virtueEn; as virtue) {
+                <dt>{{ 'reader.virtue' | translate }}</dt>
+                <dd>{{ virtue }}</dd>
+              }
+              @if (d.isQuran) {
+                <dd class="attribution">{{ 'reader.quranAttribution' | translate }}</dd>
+              }
+            </dl>
+          }
+        </article>
+      }
+
+      @if (allDone()) {
+        <section class="finished" aria-live="polite">
+          <ion-icon name="checkmark-circle" aria-hidden="true" />
+          <h2>{{ 'reader.finishedTitle' | translate }}</h2>
+          <p>{{ 'reader.finishedText' | translate }}</p>
+          <ion-button fill="outline" (click)="resetAll()">{{ 'reader.readAgain' | translate }}</ion-button>
+        </section>
+      }
+    </div>
+  }
+
+  <!-- Off-screen layout used only to render the "share as image" PNG. -->
+  @if (sharing(); as s) {
+    <div class="share-card" aria-hidden="true">
+      <p class="dhikr-text" lang="ar" dir="rtl">{{ s.textAr }}</p>
+      <p class="share-source">{{ s.sourceRef }}</p>
+      <p class="share-brand">{{ 'app.name' | translate }}</p>
+    </div>
+  }
+</ion-content>

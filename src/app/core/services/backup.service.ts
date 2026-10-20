@@ -1,0 +1,140 @@
+import { Injectable, inject } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
+import { Preferences } from '@capacitor/preferences';
+import { Share } from '@capacitor/share';
+import { DatabaseService, SqlDb } from '../db/database.service';
+import { AppSettings } from '../models';
+import { SettingsService } from './settings.service';
+
+type Row = Record<string, string | number | null>;
+export interface BackupFile {
+  app: 'muslim-athkar';
+  formatVersion: 1;
+  exportedAt: string;
+  settings: AppSettings;
+  extraPreferences: Record<string, string>;
+  data: { customAthkar: Row[]; userOrder: Row[]; dhikrDaily: Row[]; categoryDaily: Row[]; tasbihCounters: Row[]; tasbihDaily: Row[] };
+}
+export class BackupError extends Error {
+  constructor(readonly code: 'invalid' | 'version' | 'app') { super(code); this.name = 'BackupError'; }
+}
+
+type Check = (value: unknown) => boolean;
+const str: Check = v => typeof v === 'string';
+const id: Check = v => str(v) && (v as string).length > 0;
+const integer: Check = v => typeof v === 'number' && Number.isSafeInteger(v);
+const nonnegative: Check = v => integer(v) && (v as number) >= 0;
+const flag: Check = v => v === 0 || v === 1;
+const date: Check = v => str(v) && /^\d{4}-\d{2}-\d{2}$/.test(v as string);
+const record = (v: unknown): v is Record<string, unknown> => v !== null && typeof v === 'object' && !Array.isArray(v);
+const schemas: Record<keyof BackupFile['data'], Record<string, Check>> = {
+  customAthkar: { id, category_id: id, text_ar: str, transliteration: str, meaning_en: str,
+    repeat_count: v => integer(v) && (v as number) >= 1 && (v as number) <= 10000,
+    virtue_ar: str, virtue_en: str, source_ref: str, grade: str, reviewed: flag, is_quran: flag,
+    quran_ref: v => v === null || str(v), is_custom: v => v === 1, include_in_overlay: flag,
+    sort_order: integer, created_at: nonnegative },
+  userOrder: { id, sort_order: integer, include_in_overlay: flag },
+  dhikrDaily: { date, dhikr_id: id, source: v => v === 'app' || v === 'overlay', count: nonnegative },
+  categoryDaily: { date, category_id: id, completed_at: nonnegative },
+  tasbihCounters: { id: v => integer(v) && (v as number) > 0, name: str,
+    target: v => nonnegative(v) && (v as number) <= 100000, count: nonnegative, sort_order: integer, created_at: nonnegative },
+  tasbihDaily: { date, counter_id: v => integer(v) && (v as number) > 0, count: nonnegative },
+};
+function fields(value: unknown, schema: Record<string, Check>): boolean {
+  return record(value) && Object.keys(value).length === Object.keys(schema).length &&
+    Object.entries(schema).every(([key, check]) => Object.hasOwn(value, key) && check(value[key]));
+}
+function validate(value: unknown): asserts value is BackupFile {
+  if (!record(value)) throw new BackupError('invalid');
+  if (value['app'] !== 'muslim-athkar') throw new BackupError('app');
+  if (value['formatVersion'] !== 1) throw new BackupError('version');
+  if (!fields(value, { app: () => true, formatVersion: () => true,
+    exportedAt: v => str(v) && /^\d{4}-\d{2}-\d{2}T/.test(v as string) && Number.isFinite(Date.parse(v as string)),
+    settings: v => fields(v, { language: x => x === 'ar' || x === 'en', theme: x => ['system', 'light', 'dark'].includes(x as string),
+      fontScale: x => typeof x === 'number' && Number.isFinite(x) && x >= 0.8 && x <= 2,
+      haptics: x => typeof x === 'boolean', onboardingDone: x => typeof x === 'boolean' }),
+    extraPreferences: v => record(v) && Object.entries(v).every(([k, x]) => k !== 'settings' && str(x)),
+    data: v => record(v) && Object.keys(v).length === Object.keys(schemas).length &&
+      Object.entries(schemas).every(([key, schema]) => Array.isArray(v[key]) && (v[key] as unknown[]).every(row => fields(row, schema))),
+  })) throw new BackupError('invalid');
+}
+
+@Injectable({ providedIn: 'root' })
+export class BackupService {
+  private db: SqlDb = inject(DatabaseService);
+  private readonly settings = inject(SettingsService);
+  useDb(db: SqlDb): void { this.db = db; }
+
+  async buildBackup(): Promise<BackupFile> {
+    const extraPreferences: Record<string, string> = Object.create(null);
+    for (const key of (await Preferences.keys()).keys) {
+      if (key === 'settings') continue;
+      const { value } = await Preferences.get({ key });
+      if (value !== null) extraPreferences[key] = value;
+    }
+    return {
+      app: 'muslim-athkar', formatVersion: 1, exportedAt: new Date().toISOString(),
+      settings: { ...this.settings.settings() }, extraPreferences,
+      data: {
+        customAthkar: await this.db.query<Row>('SELECT * FROM athkar WHERE is_custom = 1 ORDER BY id'),
+        userOrder: await this.db.query<Row>('SELECT id, sort_order, include_in_overlay FROM athkar WHERE is_custom = 0 ORDER BY id'),
+        dhikrDaily: await this.db.query<Row>('SELECT * FROM dhikr_daily ORDER BY date, dhikr_id, source'),
+        categoryDaily: await this.db.query<Row>('SELECT * FROM category_daily ORDER BY date, category_id'),
+        tasbihCounters: await this.db.query<Row>('SELECT * FROM tasbih_counter ORDER BY id'),
+        tasbihDaily: await this.db.query<Row>('SELECT * FROM tasbih_daily ORDER BY date, counter_id'),
+      },
+    };
+  }
+
+  async restore(json: unknown): Promise<void> {
+    validate(json);
+    const statements: { sql: string; params?: unknown[] }[] = [
+      { sql: 'DELETE FROM athkar WHERE is_custom = 1' },
+      ...['dhikr_daily', 'category_daily', 'tasbih_counter', 'tasbih_daily'].map(table => ({ sql: 'DELETE FROM ' + table })),
+    ];
+    const tables = { customAthkar: 'athkar', dhikrDaily: 'dhikr_daily', categoryDaily: 'category_daily', tasbihCounters: 'tasbih_counter', tasbihDaily: 'tasbih_daily' } as const;
+    for (const key of Object.keys(tables) as (keyof typeof tables)[]) {
+      const columns = Object.keys(schemas[key]);
+      for (const row of json.data[key]) statements.push({
+        sql: 'INSERT INTO ' + tables[key] + ' (' + columns.join(',') + ') VALUES (' + columns.map(() => '?').join(',') + ')',
+        params: columns.map(column => row[column]),
+      });
+    }
+    for (const row of json.data.userOrder) statements.push({
+      sql: 'UPDATE athkar SET sort_order = ?, include_in_overlay = ? WHERE id = ? AND is_custom = 0',
+      params: [row['sort_order'], row['include_in_overlay'], row['id']],
+    });
+    await this.db.batch(statements);
+    // Preferences are separate storage and cannot participate in the SQLite transaction.
+    await this.settings.reset();
+    await this.settings.update(json.settings);
+    for (const [key, value] of Object.entries(json.extraPreferences)) await Preferences.set({ key, value });
+  }
+
+  async exportToFile(): Promise<void> {
+    const data = JSON.stringify(await this.buildBackup(), null, 2);
+    const name = 'muslim-athkar-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    if (Capacitor.isNativePlatform()) {
+      const { uri } = await Filesystem.writeFile({ path: name, data, directory: Directory.Cache, encoding: Encoding.UTF8 });
+      await Share.share({ files: [uri] });
+    } else {
+      const url = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+      const link = document.createElement('a');
+      link.href = url; link.download = name; document.body.appendChild(link);
+      try { link.click(); } finally { link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
+    }
+  }
+
+  async importFromFile(file: File): Promise<void> {
+    let json: unknown;
+    try { json = JSON.parse(await file.text()); } catch { throw new BackupError('invalid'); }
+    await this.restore(json);
+  }
+
+  async resetAll(): Promise<void> {
+    await this.db.batch(['athkar', 'dhikr_daily', 'category_daily', 'tasbih_counter', 'tasbih_daily', 'meta'].map(table => ({ sql: 'DELETE FROM ' + table })));
+    await this.settings.reset();
+    location.reload();
+  }
+}

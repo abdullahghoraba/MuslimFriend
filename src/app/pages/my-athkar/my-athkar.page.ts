@@ -119,6 +119,6 @@ export class MyAthkarPage {
   }
 
   read(): void {
-    void this.nav.navigateForward(['/reader', CUSTOM_CATEGORY_ID]);
+    void this.nav.navigateForward(['/category', CUSTOM_CATEGORY_ID]);
   }
 }

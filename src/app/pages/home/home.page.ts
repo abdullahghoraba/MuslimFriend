@@ -73,6 +73,6 @@ export class HomePage {
   }
 
   openReader(categoryId: string, start = 0): void {
-    void this.nav.navigateForward(['/reader', categoryId], { queryParams: { start } });
+    void this.nav.navigateForward(['/category', categoryId], { queryParams: { start } });
   }
 }
