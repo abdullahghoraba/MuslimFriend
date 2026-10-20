@@ -1,0 +1,14 @@
+[
+  { "id": "morning", "icon": "sunny-outline", "nameAr": "أذكار الصباح", "nameEn": "Morning Athkar" },
+  { "id": "evening", "icon": "moon-outline", "nameAr": "أذكار المساء", "nameEn": "Evening Athkar" },
+  { "id": "sleep", "icon": "bed-outline", "nameAr": "أذكار النوم", "nameEn": "Before Sleep" },
+  { "id": "waking", "icon": "alarm-outline", "nameAr": "أذكار الاستيقاظ", "nameEn": "Waking Up" },
+  { "id": "mosque", "icon": "business-outline", "nameAr": "دخول المسجد والخروج منه", "nameEn": "Entering & Leaving the Mosque" },
+  { "id": "after-prayer", "icon": "hand-left-outline", "nameAr": "أذكار بعد الصلاة", "nameEn": "After Prayer" },
+  { "id": "tasbih", "icon": "ellipse-outline", "nameAr": "التسبيح", "nameEn": "Tasbih" },
+  { "id": "istighfar", "icon": "refresh-outline", "nameAr": "الاستغفار", "nameEn": "Istighfar" },
+  { "id": "dua", "icon": "heart-outline", "nameAr": "أدعية مختارة", "nameEn": "Selected Du'a" },
+  { "id": "distress", "icon": "cloud-outline", "nameAr": "أدعية الكرب والهم", "nameEn": "Distress & Worry" },
+  { "id": "travel", "icon": "airplane-outline", "nameAr": "أذكار السفر", "nameEn": "Travel" },
+  { "id": "eating", "icon": "restaurant-outline", "nameAr": "أذكار الطعام", "nameEn": "Eating" }
+]
