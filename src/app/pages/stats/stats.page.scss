@@ -1,0 +1,22 @@
+:host { color: var(--ion-text-color); }
+main { max-width: 860px; margin-inline: auto; padding: 16px; padding-block-end: 32px; }
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+article, .panel { background: var(--app-surface); border: 1px solid var(--app-border); border-radius: 16px; padding: 16px; }
+article { background: var(--app-surface-strong); }
+h2 { font-size: 1rem; margin: 0 0 12px; line-height: 1.6; }
+article strong { display: block; color: var(--ion-color-primary); font-size: 1.35rem; }
+p { color: var(--app-muted); line-height: 1.7; }
+article p { margin-block-end: 0; font-size: .9rem; }
+.panel { margin-block-start: 16px; }
+.legend { display: flex; flex-wrap: wrap; gap: 20px; }
+.legend span::before { content: ''; display: inline-block; width: 12px; height: 12px; margin-inline-end: 8px; border-radius: 2px; }
+.athkar-key::before, .athkar-bar { background: var(--ion-color-primary); fill: var(--ion-color-primary); }
+.tasbih-key::before, .tasbih-bar { background: var(--ion-color-secondary); fill: var(--ion-color-secondary); }
+.chart-scroll { overflow-x: auto; }
+svg { display: block; width: 100%; min-width: 280px; direction: ltr; }
+svg.month { min-width: 1200px; }
+text { fill: var(--app-muted); font-size: 10px; font-family: inherit; }
+.baseline { stroke: var(--app-border); }
+.panel p strong { float: inline-end; color: var(--ion-text-color); }
+ion-progress-bar { --background: var(--app-surface-strong); --progress-background: var(--ion-color-success); height: 8px; border-radius: 4px; }
+@media (max-width: 360px) { .tiles { grid-template-columns: 1fr; } }

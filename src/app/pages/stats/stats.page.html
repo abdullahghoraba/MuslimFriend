@@ -1,0 +1,54 @@
+<ion-header [attr.dir]="lang() === 'ar' ? 'rtl' : 'ltr'">
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/settings" [text]="'stats.back' | translate" /></ion-buttons>
+    <ion-title>{{ 'stats.title' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <main [attr.dir]="lang() === 'ar' ? 'rtl' : 'ltr'" [attr.aria-busy]="loading()">
+    @if (loading()) { <p role="status">{{ 'stats.loading' | translate }}</p> }
+    @else if (failed()) { <p role="alert">{{ 'stats.error' | translate }}</p> }
+    @else {
+      <section class="tiles" [attr.aria-label]="'stats.summary' | translate">
+        <article><h2>{{ 'stats.today' | translate }}</h2><strong>{{ number(today().athkar + today().tasbih) }}</strong><p>{{ 'stats.totalDetail' | translate:{ athkar: number(today().athkar), tasbih: number(today().tasbih) } }}</p></article>
+        <article><h2>{{ 'stats.week' | translate }}</h2><strong>{{ number(week().athkar + week().tasbih) }}</strong><p>{{ 'stats.totalDetail' | translate:{ athkar: number(week().athkar), tasbih: number(week().tasbih) } }}</p></article>
+        <article><h2>{{ 'stats.morningStreak' | translate }}</h2><strong>{{ 'stats.current' | translate:{ count: number(morning().current) } }}</strong><p>{{ 'stats.best' | translate:{ count: number(morning().best) } }}</p></article>
+        <article><h2>{{ 'stats.eveningStreak' | translate }}</h2><strong>{{ 'stats.current' | translate:{ count: number(evening().current) } }}</strong><p>{{ 'stats.best' | translate:{ count: number(evening().best) } }}</p></article>
+      </section>
+      <section class="panel" aria-labelledby="activity-heading">
+        <h2 id="activity-heading">{{ 'stats.activity' | translate }}</h2>
+        <ion-segment [value]="days().toString()" (ionChange)="setDays($event)" [attr.aria-label]="'stats.period' | translate">
+          <ion-segment-button value="7"><ion-label>{{ 'stats.sevenDays' | translate }}</ion-label></ion-segment-button>
+          <ion-segment-button value="30"><ion-label>{{ 'stats.thirtyDays' | translate }}</ion-label></ion-segment-button>
+        </ion-segment>
+        <p class="legend"><span class="athkar-key">{{ 'stats.athkar' | translate }}</span><span class="tasbih-key">{{ 'stats.tasbih' | translate }}</span></p>
+        <div class="chart-scroll">
+          <svg [class.month]="days() === 30" [attr.viewBox]="'0 0 ' + (chart().length * 52) + ' 200'" role="img" [attr.aria-label]="'stats.chartSummary' | translate:{ days: number(days()), athkar: number(chartTotals().athkar), tasbih: number(chartTotals().tasbih) }">
+            <line x1="0" y1="150" [attr.x2]="chart().length * 52" y2="150" class="baseline" />
+            @for (day of chart(); track day.date; let i = $index) {
+              <g [attr.transform]="'translate(' + (i * 52) + ',0)'">
+                <rect x="12" width="28" [attr.y]="150 - height(day.athkar)" [attr.height]="height(day.athkar)" class="athkar-bar" />
+                <rect x="12" width="28" [attr.y]="150 - height(day.athkar + day.tasbih)" [attr.height]="height(day.tasbih)" class="tasbih-bar" />
+                <text x="26" y="175" text-anchor="middle">{{ dayLabel(day.date) }}</text>
+                @if (days() === 30) { <text x="26" y="193" text-anchor="middle">{{ day.date.slice(5) }}</text> }
+              </g>
+            }
+          </svg>
+        </div>
+        @if (chartTotals().athkar + chartTotals().tasbih === 0) { <p>{{ 'stats.empty' | translate }}</p> }
+        <table class="visually-hidden">
+          <caption>{{ 'stats.activity' | translate }}</caption>
+          <thead><tr><th scope="col">{{ 'stats.date' | translate }}</th><th scope="col">{{ 'stats.athkar' | translate }}</th><th scope="col">{{ 'stats.tasbih' | translate }}</th></tr></thead>
+          <tbody>@for (day of chart(); track day.date) { <tr><th scope="row">{{ day.date }}</th><td>{{ number(day.athkar) }}</td><td>{{ number(day.tasbih) }}</td></tr> }</tbody>
+        </table>
+      </section>
+      <section class="panel" aria-labelledby="completion-heading">
+        <h2 id="completion-heading">{{ 'stats.completion' | translate }}</h2>
+        <p id="morning-rate">{{ 'stats.morning' | translate }} <strong>{{ percent(morningRate()) }}</strong></p>
+        <ion-progress-bar [value]="morningRate()" color="success" aria-labelledby="morning-rate" />
+        <p id="evening-rate">{{ 'stats.evening' | translate }} <strong>{{ percent(eveningRate()) }}</strong></p>
+        <ion-progress-bar [value]="eveningRate()" color="success" aria-labelledby="evening-rate" />
+      </section>
+    }
+  </main>
+</ion-content>

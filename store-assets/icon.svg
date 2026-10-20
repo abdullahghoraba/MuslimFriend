@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="512" height="512">
+  <rect width="108" height="108" fill="#0F6B5C"/>
+  <g transform="translate(54 54) scale(1.25) translate(-54 -54)">
+    <path d="M26,55 a25,25 0 1,0 50,0 a25,25 0 1,0 -50,0 z" fill="#E0B66A"/>
+    <path d="M39,49 a21,21 0 1,0 42,0 a21,21 0 1,0 -42,0 z" fill="#0F6B5C"/>
+    <path d="M63.49,36.96 A13.5,13.5 0 0,1 59.29,63.48" fill="none" stroke="#F7F5F0" stroke-width="0.8" stroke-opacity="0.6"/>
+    <circle cx="63.49" cy="36.96" r="2.5" fill="#F7F5F0"/>
+    <circle cx="67.94" cy="39.08" r="2.5" fill="#F7F5F0"/>
+    <circle cx="71.32" cy="42.65" r="2.5" fill="#F7F5F0"/>
+    <circle cx="73.2" cy="47.19" r="2.5" fill="#F7F5F0"/>
+    <circle cx="73.33" cy="52.11" r="3.1" fill="#F7F5F0"/>
+    <circle cx="71.69" cy="56.75" r="2.5" fill="#F7F5F0"/>
+    <circle cx="68.5" cy="60.49" r="2.5" fill="#F7F5F0"/>
+    <circle cx="64.17" cy="62.84" r="2.5" fill="#F7F5F0"/>
+    <circle cx="59.29" cy="63.48" r="2.5" fill="#F7F5F0"/>
+    <line x1="59.29" y1="63.48" x2="56.79" y2="69.47999999999999" stroke="#F7F5F0" stroke-width="0.9"/>
+    <circle cx="56.79" cy="69.47999999999999" r="2.2" fill="#E0B66A"/>
+  </g>
+</svg>

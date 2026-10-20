@@ -10,7 +10,11 @@
     "watch": "ng build --watch --configuration development",
     "test": "npm run content:check && ng test --watch=false",
     "cap:sync": "npm run build && npx cap sync android",
-    "cap:open": "npx cap open android"
+    "cap:open": "npx cap open android",
+    "i18n": "node scripts/merge-i18n.mjs",
+    "test:android": "cd android && gradlew.bat testDebugUnitTest",
+    "release": "npm run i18n && npm run content && ng build && npx cap sync android && cd android && gradlew.bat bundleRelease",
+    "apk:debug": "npm run i18n && npm run content && ng build && npx cap sync android && cd android && gradlew.bat assembleDebug"
   },
   "private": true,
   "packageManager": "npm@10.9.8",

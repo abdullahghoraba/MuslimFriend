@@ -70,6 +70,7 @@ export interface AthkarOverlayPlugin {
   isIgnoringBatteryOptimizations(): Promise<{ ignoring: boolean }>;
   openBatteryOptimizationSettings(): Promise<{ opened: boolean }>;
   openAppSettings(): Promise<void>;
+  openStoreListing(): Promise<{ opened: boolean }>;
   getDeviceInfo(): Promise<{ manufacturer: string; sdkInt: number }>;
   getApproximateLocation(): Promise<{ latitude: number; longitude: number }>;
   addListener(event: 'launchRoute', listener: (e: { route: string }) => void): Promise<PluginListenerHandle>;
@@ -103,6 +104,7 @@ class AthkarOverlayWeb implements AthkarOverlayPlugin {
   async isIgnoringBatteryOptimizations() { return { ignoring: true }; }
   async openBatteryOptimizationSettings() { return { opened: false }; }
   async openAppSettings() {}
+  async openStoreListing() { return { opened: false }; }
   async getDeviceInfo() { return { manufacturer: 'web', sdkInt: 0 }; }
   async getApproximateLocation(): Promise<{ latitude: number; longitude: number }> {
     throw new Error('UNAVAILABLE');

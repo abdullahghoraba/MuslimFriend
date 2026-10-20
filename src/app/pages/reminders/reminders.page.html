@@ -1,0 +1,203 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/settings" [text]="''" [attr.aria-label]="'common.back' | translate" />
+    </ion-buttons>
+    <ion-title>{{ 'reminders.title' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (!notificationsGranted()) {
+    <div class="banner" role="status">
+      <p>{{ 'reminders.notificationsOff' | translate }}</p>
+      <ion-button size="small" (click)="enableNotifications()">{{ 'reminders.enableNotifications' | translate }}</ion-button>
+    </div>
+  }
+
+  <!-- Location -->
+  <ion-list inset>
+    <ion-list-header>{{ 'reminders.location' | translate }}</ion-list-header>
+    <ion-item>
+      <ion-icon slot="start" name="time-outline" aria-hidden="true" />
+      <ion-label class="ion-text-wrap">{{ locationLabel() }}</ion-label>
+    </ion-item>
+    <ion-item button (click)="cityPickerOpen.set(true)">
+      <ion-label>{{ 'reminders.chooseCity' | translate }}</ion-label>
+    </ion-item>
+    <ion-item button (click)="useApproximateLocation()" [disabled]="locating()">
+      <ion-label class="ion-text-wrap">
+        {{ 'reminders.useApprox' | translate }}
+        <p>{{ 'reminders.useApproxHint' | translate }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- Today's times -->
+  @if (today(); as t) {
+    <ion-list inset>
+      <ion-list-header>{{ 'reminders.todayTimes' | translate }}</ion-list-header>
+      @for (p of prayerNames; track p) {
+        <ion-item>
+          <ion-label>{{ 'prayer.' + p | translate }}</ion-label>
+          <ion-note slot="end" class="time">{{ time(t.times[p]) }}</ion-note>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <!-- Calculation -->
+  <ion-list inset>
+    <ion-list-header>{{ 'reminders.calculation' | translate }}</ion-list-header>
+    <ion-item>
+      <ion-select [label]="'reminders.method' | translate" interface="action-sheet" [value]="prayer().method"
+                  (ionChange)="setMethod($event.detail.value)">
+        @for (m of methods; track m) {
+          <ion-select-option [value]="m">{{ 'prayer.methods.' + m | translate }}</ion-select-option>
+        }
+      </ion-select>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label id="asr-label">{{ 'reminders.asr' | translate }}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-segment [value]="prayer().madhab" (ionChange)="setMadhab($event.detail.value)" aria-labelledby="asr-label">
+        <ion-segment-button value="shafi"><ion-label>{{ 'reminders.asrStandard' | translate }}</ion-label></ion-segment-button>
+        <ion-segment-button value="hanafi"><ion-label>{{ 'reminders.asrHanafi' | translate }}</ion-label></ion-segment-button>
+      </ion-segment>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label class="ion-text-wrap">
+        {{ 'reminders.adjustments' | translate }}
+        <p>{{ 'reminders.adjustmentsHint' | translate }}</p>
+      </ion-label>
+    </ion-item>
+    @for (p of prayerNames; track p) {
+      <ion-item>
+        <ion-label>{{ 'prayer.' + p | translate }}</ion-label>
+        <div slot="end" class="stepper">
+          <ion-button fill="clear" size="small" (click)="adjust(p, -1)"
+                      [attr.aria-label]="('reminders.minus' | translate) + ' ' + ('prayer.' + p | translate)">
+            <ion-icon slot="icon-only" name="remove-outline" aria-hidden="true" />
+          </ion-button>
+          <span class="value" aria-live="polite">{{ prayer().adjustments[p] > 0 ? '+' : '' }}{{ prayer().adjustments[p] }}</span>
+          <ion-button fill="clear" size="small" (click)="adjust(p, 1)"
+                      [attr.aria-label]="('reminders.plus' | translate) + ' ' + ('prayer.' + p | translate)">
+            <ion-icon slot="icon-only" name="add-outline" aria-hidden="true" />
+          </ion-button>
+        </div>
+      </ion-item>
+    }
+  </ion-list>
+
+  <!-- Reminders -->
+  <ion-list inset>
+    <ion-list-header>{{ 'reminders.reminders' | translate }}</ion-list-header>
+
+    <ion-item>
+      <ion-toggle [checked]="reminders().morning.enabled" (ionChange)="patch('morning', { enabled: $event.detail.checked })">
+        {{ 'reminders.morning' | translate }}
+      </ion-toggle>
+    </ion-item>
+    @if (reminders().morning.enabled) {
+      <ion-item>
+        <ion-select [label]="'reminders.minutesAfterFajr' | translate" [value]="reminders().morning.minutesAfterFajr"
+                    (ionChange)="patch('morning', { minutesAfterFajr: +$event.detail.value })">
+          @for (o of offsets; track o) {
+            <ion-select-option [value]="o">{{ 'reminders.minutes' | translate: { n: o } }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+    }
+
+    <ion-item>
+      <ion-toggle [checked]="reminders().evening.enabled" (ionChange)="patch('evening', { enabled: $event.detail.checked })">
+        {{ 'reminders.evening' | translate }}
+      </ion-toggle>
+    </ion-item>
+    @if (reminders().evening.enabled) {
+      <ion-item>
+        <ion-segment [value]="reminders().evening.anchor" (ionChange)="patch('evening', { anchor: $any($event.detail.value) })">
+          <ion-segment-button value="afterAsr"><ion-label>{{ 'reminders.afterAsr' | translate }}</ion-label></ion-segment-button>
+          <ion-segment-button value="beforeMaghrib"><ion-label>{{ 'reminders.beforeMaghrib' | translate }}</ion-label></ion-segment-button>
+        </ion-segment>
+      </ion-item>
+      <ion-item>
+        <ion-select [label]="'reminders.offset' | translate" [value]="reminders().evening.minutes"
+                    (ionChange)="patch('evening', { minutes: +$event.detail.value })">
+          @for (o of offsets; track o) {
+            <ion-select-option [value]="o">{{ 'reminders.minutes' | translate: { n: o } }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+    }
+
+    <ion-item>
+      <ion-toggle [checked]="reminders().sleep.enabled" (ionChange)="patch('sleep', { enabled: $event.detail.checked })">
+        {{ 'reminders.sleep' | translate }}
+      </ion-toggle>
+    </ion-item>
+    @if (reminders().sleep.enabled) {
+      <ion-item>
+        <ion-input type="time" [label]="'reminders.at' | translate" [value]="reminders().sleep.time"
+                   (ionChange)="patch('sleep', { time: '' + $event.detail.value })" />
+      </ion-item>
+    }
+
+    <ion-item>
+      <ion-toggle [checked]="reminders().fridayKahf.enabled" (ionChange)="patch('fridayKahf', { enabled: $event.detail.checked })">
+        {{ 'reminders.kahf' | translate }}
+      </ion-toggle>
+    </ion-item>
+    @if (reminders().fridayKahf.enabled) {
+      <ion-item>
+        <ion-input type="time" [label]="'reminders.at' | translate" [value]="reminders().fridayKahf.time"
+                   (ionChange)="patch('fridayKahf', { time: '' + $event.detail.value })" />
+      </ion-item>
+    }
+
+    <ion-item>
+      <ion-toggle [checked]="reminders().fridaySalawat.enabled" (ionChange)="patch('fridaySalawat', { enabled: $event.detail.checked })">
+        {{ 'reminders.salawat' | translate }}
+      </ion-toggle>
+    </ion-item>
+    @if (reminders().fridaySalawat.enabled) {
+      <ion-item>
+        <ion-input type="time" [label]="'reminders.at' | translate" [value]="reminders().fridaySalawat.time"
+                   (ionChange)="patch('fridaySalawat', { time: '' + $event.detail.value })" />
+      </ion-item>
+    }
+  </ion-list>
+
+  @if (!prayer().location) {
+    <p class="note">{{ 'reminders.needLocation' | translate }}</p>
+  }
+  <p class="note">{{ 'reminders.inexactNote' | translate }}</p>
+
+  <ion-modal [isOpen]="cityPickerOpen()" (didDismiss)="cityPickerOpen.set(false)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ 'reminders.chooseCity' | translate }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="cityPickerOpen.set(false)">{{ 'common.close' | translate }}</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+        <ion-toolbar>
+          <ion-searchbar [placeholder]="'reminders.searchCity' | translate" [value]="cityQuery()"
+                         (ionInput)="cityQuery.set($event.detail.value ?? '')" />
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+          @for (c of filteredCities(); track c.id) {
+            <ion-item button (click)="chooseCity(c)">
+              <ion-label>{{ cityName(c) }}</ion-label>
+              <ion-note slot="end">{{ c.country }}</ion-note>
+            </ion-item>
+          }
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

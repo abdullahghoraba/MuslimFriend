@@ -213,6 +213,17 @@ class AthkarOverlayPlugin : Plugin() {
         call.resolve()
     }
 
+    /** Opens this app's Play Store page (Play app if present, otherwise the browser). */
+    @PluginMethod
+    fun openStoreListing(call: PluginCall) {
+        val pkg = context.packageName
+        val opened = listOf(
+            Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$pkg")),
+            Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$pkg")),
+        ).any { runCatching { context.startActivity(it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }.isSuccess }
+        call.resolve(JSObject().put("opened", opened))
+    }
+
     @PluginMethod
     fun getDeviceInfo(call: PluginCall) {
         call.resolve(JSObject().put("manufacturer", Build.MANUFACTURER).put("sdkInt", Build.VERSION.SDK_INT))

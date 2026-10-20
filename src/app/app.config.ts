@@ -19,6 +19,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
 import { AppearanceService } from './core/services/appearance.service';
 import { AthkarRepository } from './core/services/athkar.repository';
+import { LifecycleService } from './core/services/lifecycle.service';
 import { SettingsService } from './core/services/settings.service';
 import { registerIcons } from './icons';
 
@@ -40,9 +41,12 @@ export const appConfig: ApplicationConfig = {
       const settings = inject(SettingsService);
       const appearance = inject(AppearanceService);
       const athkar = inject(AthkarRepository);
+      const lifecycle = inject(LifecycleService);
       await settings.load();
       // Language must be ready before first render; content seeding can run in parallel.
       await Promise.all([appearance.init(), athkar.init()]);
+      // Overlay/reminder sync must not delay the first render.
+      void lifecycle.init();
     }),
   ],
 };

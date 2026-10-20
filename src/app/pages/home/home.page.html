@@ -5,7 +5,20 @@
 </ion-header>
 
 <ion-content>
-  <!-- Phase 3 adds the next-prayer card here. -->
+  <a class="prayer-card ion-activatable" routerLink="/reminders">
+    @if (next(); as n) {
+      <span class="prayer-label">{{ 'prayer.next' | translate }}</span>
+      <span class="prayer-name">{{ 'prayer.' + n.name | translate }}</span>
+      <span class="prayer-time">{{ time(n.at) }} · {{ 'prayer.in' | translate: { time: countdown(n.at) } }}</span>
+    } @else {
+      <span class="prayer-label">{{ 'prayer.setLocation' | translate }}</span>
+    }
+    <ion-ripple-effect />
+  </a>
+
+  @if (overlayFallback()) {
+    <a class="fallback" routerLink="/overlay" role="status">{{ 'home.overlayFallback' | translate }}</a>
+  }
 
   <h2 class="section-title">{{ 'home.today' | translate }}</h2>
   <div class="daily">

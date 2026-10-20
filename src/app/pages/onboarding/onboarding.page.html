@@ -1,0 +1,59 @@
+<ion-content>
+  <main [attr.aria-busy]="busy()" [attr.dir]="settings.settings().language === 'ar' ? 'rtl' : 'ltr'">
+    <div class="step"><span>{{ 'onboarding.setup' | translate }}</span><b dir="ltr">{{ step() }}/3</b></div>
+    <div class="dots" aria-hidden="true">@for (n of [1, 2, 3]; track n) { <span [class.active]="step() >= n"></span> }</div>
+    <ion-icon class="hero" [name]="step() === 1 ? 'heart-outline' : step() === 2 ? 'layers-outline' : 'hand-left-outline'" aria-hidden="true" />
+    <h1 #heading tabindex="-1">{{ ('onboarding.step' + step()) | translate }}</h1>
+    @if (step() === 1) {
+      <p>{{ 'onboarding.promise' | translate }}</p>
+      <div class="languages" role="group" [attr.aria-label]="'onboarding.language' | translate">
+        <button lang="ar" dir="rtl" [attr.aria-pressed]="settings.settings().language === 'ar'" [disabled]="busy() || !ready()" (click)="language('ar')">العربية</button>
+        <button lang="en" dir="ltr" [attr.aria-pressed]="settings.settings().language === 'en'" [disabled]="busy() || !ready()" (click)="language('en')">English</button>
+      </div>
+    }
+    @if (step() === 2) {
+      <p>{{ 'onboarding.featuresHint' | translate }}</p>
+      <div class="card features">
+        @for (key of featureKeys; track key) {
+          <label><span>{{ ('onboarding.feature.' + key) | translate }}</span><input type="checkbox" role="switch" [checked]="features()[key]" [disabled]="busy() || !ready()" (change)="toggle(key, $event)" /></label>
+        }
+      </div>
+    }
+    @if (step() === 3) {
+      <p>{{ 'onboarding.permissionsHint' | translate }}</p>
+      @if (permission(); as p) {
+        <section class="card" aria-labelledby="permission-title">
+          <h2 id="permission-title">{{ ('onboarding.permission.' + p + '.title') | translate }}</h2>
+          <p>{{ ('onboarding.permission.' + p + '.reason') | translate }}</p>
+          @if (p === 'battery') {
+            <p class="tip"><bdi>{{ manufacturer() }}</bdi> · {{ ('onboarding.tips.' + manufacturerTip()) | translate }}</p>
+          }
+          @if ((p === 'notifications' && notifications()) || (p === 'overlay' && overlayGranted()) || (p === 'battery' && battery())) {
+            <p class="status">{{ 'onboarding.granted' | translate }}</p>
+          }
+          <button class="primary" [disabled]="busy() || !ready()" (click)="allow()">{{ ('onboarding.permission.' + p + '.button') | translate }}</button>
+          @if (p === 'location') {
+            <button [disabled]="busy()" (click)="chooseCity()">{{ 'onboarding.chooseCity' | translate }}</button>
+            @if (picker()) {
+              <label class="search">{{ 'onboarding.searchCity' | translate }}<input type="search" [value]="query()" (input)="query.set($any($event.target).value)" /></label>
+              <ul class="cities">
+                @for (city of filteredCities(); track city.id) {
+                  <li><button [disabled]="busy()" (click)="selectCity(city)">{{ settings.settings().language === 'ar' ? city.ar : city.en }} <small>{{ city.country }}</small></button></li>
+                } @empty { <li>{{ 'onboarding.noCities' | translate }}</li> }
+              </ul>
+            }
+          }
+          <button class="plain" [disabled]="busy()" (click)="next()">{{ 'onboarding.notNow' | translate }}</button>
+        </section>
+      } @else { <p class="card">{{ 'onboarding.allSet' | translate }}</p> }
+    }
+    @if (error()) { <p role="alert">{{ 'onboarding.error' | translate }}</p> }
+    <nav [attr.aria-label]="'onboarding.navigation' | translate">
+      @if (step() > 1) { <button [disabled]="busy() || !ready()" (click)="back()">{{ 'onboarding.back' | translate }}</button> }
+      @if (step() < 3 || !permission()) {
+        <button class="primary" [disabled]="busy() || !ready()" (click)="next()">{{ (step() === 3 ? 'onboarding.finish' : 'onboarding.next') | translate }}</button>
+      }
+    </nav>
+    @if (step() > 1) { <button class="plain skip" [disabled]="busy() || !ready()" (click)="skip()">{{ 'onboarding.skip' | translate }}</button> }
+  </main>
+</ion-content>

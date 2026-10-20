@@ -1,0 +1,68 @@
+<ion-header><ion-toolbar><ion-buttons slot="start"><ion-back-button defaultHref="/settings" [text]="'overlay.back' | translate" /></ion-buttons><ion-title>{{ 'overlay.title' | translate }}</ion-title></ion-toolbar></ion-header>
+<ion-content [attr.dir]="language() === 'ar' ? 'rtl' : 'ltr'">
+  @if (error()) { <p class="notice error" role="alert">{{ error() | translate }}</p> }
+  @if (service.fallbackReason() || startFailed()) {
+    <section class="notice" role="status">
+      <h2>{{ 'overlay.fallbackTitle' | translate }}</h2>
+      <p>{{ (service.fallbackReason() === 'no_overlay_permission' ? 'overlay.fallbackPermission' : 'overlay.fallbackRestricted') | translate }}</p>
+      <ion-button [disabled]="busy() || !ready()" (click)="enable()">{{ 'overlay.tryAgain' | translate }}</ion-button>
+      <ion-button fill="clear" [disabled]="busy()" (click)="dismiss()">{{ 'overlay.dismiss' | translate }}</ion-button>
+    </section>
+  }
+  <ion-list inset>
+    <ion-item><ion-toggle [checked]="config().enabled" [disabled]="busy() || !ready()" (ionChange)="toggle($event.detail.checked)">{{ 'overlay.master' | translate }}</ion-toggle></ion-item>
+    <ion-item><ion-label class="ion-text-wrap"><h2>{{ 'overlay.status' | translate }}</h2><p aria-live="polite">{{ (paused() ? 'overlay.paused' : service.running() ? 'overlay.running' : 'overlay.stopped') | translate: { time: pauseTime() } }}</p></ion-label></ion-item>
+    @if (service.running()) {
+      <div class="actions">
+        @if (paused()) { <ion-button [disabled]="busy()" (click)="resume()">{{ 'overlay.resume' | translate }}</ion-button> }
+        @else {
+          <ion-button fill="outline" [disabled]="busy()" (click)="pauseHour()">{{ 'overlay.pauseHour' | translate }}</ion-button>
+          <ion-button fill="outline" [disabled]="busy()" (click)="pauseTomorrow()">{{ 'overlay.pauseTomorrow' | translate }}</ion-button>
+        }
+        <ion-button [disabled]="busy()" (click)="preview()">{{ 'overlay.preview' | translate }}</ion-button>
+      </div>
+    }
+  </ion-list>
+  @if (needsPermission()) {
+    <section class="notice">
+      <h2>{{ 'overlay.permissionTitle' | translate }}</h2><p>{{ 'overlay.permissionText' | translate }}</p>
+      <ion-button [disabled]="busy()" (click)="requestPermission()">{{ 'overlay.grantPermission' | translate }}</ion-button>
+    </section>
+  }
+  <section class="notice notification">
+    <p>{{ 'overlay.notificationExplanation' | translate }}</p>
+    @if (notificationMissing()) { <p>{{ 'overlay.notificationMissing' | translate }}</p> }
+    @if (!needsPermission() && !service.running()) { <ion-button [disabled]="busy() || !ready()" (click)="enable()">{{ 'overlay.start' | translate }}</ion-button> }
+  </section>
+  <fieldset [disabled]="busy() || !ready()">
+    <ion-list inset>
+      <ion-list-header>{{ 'overlay.appearance' | translate }}</ion-list-header>
+      <ion-item><ion-select [disabled]="busy() || !ready()" [label]="'overlay.frequency' | translate" [value]="config().frequencyMinutes" (ionChange)="update({frequencyMinutes: $event.detail.value})">
+        @for (minutes of frequencies; track minutes) { <ion-select-option [value]="minutes">{{ (minutes === 0 ? 'overlay.everyUnlock' : 'overlay.minutes') | translate: { count: minutes } }}</ion-select-option> }
+      </ion-select></ion-item>
+      <ion-item><ion-range [disabled]="busy() || !ready()" [label]="('overlay.duration' | translate) + ' · ' + ('overlay.seconds' | translate: {count: config().displaySeconds})" labelPlacement="stacked" [min]="3" [max]="30" [step]="1" [value]="config().displaySeconds" (ionChange)="range('displaySeconds', $event.detail.value)" /></ion-item>
+      <ion-item lines="none"><ion-label id="position-label">{{ 'overlay.position' | translate }}</ion-label></ion-item>
+      <ion-item><ion-segment [disabled]="busy() || !ready()" [value]="config().position" (ionChange)="select('position', $event.detail.value)" aria-labelledby="position-label">@for (value of positions; track value) { <ion-segment-button [value]="value"><ion-label>{{ ('overlay.' + value) | translate }}</ion-label></ion-segment-button> }</ion-segment></ion-item>
+      <ion-item lines="none"><ion-label id="size-label">{{ 'overlay.size' | translate }}</ion-label></ion-item>
+      <ion-item><ion-segment [disabled]="busy() || !ready()" [value]="config().size" (ionChange)="select('size', $event.detail.value)" aria-labelledby="size-label">@for (value of sizes; track value) { <ion-segment-button [value]="value"><ion-label>{{ ('overlay.' + value) | translate }}</ion-label></ion-segment-button> }</ion-segment></ion-item>
+      <ion-item><ion-range [disabled]="busy() || !ready()" [label]="('overlay.opacity' | translate) + ' · ' + (config().opacity * 100) + '%'" labelPlacement="stacked" [min]="30" [max]="100" [step]="1" [value]="config().opacity * 100" (ionChange)="range('opacity', $event.detail.value)" /></ion-item>
+      <ion-item lines="none"><ion-label id="style-label">{{ 'overlay.style' | translate }}</ion-label></ion-item>
+      <ion-item><ion-segment [disabled]="busy() || !ready()" [value]="config().style" (ionChange)="select('style', $event.detail.value)" aria-labelledby="style-label">@for (value of styles; track value) { <ion-segment-button [value]="value"><ion-label>{{ ('overlay.' + value) | translate }}</ion-label></ion-segment-button> }</ion-segment></ion-item>
+    </ion-list>
+    <ion-list inset><ion-list-header>{{ 'overlay.categories' | translate }}</ion-list-header>
+      @for (item of categories(); track item.id) { <ion-item><ion-checkbox [disabled]="busy() || !ready()" [checked]="config().categories.includes(item.id)" (ionChange)="category(item.id, $event.detail.checked)">{{ language() === 'ar' ? item.nameAr : item.nameEn }}</ion-checkbox></ion-item> }
+      <ion-item lines="none"><ion-label class="ion-text-wrap"><p>{{ 'overlay.longText' | translate: { count: maxLength } }}</p></ion-label></ion-item>
+    </ion-list>
+    <ion-list inset><ion-list-header>{{ 'overlay.quietHours' | translate }}</ion-list-header>
+      <ion-item><ion-toggle [checked]="config().quietHoursEnabled" (ionChange)="update({quietHoursEnabled: $event.detail.checked})">{{ 'overlay.quietEnabled' | translate }}</ion-toggle></ion-item>
+      @if (config().quietHoursEnabled) {
+        <ion-item><label class="time-row" for="quiet-start"><span>{{ 'overlay.quietStart' | translate }}</span><input id="quiet-start" type="time" [value]="time(config().quietStart)" (change)="setTime('quietStart', $event)" /></label></ion-item>
+        <ion-item><label class="time-row" for="quiet-end"><span>{{ 'overlay.quietEnd' | translate }}</span><input id="quiet-end" type="time" [value]="time(config().quietEnd)" (change)="setTime('quietEnd', $event)" /></label></ion-item>
+      }
+    </ion-list>
+  </fieldset>
+  <ion-list inset><ion-list-header>{{ 'overlay.battery' | translate }}</ion-list-header>
+    <ion-item lines="none"><ion-label class="ion-text-wrap"><p>{{ 'overlay.batteryText' | translate }}</p><p>{{ ('overlay.tips.' + batteryTip()) | translate }}</p>@if (ignoringBattery()) { <p class="ok">{{ 'overlay.batteryOk' | translate }}</p> }</ion-label></ion-item>
+    <div class="actions"><ion-button fill="outline" [disabled]="busy()" (click)="batterySettings()">{{ 'overlay.batterySettings' | translate }}</ion-button></div>
+  </ion-list>
+</ion-content>

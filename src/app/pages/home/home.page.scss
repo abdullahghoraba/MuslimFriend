@@ -97,3 +97,43 @@
     color: var(--ion-color-primary);
   }
 }
+
+.prayer-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 16px 16px 0;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+  text-decoration: none;
+}
+
+.prayer-label {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.prayer-name {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.prayer-time {
+  font-variant-numeric: tabular-nums;
+}
+
+.fallback {
+  display: block;
+  margin: 12px 16px 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--ion-color-secondary);
+  background: var(--app-surface-strong);
+  color: var(--ion-text-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
