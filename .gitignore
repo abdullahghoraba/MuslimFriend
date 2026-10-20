@@ -50,3 +50,5 @@ keystore.properties
 android/keystore.properties
 .gradle-build.log
 .gradle-release.log
+test-results/
+playwright-report/

@@ -24,7 +24,8 @@ Arabic (default, RTL) and English.
 ## Requirements
 
 - Node.js 22 and npm 10
-- JDK 21 (Android Studio's bundled JBR, or any JDK 21 — set `JAVA_HOME`)
+- JDK 21. `scripts/gradle.mjs` (used by the npm scripts) picks `ATHKAR_JAVA_HOME` if set, otherwise
+  `C:\Program Files\Android\openjdk\jdk-21.0.8`, so a machine-wide `JAVA_HOME` pointing at an older JDK is fine.
 - Android SDK with Platform 36 and Build-Tools 36.0.0. Point `android/local.properties` at it:
   `sdk.dir=E\:/Android/Sdk` (forward slashes; the file is git-ignored).
 

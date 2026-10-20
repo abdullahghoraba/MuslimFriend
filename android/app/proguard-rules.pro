@@ -27,3 +27,7 @@
     @com.getcapacitor.annotation.ActivityCallback <methods>;
 }
 -keep class com.getcapacitor.** { *; }
+
+# Compile-time-only annotations referenced by Tink (pulled in by @capacitor-community/sqlite).
+-dontwarn com.google.errorprone.annotations.**
+-dontwarn javax.annotation.**
