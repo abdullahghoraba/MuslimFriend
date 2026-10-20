@@ -97,7 +97,7 @@
     <div class="controls">
       <ion-button fill="clear" (click)="goTo(index() - 1)" [disabled]="index() === 0"
                   [attr.aria-label]="'common.previous' | translate">
-        <ion-icon slot="icon-only" name="chevron-back" class="flip-rtl" aria-hidden="true" />
+        <ion-icon slot="icon-only" name="chevron-back" aria-hidden="true" />
       </ion-button>
 
       <button type="button" class="counter" (click)="count()"
@@ -108,7 +108,7 @@
 
       <ion-button fill="clear" (click)="goTo(index() + 1)" [disabled]="index() >= items().length - 1"
                   [attr.aria-label]="'common.next' | translate">
-        <ion-icon slot="icon-only" name="chevron-forward" class="flip-rtl" aria-hidden="true" />
+        <ion-icon slot="icon-only" name="chevron-forward" aria-hidden="true" />
       </ion-button>
     </div>
     <div class="secondary">

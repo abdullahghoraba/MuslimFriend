@@ -49,5 +49,8 @@
     "prettier": "3.9.10",
     "typescript": "6.0.3",
     "vitest": "5.0.5"
+  },
+  "overrides": {
+    "sql.js": "1.11.0"
   }
 }

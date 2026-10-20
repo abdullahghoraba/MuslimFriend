@@ -133,10 +133,6 @@
   justify-content: center;
 }
 
-:host-context([dir='rtl']) .flip-rtl {
-  transform: scaleX(-1);
-}
-
 .finished {
   text-align: center;
   padding-top: 15vh;

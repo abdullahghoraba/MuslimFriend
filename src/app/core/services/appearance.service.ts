@@ -23,8 +23,11 @@ export class AppearanceService {
   }
 
   async setLanguage(language: Language): Promise<void> {
+    if (language === this.settings.settings().language) return;
     await this.settings.update({ language });
-    await this.applyLanguage(language);
+    // Ionic components (range, toggle, sliding items) resolve RTL/LTR once at render time,
+    // so a direction change needs a fresh render. Reloading the local WebView is instant.
+    this.document.defaultView?.location.reload();
   }
 
   private async applyLanguage(language: Language): Promise<void> {
