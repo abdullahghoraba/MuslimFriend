@@ -77,12 +77,24 @@ import { SettingsService } from '../../core/services/settings.service';
             }
           </ion-item>
         }
+        <!-- Tafsirs built into this copy of the app sit with the others, already saved. -->
+        @for (t of builtIn(); track t.apiId) {
+          <ion-item lines="full">
+            <ion-label class="ion-text-wrap">
+              <h3>{{ name(t) }}</h3>
+              <p>{{ 'tafsirLib.offlineCount' | translate: { n: 114, total: 114 } }} · ~{{ t.sizeMb }} MB</p>
+            </ion-label>
+            <ion-button slot="end" fill="clear" color="danger" (click)="remove(t)" [attr.aria-label]="('common.delete' | translate) + ' ' + name(t)">
+              <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true" />
+            </ion-button>
+          </ion-item>
+        }
       </ion-list>
       <p class="note">{{ 'tafsirLib.note' | translate }}</p>
 
       <ion-list inset>
         <ion-list-header>{{ 'tafsirLib.imported' | translate }}</ion-list-header>
-        @for (t of lib.imported(); track t.apiId) {
+        @for (t of fromFiles(); track t.apiId) {
           <ion-item lines="full">
             <ion-icon slot="start" name="checkmark-circle" color="success" aria-hidden="true" />
             <ion-label class="ion-text-wrap">
@@ -135,6 +147,10 @@ export class TafsirLibraryPage {
     return this.lib.offlineCounts()[t.apiId] ?? 0;
   }
 
+  /** Built into this (personal) build: listed with the downloadable tafsirs. */
+  readonly builtIn = computed(() => this.lib.imported().filter((t) => t.bundledFile));
+  /** Imported by the user from a file. */
+  readonly fromFiles = computed(() => this.lib.imported().filter((t) => !t.bundledFile));
   readonly importing = signal(false);
 
   async importPicked(event: Event): Promise<void> {
