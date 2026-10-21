@@ -57,13 +57,18 @@ export class FloatingCounterService {
   /** Merges taps made on the bubble into the counters. Call on app start/resume. */
   async sync(): Promise<void> {
     if (!this.loaded) await this.load();
-    // The user may have closed the bubble outside the app (drag to ✕, or "hide" in its menu).
-    const native = await AthkarOverlay.getBubble();
-    if (this.state().enabled && !native.enabled) await this.save({ ...this.state(), enabled: false });
+    // The user may have closed the bubble outside the app (its ✕ button, or drag to ✕).
+    await this.reconcile();
     const { counts } = await AthkarOverlay.takeBubbleCounts({ clear: true });
     if (counts.length) await this.tasbih.load();
     for (const c of counts) await this.tasbih.applyExternal(c.counterId, c.delta, c.reset);
     if (this.state().enabled) await this.push();
+  }
+
+  /** Refreshes the on/off state from the native side (the user may have closed the bubble meanwhile). */
+  private async reconcile(): Promise<void> {
+    const native = await AthkarOverlay.getBubble();
+    if (this.state().enabled && !native.enabled) await this.save({ ...this.state(), enabled: false });
   }
 
   /** User action (foreground): shows the bubble for [counterId]. Returns false if overlay permission is missing. */
@@ -92,11 +97,17 @@ export class FloatingCounterService {
   }
 
   private async push(forceStart = false) {
+    if (!forceStart) {
+      await this.reconcile();
+      if (!this.state().enabled) return undefined;
+    }
     const counters = this.tasbih.counters();
     const counter = counters.find((c) => c.id === this.state().counterId) ?? counters[0];
     if (!counter) return undefined;
     return AthkarOverlay.setBubble({
-      enabled: this.state().enabled || forceStart,
+      // Only an explicit "turn on" may show the bubble. Routine updates leave the native on/off state alone,
+      // so a bubble the user closed outside the app (✕, drag to ✕) never reappears by itself.
+      ...(forceStart ? { enabled: true } : {}),
       counterId: counter.id,
       name: counter.name || this.translate.instant('tasbih.defaultName'),
       count: counter.count,
