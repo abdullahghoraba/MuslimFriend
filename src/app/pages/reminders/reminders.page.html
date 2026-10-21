@@ -138,6 +138,10 @@
       </ion-item>
     }
 
+    <ion-item lines="none">
+      <ion-label class="ion-text-wrap"><p>{{ 'reminders.notificationsHint' | translate }}</p></ion-label>
+    </ion-item>
+
     <ion-item>
       <ion-toggle [checked]="reminders().sleep.enabled" (ionChange)="patch('sleep', { enabled: $event.detail.checked })">
         {{ 'reminders.sleep' | translate }}
@@ -173,6 +177,57 @@
                    (ionChange)="patch('fridaySalawat', { time: '' + $event.detail.value })" />
       </ion-item>
     }
+  </ion-list>
+
+  <ion-list inset>
+    <ion-list-header>{{ 'homeCards.title' | translate }}</ion-list-header>
+    <ion-item lines="none">
+      <ion-label class="ion-text-wrap"><p>{{ 'homeCards.hint' | translate }}</p></ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-toggle [checked]="reminders().homeCards.morning" (ionChange)="patch('homeCards', { morning: $event.detail.checked })">
+        {{ 'homeCards.morning' | translate }}
+      </ion-toggle>
+    </ion-item>
+    @if (reminders().homeCards.morning) {
+      <ion-item>
+        <ion-select [label]="'homeCards.morningUntil' | translate" [value]="reminders().homeCards.morningUntil"
+                    (ionChange)="patch('homeCards', { morningUntil: $event.detail.value })">
+          <ion-select-option value="sunrise">{{ 'prayer.sunrise' | translate }}</ion-select-option>
+          <ion-select-option value="dhuhr">{{ 'prayer.dhuhr' | translate }}</ion-select-option>
+          <ion-select-option value="asr">{{ 'prayer.asr' | translate }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    }
+    <ion-item>
+      <ion-toggle [checked]="reminders().homeCards.evening" (ionChange)="patch('homeCards', { evening: $event.detail.checked })">
+        {{ 'homeCards.evening' | translate }}
+      </ion-toggle>
+    </ion-item>
+    @if (reminders().homeCards.evening) {
+      <ion-item>
+        <ion-select [label]="'homeCards.eveningFrom' | translate" [value]="reminders().homeCards.eveningFrom"
+                    (ionChange)="patch('homeCards', { eveningFrom: $event.detail.value })">
+          <ion-select-option value="asr">{{ 'prayer.asr' | translate }}</ion-select-option>
+          <ion-select-option value="maghrib">{{ 'prayer.maghrib' | translate }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-select [label]="'homeCards.eveningUntil' | translate" [value]="reminders().homeCards.eveningUntil"
+                    (ionChange)="patch('homeCards', { eveningUntil: $event.detail.value })">
+          @if (reminders().homeCards.eveningFrom === 'asr') {
+            <ion-select-option value="maghrib">{{ 'prayer.maghrib' | translate }}</ion-select-option>
+          }
+          <ion-select-option value="isha">{{ 'prayer.isha' | translate }}</ion-select-option>
+          <ion-select-option value="midnight">{{ 'homeCards.midnight' | translate }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    }
+    <ion-item>
+      <ion-toggle [checked]="reminders().homeCards.kahf" (ionChange)="patch('homeCards', { kahf: $event.detail.checked })">
+        {{ 'homeCards.kahf' | translate }}
+      </ion-toggle>
+    </ion-item>
   </ion-list>
 
   <ion-list inset>

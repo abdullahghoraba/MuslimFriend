@@ -86,7 +86,22 @@ export interface ReminderSettings {
   fridaySalawat: { enabled: boolean; time: string };
   /** Daily Quran reading (wird / khatmah) reminder. */
   wird: { enabled: boolean; time: string };
+  /** When the Home page shows its "now" shortcut cards (no notification involved). */
+  homeCards: HomeCardSettings;
 }
+
+export interface HomeCardSettings {
+  morning: boolean;
+  morningUntil: 'sunrise' | 'dhuhr' | 'asr';
+  evening: boolean;
+  eveningFrom: 'asr' | 'maghrib';
+  eveningUntil: 'maghrib' | 'isha' | 'midnight';
+  kahf: boolean;
+}
+
+export const DEFAULT_HOME_CARDS: HomeCardSettings = {
+  morning: true, morningUntil: 'dhuhr', evening: true, eveningFrom: 'asr', eveningUntil: 'midnight', kahf: true,
+};
 
 export const DEFAULT_REMINDER_SETTINGS: ReminderSettings = {
   morning: { enabled: true, minutesAfterFajr: 20 },
@@ -95,6 +110,7 @@ export const DEFAULT_REMINDER_SETTINGS: ReminderSettings = {
   fridayKahf: { enabled: true, time: '10:00' },
   fridaySalawat: { enabled: true, time: '16:00' },
   wird: { enabled: false, time: '20:00' },
+  homeCards: DEFAULT_HOME_CARDS,
 };
 
 export interface ReminderTexts {

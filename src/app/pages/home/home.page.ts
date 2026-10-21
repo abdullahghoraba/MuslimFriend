@@ -79,7 +79,7 @@ export class HomePage {
   readonly next = this.prayer.next;
   /** Time-aware shortcuts: al-Kahf (Thursday Maghrib → Friday Maghrib), morning or evening athkar. */
   readonly suggestions = computed(() =>
-    nowSuggestions(this.prayer.now(), this.prayer.today()).map((kind) => ({
+    nowSuggestions(this.prayer.now(), this.prayer.today(), this.prayer.reminders().homeCards).map((kind) => ({
       kind,
       icon: kind === 'kahf' ? 'book-outline' : kind === 'morning' ? 'sunny-outline' : 'moon-outline',
       labelKey: kind === 'kahf' ? 'home.fridayLabel' : 'home.nowLabel',

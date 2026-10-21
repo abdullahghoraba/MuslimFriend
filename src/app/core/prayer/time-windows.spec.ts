@@ -31,6 +31,19 @@ describe('nowSuggestions', () => {
     expect(nowSuggestions(d(23, 17, 20), times(23))).toEqual(['evening']);
   });
 
+  it('follows the chosen windows and switches', () => {
+    const cards = { morning: true, morningUntil: 'sunrise', evening: true, eveningFrom: 'maghrib', eveningUntil: 'isha', kahf: false } as const;
+    expect(nowSuggestions(d(21, 6, 29), times(21), cards)).toEqual(['morning']);
+    expect(nowSuggestions(d(21, 6, 30), times(21), cards)).toEqual([]);
+    expect(nowSuggestions(d(21, 16, 0), times(21), cards)).toEqual([]);
+    expect(nowSuggestions(d(21, 17, 20), times(21), cards)).toEqual(['evening']);
+    expect(nowSuggestions(d(21, 18, 40), times(21), cards)).toEqual([]);
+    expect(nowSuggestions(d(23, 8, 0), times(23), cards)).toEqual([]);
+    expect(nowSuggestions(d(21, 8, 0), times(21), { ...cards, morning: false })).toEqual([]);
+    // An empty range (Maghrib → Maghrib) runs until midnight instead.
+    expect(nowSuggestions(d(21, 22, 0), times(21), { ...cards, eveningUntil: 'maghrib' })).toEqual(['evening']);
+  });
+
   it('falls back to clock times without a location', () => {
     expect(nowSuggestions(d(21, 7, 0), null)).toEqual(['morning']);
     expect(nowSuggestions(d(21, 16, 0), null)).toEqual(['evening']);

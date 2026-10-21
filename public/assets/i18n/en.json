@@ -450,7 +450,8 @@
     },
     "quran": "Quran",
     "wird": "Daily Quran reading (wird)",
-    "athanSettings": "Athan settings"
+    "athanSettings": "Athan settings",
+    "notificationsHint": "These reminders arrive as phone notifications at their time. Turn any switch off to stop that notification."
   },
   "stats": {
     "title": "Statistics",
@@ -749,5 +750,16 @@
     "onCompleteHelp": "Keep completed adhkar visible and marked done, or hide them from the list and skip them in single mode. You can show them again until you leave the page.",
     "onCompleteDim": "Keep visible and marked done",
     "onCompleteHide": "Hide from the list"
+  },
+  "homeCards": {
+    "title": "\"It's time now\" cards on Home",
+    "hint": "A card on the Home page that opens the athkar or Surat al-Kahf directly at the right time. These cards don't send notifications.",
+    "morning": "Morning athkar card (from Fajr)",
+    "morningUntil": "Shown until",
+    "evening": "Evening athkar card",
+    "eveningFrom": "Shown from",
+    "eveningUntil": "Until",
+    "midnight": "Midnight (12 am)",
+    "kahf": "Surat al-Kahf card (Thursday Maghrib to Friday Maghrib)"
   }
 }
