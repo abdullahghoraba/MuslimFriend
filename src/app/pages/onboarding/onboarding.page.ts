@@ -8,6 +8,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import { MethodId } from '../../core/prayer/prayer-times';
 import { PrayerService } from '../../core/prayer/prayer.service';
+import { LocationService } from '../../core/prayer/location.service';
 import { AppearanceService } from '../../core/services/appearance.service';
 import { OverlayService } from '../../core/services/overlay.service';
 import { SettingsService } from '../../core/services/settings.service';
@@ -28,6 +29,7 @@ export class OnboardingPage implements OnInit, OnDestroy {
   private readonly appearance = inject(AppearanceService);
   private readonly overlayService = inject(OverlayService);
   private readonly prayerService = inject(PrayerService);
+  private readonly locationService = inject(LocationService);
   private readonly nav = inject(NavController);
   private readonly http = inject(HttpClient);
   private readonly heading = viewChild<ElementRef<HTMLElement>>('heading');
@@ -166,9 +168,7 @@ export class OnboardingPage implements OnInit, OnDestroy {
           else await AthkarOverlay.openBatteryOptimizationSettings();
           break;
         case 'location': {
-          const loc = await AthkarOverlay.getApproximateLocation();
-          await this.prayerService.updatePrayer({ location: { latitude: round2(loc.latitude), longitude: round2(loc.longitude), name: '', source: 'auto' } });
-          this.advancePermission();
+          if (await this.locationService.locateAndSave()) this.advancePermission();
           break;
         }
       }

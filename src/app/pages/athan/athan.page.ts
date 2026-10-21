@@ -21,7 +21,9 @@ import {
   IonTitle,
   IonToggle,
   IonToolbar,
+  IonSpinner,
   AlertController,
+  ToastController,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
@@ -34,6 +36,8 @@ import {
 import { SettingsService } from '../../core/services/settings.service';
 import { AthanNative, AthanSound, AthanStopWay } from '../../native/athan-plugin';
 import { AthkarOverlay } from '../../native/athkar-overlay';
+import { LocationService } from '../../core/prayer/location.service';
+import { ATHAN_RECORDINGS, DEFAULT_ATHAN_RECORDING } from '../../core/prayer/athan-sounds';
 
 @Component({
   selector: 'app-athan',
@@ -58,6 +62,7 @@ import { AthkarOverlay } from '../../native/athkar-overlay';
     IonTitle,
     IonToggle,
     IonToolbar,
+    IonSpinner,
   ],
   templateUrl: './athan.page.html',
   styleUrl: './athan.page.scss',
@@ -67,6 +72,40 @@ export class AthanPage implements OnDestroy {
   private readonly appSettings = inject(SettingsService);
   private readonly translate = inject(TranslateService);
   private readonly alerts = inject(AlertController);
+  private readonly locationService = inject(LocationService);
+  private readonly toastCtrl = inject(ToastController);
+  readonly recordings = ATHAN_RECORDINGS;
+  readonly locating = signal(false);
+  readonly lang = computed(() => this.appSettings.settings().language);
+
+  async locate(): Promise<void> {
+    this.locating.set(true);
+    try {
+      await this.locationService.locateAndSave();
+    } finally {
+      this.locating.set(false);
+    }
+  }
+
+  usedForAll(sound: AthanSound): boolean {
+    return this.prayers.every((p) => this.settings().perPrayer[p].sound === sound);
+  }
+
+  useForAll(sound: AthanSound): void {
+    void this.run(() => this.athan.useForAll(sound));
+  }
+
+  /** Downloads a recording (once); the first one becomes the athan for every prayer. */
+  downloadRecording(id: string, useForAll = false): void {
+    void this.run(async () => {
+      try {
+        await this.athan.downloadRecording(id, useForAll);
+      } catch {
+        const t = await this.toastCtrl.create({ message: this.translate.instant('athan.downloadFailed'), duration: 3000 });
+        await t.present();
+      }
+    });
+  }
   readonly settings = this.athan.settings;
   readonly prayers = ATHAN_PRAYERS;
   readonly before = [0, 5, 10, 15, 20, 30];
@@ -142,6 +181,10 @@ export class AthanPage implements OnDestroy {
   }
   update(patch: Partial<AthanSettings>): void {
     void this.run(() => this.athan.update(patch));
+    // Turning the athan on for the first time fetches the default athan (al-Masjid al-Haram) once.
+    if (patch.enabled && !this.recordings.some((r) => this.athan.recordingSound(r.id))) {
+      this.downloadRecording(DEFAULT_ATHAN_RECORDING);
+    }
   }
   patch(prayer: AthanPrayer, patch: Partial<PrayerAthanSettings>): void {
     this.update({

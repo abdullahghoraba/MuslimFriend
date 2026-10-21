@@ -19,6 +19,7 @@
         </div>
       } @empty {
         <p>{{ 'athan.needLocation' | translate }}</p>
+        <ion-button (click)="locate()" [disabled]="locating()"><ion-icon slot="start" name="locate-outline" aria-hidden="true" />{{ (locating() ? 'location.locating' : 'reminders.useApprox') | translate }}</ion-button>
       }
       <ion-button fill="clear" routerLink="/reminders">{{
         'athan.locationSettings' | translate
@@ -54,6 +55,27 @@
       <p class="note">{{ 'athan.webNote' | translate }}</p>
     }
     <p class="note">{{ 'athan.fajrNote' | translate }}</p>
+    <section class="prayer-card muezzins" aria-labelledby="muezzins">
+      <h2 id="muezzins">{{ 'athan.muezzin' | translate }}</h2>
+      <p class="note">{{ 'athan.muezzinHelp' | translate }}</p>
+      @for (r of recordings; track r.id) {
+        <div class="rec-row">
+          <div class="rec-info">
+            <strong>{{ lang() === 'ar' ? r.nameAr : r.nameEn }}</strong>
+            <small>{{ r.credit }} · ~{{ r.sizeMb }} MB</small>
+          </div>
+          @if (athan.downloading() === r.id) {
+            <ion-spinner name="dots" />
+          } @else if (athan.recordingSound(r.id); as snd) {
+            <ion-button fill="clear" (click)="preview(snd)" [attr.aria-label]="('athan.preview' | translate) + ' ' + (lang() === 'ar' ? r.nameAr : r.nameEn)"><ion-icon slot="icon-only" name="play" aria-hidden="true" /></ion-button>
+            <ion-button [fill]="usedForAll(snd) ? 'solid' : 'outline'" size="small" (click)="useForAll(snd)">{{ (usedForAll(snd) ? 'athan.inUse' : 'athan.useForAll') | translate }}</ion-button>
+          } @else {
+            <ion-button fill="outline" size="small" [disabled]="!!athan.downloading()" (click)="downloadRecording(r.id)"><ion-icon slot="start" name="cloud-download-outline" aria-hidden="true" />{{ 'athan.download' | translate }}</ion-button>
+          }
+        </div>
+      }
+      <p class="note">{{ 'athan.noMadinah' | translate }}</p>
+    </section>
     <input #soundInput type="file" accept="audio/*" hidden (change)="filePicked($event)" />
     <section class="prayer-card all-prayers" aria-labelledby="all-prayers">
       <h2 id="all-prayers">{{ 'athan.allPrayers' | translate }}</h2>

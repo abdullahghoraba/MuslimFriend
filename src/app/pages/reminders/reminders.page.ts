@@ -30,6 +30,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import { METHOD_IDS, MethodId, PRAYER_NAMES, PrayerName, ReminderSettings } from '../../core/prayer/prayer-times';
 import { PrayerService } from '../../core/prayer/prayer.service';
+import { LocationService } from '../../core/prayer/location.service';
 import { SettingsService } from '../../core/services/settings.service';
 import { AthkarOverlay } from '../../native/athkar-overlay';
 
@@ -55,6 +56,7 @@ interface City {
 })
 export class RemindersPage {
   private readonly prayerService = inject(PrayerService);
+  private readonly locationService = inject(LocationService);
   private readonly settings = inject(SettingsService);
   private readonly http = inject(HttpClient);
   private readonly toast = inject(ToastController);
@@ -107,24 +109,18 @@ export class RemindersPage {
   locationLabel(): string {
     const loc = this.prayer().location;
     if (!loc) return this.translate.instant('reminders.noLocation');
-    if (loc.source === 'auto' || !loc.name) {
+    if (!loc.name) {
       return this.translate.instant('reminders.approxLocation', { lat: loc.latitude.toFixed(2), lng: loc.longitude.toFixed(2) });
     }
     const [ar, en] = loc.name.split('|');
     return this.lang() === 'ar' ? ar : en ?? ar;
   }
 
-  /** Approximate (coarse) location — the permission is requested only now, on the user's tap. */
+  /** "Locate me": the location permission is requested only now, on the user's tap. */
   async useApproximateLocation(): Promise<void> {
     this.locating.set(true);
     try {
-      const { latitude, longitude } = await AthkarOverlay.getApproximateLocation();
-      await this.prayerService.updatePrayer({
-        location: { latitude: round2(latitude), longitude: round2(longitude), name: '', source: 'auto' },
-      });
-    } catch {
-      const t = await this.toast.create({ message: this.translate.instant('reminders.locationFailed'), duration: 3000 });
-      await t.present();
+      await this.locationService.locateAndSave();
     } finally {
       this.locating.set(false);
     }

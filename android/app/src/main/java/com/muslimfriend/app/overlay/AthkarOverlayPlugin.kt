@@ -8,6 +8,8 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.CancellationSignal
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -351,21 +353,55 @@ class AthkarOverlayPlugin : Plugin() {
         else call.reject("Location permission denied", "DENIED")
     }
 
+    /**
+     * Current position (coarse is enough for prayer times). Tries Android's fused provider first (it uses GPS,
+     * Wi-Fi and cell under the hood, also with the coarse permission), then network, then the freshest
+     * last-known fix from any provider. Rejects with "OFF" when location is switched off on the phone.
+     */
     @SuppressLint("MissingPermission")
     private fun readLocation(call: PluginCall) {
         val lm = context.getSystemService(LocationManager::class.java)
-        val provider = LocationManager.NETWORK_PROVIDER.takeIf { lm.isProviderEnabled(it) }
-            ?: LocationManager.PASSIVE_PROVIDER
-        val resolve = { loc: Location? ->
-            if (loc == null) call.reject("Location unavailable", "UNAVAILABLE")
-            else call.resolve(JSObject().put("latitude", loc.latitude).put("longitude", loc.longitude))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !lm.isLocationEnabled) {
+            call.reject("Location is turned off", "OFF")
+            return
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            lm.getCurrentLocation(provider, CancellationSignal(), ContextCompat.getMainExecutor(context)) { loc ->
-                resolve(loc ?: lm.getLastKnownLocation(provider))
+        val enabled = lm.getProviders(true)
+        val candidates = buildList {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) add(LocationManager.FUSED_PROVIDER)
+            add(LocationManager.NETWORK_PROVIDER)
+            add(LocationManager.GPS_PROVIDER)
+        }.filter { it in enabled }
+        val lastKnown = {
+            enabled.mapNotNull { p -> runCatching { lm.getLastKnownLocation(p) }.getOrNull() }.maxByOrNull { it.time }
+        }
+        var done = false
+        val handler = Handler(Looper.getMainLooper())
+        val finish = { loc: Location? ->
+            if (!done) {
+                done = true
+                val best = loc ?: lastKnown()
+                if (best == null) call.reject("Location unavailable", "UNAVAILABLE")
+                else call.resolve(JSObject().put("latitude", best.latitude).put("longitude", best.longitude))
             }
-        } else {
-            resolve(lm.getLastKnownLocation(provider) ?: lm.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER))
         }
+        val provider = candidates.firstOrNull()
+        if (provider == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            finish(null)
+            return
+        }
+        val cancel = CancellationSignal()
+        // Don't keep the user waiting more than 15 s; fall back to the last known fix.
+        handler.postDelayed({ cancel.cancel(); finish(null) }, 15_000)
+        runCatching {
+            lm.getCurrentLocation(provider, cancel, ContextCompat.getMainExecutor(context)) { loc -> finish(loc) }
+        }.onFailure { finish(null) }
+    }
+
+    @PluginMethod
+    fun openLocationSettings(call: PluginCall) {
+        runCatching {
+            context.startActivity(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        }
+        call.resolve()
     }
 }

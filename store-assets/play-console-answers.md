@@ -30,7 +30,7 @@ URL: `https://<your-github-user>.github.io/<repo>/privacy-policy.html`
 Why "no collection" is accurate (Google's definition: data transmitted off the device):
 - The only network use is **downloading public content on the user's request**: recitation MP3s (HTTPS GET to
   everyayah.com) when the user plays or downloads a sura, and extra tafsir texts (HTTPS GET to api.quran.com) when the
-  user opens or downloads a tafsir that isn't bundled, or from the open tafsir dataset (cdn.jsdelivr.net / raw.githubusercontent.com, spa5k/tafsir_api) for the classical tafsirs. No user data, identifiers or usage events are sent; the request contains only the file path. Google's
+  user opens or downloads a tafsir that isn't bundled, or from the open tafsir dataset (cdn.jsdelivr.net / raw.githubusercontent.com, spa5k/tafsir_api) for the classical tafsirs, and athan recordings from upload.wikimedia.org when the user downloads one. No user data, identifiers or usage events are sent; the request contains only the file path. Google's
   definition of "collected" covers data transmitted to the developer or a third party *about the user* — fetching public
   content is not collection. (The audio host sees the device IP like any web request; this is disclosed in the privacy policy.)
 - Everything else (Quran text, tafsir, athkar, prayer times, Qibla) is bundled and works offline.

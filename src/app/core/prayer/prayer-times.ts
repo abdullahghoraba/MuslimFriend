@@ -100,10 +100,12 @@ export interface HomeCardSettings {
   eveningFrom: 'asr' | 'maghrib';
   eveningUntil: 'maghrib' | 'isha' | 'midnight';
   kahf: boolean;
+  /** After a prayer time, the Home card shows the time since it for this many minutes (0 = off). */
+  afterPrayerMinutes: number;
 }
 
 export const DEFAULT_HOME_CARDS: HomeCardSettings = {
-  morning: true, morningUntil: 'dhuhr', evening: true, eveningFrom: 'asr', eveningUntil: 'midnight', kahf: true,
+  morning: true, morningUntil: 'dhuhr', evening: true, eveningFrom: 'asr', eveningUntil: 'midnight', kahf: true, afterPrayerMinutes: 40,
 };
 
 export const DEFAULT_REMINDER_SETTINGS: ReminderSettings = {

@@ -28,14 +28,16 @@
       <ion-icon slot="start" name="time-outline" aria-hidden="true" />
       <ion-label class="ion-text-wrap">{{ locationLabel() }}</ion-label>
     </ion-item>
-    <ion-item button (click)="cityPickerOpen.set(true)">
-      <ion-label>{{ 'reminders.chooseCity' | translate }}</ion-label>
-    </ion-item>
     <ion-item button (click)="useApproximateLocation()" [disabled]="locating()">
+      <ion-icon slot="start" name="locate-outline" color="primary" aria-hidden="true" />
       <ion-label class="ion-text-wrap">
-        {{ 'reminders.useApprox' | translate }}
+        <strong>{{ (locating() ? 'location.locating' : 'reminders.useApprox') | translate }}</strong>
         <p>{{ 'reminders.useApproxHint' | translate }}</p>
       </ion-label>
+    </ion-item>
+    <ion-item button (click)="cityPickerOpen.set(true)">
+      <ion-icon slot="start" name="list-outline" aria-hidden="true" />
+      <ion-label>{{ 'reminders.chooseCity' | translate }}</ion-label>
     </ion-item>
   </ion-list>
 
@@ -240,6 +242,14 @@
         </ion-select>
       </ion-item>
     }
+    <ion-item>
+      <ion-select [label]="'homeCards.afterPrayer' | translate" [value]="reminders().homeCards.afterPrayerMinutes ?? 40"
+                  (ionChange)="patch('homeCards', { afterPrayerMinutes: +$event.detail.value })">
+        @for (m of [0, 20, 30, 40, 50, 60]; track m) {
+          <ion-select-option [value]="m">{{ m ? ('reminders.minutes' | translate: { n: m }) : ('common.off' | translate) }}</ion-select-option>
+        }
+      </ion-select>
+    </ion-item>
     <ion-item>
       <ion-toggle [checked]="reminders().homeCards.kahf" (ionChange)="patch('homeCards', { kahf: $event.detail.checked })">
         {{ 'homeCards.kahf' | translate }}

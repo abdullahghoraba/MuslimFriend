@@ -27,7 +27,8 @@
     "finishReorder": "Done reordering",
     "pressBackAgain": "Press back again to exit",
     "smaller": "Smaller",
-    "larger": "Larger"
+    "larger": "Larger",
+    "off": "Off"
   },
   "home": {
     "title": "Muslim Friend",
@@ -49,7 +50,8 @@
     "doneCustomizing": "Done",
     "nowLabel": "It's time now",
     "fridayLabel": "Friday (from Thursday's Maghrib)",
-    "readKahf": "Read Surat al-Kahf"
+    "readKahf": "Read Surat al-Kahf",
+    "sinceAthan": "Since the {{prayer}} athan"
   },
   "category": {
     "start": "Start reading",
@@ -407,8 +409,8 @@
     "approxLocation": "Approximate location ({{lat}}, {{lng}})",
     "chooseCity": "Choose a city",
     "searchCity": "Search cities",
-    "useApprox": "Use my approximate location",
-    "useApproxHint": "Uses coarse location once. It is stored only on this device, rounded to about 1 km.",
+    "useApprox": "Locate me automatically (GPS)",
+    "useApproxHint": "Works anywhere in the world without searching for your city. Saved only on your phone, rounded to about 1 km, and the usual calculation method for your region is chosen (you can change it).",
     "locationFailed": "Could not get your location. Choose a city instead.",
     "todayTimes": "Today's prayer times",
     "calculation": "Calculation",
@@ -760,7 +762,14 @@
     "stopShake": "By shaking the phone",
     "stopVolume": "By pressing a volume button",
     "stopHelp": "You can always stop it with the Stop button in the notification. Try these with the ▶ preview button.",
-    "rename": "Rename"
+    "rename": "Rename",
+    "muezzin": "Muezzin (athan voice)",
+    "muezzinHelp": "Download an athan once and it works offline. The al-Masjid al-Haram athan is the default and downloads automatically when you turn the athan on. You can still pick a different voice per prayer below.",
+    "download": "Download",
+    "downloadFailed": "Couldn't download the athan. Check your internet connection and try again.",
+    "useForAll": "Use for all",
+    "inUse": "In use ✓",
+    "noMadinah": "No recording of the Prophet's Mosque (Madinah) athan is available under a licence that allows including it in the app. If you have one, add it under \"Sound → Add sound…\", name it and tap \"Use for all\"."
   },
   "athkarPrefs": {
     "title": "Athkar options",
@@ -802,7 +811,8 @@
     "eveningFrom": "Shown from",
     "eveningUntil": "Until",
     "midnight": "Midnight (12 am)",
-    "kahf": "Surat al-Kahf card (Thursday Maghrib to Friday Maghrib)"
+    "kahf": "Surat al-Kahf card (Thursday Maghrib to Friday Maghrib)",
+    "afterPrayer": "After the athan, show the time since it for"
   },
   "hifz": {
     "title": "Quran memorisation",
@@ -846,5 +856,16 @@
       "red": "Red",
       "purple": "Purple"
     }
+  },
+  "location": {
+    "locating": "Finding your location…",
+    "nearAr": "موقعي (قرب {{city}})",
+    "nearEn": "My location (near {{city}})",
+    "failedTitle": "Couldn't find your location",
+    "failed": "The phone couldn't get a fix right now. Move near a window or turn on Wi-Fi and try again, or choose a city from the list.",
+    "denied": "Location access wasn't allowed. Allow it in the app settings or choose a city from the list.",
+    "offTitle": "Location is off",
+    "off": "Turn on location on your phone, then tap \"Locate me automatically\" again.",
+    "openSettings": "Open location settings"
   }
 }

@@ -1,5 +1,5 @@
 import { DayTimes } from './prayer-times';
-import { nowSuggestions } from './time-windows';
+import { nowSuggestions, recentPrayer } from './time-windows';
 
 // 2026-10-22 is a Thursday, 2026-10-23 a Friday.
 const d = (day: number, h: number, m = 0) => new Date(2026, 9, day, h, m);
@@ -32,7 +32,7 @@ describe('nowSuggestions', () => {
   });
 
   it('follows the chosen windows and switches', () => {
-    const cards = { morning: true, morningUntil: 'sunrise', evening: true, eveningFrom: 'maghrib', eveningUntil: 'isha', kahf: false } as const;
+    const cards = { morning: true, morningUntil: 'sunrise', evening: true, eveningFrom: 'maghrib', eveningUntil: 'isha', kahf: false, afterPrayerMinutes: 40 } as const;
     expect(nowSuggestions(d(21, 6, 29), times(21), cards)).toEqual(['morning']);
     expect(nowSuggestions(d(21, 6, 30), times(21), cards)).toEqual([]);
     expect(nowSuggestions(d(21, 16, 0), times(21), cards)).toEqual([]);
@@ -49,5 +49,20 @@ describe('nowSuggestions', () => {
     expect(nowSuggestions(d(21, 16, 0), null)).toEqual(['evening']);
     expect(nowSuggestions(d(23, 17, 59), null)).toEqual(['kahf', 'evening']);
     expect(nowSuggestions(d(23, 18, 0), null)).toEqual(['evening']);
+  });
+});
+
+describe('recentPrayer', () => {
+  it('shows the time since the last prayer for the chosen minutes, then nothing', () => {
+    expect(recentPrayer(d(21, 15, 7), times(21), times(20), 40)).toEqual({ name: 'asr', at: d(21, 14, 55), elapsedMin: 12 });
+    expect(recentPrayer(d(21, 15, 35), times(21), times(20), 40)).toBeNull();
+    expect(recentPrayer(d(21, 15, 34), times(21), times(20), 50)?.elapsedMin).toBe(39);
+    expect(recentPrayer(d(21, 15, 7), times(21), times(20), 0)).toBeNull();
+  });
+  it("ignores sunrise and finds yesterday's isha after midnight", () => {
+    expect(recentPrayer(d(21, 5, 30), times(21), times(20), 40)?.name).toBe('fajr');
+    expect(recentPrayer(d(21, 6, 40), times(21), times(20), 120)?.name).toBe('fajr');
+    const late = { date: d(20, 0), times: { ...times(20).times, isha: d(20, 23, 50) } };
+    expect(recentPrayer(d(21, 0, 10), times(21), late, 40)).toEqual({ name: 'isha', at: d(20, 23, 50), elapsedMin: 20 });
   });
 });

@@ -5,6 +5,7 @@ import { Preferences } from '@capacitor/preferences';
 import { TranslateService } from '@ngx-translate/core';
 import { AthanEvent, AthanNative, AthanSound, AthanPluginMethods, AthanStopWay } from '../../native/athan-plugin';
 import { PrayerService } from './prayer.service';
+import { ATHAN_RECORDINGS } from './athan-sounds';
 import { PrayerSettings, prayerTimesFor } from './prayer-times';
 
 export const ATHAN_PLUGIN = new InjectionToken<AthanPluginMethods>('ATHAN_PLUGIN', {
@@ -27,7 +28,8 @@ export interface AthanSettings {
   volume: number;
   silentDuringPrayer: boolean;
   silentMinutes: number;
-  customSounds: { name: string; path: string }[];
+  /** Sounds on the device: files the user added, and downloaded recordings (recordingId set). */
+  customSounds: { name: string; path: string; recordingId?: string }[];
   /** Stop the playing athan by turning the phone over, shaking it, or pressing a volume button. */
   stopOn: Record<AthanStopWay, boolean>;
 }
@@ -233,6 +235,62 @@ export class AthanService {
     await this.update({ customSounds: [...this.state().customSounds, { name: file.name, path }] });
     return ('file:' + path) as AthanSound;
   }
+  /** Which recording is being downloaded right now (for the UI). */
+  readonly downloading = signal<string | null>(null);
+
+  /** The playable sound for a downloaded recording, or null when it isn't on the device yet. */
+  recordingSound(id: string): AthanSound | null {
+    const s = this.state().customSounds.find((c) => c.recordingId === id);
+    return s ? ('file:' + s.path) as AthanSound : null;
+  }
+
+  /**
+   * Downloads an athan recording once and keeps it on the phone (plays offline afterwards).
+   * With [useForAll], or when no prayer has a real athan chosen yet, every prayer switches to it.
+   */
+  async downloadRecording(id: string, useForAll = false): Promise<AthanSound> {
+    await this.load();
+    const existing = this.recordingSound(id);
+    const rec = ATHAN_RECORDINGS.find((r) => r.id === id);
+    if (!rec) throw new Error('unknown recording');
+    let sound = existing;
+    if (!sound) {
+      this.downloading.set(id);
+      try {
+        const res = await fetch(rec.url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const blob = await res.blob();
+        const data = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result).split(',')[1]);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(blob);
+        });
+        const relative = 'athan/rec-' + rec.id + '.' + rec.ext;
+        await Filesystem.writeFile({ path: relative, directory: Directory.Data, data, recursive: true });
+        const { uri } = await Filesystem.getUri({ path: relative, directory: Directory.Data });
+        const path = uri.startsWith('file://') ? uri.slice(7) : uri;
+        if (!Capacitor.isNativePlatform()) this.webSounds.set(path, URL.createObjectURL(blob));
+        await this.update({
+          customSounds: [...this.state().customSounds.filter((c) => c.recordingId !== id), { name: rec.nameAr, path, recordingId: id }],
+        });
+        sound = ('file:' + path) as AthanSound;
+      } finally {
+        this.downloading.set(null);
+      }
+    }
+    const noRealAthan = ATHAN_PRAYERS.every((p) => !this.state().perPrayer[p].sound.startsWith('file:'));
+    if (useForAll || noRealAthan) await this.useForAll(sound);
+    return sound;
+  }
+
+  /** Same athan sound for all five prayers. */
+  async useForAll(sound: AthanSound): Promise<void> {
+    const perPrayer = { ...this.state().perPrayer };
+    for (const p of ATHAN_PRAYERS) perPrayer[p] = { ...perPrayer[p], sound };
+    await this.update({ perPrayer });
+  }
+
   async removeSound(path: string): Promise<void> {
     if (!this.state().customSounds.some((s) => s.path === path)) return;
     await this.stopPreview();

@@ -99,6 +99,8 @@ export interface AthkarOverlayPlugin {
   setAppVisible(options: { visible: boolean }): Promise<void>;
   getDeviceInfo(): Promise<{ manufacturer: string; sdkInt: number }>;
   getApproximateLocation(): Promise<{ latitude: number; longitude: number }>;
+  /** Opens the phone's location settings (when location is switched off). */
+  openLocationSettings(): Promise<void>;
   addListener(event: 'launchRoute', listener: (e: { route: string }) => void): Promise<PluginListenerHandle>;
 }
 
@@ -140,7 +142,14 @@ class AthkarOverlayWeb implements AthkarOverlayPlugin {
   async takeBubbleCounts() { return { counts: [] }; }
   async setAppVisible() {}
   async getDeviceInfo() { return { manufacturer: 'web', sdkInt: 0 }; }
+  async openLocationSettings() {}
   async getApproximateLocation(): Promise<{ latitude: number; longitude: number }> {
+    // Browser dev build: use the browser's own geolocation when allowed.
+    if (typeof navigator !== 'undefined' && navigator.geolocation) {
+      return new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(
+        (p) => resolve({ latitude: p.coords.latitude, longitude: p.coords.longitude }),
+        () => reject(new Error('UNAVAILABLE')), { timeout: 15000, maximumAge: 600000 }));
+    }
     throw new Error('UNAVAILABLE');
   }
   async addListener(): Promise<PluginListenerHandle> { return { remove: async () => {} }; }

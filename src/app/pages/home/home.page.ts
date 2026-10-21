@@ -22,7 +22,8 @@ import { CategoryProgress, ProgressService } from '../../core/services/progress.
 import { SettingsService } from '../../core/services/settings.service';
 import { PrayerService } from '../../core/prayer/prayer.service';
 import { OverlayService } from '../../core/services/overlay.service';
-import { NowSuggestion, nowSuggestions } from '../../core/prayer/time-windows';
+import { NowSuggestion, nowSuggestions, recentPrayer } from '../../core/prayer/time-windows';
+import { prayerTimesFor } from '../../core/prayer/prayer-times';
 import { QuranService } from '../../core/quran/quran.service';
 import { HijriDateComponent } from '../../shared/hijri-date.component';
 import { HomeCategoriesComponent } from '../../shared/home-categories.component';
@@ -77,6 +78,23 @@ export class HomePage {
   readonly daily = signal<DailyStatus[]>([]);
   readonly position = signal<ReaderPosition | null>(null);
   readonly next = this.prayer.next;
+  /** For a while after a prayer time (default 40 min), the card shows the time since it, like Salatuk. */
+  readonly recent = computed(() => {
+    const now = this.prayer.now();
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    return recentPrayer(now, this.prayer.today(), prayerTimesFor(this.prayer.prayer(), yesterday),
+      this.prayer.reminders().homeCards.afterPrayerMinutes ?? 40);
+  });
+
+  minutesLabel(n: number): string {
+    const fmt = new Intl.NumberFormat(this.lang() === 'ar' ? 'ar-EG' : 'en').format(n);
+    if (this.lang() !== 'ar') return n === 1 ? '1 minute' : fmt + ' minutes';
+    if (n === 0) return 'الآن';
+    if (n === 1) return 'دقيقة';
+    if (n === 2) return 'دقيقتان';
+    return fmt + (n >= 3 && n <= 10 ? ' دقائق' : ' دقيقة');
+  }
   /** Time-aware shortcuts: al-Kahf (Thursday Maghrib → Friday Maghrib), morning or evening athkar. */
   readonly suggestions = computed(() =>
     nowSuggestions(this.prayer.now(), this.prayer.today(), this.prayer.reminders().homeCards).map((kind) => ({

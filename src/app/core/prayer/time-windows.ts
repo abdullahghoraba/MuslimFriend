@@ -33,3 +33,27 @@ export function nowSuggestions(now: Date, today: DayTimes | null, cards: HomeCar
   else if (cards.evening && now >= eveningStart && now < eveningEnd) out.push('evening');
   return out;
 }
+
+const PRAYERS_FOR_ELAPSED: PrayerName[] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+
+/**
+ * The prayer whose time began less than [minutes] ago (like Salatuk: "12 min since the Asr athan"),
+ * or null when the Home card should show the next prayer instead. Pass yesterday's times too so that
+ * Isha shortly before midnight is still found after midnight.
+ */
+export function recentPrayer(
+  now: Date, today: DayTimes | null, yesterday: DayTimes | null, minutes: number,
+): { name: PrayerName; at: Date; elapsedMin: number } | null {
+  if (!minutes || minutes <= 0) return null;
+  let best: { name: PrayerName; at: Date } | null = null;
+  for (const day of [yesterday, today]) {
+    if (!day) continue;
+    for (const name of PRAYERS_FOR_ELAPSED) {
+      const at = day.times[name];
+      if (at <= now && (!best || at > best.at)) best = { name, at };
+    }
+  }
+  if (!best) return null;
+  const elapsedMin = Math.floor((now.getTime() - best.at.getTime()) / 60_000);
+  return elapsedMin < minutes ? { ...best, elapsedMin } : null;
+}
