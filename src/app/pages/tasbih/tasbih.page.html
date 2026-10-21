@@ -45,12 +45,17 @@
 
       <section class="floating" [attr.aria-label]="'tasbih.floating.title' | translate">
         <ion-item lines="none">
-          <ion-toggle [checked]="floating.floating().enabled" (ionChange)="toggleFloating($event.detail.checked)">
+          <ion-label class="ion-text-wrap">
             <span class="floating-title">{{ 'tasbih.floating.title' | translate }}</span>
             <br />
             <small>{{ 'tasbih.floating.hint' | translate }}</small>
-          </ion-toggle>
+          </ion-label>
         </ion-item>
+        <ion-button expand="block" [fill]="floating.floating().enabled ? 'outline' : 'solid'"
+                    (click)="toggleFloating(!floating.floating().enabled)">
+          <ion-icon slot="start" [name]="floating.floating().enabled ? 'close-outline' : 'ellipse-outline'" aria-hidden="true" />
+          {{ (floating.floating().enabled ? 'tasbih.floating.hide' : 'tasbih.floating.show') | translate }}
+        </ion-button>
         @if (floatingNeedsPermission()) {
           <p class="floating-note">{{ 'tasbih.floating.permission' | translate }}</p>
           <ion-button size="small" (click)="grantOverlay()">{{ 'tasbih.floating.grant' | translate }}</ion-button>

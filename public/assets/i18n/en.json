@@ -125,13 +125,15 @@
       "hint": "Keep counting tasbih while you use Facebook or any other app.",
       "permission": "Allow \"Display over other apps\" so the counter can float over your apps, then come back here.",
       "grant": "Allow display over other apps",
-      "how": "Tap the bubble to count, drag it to move, long-press for reset, open app or hide. It hides while this app is open.",
+      "how": "Tap the circle to count and drag it to move. ↺ resets (tap twice to confirm), ✕ closes it, ⤢ enlarges it. Once closed it stays closed until you tap \"Show floating counter\" here. It hides while this app is open.",
       "enabled": "Floating counter is on. Leave the app to see it.",
       "failed": "The floating counter could not start. Open the app and try again.",
       "size": "Bubble size",
       "opacity": "Bubble opacity",
       "small": "Small",
-      "large": "Large"
+      "large": "Large",
+      "show": "Show floating counter",
+      "hide": "Hide floating counter"
     }
   },
   "myAthkar": {
