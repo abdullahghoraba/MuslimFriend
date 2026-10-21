@@ -10,7 +10,7 @@
     <ion-title>
       {{ title() }}
       <span class="position">{{
-        'category.itemProgress' | translate: { count: doneCount(), total: items().length }
+        'category.itemProgress' | translate: { count: digits(doneCount()), total: digits(items().length) }
       }}</span>
     </ion-title>
     <ion-buttons slot="end">

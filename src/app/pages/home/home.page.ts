@@ -25,6 +25,7 @@ import { OverlayService } from '../../core/services/overlay.service';
 import { NowSuggestion, nowSuggestions, recentPrayer } from '../../core/prayer/time-windows';
 import { prayerTimesFor } from '../../core/prayer/prayer-times';
 import { QuranService } from '../../core/quran/quran.service';
+import { arabicDigits } from '../../core/quran/quran-utils';
 import { HijriDateComponent } from '../../shared/hijri-date.component';
 import { HomeCategoriesComponent } from '../../shared/home-categories.component';
 import { VerseOfDayComponent } from '../../shared/verse-of-day.component';
@@ -65,7 +66,7 @@ export class HomePage {
   private readonly nav = inject(NavController);
   private readonly prayer = inject(PrayerService);
   private readonly overlay = inject(OverlayService);
-  private readonly quran = inject(QuranService);
+  readonly quran = inject(QuranService);
 
   readonly categories = this.athkar.homeCategories;
   private readonly modals = inject(ModalController);
@@ -106,6 +107,17 @@ export class HomePage {
     })),
   );
 
+  readonly quranReady = this.quran.ready;
+
+  /** Opens the mushaf at a saved place (last page read or the reading mark). */
+  openMushaf(p: { page: number; sura: number; aya: number }): void {
+    void this.nav.navigateForward(['/mushaf', p.page], { queryParams: { sura: p.sura, aya: p.aya } });
+  }
+
+  digits(n: number): string {
+    return this.lang() === 'ar' ? arabicDigits(n) : String(n);
+  }
+
   async openSuggestion(kind: NowSuggestion): Promise<void> {
     if (kind !== 'kahf') return this.openReader(kind);
     await this.quran.load();
@@ -121,6 +133,8 @@ export class HomePage {
   }
 
   async refresh(): Promise<void> {
+    // Sura names for the reading cards (the Quran text is loaded once and cached).
+    void this.quran.load().then(() => this.quran.loadReadingPrefs()).catch(() => {});
     const statuses: DailyStatus[] = [];
     for (const [categoryId, labelKey, icon] of [
       ['morning', 'home.morning', 'sunny-outline'],

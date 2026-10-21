@@ -28,7 +28,8 @@
     "pressBackAgain": "Press back again to exit",
     "smaller": "Smaller",
     "larger": "Larger",
-    "off": "Off"
+    "off": "Off",
+    "mb": "MB"
   },
   "home": {
     "title": "Muslim Friend",
@@ -51,7 +52,8 @@
     "nowLabel": "It's time now",
     "fridayLabel": "Friday (from Thursday's Maghrib)",
     "readKahf": "Read Surat al-Kahf",
-    "sinceAthan": "Since the {{prayer}} athan"
+    "sinceAthan": "Since the {{prayer}} athan",
+    "continueReading": "Continue reading"
   },
   "category": {
     "start": "Start reading",
@@ -556,7 +558,8 @@
     "hifzChoosePlan": "Choose a hifz plan",
     "hifzSaved": "Saved to your hifz plan.",
     "hifzRemoved": "Removed from your hifz plan.",
-    "hifzNoPlan": "Create a hifz plan first."
+    "hifzNoPlan": "Create a hifz plan first.",
+    "ayatCount": "{{n}} ayat"
   },
   "quran": {
     "title": "Quran",

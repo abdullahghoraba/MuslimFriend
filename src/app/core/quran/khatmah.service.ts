@@ -75,10 +75,10 @@ export class KhatmahService {
     return this.serial(async () => {
       const plan = this.plans().find((p) => p.id === id && p.completedAt === null);
       if (!plan) return;
-      const name = plan.name + ' (ended / منتهية)';
-      await this.db.run('UPDATE khatmah SET name = ?, completed_at = 0 WHERE id = ?', [name, id]);
+      // completed_at = 0 marks a plan ended early; the page shows a translated «منتهية» label.
+      await this.db.run('UPDATE khatmah SET completed_at = 0 WHERE id = ?', [id]);
       this.plans.update((list) =>
-        list.map((p) => (p.id === id ? { ...p, name, completedAt: 0 } : p)),
+        list.map((p) => (p.id === id ? { ...p, completedAt: 0 } : p)),
       );
     });
   }

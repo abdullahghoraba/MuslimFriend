@@ -78,8 +78,8 @@
         @for (b of blocks(); track b.ayah.index) {
           @if (b.suraHeader; as h) {
             <div class="sura-frame" role="heading" aria-level="2">
-              <span class="sura-name">سورة {{ h.name }}</span>
-              <span class="sura-info">{{ h.type === 'Meccan' ? 'مكية' : 'مدنية' }} · آياتها {{ h.ayas }}</span>
+              <span class="sura-name">{{ lang() === 'ar' ? 'سورة ' + h.name : 'Surah ' + quran.sura(h.sura).tname }}</span>
+              <span class="sura-info">{{ (h.type === 'Meccan' ? 'quran.meccan' : 'quran.medinan') | translate }} · {{ 'mushaf.ayatCount' | translate: { n: lang() === 'ar' ? ayahNumber(h.ayas) : h.ayas } }}</span>
             </div>
             @if (b.basmala) {
               <div class="basmala">{{ b.basmalaText }}</div>

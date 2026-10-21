@@ -2,6 +2,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { SingleViewComponent } from './single-view.component';
 import { nextDhikrCount, visibleItems } from './counting';
+import { arabicDigits } from '../../core/quran/quran-utils';
 import { AthkarPrefsService } from '../../core/services/athkar-prefs.service';
 import { Component, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import {
@@ -71,6 +72,10 @@ export class CategoryPage {
     clearTimeout(this.advanceTimer);
     this.reordering.set(false);
     await this.preferences.update({ readingMode: this.prefs().readingMode === 'list' ? 'single' : 'list' });
+  }
+
+  digits(n: number): string {
+    return this.lang() === 'ar' ? arabicDigits(n) : String(n);
   }
 
   readonly showCompleted = signal(false);

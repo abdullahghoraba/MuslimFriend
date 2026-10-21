@@ -155,7 +155,7 @@
                   aria-hidden="true"
                 />
                 <div>
-                  <strong dir="auto">{{ p.name }}</strong>
+                  <strong dir="auto">{{ p.name.replace(' (ended / منتهية)', '') }}</strong>
                   <p>
                     {{ p.startedOn }}
                     @if (p.completedAt) {

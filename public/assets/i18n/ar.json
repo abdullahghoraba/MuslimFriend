@@ -28,7 +28,8 @@
     "pressBackAgain": "اضغط رجوع مرة أخرى للخروج",
     "smaller": "تصغير",
     "larger": "تكبير",
-    "off": "إيقاف"
+    "off": "إيقاف",
+    "mb": "ميجابايت"
   },
   "home": {
     "title": "رفيق المسلم",
@@ -51,7 +52,8 @@
     "nowLabel": "حان وقتها الآن",
     "fridayLabel": "ليلة الجمعة ويومها",
     "readKahf": "اقرأ سورة الكهف",
-    "sinceAthan": "مضى على أذان {{prayer}}"
+    "sinceAthan": "مضى على أذان {{prayer}}",
+    "continueReading": "تابع القراءة"
   },
   "category": {
     "start": "ابدأ القراءة",
@@ -556,7 +558,8 @@
     "hifzChoosePlan": "اختر خطة الحفظ",
     "hifzSaved": "تم الحفظ في خطة الحفظ.",
     "hifzRemoved": "أُزيلت من خطة الحفظ.",
-    "hifzNoPlan": "أنشئ خطة حفظ أولًا."
+    "hifzNoPlan": "أنشئ خطة حفظ أولًا.",
+    "ayatCount": "آياتها {{n}}"
   },
   "quran": {
     "title": "القرآن الكريم",

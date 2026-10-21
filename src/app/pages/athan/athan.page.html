@@ -62,7 +62,7 @@
         <div class="rec-row">
           <div class="rec-info">
             <strong>{{ lang() === 'ar' ? r.nameAr : r.nameEn }}</strong>
-            <small>{{ r.credit }} · ~{{ r.sizeMb }} MB</small>
+            <small>{{ r.credit }} · ~{{ r.sizeMb }} {{ 'common.mb' | translate }}</small>
           </div>
           @if (athan.downloading() === r.id) {
             <ion-spinner name="dots" />
@@ -116,7 +116,7 @@
             <ion-select-option value="system">{{ 'athan.system' | translate }}</ion-select-option>
             <ion-select-option value="none">{{ 'athan.noSound' | translate }}</ion-select-option>
             @for (s of settings().customSounds; track s.path) {
-              <ion-select-option [value]="'file:' + s.path">{{ s.name }}</ion-select-option>
+              <ion-select-option [value]="'file:' + s.path">{{ soundName(s) }}</ion-select-option>
             }
             <ion-select-option value="add">{{ 'athan.addSound' | translate }}</ion-select-option>
           </ion-select>
@@ -232,7 +232,7 @@
         <h2>{{ 'athan.customSounds' | translate }}</h2>
         @for (s of settings().customSounds; track s.path) {
           <div class="sound-row">
-            <span>{{ s.name }}</span
+            <span>{{ soundName(s) }}</span
             ><ion-button
               fill="clear"
               (click)="rename(s.path, s.name)"

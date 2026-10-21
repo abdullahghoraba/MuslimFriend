@@ -57,7 +57,7 @@ import { SettingsService } from '../../core/services/settings.service';
               <h3>{{ name(t) }}</h3>
               <p>
                 {{ 'tafsirLib.offlineCount' | translate: { n: count(t), total: 114 } }}
-                · ~{{ t.sizeMb }} MB
+                · ~{{ t.sizeMb }} {{ 'common.mb' | translate }}
               </p>
               @if (lib.progress()?.apiId === t.apiId) {
                 <ion-progress-bar [value]="(lib.progress()?.done ?? 0) / 114" />
@@ -82,7 +82,7 @@ import { SettingsService } from '../../core/services/settings.service';
           <ion-item lines="full">
             <ion-label class="ion-text-wrap">
               <h3>{{ name(t) }}</h3>
-              <p>{{ 'tafsirLib.offlineCount' | translate: { n: 114, total: 114 } }} · ~{{ t.sizeMb }} MB</p>
+              <p>{{ 'tafsirLib.offlineCount' | translate: { n: 114, total: 114 } }} · ~{{ t.sizeMb }} {{ 'common.mb' | translate }}</p>
             </ion-label>
             <ion-button slot="end" fill="clear" color="danger" (click)="remove(t)" [attr.aria-label]="('common.delete' | translate) + ' ' + name(t)">
               <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true" />
@@ -99,7 +99,7 @@ import { SettingsService } from '../../core/services/settings.service';
             <ion-icon slot="start" name="checkmark-circle" color="success" aria-hidden="true" />
             <ion-label class="ion-text-wrap">
               <h3>{{ name(t) }}</h3>
-              <p>{{ t.source || ('tafsirLib.importedFile' | translate) }} · ~{{ t.sizeMb }} MB</p>
+              <p>{{ t.source || ('tafsirLib.importedFile' | translate) }} · ~{{ t.sizeMb }} {{ 'common.mb' | translate }}</p>
             </ion-label>
             <ion-button slot="end" fill="clear" color="danger" (click)="remove(t)" [attr.aria-label]="('common.delete' | translate) + ' ' + name(t)">
               <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true" />

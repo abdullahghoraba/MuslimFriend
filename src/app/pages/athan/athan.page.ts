@@ -87,6 +87,13 @@ export class AthanPage implements OnDestroy {
     }
   }
 
+  /** Downloaded recordings are named in the app language; files the user added keep their own name. */
+  soundName(s: { name: string; recordingId?: string }): string {
+    const rec = s.recordingId ? this.recordings.find((r) => r.id === s.recordingId) : undefined;
+    if (!rec || s.name !== rec.nameAr) return s.name; // renamed by the user
+    return this.lang() === 'ar' ? rec.nameAr : rec.nameEn;
+  }
+
   usedForAll(sound: AthanSound): boolean {
     return this.prayers.every((p) => this.settings().perPrayer[p].sound === sound);
   }

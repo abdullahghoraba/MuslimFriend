@@ -33,7 +33,7 @@
         <span class="now-title">{{ s.titleKey | translate }}</span>
         @if (s.progress; as p) {
           <span class="now-sub">{{
-            p.completed ? ('home.statusDone' | translate) : ('home.progress' | translate: { done: p.done, total: p.total })
+            p.completed ? ('home.statusDone' | translate) : ('home.progress' | translate: { done: digits(p.done), total: digits(p.total) })
           }}</span>
         }
       </span>
@@ -48,6 +48,33 @@
     }}</a>
   }
 
+  @if (quranReady() && (quran.lastRead() || quran.readingMark())) {
+    <div class="reading-cards">
+      @if (quran.lastRead(); as last) {
+        <button type="button" class="reading-card ion-activatable" (click)="openMushaf(last)">
+          <ion-icon name="book-outline" aria-hidden="true" />
+          <span class="reading-text">
+            <span class="reading-label">{{ 'home.continueReading' | translate }}</span>
+            <span class="reading-title">{{ quran.sura(last.sura).name }}</span>
+            <span class="reading-sub">{{ 'quran.ayah' | translate }} {{ digits(last.aya) }} · {{ 'quran.page' | translate }} {{ digits(last.page) }}</span>
+          </span>
+          <ion-ripple-effect />
+        </button>
+      }
+      @if (quran.readingMark(); as mark) {
+        <button type="button" class="reading-card mark ion-activatable" (click)="openMushaf(mark)">
+          <ion-icon name="bookmark" aria-hidden="true" />
+          <span class="reading-text">
+            <span class="reading-label">{{ 'quran.readingMark' | translate }}</span>
+            <span class="reading-title">{{ quran.sura(mark.sura).name }}</span>
+            <span class="reading-sub">{{ 'quran.ayah' | translate }} {{ digits(mark.aya) }} · {{ 'quran.page' | translate }} {{ digits(mark.page) }}</span>
+          </span>
+          <ion-ripple-effect />
+        </button>
+      }
+    </div>
+  }
+
   <h2 class="section-title">{{ 'home.today' | translate }}</h2>
   <div class="daily">
     @for (d of daily(); track d.categoryId) {
@@ -60,7 +87,7 @@
           ', ' +
           ((d.progress.completed ? 'home.statusDone' : 'home.statusPending') | translate) +
           ', ' +
-          ('home.progress' | translate: { done: d.progress.done, total: d.progress.total })
+          ('home.progress' | translate: { done: digits(d.progress.done), total: digits(d.progress.total) })
         "
       >
         <ion-icon [name]="d.icon" aria-hidden="true" class="daily-icon" />
@@ -70,7 +97,7 @@
             <ion-icon name="checkmark-circle" aria-hidden="true" />
             {{ 'home.statusDone' | translate }}
           } @else {
-            {{ 'home.progress' | translate: { done: d.progress.done, total: d.progress.total } }}
+            {{ 'home.progress' | translate: { done: digits(d.progress.done), total: digits(d.progress.total) } }}
           }
         </span>
         <ion-progress-bar

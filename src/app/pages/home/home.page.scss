@@ -229,3 +229,36 @@
   flex-shrink: 0;
   color: var(--app-muted);
 }
+
+// Quran: continue where you stopped / go to the reading mark.
+.reading-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 12px 16px 0;
+}
+
+.reading-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  min-height: 64px;
+  border-radius: var(--app-radius);
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+  box-shadow: var(--app-shadow);
+  color: var(--ion-text-color);
+  font: inherit;
+  text-align: start;
+
+  > ion-icon { flex-shrink: 0; font-size: 1.6rem; color: var(--ion-color-primary); }
+  &.mark > ion-icon { color: var(--ion-color-secondary); }
+}
+
+.reading-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.reading-label { font-size: 0.78rem; color: var(--app-muted); }
+.reading-title { font-family: 'Amiri', serif; font-size: 1.15rem; font-weight: 700; }
+.reading-sub { font-size: 0.78rem; color: var(--app-muted); }

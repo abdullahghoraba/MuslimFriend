@@ -25,6 +25,8 @@ export interface RemoteTafsir {
 /** Ids of imported tafsirs start here, well away from quran.com resource ids. */
 export const IMPORTED_BASE = 900_000;
 const IMPORTED_KEY = 'importedTafsirs';
+/** quran.com ids that were offered before and later removed. */
+const REMOVED_TAFSIRS = [157];
 /** Built-in personal tafsirs the user deleted; they are not reinstalled. */
 const DISMISSED_KEY = 'dismissedBundledTafsirs';
 
@@ -96,7 +98,6 @@ export const REMOTE_TAFSIRS: RemoteTafsir[] = [
   { apiId: 94, nameAr: 'تفسير البغوي', nameEn: 'Tafsir al-Baghawi', lang: 'ar', sizeMb: 12 },
   { apiId: 93, nameAr: 'التفسير الوسيط (طنطاوي)', nameEn: 'Al-Wasit (Tantawi)', lang: 'ar', sizeMb: 25 },
   { apiId: 169, nameAr: 'ابن كثير المختصر (إنجليزي)', nameEn: 'Ibn Kathir Abridged (English)', lang: 'en', sizeMb: 20 },
-  { apiId: 157, nameAr: 'في ظلال القرآن - سيد قطب (ترجمة أردية)', nameEn: 'Fi Zilal al-Quran - Sayyid Qutb (Urdu translation)', lang: 'ur', sizeMb: 18 },
   { apiId: 168, nameAr: 'معارف القرآن (إنجليزي)', nameEn: "Ma'arif al-Qur'an (English)", lang: 'en', sizeMb: 30 },
   { apiId: 817, nameAr: 'تذكير القرآن (إنجليزي)', nameEn: 'Tazkirul Quran (English)', lang: 'en', sizeMb: 6 },
   // Classical tafsirs (public domain) and openly licensed ones, from the spa5k/tafsir_api open dataset (QUL data).
@@ -187,6 +188,10 @@ export class TafsirLibraryService {
         /* keep empty */
       }
       await this.installBundled();
+      // Tafsirs removed from the library: free the space of any old download (157 = Fi Zilal, Urdu).
+      if (Capacitor.isNativePlatform()) {
+        for (const id of REMOVED_TAFSIRS) await Filesystem.rmdir({ path: `tafsir/${id}`, directory: Directory.Data, recursive: true }).catch(() => {});
+      }
     })());
   }
 
