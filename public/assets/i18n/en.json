@@ -667,7 +667,15 @@
     "offlineMissing": "This sura of this tafsir isn't saved yet. Connect to the internet once, or download the whole tafsir from the library.",
     "openLibrary": "Open tafsir library",
     "covered": "This passage is explained together with the ayat before it:",
-    "note": "Every sura you open while online is saved automatically, so you can read it again offline. Extra tafsirs come from the public quran.com library."
+    "note": "Every sura you open while online is saved automatically, so you can read it again offline. Extra tafsirs come from the public quran.com library.",
+    "imported": "Tafsirs imported from a file",
+    "import": "Import a tafsir from a file…",
+    "importing": "Importing…",
+    "importedFile": "Imported file",
+    "importDone": "Imported \"{{name}}\". You'll find it in the tafsir list when you tap any verse.",
+    "importBad": "Couldn't read the file. It must be a JSON file with text for each verse.",
+    "importEmpty": "The file has no tafsir text for any verse.",
+    "importNote": "You can import a tafsir you have a copy of (a JSON file with text per verse, keyed like \"1:1\"). It's stored on your phone, works offline, and is never sent anywhere."
   },
   "athan": {
     "title": "Athan settings",

@@ -20,7 +20,7 @@ import { Preferences } from '@capacitor/preferences';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AyahRef, TAFSIR_IDS, TafsirId, arabicDigits, splitBasmala } from '../../core/quran/quran-utils';
 import { QuranService } from '../../core/quran/quran.service';
-import { REMOTE_TAFSIRS, TafsirLibraryService } from '../../core/quran/tafsir-library.service';
+import { TafsirLibraryService } from '../../core/quran/tafsir-library.service';
 import { SettingsService } from '../../core/services/settings.service';
 import { ShareService } from '../../core/services/share.service';
 
@@ -61,7 +61,7 @@ type Source = TafsirId | `r${number}`;
         <ion-toolbar>
           <ion-select [label]="'tafsirLib.choose' | translate" interface="action-sheet" [value]="source()"
                       (ionChange)="setSource($event.detail.value)">
-            @for (t of remote; track t.apiId) {
+            @for (t of remote(); track t.apiId) {
               <ion-select-option [value]="'r' + t.apiId">{{ lang() === 'ar' ? t.nameAr : t.nameEn }}</ion-select-option>
             }
           </ion-select>
@@ -121,7 +121,7 @@ export class TafsirSheetComponent implements OnInit {
   private readonly share$ = inject(ShareService);
 
   readonly ids = TAFSIR_IDS;
-  readonly remote = REMOTE_TAFSIRS;
+  readonly remote = this.library.all;
   readonly index = signal(0);
   readonly source = signal<Source>('muyassar');
   readonly showMore = signal(false);
@@ -144,11 +144,13 @@ export class TafsirSheetComponent implements OnInit {
   });
   readonly sourceBy = computed(() => {
     const r = this.remoteInfo();
+    if (r?.imported) return `${this.lang() === 'ar' ? r.nameAr : r.nameEn} · ${r.source || (this.lang() === 'ar' ? 'ملف مستورد' : 'Imported file')}`;
     if (r) return `${this.lang() === 'ar' ? r.nameAr : r.nameEn} · quran.com`;
     return `${this.quran.meta.sources.tafsir[this.source() as TafsirId].by} · tanzil.net`;
   });
 
   async ngOnInit(): Promise<void> {
+    await this.library.loadImported();
     const { value } = await Preferences.get({ key: TAFSIR_PREF });
     if (value && (isBundled(value) || this.library.find(Number(value.slice(1))))) this.source.set(value as Source);
     else if (this.lang() === 'en') this.source.set('sahih');

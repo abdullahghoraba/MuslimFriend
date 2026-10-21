@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import {
   AlertController,
   IonBackButton,
@@ -79,6 +79,28 @@ import { SettingsService } from '../../core/services/settings.service';
         }
       </ion-list>
       <p class="note">{{ 'tafsirLib.note' | translate }}</p>
+
+      <ion-list inset>
+        <ion-list-header>{{ 'tafsirLib.imported' | translate }}</ion-list-header>
+        @for (t of lib.imported(); track t.apiId) {
+          <ion-item lines="full">
+            <ion-icon slot="start" name="checkmark-circle" color="success" aria-hidden="true" />
+            <ion-label class="ion-text-wrap">
+              <h3>{{ name(t) }}</h3>
+              <p>{{ t.source || ('tafsirLib.importedFile' | translate) }} · ~{{ t.sizeMb }} MB</p>
+            </ion-label>
+            <ion-button slot="end" fill="clear" color="danger" (click)="remove(t)" [attr.aria-label]="('common.delete' | translate) + ' ' + name(t)">
+              <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true" />
+            </ion-button>
+          </ion-item>
+        }
+        <input #fileInput type="file" accept=".json,application/json" hidden (change)="importPicked($event)" />
+        <ion-item button [disabled]="importing()" (click)="fileInput.click()">
+          <ion-icon slot="start" name="add-outline" aria-hidden="true" />
+          <ion-label>{{ (importing() ? 'tafsirLib.importing' : 'tafsirLib.import') | translate }}</ion-label>
+        </ion-item>
+      </ion-list>
+      <p class="note">{{ 'tafsirLib.importNote' | translate }}</p>
     </ion-content>
   `,
   styles: `
@@ -111,6 +133,28 @@ export class TafsirLibraryPage {
 
   count(t: RemoteTafsir): number {
     return this.lib.offlineCounts()[t.apiId] ?? 0;
+  }
+
+  readonly importing = signal(false);
+
+  async importPicked(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+    this.importing.set(true);
+    let message: string;
+    try {
+      const t = await this.lib.importFile(file);
+      message = this.translate.instant('tafsirLib.importDone', { name: this.name(t) });
+    } catch (e) {
+      const code = e instanceof Error ? e.message : '';
+      message = this.translate.instant(code === 'empty' ? 'tafsirLib.importEmpty' : 'tafsirLib.importBad');
+    } finally {
+      this.importing.set(false);
+    }
+    const toast = await this.toasts.create({ message, duration: 2600 });
+    await toast.present();
   }
 
   async download(t: RemoteTafsir): Promise<void> {

@@ -1,15 +1,83 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
+import { Preferences } from '@capacitor/preferences';
 
 export interface RemoteTafsir {
-  /** quran.com API resource id. */
+  /** quran.com API resource id (or IMPORTED_BASE + n for a tafsir imported from a file). */
   apiId: number;
   nameAr: string;
   nameEn: string;
   lang: 'ar' | 'en' | 'ur';
   /** Rough size of the full download, for the UI. */
   sizeMb: number;
+  /** Set for a tafsir the user imported from a file on the device (never fetched from the network). */
+  imported?: boolean;
+  /** Credit line shown under the text for an imported tafsir. */
+  source?: string;
+}
+
+/** Ids of imported tafsirs start here, well away from quran.com resource ids. */
+export const IMPORTED_BASE = 900_000;
+const IMPORTED_KEY = 'importedTafsirs';
+
+/**
+ * File format for «استيراد تفسير من ملف» (JSON):
+ * { "type": "muslim-friend-tafsir", "name": "…", "nameEn": "…", "author": "…", "lang": "ar", "source": "…",
+ *   "ayahs": { "1:1": "text", "1:2": "text", … } }
+ * A bare { "1:1": "text" | { "text": "…" } } map (e.g. a QUL tafsir JSON) is accepted too. Values that are
+ * another verse key ("2:5") or empty mean "explained together with an earlier verse".
+ */
+export interface ParsedTafsir {
+  nameAr: string;
+  nameEn: string;
+  lang: 'ar' | 'en' | 'ur';
+  source: string;
+  /** suras[s - 1][a - 1] = text ('' = covered by an earlier verse). */
+  suras: string[][];
+  filled: number;
+}
+
+export function parseTafsirFile(raw: string, ayahCounts: number[], fileName = ''): ParsedTafsir {
+  let json: unknown;
+  try {
+    json = JSON.parse(raw);
+  } catch {
+    throw new Error('not-json');
+  }
+  if (!json || typeof json !== 'object' || Array.isArray(json)) throw new Error('bad-format');
+  const o = json as Record<string, unknown>;
+  const ayahs = (o['type'] === 'muslim-friend-tafsir' ? o['ayahs'] : o) as Record<string, unknown> | undefined;
+  if (!ayahs || typeof ayahs !== 'object') throw new Error('bad-format');
+  const suras = ayahCounts.map((n) => Array.from({ length: n }, () => ''));
+  let filled = 0;
+  for (const [key, value] of Object.entries(ayahs)) {
+    const m = /^(\d{1,3}):(\d{1,3})$/.exec(key);
+    if (!m) continue;
+    const s = +m[1];
+    const a = +m[2];
+    if (s < 1 || s > ayahCounts.length || a < 1 || a > ayahCounts[s - 1]) continue;
+    const text = typeof value === 'string' ? value : (value as { text?: unknown } | null)?.text;
+    if (typeof text !== 'string' || /^\s*\d{1,3}:\d{1,3}\s*$/.test(text)) continue;
+    const clean = cleanHtml(text);
+    if (!clean) continue;
+    suras[s - 1][a - 1] = clean;
+    filled++;
+  }
+  if (!filled) throw new Error('empty');
+  const str = (k: string) => (typeof o[k] === 'string' ? (o[k] as string).trim() : '');
+  const base = fileName.replace(/\.[^.]+$/, '') || 'Tafsir';
+  const name = str('name') || base;
+  const lang = (['ar', 'en', 'ur'] as const).find((l) => l === str('lang')) ?? 'ar';
+  const author = str('author');
+  return {
+    nameAr: author ? `${name} - ${author}` : name,
+    nameEn: str('nameEn') || name,
+    lang,
+    source: str('source'),
+    suras,
+    filled,
+  };
 }
 
 /** Extra tafsirs downloadable from the public quran.com API and kept offline afterwards. */
@@ -47,9 +115,49 @@ export class TafsirLibraryService {
   readonly progress = signal<{ apiId: number; done: number; total: number } | null>(null);
   /** Number of suras stored offline per tafsir (refreshed by refreshCounts). */
   readonly offlineCounts = signal<Record<number, number>>({});
+  /** Tafsirs the user imported from files on the device. */
+  readonly imported = signal<RemoteTafsir[]>([]);
+  /** Every non-bundled tafsir: downloadable ones, then imported ones. */
+  readonly all = computed(() => [...REMOTE_TAFSIRS, ...this.imported()]);
+  private importedLoaded?: Promise<void>;
 
   find(apiId: number): RemoteTafsir | undefined {
-    return REMOTE_TAFSIRS.find((t) => t.apiId === apiId);
+    return this.all().find((t) => t.apiId === apiId);
+  }
+
+  loadImported(): Promise<void> {
+    return (this.importedLoaded ??= (async () => {
+      const { value } = await Preferences.get({ key: IMPORTED_KEY });
+      try {
+        const list = value ? (JSON.parse(value) as RemoteTafsir[]) : [];
+        this.imported.set(list.filter((t) => t && typeof t.apiId === 'number' && t.apiId >= IMPORTED_BASE).map((t) => ({ ...t, imported: true })));
+      } catch {
+        /* keep empty */
+      }
+    })());
+  }
+
+  /** Imports a tafsir file (see parseTafsirFile) and stores it offline. Returns the new entry. */
+  async importFile(file: File): Promise<RemoteTafsir> {
+    await this.loadImported();
+    const parsed = parseTafsirFile(await file.text(), await this.counts(), file.name);
+    const apiId = Math.max(IMPORTED_BASE, ...this.imported().map((t) => t.apiId)) + 1;
+    for (let s = 1; s <= parsed.suras.length; s++) {
+      this.memory.set(`${apiId}/${s}`, parsed.suras[s - 1]);
+      await this.writeFile(apiId, s, parsed.suras[s - 1]);
+    }
+    const entry: RemoteTafsir = {
+      apiId, nameAr: parsed.nameAr, nameEn: parsed.nameEn, lang: parsed.lang, source: parsed.source,
+      sizeMb: Math.max(1, Math.round(file.size / 1_000_000)), imported: true,
+    };
+    await this.saveImported([...this.imported(), entry]);
+    await this.refreshCounts();
+    return entry;
+  }
+
+  private async saveImported(list: RemoteTafsir[]): Promise<void> {
+    this.imported.set(list);
+    await Preferences.set({ key: IMPORTED_KEY, value: JSON.stringify(list) });
   }
 
   /** Tafsir for one ayah. Uses the offline copy, or fetches (and saves) the sura when online. */
@@ -73,6 +181,8 @@ export class TafsirLibraryService {
       this.memory.set(key, offline);
       return offline;
     }
+    // Imported tafsirs exist only on the device.
+    if (apiId >= IMPORTED_BASE) return null;
     try {
       const fetched = await this.fetchSura(apiId, sura);
       this.memory.set(key, fetched);
@@ -118,12 +228,14 @@ export class TafsirLibraryService {
     if (Capacitor.isNativePlatform()) {
       await Filesystem.rmdir({ path: `tafsir/${apiId}`, directory: Directory.Data, recursive: true }).catch(() => {});
     }
+    if (apiId >= IMPORTED_BASE) await this.saveImported(this.imported().filter((t) => t.apiId !== apiId));
     await this.refreshCounts();
   }
 
   async refreshCounts(): Promise<void> {
+    await this.loadImported();
     const counts: Record<number, number> = {};
-    for (const t of REMOTE_TAFSIRS) {
+    for (const t of this.all()) {
       counts[t.apiId] = Capacitor.isNativePlatform()
         ? await Filesystem.readdir({ path: `tafsir/${t.apiId}`, directory: Directory.Data }).then((r) => r.files.length, () => 0)
         : [...this.memory.keys()].filter((k) => k.startsWith(`${t.apiId}/`)).length;
