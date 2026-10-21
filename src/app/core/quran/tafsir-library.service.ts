@@ -7,7 +7,7 @@ export interface RemoteTafsir {
   apiId: number;
   nameAr: string;
   nameEn: string;
-  lang: 'ar' | 'en';
+  lang: 'ar' | 'en' | 'ur';
   /** Rough size of the full download, for the UI. */
   sizeMb: number;
 }
@@ -21,6 +21,7 @@ export const REMOTE_TAFSIRS: RemoteTafsir[] = [
   { apiId: 94, nameAr: 'تفسير البغوي', nameEn: 'Tafsir al-Baghawi', lang: 'ar', sizeMb: 12 },
   { apiId: 93, nameAr: 'التفسير الوسيط (طنطاوي)', nameEn: 'Al-Wasit (Tantawi)', lang: 'ar', sizeMb: 25 },
   { apiId: 169, nameAr: 'ابن كثير المختصر (إنجليزي)', nameEn: 'Ibn Kathir Abridged (English)', lang: 'en', sizeMb: 20 },
+  { apiId: 157, nameAr: 'في ظلال القرآن - سيد قطب (ترجمة أردية)', nameEn: 'Fi Zilal al-Quran - Sayyid Qutb (Urdu translation)', lang: 'ur', sizeMb: 18 },
 ];
 
 const API = 'https://api.quran.com/api/v4';
