@@ -1,5 +1,5 @@
 {
-  "contentVersion": 3,
+  "contentVersion": 4,
   "notes": "Source file for the bundled dataset. Quran items reference Tanzil Uthmani text by surah/ayah (and optional 1-based word range); scripts/build-content.mjs copies the text verbatim. Every item ships with reviewed=false until a qualified reviewer signs it off in content/review.csv. Virtue fields are summaries of meaning, not hadith wording.",
   "items": [
     {
@@ -263,6 +263,58 @@
       "reviewNote": "Verify Musnad Ahmad number for the edition used."
     },
     {
+      "id": "morning-shirk-khafi",
+      "categoryId": "morning",
+      "textAr": "اللَّهُمَّ إِنَّا نَعُوذُ بِكَ مِنْ أَنْ نُشْرِكَ بِكَ شَيْئًا نَعْلَمُهُ، وَنَسْتَغْفِرُكَ لِمَا لَا نَعْلَمُهُ",
+      "transliteration": "Allahumma inna na'udhu bika min an nushrika bika shay'an na'lamuh, wa nastaghfiruka lima la na'lamuh.",
+      "meaningEn": "O Allah, we seek refuge in You from associating anything with You knowingly, and we ask Your forgiveness for what we do not know.",
+      "repeatCount": 1,
+      "virtueAr": "علّمه النبي ﷺ أصحابه حين حذّرهم من الشرك الخفي. ولم يُقيَّد في الحديث بالصباح والمساء، ويقرؤه كثيرون مع أذكارهما.",
+      "virtueEn": "The Prophet ﷺ taught it to his Companions when warning them of hidden shirk. The hadith does not tie it to morning or evening; many recite it with these athkar.",
+      "sourceRef": "Musnad Ahmad 19606 (Abu Musa al-Ash'ari)",
+      "grade": "Hasan li-ghayrihi (al-Albani, Sahih at-Targhib 36)",
+      "reviewNote": "Confirm grading wording and Musnad number; not specific to morning/evening in the narration."
+    },
+    {
+      "id": "morning-al-hamm-wal-hazan",
+      "categoryId": "morning",
+      "textAr": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ، وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ",
+      "transliteration": "Allahumma inni a'udhu bika minal-hammi wal-hazan, wa a'udhu bika minal-'ajzi wal-kasal, wa a'udhu bika minal-jubni wal-bukhl, wa a'udhu bika min ghalabatid-dayni wa qahrir-rijal.",
+      "meaningEn": "O Allah, I seek refuge in You from worry and grief, from incapacity and laziness, from cowardice and miserliness, and from being overcome by debt and overpowered by men.",
+      "repeatCount": 1,
+      "virtueAr": "ورد أن النبي ﷺ علّمه رجلًا أصابته هموم وديون، وقال: قل إذا أصبحت وإذا أمسيت. وأصل الدعاء ثابت في صحيح البخاري دون تقييده بالصباح والمساء.",
+      "virtueEn": "It is reported that the Prophet ﷺ taught it to a man burdened with worries and debts, saying: say it in the morning and the evening. The supplication itself is authentic in Sahih al-Bukhari (6369) without the morning/evening timing.",
+      "sourceRef": "Abu Dawud 1555; the supplication: Sahih al-Bukhari 6369",
+      "grade": "Disputed: the morning/evening narration (Abu Dawud 1555) was graded da'if by al-Albani; the supplication itself is sahih (al-Bukhari 6369)",
+      "reviewNote": "Text follows the Abu Dawud 1555 wording — verify against a printed edition."
+    },
+    {
+      "id": "morning-jalal-wajhik",
+      "categoryId": "morning",
+      "textAr": "يَا رَبِّ لَكَ الْحَمْدُ كَمَا يَنْبَغِي لِجَلَالِ وَجْهِكَ وَعَظِيمِ سُلْطَانِكَ",
+      "transliteration": "Ya Rabbi lakal-hamdu kama yanbaghi li-jalali wajhika wa 'azimi sultanik.",
+      "meaningEn": "O my Lord, to You belongs all praise as befits the majesty of Your Face and the greatness of Your authority.",
+      "repeatCount": 1,
+      "virtueAr": "ورد أن رجلًا قالها فأشكلت على الملَكين كيف يكتبانها، فقال الله: اكتباها كما قال عبدي حتى يلقاني فأجزيه بها. ولم يُقيَّد في الحديث بالصباح والمساء.",
+      "virtueEn": "It is reported that the two recording angels did not know how to record its reward, and Allah told them to write it as His servant said it until He rewards him. The hadith does not tie it to morning or evening.",
+      "sourceRef": "Ibn Majah 3801",
+      "grade": "Da'if (al-Albani, Da'if Ibn Majah)",
+      "reviewNote": "Weak narration, included at the user's request; confirm grading."
+    },
+    {
+      "id": "morning-abu-ad-darda",
+      "categoryId": "morning",
+      "textAr": "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، عَلَيْكَ تَوَكَّلْتُ، وَأَنْتَ رَبُّ الْعَرْشِ الْعَظِيمِ، مَا شَاءَ اللَّهُ كَانَ، وَمَا لَمْ يَشَأْ لَمْ يَكُنْ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ، أَعْلَمُ أَنَّ اللَّهَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، وَأَنَّ اللَّهَ قَدْ أَحَاطَ بِكُلِّ شَيْءٍ عِلْمًا، اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي، وَمِنْ شَرِّ كُلِّ دَابَّةٍ أَنْتَ آخِذٌ بِنَاصِيَتِهَا، إِنَّ رَبِّي عَلَى صِرَاطٍ مُسْتَقِيمٍ",
+      "transliteration": "Allahumma anta Rabbi la ilaha illa ant, 'alayka tawakkaltu wa anta Rabbul-'arshil-'azim. Ma sha'allahu kan, wa ma lam yasha' lam yakun, wa la hawla wa la quwwata illa billahil-'aliyyil-'azim. A'lamu annallaha 'ala kulli shay'in qadir, wa annallaha qad ahata bi-kulli shay'in 'ilma. Allahumma inni a'udhu bika min sharri nafsi, wa min sharri kulli dabbatin anta akhidhun bi-nasiyatiha, inna Rabbi 'ala siratin mustaqim.",
+      "meaningEn": "O Allah, You are my Lord; there is no god but You. In You I trust, and You are the Lord of the Mighty Throne. What Allah wills happens and what He does not will does not happen; there is no power and no strength except with Allah, the Most High, the Most Great. I know that Allah has power over all things and that Allah encompasses all things in knowledge. O Allah, I seek refuge in You from the evil of my soul and from the evil of every creature whose forelock You hold. Indeed my Lord is on a straight path.",
+      "repeatCount": 1,
+      "virtueAr": "يُروى عن أبي الدرداء رضي الله عنه أن من قالها أول النهار لم تصبه مصيبة حتى يمسي، ومن قالها آخر النهار لم تصبه مصيبة حتى يصبح.",
+      "virtueEn": "It is narrated from Abu ad-Darda' that whoever says it at the start of the day will not be struck by a calamity until evening, and whoever says it at the end of the day, until morning.",
+      "sourceRef": "Ibn as-Sunni, 'Amal al-Yawm wa al-Laylah (Abu ad-Darda')",
+      "grade": "Da'if: its chain is weak according to hadith scholars, including al-Albani",
+      "reviewNote": "Weak narration, included at the user's request. Verify text, Ibn as-Sunni number and grading (some say da'if jiddan)."
+    },
+    {
       "id": "morning-subhanallahi-wa-bihamdih-100",
       "categoryId": "morning",
       "textAr": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
@@ -500,6 +552,26 @@
       "virtueEn": "",
       "sourceRef": "Musnad Ahmad 15360",
       "grade": "Sahih (al-Albani, Sahih al-Jami' 4674)"
+    },
+    {
+      "id": "evening-shirk-khafi",
+      "categoryId": "evening",
+      "copyOf": "morning-shirk-khafi"
+    },
+    {
+      "id": "evening-al-hamm-wal-hazan",
+      "categoryId": "evening",
+      "copyOf": "morning-al-hamm-wal-hazan"
+    },
+    {
+      "id": "evening-jalal-wajhik",
+      "categoryId": "evening",
+      "copyOf": "morning-jalal-wajhik"
+    },
+    {
+      "id": "evening-abu-ad-darda",
+      "categoryId": "evening",
+      "copyOf": "morning-abu-ad-darda"
     },
     {
       "id": "evening-subhanallahi-wa-bihamdih-100",
