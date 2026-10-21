@@ -3,6 +3,7 @@ import { Preferences } from '@capacitor/preferences';
 import { SettingsService } from './settings.service';
 
 export interface AthkarPrefs {
+  onComplete: 'dim' | 'hide';
   readingMode: 'list' | 'single';
   tapTarget: 'card' | 'button';
   autoAdvance: boolean;
@@ -13,7 +14,7 @@ export interface AthkarPrefs {
   showMeaning: boolean;
 }
 const defaults = {
-  readingMode: 'list', tapTarget: 'card', autoAdvance: true,
+  onComplete: 'dim', readingMode: 'list', tapTarget: 'card', autoAdvance: true,
   countPastTarget: false, vibration: 'light', showSource: true,
 } as const;
 /** Missing language-dependent fields follow the language until explicitly changed. */
@@ -39,6 +40,7 @@ export class AthkarPrefsService {
       const data = parsed as Record<string, unknown>;
       for (const key of ['autoAdvance', 'countPastTarget', 'showSource', 'showTransliteration', 'showMeaning'] as const)
         if (typeof data[key] === 'boolean') clean[key] = data[key];
+      if (data['onComplete'] === 'dim' || data['onComplete'] === 'hide') clean.onComplete = data['onComplete'];
       if (data['readingMode'] === 'list' || data['readingMode'] === 'single') clean.readingMode = data['readingMode'];
       if (data['tapTarget'] === 'card' || data['tapTarget'] === 'button') clean.tapTarget = data['tapTarget'];
       if (['off', 'light', 'strong'].includes(String(data['vibration']))) clean.vibration = data['vibration'] as AthkarPrefs['vibration'];

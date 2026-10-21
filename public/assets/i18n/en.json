@@ -66,7 +66,9 @@
     "repeatRange": "Enter a whole number from 1 to 10000.",
     "nextDhikr": "Next dhikr",
     "previousDhikr": "Previous dhikr",
-    "moreOptions": "More options"
+    "moreOptions": "More options",
+    "showCompleted": "Show completed ({{count}})",
+    "hideCompleted": "Hide completed"
   },
   "reader": {
     "tapToCount": "Tap anywhere on the card to count",
@@ -737,6 +739,10 @@
     "displayHelp": "These choices apply in both Arabic and English. Arabic text size can be changed in the reader.",
     "showSource": "Source and virtue button",
     "showTransliteration": "Transliteration",
-    "showMeaning": "English meaning / translation"
+    "showMeaning": "English meaning / translation",
+    "onComplete": "When a dhikr is completed",
+    "onCompleteHelp": "Keep completed adhkar visible and marked done, or hide them from the list and skip them in single mode. You can show them again until you leave the page.",
+    "onCompleteDim": "Keep visible and marked done",
+    "onCompleteHide": "Hide from the list"
   }
 }

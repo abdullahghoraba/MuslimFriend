@@ -1,9 +1,30 @@
 import { provideTranslateService } from '@ngx-translate/core';
 import { TestBed } from '@angular/core/testing';
 import { SingleViewComponent } from './single-view.component';
+import { visibleItems } from './counting';
 import { Dhikr } from '../../core/models';
 
 describe('SingleViewComponent navigation', () => {
+  it('navigates only visible items and makes completed items reachable when revealed', () => {
+    TestBed.configureTestingModule({ providers: [provideTranslateService()] });
+    const fixture = TestBed.createComponent(SingleViewComponent);
+    const items = [{ id: 'a', repeatCount: 1 }, { id: 'b', repeatCount: 1 }, { id: 'c', repeatCount: 1 }] as Dhikr[];
+    const counts = new Map([['b', 1]]);
+    const filtered = visibleItems(items, counts, 'hide', false);
+    fixture.componentRef.setInput('items', filtered);
+    fixture.componentRef.setInput('index', 0);
+    const moved = vi.fn(); fixture.componentInstance.moved.subscribe(moved);
+    fixture.componentInstance.move(1);
+    expect(filtered[moved.mock.lastCall![0]].id).toBe('c');
+    fixture.componentRef.setInput('index', 1);
+    fixture.componentInstance.move(-1);
+    expect(filtered[moved.mock.lastCall![0]].id).toBe('a');
+    const revealed = visibleItems(items, counts, 'hide', true);
+    fixture.componentRef.setInput('items', revealed);
+    fixture.componentRef.setInput('index', 0);
+    fixture.componentInstance.move(1);
+    expect(revealed[moved.mock.lastCall![0]].id).toBe('b');
+  });
   it('moves left to the next dhikr in RTL, right to the previous, and ignores vertical swipes', () => {
     TestBed.configureTestingModule({ providers: [provideTranslateService()] });
     const fixture = TestBed.createComponent(SingleViewComponent);

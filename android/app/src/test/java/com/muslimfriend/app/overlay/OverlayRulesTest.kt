@@ -24,6 +24,18 @@ class OverlayRulesTest {
         assertFalse(OverlayRules.isQuiet(quietDay, 12 * 60))
     }
 
+    @Test fun bubbleStateRoundTripsLookAndExpanded() {
+        val state = BubbleState(enabled = true, count = 12, sizeDp = 90, opacity = 0.7f, expanded = true)
+        assertEquals(state, BubbleState.fromJson(state.toJson()))
+        // Older saved states have no "expanded" key and open small.
+        val legacy = state.toJson().apply { remove("expanded") }
+        assertFalse(BubbleState.fromJson(legacy).expanded)
+        // Out-of-range look values are clamped.
+        val wild = state.toJson().put("sizeDp", 500).put("opacity", 0.1)
+        assertEquals(120, BubbleState.fromJson(wild).sizeDp)
+        assertEquals(0.4f, BubbleState.fromJson(wild).opacity, 0f)
+    }
+
     @Test fun quietDisabledOrEmpty() {
         assertFalse(OverlayRules.isQuiet(quietNight.copy(quietHoursEnabled = false), 23 * 60))
         assertFalse(OverlayRules.isQuiet(quietNight.copy(quietEnd = 22 * 60), 23 * 60))

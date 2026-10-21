@@ -15,7 +15,7 @@ describe('AthkarPrefsService', () => {
   it('defaults to Arabic visibility and follows language until explicitly changed', async () => {
     const service = TestBed.inject(AthkarPrefsService);
     await service.ready;
-    expect(service.prefs()).toEqual({ readingMode: 'list', tapTarget: 'card', autoAdvance: true, countPastTarget: false, vibration: 'light', showSource: true, showTransliteration: false, showMeaning: false });
+    expect(service.prefs()).toEqual({ onComplete: 'dim', readingMode: 'list', tapTarget: 'card', autoAdvance: true, countPastTarget: false, vibration: 'light', showSource: true, showTransliteration: false, showMeaning: false });
     await TestBed.inject(SettingsService).update({ language: 'en' });
     expect(service.prefs().showMeaning).toBe(true);
     expect(service.prefs().showTransliteration).toBe(true);
@@ -27,16 +27,16 @@ describe('AthkarPrefsService', () => {
   });
   it('persists all explicit preferences and reloads them', async () => {
     const service = TestBed.inject(AthkarPrefsService);
-    const patch = { readingMode: 'single', tapTarget: 'button', autoAdvance: false, countPastTarget: true, vibration: 'strong', showSource: false, showTransliteration: true, showMeaning: true } as const;
+    const patch = { onComplete: 'hide', readingMode: 'single', tapTarget: 'button', autoAdvance: false, countPastTarget: true, vibration: 'strong', showSource: false, showTransliteration: true, showMeaning: true } as const;
     await service.update(patch);
     const reloaded = TestBed.runInInjectionContext(() => new AthkarPrefsService());
     await reloaded.ready;
     expect(reloaded.prefs()).toEqual(patch);
   });
   it('ignores invalid stored values and malformed JSON', async () => {
-    await Preferences.set({ key: 'athkarPrefs', value: '{"readingMode":"bad","autoAdvance":"no","showMeaning":true}' });
+    await Preferences.set({ key: 'athkarPrefs', value: '{"onComplete":"bad","readingMode":"bad","autoAdvance":"no","showMeaning":true}' });
     const service = TestBed.inject(AthkarPrefsService); await service.ready;
-    expect(service.prefs().readingMode).toBe('list'); expect(service.prefs().autoAdvance).toBe(true); expect(service.prefs().showMeaning).toBe(true);
+    expect(service.prefs().onComplete).toBe('dim'); expect(service.prefs().readingMode).toBe('list'); expect(service.prefs().autoAdvance).toBe(true); expect(service.prefs().showMeaning).toBe(true);
     await Preferences.set({ key: 'athkarPrefs', value: '{' }); await service.load();
     expect(service.prefs().showMeaning).toBe(false);
   });

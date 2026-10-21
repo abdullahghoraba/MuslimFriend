@@ -235,11 +235,13 @@ data class BubbleState(
     val sizeDp: Int = 64,
     /** 0.4–1. */
     val opacity: Float = 1f,
+    /** Large card instead of the round bubble (toggled on the bubble itself). */
+    val expanded: Boolean = false,
 ) {
     fun toJson(): JSONObject = JSONObject()
         .put("enabled", enabled).put("counterId", counterId).put("name", name).put("count", count)
         .put("target", target).put("x", x).put("y", y).put("language", language)
-        .put("sizeDp", sizeDp).put("opacity", opacity.toDouble())
+        .put("sizeDp", sizeDp).put("opacity", opacity.toDouble()).put("expanded", expanded)
 
     companion object {
         fun fromJson(o: JSONObject?): BubbleState {
@@ -255,6 +257,7 @@ data class BubbleState(
                 language = o.optString("language", "ar"),
                 sizeDp = o.optInt("sizeDp", 64).coerceIn(44, 120),
                 opacity = o.optDouble("opacity", 1.0).toFloat().coerceIn(0.4f, 1f),
+                expanded = o.optBoolean("expanded", false),
             )
         }
     }

@@ -1,7 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { SingleViewComponent } from './single-view.component';
-import { nextDhikrCount } from './counting';
+import { nextDhikrCount, visibleItems } from './counting';
 import { AthkarPrefsService } from '../../core/services/athkar-prefs.service';
 import { Component, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import {
@@ -73,13 +73,36 @@ export class CategoryPage {
     await this.preferences.update({ readingMode: this.prefs().readingMode === 'list' ? 'single' : 'list' });
   }
 
+  readonly showCompleted = signal(false);
+  readonly visibleItems = computed(() => visibleItems(this.items(), this.counts(), this.prefs().onComplete, this.showCompleted()));
+  readonly visibleSingleIndex = computed(() => {
+    const visible = this.visibleItems();
+    const current = this.items()[this.singleIndex()];
+    const at = visible.findIndex(d => d.id === current?.id);
+    if (at >= 0) return at;
+    const next = visible.findIndex(d => this.items().indexOf(d) >= this.singleIndex());
+    return next >= 0 ? next : Math.max(0, visible.length - 1);
+  });
+
+  moveVisibleSingle(index: number): void {
+    const item = this.visibleItems()[index];
+    if (item) this.moveSingle(this.items().indexOf(item));
+  }
+
+  toggleCompleted(): void {
+    clearTimeout(this.advanceTimer);
+    const current = this.visibleItems()[this.visibleSingleIndex()];
+    if (current) this.singleIndex.set(this.items().indexOf(current));
+    this.showCompleted.update(value => !value);
+  }
+
   moveSingle(index: number): void {
     clearTimeout(this.advanceTimer);
     this.singleIndex.set(index);
     void this.settings.setReaderPosition(this.id(), index);
   }
 
-  ionViewWillLeave(): void { clearTimeout(this.advanceTimer); }
+  ionViewWillLeave(): void { clearTimeout(this.advanceTimer); this.showCompleted.set(false); }
 
   /** Less frequent list actions live in one menu to keep the header calm. */
   async openListMenu(): Promise<void> {
@@ -282,6 +305,7 @@ export class CategoryPage {
   }
 
   async count(d: Dhikr, index: number): Promise<void> {
+    index = this.items().findIndex(item => item.id === d.id);
     if (this.reordering() || (this.isDone(d) && !this.prefs().countPastTarget) || this.busy.has(d.id)) return;
     this.busy.add(d.id);
     try {
@@ -332,6 +356,7 @@ export class CategoryPage {
     this.singleIndex.set(0);
     await this.progress.resetCategoryToday(this.items());
     this.counts.set(new Map());
+    this.showCompleted.set(false);
     await this.content()?.scrollToTop(300);
   }
 

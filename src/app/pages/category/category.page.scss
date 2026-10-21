@@ -224,3 +224,15 @@ app-single-view .bar { margin-top: auto; }
 app-single-view .counter { width: 100px; height: 100px; }
 app-single-view .counter .of { font-size: 1rem; }
 app-single-view .counter .remaining { font-size: 2rem; }
+
+.card-collapse { display: grid; grid-template-rows: 1fr; }
+.card-collapse-inner { min-height: 0; overflow: hidden; }
+.collapse-completed { animation: collapse-completed 250ms ease-out forwards; pointer-events: none; }
+@keyframes collapse-completed {
+  from { grid-template-rows: 1fr; opacity: 1; }
+  to { grid-template-rows: 0fr; opacity: 0; margin-bottom: -12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .collapse-completed { animation-duration: 1ms; }
+  .card { transition: none; }
+}

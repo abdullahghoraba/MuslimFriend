@@ -27,6 +27,12 @@
       </ion-select></ion-item>
     </ion-list><p>{{ 'athkarPrefs.vibrationHelp' | translate }}</p>
   </section>
+  <section><h2>{{ 'athkarPrefs.onComplete' | translate }}</h2><p>{{ 'athkarPrefs.onCompleteHelp' | translate }}</p>
+    <ion-list><ion-item><ion-select [label]="'athkarPrefs.onComplete' | translate" [value]="prefs().onComplete" (ionChange)="update('onComplete', $event.detail.value)">
+      <ion-select-option value="dim">{{ 'athkarPrefs.onCompleteDim' | translate }}</ion-select-option>
+      <ion-select-option value="hide">{{ 'athkarPrefs.onCompleteHide' | translate }}</ion-select-option>
+    </ion-select></ion-item></ion-list>
+  </section>
   <section><h2>{{ 'athkarPrefs.display' | translate }}</h2><p>{{ 'athkarPrefs.displayHelp' | translate }}</p>
     <ion-list>@for (key of toggles.slice(2); track key) {
       <ion-item><ion-toggle [checked]="prefs()[key]" (ionChange)="update(key, $event.detail.checked)">{{ ('athkarPrefs.' + key) | translate }}</ion-toggle></ion-item>

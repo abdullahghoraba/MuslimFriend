@@ -183,13 +183,20 @@
           <ion-button (click)="addDhikr()">{{ 'myAthkar.add' | translate }}</ion-button>
         </div>
       }
-      @if (prefs().readingMode === 'single' && items().length) {
-        <app-single-view [items]="items()" [index]="singleIndex()" [rtl]="lang() === 'ar'" [card]="dhikrCard" (moved)="moveSingle($event)" />
+      @if (prefs().readingMode === 'single' && visibleItems().length) {
+        <app-single-view [items]="visibleItems()" [index]="visibleSingleIndex()" [rtl]="lang() === 'ar'" [card]="dhikrCard" (moved)="moveVisibleSingle($event)" />
       } @else {
-      @for (d of items(); track d.id; let i = $index) {
-        <ng-container *ngTemplateOutlet="dhikrCard; context: { $implicit: d, index: i }" />
+      @for (d of visibleItems(); track d.id) {
+        <div class="card-collapse" animate.leave="collapse-completed"><div class="card-collapse-inner">
+          <ng-container *ngTemplateOutlet="dhikrCard; context: { $implicit: d, index: items().indexOf(d) }" />
+        </div></div>
       }
 
+      }
+      @if (prefs().onComplete === 'hide' && doneCount() > 0) {
+        <ion-button fill="clear" [size]="showCompleted() ? 'small' : 'default'" (click)="toggleCompleted()" [attr.aria-expanded]="showCompleted()">
+          {{ (showCompleted() ? 'category.hideCompleted' : 'category.showCompleted') | translate: { count: doneCount() } }}
+        </ion-button>
       }
       @if (hiddenItems().length) {
         <ion-button fill="clear" size="small" (click)="hiddenOpen.set(true)">{{ 'category.hiddenAthkar' | translate: { count: hiddenItems().length } }}</ion-button>
