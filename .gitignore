@@ -53,3 +53,6 @@ android/keystore.properties
 test-results/
 playwright-report/
 android/.kotlin/
+
+# Personal-only tafsir files bundled into debug builds (never committed or released)
+public/assets/personal-tafsir/

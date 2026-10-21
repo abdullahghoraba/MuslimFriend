@@ -15,11 +15,15 @@ export interface RemoteTafsir {
   imported?: boolean;
   /** Credit line shown under the text for an imported tafsir. */
   source?: string;
+  /** File name in assets/personal-tafsir/ when it came built into a personal build. */
+  bundledFile?: string;
 }
 
 /** Ids of imported tafsirs start here, well away from quran.com resource ids. */
 export const IMPORTED_BASE = 900_000;
 const IMPORTED_KEY = 'importedTafsirs';
+/** Built-in personal tafsirs the user deleted; they are not reinstalled. */
+const DISMISSED_KEY = 'dismissedBundledTafsirs';
 
 /**
  * File format for «استيراد تفسير من ملف» (JSON):
@@ -134,13 +138,48 @@ export class TafsirLibraryService {
       } catch {
         /* keep empty */
       }
+      await this.installBundled();
     })());
   }
 
   /** Imports a tafsir file (see parseTafsirFile) and stores it offline. Returns the new entry. */
   async importFile(file: File): Promise<RemoteTafsir> {
     await this.loadImported();
-    const parsed = parseTafsirFile(await file.text(), await this.counts(), file.name);
+    const entry = await this.store(await file.text(), file.name, file.size);
+    await this.refreshCounts();
+    return entry;
+  }
+
+  /**
+   * Personal debug builds can carry tafsir files in assets/personal-tafsir/ (see scripts/personal-tafsir.mjs).
+   * They are installed once, on first start, so they work offline with nothing to download.
+   */
+  private async installBundled(): Promise<void> {
+    let index: { file: string; name: string }[];
+    try {
+      const res = await fetch('assets/personal-tafsir/index.json');
+      if (!res.ok) return;
+      index = await res.json();
+    } catch {
+      return;
+    }
+    const { value } = await Preferences.get({ key: DISMISSED_KEY });
+    const dismissed: string[] = value ? JSON.parse(value) : [];
+    for (const item of index) {
+      if (dismissed.includes(item.file) || this.imported().some((t) => t.bundledFile === item.file)) continue;
+      try {
+        const res = await fetch('assets/personal-tafsir/' + encodeURIComponent(item.file));
+        if (!res.ok) continue;
+        const raw = await res.text();
+        await this.store(raw, item.file, raw.length, item.file);
+      } catch (e) {
+        console.warn('[tafsir] bundled install failed', item.file, e);
+      }
+    }
+  }
+
+  private async store(raw: string, fileName: string, size: number, bundledFile?: string): Promise<RemoteTafsir> {
+    const parsed = parseTafsirFile(raw, await this.counts(), fileName);
     const apiId = Math.max(IMPORTED_BASE, ...this.imported().map((t) => t.apiId)) + 1;
     for (let s = 1; s <= parsed.suras.length; s++) {
       this.memory.set(`${apiId}/${s}`, parsed.suras[s - 1]);
@@ -148,10 +187,9 @@ export class TafsirLibraryService {
     }
     const entry: RemoteTafsir = {
       apiId, nameAr: parsed.nameAr, nameEn: parsed.nameEn, lang: parsed.lang, source: parsed.source,
-      sizeMb: Math.max(1, Math.round(file.size / 1_000_000)), imported: true,
+      sizeMb: Math.max(1, Math.round(size / 1_000_000)), imported: true, ...(bundledFile ? { bundledFile } : {}),
     };
     await this.saveImported([...this.imported(), entry]);
-    await this.refreshCounts();
     return entry;
   }
 
@@ -227,6 +265,11 @@ export class TafsirLibraryService {
     for (const key of [...this.memory.keys()]) if (key.startsWith(`${apiId}/`)) this.memory.delete(key);
     if (Capacitor.isNativePlatform()) {
       await Filesystem.rmdir({ path: `tafsir/${apiId}`, directory: Directory.Data, recursive: true }).catch(() => {});
+    }
+    const bundled = this.imported().find((t) => t.apiId === apiId)?.bundledFile;
+    if (bundled) {
+      const { value } = await Preferences.get({ key: DISMISSED_KEY });
+      await Preferences.set({ key: DISMISSED_KEY, value: JSON.stringify([...(value ? JSON.parse(value) : []), bundled]) });
     }
     if (apiId >= IMPORTED_BASE) await this.saveImported(this.imported().filter((t) => t.apiId !== apiId));
     await this.refreshCounts();

@@ -6,6 +6,7 @@ import { AthkarOverlay } from '../../native/athkar-overlay';
 import { AthanService } from '../prayer/athan.service';
 import { PrayerService } from '../prayer/prayer.service';
 import { FloatingCounterService } from './floating-counter.service';
+import { TafsirLibraryService } from '../quran/tafsir-library.service';
 import { OverlayService } from './overlay.service';
 import { ProgressService } from './progress.service';
 
@@ -24,12 +25,15 @@ export class LifecycleService {
   private readonly progress = inject(ProgressService);
   private readonly floating = inject(FloatingCounterService);
   private readonly nav = inject(NavController);
+  private readonly tafsirs = inject(TafsirLibraryService);
   /** Increments after each resume so pages can refresh. */
   readonly resumed = signal(0);
 
   async init(): Promise<void> {
     await Promise.all([this.overlay.load(), this.prayer.load()]);
     await this.onForeground();
+    // Sets up a tafsir built into a personal build (one time, in the background).
+    setTimeout(() => void this.tafsirs.loadImported(), 4000);
     if (!Capacitor.isNativePlatform()) return;
     await App.addListener('resume', () => void this.onForeground());
     // The floating tasbih counter hides while the app itself is on screen.
