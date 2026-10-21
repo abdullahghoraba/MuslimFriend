@@ -19,6 +19,23 @@
     <ion-ripple-effect />
   </a>
 
+  @for (s of suggestions(); track s.kind) {
+    <button type="button" class="now-card ion-activatable" [class.kahf]="s.kind === 'kahf'" (click)="openSuggestion(s.kind)">
+      <ion-icon [name]="s.icon" aria-hidden="true" class="now-icon" />
+      <span class="now-text">
+        <span class="now-label">{{ s.labelKey | translate }}</span>
+        <span class="now-title">{{ s.titleKey | translate }}</span>
+        @if (s.progress; as p) {
+          <span class="now-sub">{{
+            p.completed ? ('home.statusDone' | translate) : ('home.progress' | translate: { done: p.done, total: p.total })
+          }}</span>
+        }
+      </span>
+      <ion-icon [name]="lang() === 'ar' ? 'chevron-back' : 'chevron-forward'" aria-hidden="true" class="now-go" />
+      <ion-ripple-effect />
+    </button>
+  }
+
   @if (overlayFallback()) {
     <a class="fallback" routerLink="/overlay" role="status">{{
       'home.overlayFallback' | translate

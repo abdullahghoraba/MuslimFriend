@@ -46,7 +46,10 @@
     "overlayFallback": "The overlay couldn't run, so athkar are shown as notifications. Tap to fix.",
     "customize": "Customize",
     "customizeCategories": "Home categories",
-    "doneCustomizing": "Done"
+    "doneCustomizing": "Done",
+    "nowLabel": "It's time now",
+    "fridayLabel": "Friday (from Thursday's Maghrib)",
+    "readKahf": "Read Surat al-Kahf"
   },
   "category": {
     "start": "Start reading",

@@ -22,6 +22,8 @@ import { CategoryProgress, ProgressService } from '../../core/services/progress.
 import { SettingsService } from '../../core/services/settings.service';
 import { PrayerService } from '../../core/prayer/prayer.service';
 import { OverlayService } from '../../core/services/overlay.service';
+import { NowSuggestion, nowSuggestions } from '../../core/prayer/time-windows';
+import { QuranService } from '../../core/quran/quran.service';
 import { HijriDateComponent } from '../../shared/hijri-date.component';
 import { HomeCategoriesComponent } from '../../shared/home-categories.component';
 import { VerseOfDayComponent } from '../../shared/verse-of-day.component';
@@ -62,6 +64,7 @@ export class HomePage {
   private readonly nav = inject(NavController);
   private readonly prayer = inject(PrayerService);
   private readonly overlay = inject(OverlayService);
+  private readonly quran = inject(QuranService);
 
   readonly categories = this.athkar.homeCategories;
   private readonly modals = inject(ModalController);
@@ -74,6 +77,23 @@ export class HomePage {
   readonly daily = signal<DailyStatus[]>([]);
   readonly position = signal<ReaderPosition | null>(null);
   readonly next = this.prayer.next;
+  /** Time-aware shortcuts: al-Kahf (Thursday Maghrib → Friday Maghrib), morning or evening athkar. */
+  readonly suggestions = computed(() =>
+    nowSuggestions(this.prayer.now(), this.prayer.today()).map((kind) => ({
+      kind,
+      icon: kind === 'kahf' ? 'book-outline' : kind === 'morning' ? 'sunny-outline' : 'moon-outline',
+      labelKey: kind === 'kahf' ? 'home.fridayLabel' : 'home.nowLabel',
+      titleKey: kind === 'kahf' ? 'home.readKahf' : 'home.' + kind,
+      progress: kind === 'kahf' ? null : this.daily().find((d) => d.categoryId === kind)?.progress ?? null,
+    })),
+  );
+
+  async openSuggestion(kind: NowSuggestion): Promise<void> {
+    if (kind !== 'kahf') return this.openReader(kind);
+    await this.quran.load();
+    await this.nav.navigateForward(['/mushaf', this.quran.suraPage(18)], { queryParams: { sura: 18, aya: 1 } });
+  }
+
   readonly overlayFallback = computed(
     () => this.overlay.overlay().enabled && !!this.overlay.fallbackReason(),
   );

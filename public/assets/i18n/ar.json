@@ -46,7 +46,10 @@
     "overlayFallback": "تعذّر تشغيل الأذكار فوق التطبيقات، فتظهر كإشعارات. اضغط للإصلاح.",
     "customize": "تخصيص",
     "customizeCategories": "أقسام الرئيسية",
-    "doneCustomizing": "تم"
+    "doneCustomizing": "تم",
+    "nowLabel": "حان وقتها الآن",
+    "fridayLabel": "ليلة الجمعة ويومها",
+    "readKahf": "اقرأ سورة الكهف"
   },
   "category": {
     "start": "ابدأ القراءة",
