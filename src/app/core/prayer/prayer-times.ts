@@ -79,8 +79,10 @@ export function nextPrayer(s: PrayerSettings, now = new Date()): { name: PrayerN
 // ---- Reminder planning -------------------------------------------------------------------
 
 export interface ReminderSettings {
-  morning: { enabled: boolean; minutesAfterFajr: number };
-  evening: { enabled: boolean; anchor: 'beforeMaghrib' | 'afterAsr'; minutes: number };
+  /** Either [minutesAfterFajr] or a fixed clock [time] (mode 'time', works without a location). */
+  morning: { enabled: boolean; mode: 'afterFajr' | 'time'; minutesAfterFajr: number; time: string };
+  /** Relative to Asr/Maghrib by [minutes], or the fixed clock [time] when anchor is 'time'. */
+  evening: { enabled: boolean; anchor: 'beforeMaghrib' | 'afterAsr' | 'time'; minutes: number; time: string };
   sleep: { enabled: boolean; time: string };
   fridayKahf: { enabled: boolean; time: string };
   fridaySalawat: { enabled: boolean; time: string };
@@ -104,8 +106,8 @@ export const DEFAULT_HOME_CARDS: HomeCardSettings = {
 };
 
 export const DEFAULT_REMINDER_SETTINGS: ReminderSettings = {
-  morning: { enabled: true, minutesAfterFajr: 20 },
-  evening: { enabled: true, anchor: 'afterAsr', minutes: 15 },
+  morning: { enabled: true, mode: 'afterFajr', minutesAfterFajr: 20, time: '06:30' },
+  evening: { enabled: true, anchor: 'afterAsr', minutes: 15, time: '17:00' },
   sleep: { enabled: false, time: '22:30' },
   fridayKahf: { enabled: true, time: '10:00' },
   fridaySalawat: { enabled: true, time: '16:00' },
@@ -154,16 +156,20 @@ export function planReminders(
     const key = dayKey(day);
     const times = prayerTimesFor(prayer, day)?.times;
 
-    if (times && r.morning.enabled) {
-      out.push({
-        id: `morning-${key}`, kind: 'morning', title: texts.morningTitle, body: texts.morningBody,
-        at: times.fajr.getTime() + r.morning.minutesAfterFajr * 60_000, route: '/category/morning',
-      });
+    const morningFixed = r.morning.mode === 'time';
+    if (r.morning.enabled && (times || morningFixed)) {
+      const at = morningFixed
+        ? atTime(day, r.morning.time).getTime()
+        : times!.fajr.getTime() + r.morning.minutesAfterFajr * 60_000;
+      out.push({ id: `morning-${key}`, kind: 'morning', title: texts.morningTitle, body: texts.morningBody, at, route: '/category/morning' });
     }
-    if (times && r.evening.enabled) {
-      const at = r.evening.anchor === 'beforeMaghrib'
-        ? times.maghrib.getTime() - r.evening.minutes * 60_000
-        : times.asr.getTime() + r.evening.minutes * 60_000;
+    const eveningFixed = r.evening.anchor === 'time';
+    if (r.evening.enabled && (times || eveningFixed)) {
+      const at = eveningFixed
+        ? atTime(day, r.evening.time).getTime()
+        : r.evening.anchor === 'beforeMaghrib'
+          ? times!.maghrib.getTime() - r.evening.minutes * 60_000
+          : times!.asr.getTime() + r.evening.minutes * 60_000;
       out.push({ id: `evening-${key}`, kind: 'evening', title: texts.eveningTitle, body: texts.eveningBody, at, route: '/category/evening' });
     }
     if (r.sleep.enabled) {

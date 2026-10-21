@@ -107,12 +107,23 @@
     </ion-item>
     @if (reminders().morning.enabled) {
       <ion-item>
-        <ion-select [label]="'reminders.minutesAfterFajr' | translate" [value]="reminders().morning.minutesAfterFajr"
-                    (ionChange)="patch('morning', { minutesAfterFajr: +$event.detail.value })">
-          @for (o of offsets; track o) {
-            <ion-select-option [value]="o">{{ 'reminders.minutes' | translate: { n: o } }}</ion-select-option>
-          }
-        </ion-select>
+        <ion-segment [value]="reminders().morning.mode" (ionChange)="patch('morning', { mode: $any($event.detail.value) })">
+          <ion-segment-button value="afterFajr"><ion-label>{{ 'reminders.afterFajr' | translate }}</ion-label></ion-segment-button>
+          <ion-segment-button value="time"><ion-label>{{ 'reminders.fixedTime' | translate }}</ion-label></ion-segment-button>
+        </ion-segment>
+      </ion-item>
+      <ion-item>
+        @if (reminders().morning.mode === 'time') {
+          <ion-input type="time" [label]="'reminders.at' | translate" [value]="reminders().morning.time"
+                     (ionChange)="patch('morning', { time: '' + $event.detail.value })" />
+        } @else {
+          <ion-select [label]="'reminders.minutesAfterFajr' | translate" [value]="reminders().morning.minutesAfterFajr"
+                      (ionChange)="patch('morning', { minutesAfterFajr: +$event.detail.value })">
+            @for (o of offsets; track o) {
+              <ion-select-option [value]="o">{{ 'reminders.minutes' | translate: { n: o } }}</ion-select-option>
+            }
+          </ion-select>
+        }
       </ion-item>
     }
 
@@ -126,15 +137,21 @@
         <ion-segment [value]="reminders().evening.anchor" (ionChange)="patch('evening', { anchor: $any($event.detail.value) })">
           <ion-segment-button value="afterAsr"><ion-label>{{ 'reminders.afterAsr' | translate }}</ion-label></ion-segment-button>
           <ion-segment-button value="beforeMaghrib"><ion-label>{{ 'reminders.beforeMaghrib' | translate }}</ion-label></ion-segment-button>
+          <ion-segment-button value="time"><ion-label>{{ 'reminders.fixedTime' | translate }}</ion-label></ion-segment-button>
         </ion-segment>
       </ion-item>
       <ion-item>
-        <ion-select [label]="'reminders.offset' | translate" [value]="reminders().evening.minutes"
-                    (ionChange)="patch('evening', { minutes: +$event.detail.value })">
-          @for (o of offsets; track o) {
-            <ion-select-option [value]="o">{{ 'reminders.minutes' | translate: { n: o } }}</ion-select-option>
-          }
-        </ion-select>
+        @if (reminders().evening.anchor === 'time') {
+          <ion-input type="time" [label]="'reminders.at' | translate" [value]="reminders().evening.time"
+                     (ionChange)="patch('evening', { time: '' + $event.detail.value })" />
+        } @else {
+          <ion-select [label]="'reminders.offset' | translate" [value]="reminders().evening.minutes"
+                      (ionChange)="patch('evening', { minutes: +$event.detail.value })">
+            @for (o of offsets; track o) {
+              <ion-select-option [value]="o">{{ 'reminders.minutes' | translate: { n: o } }}</ion-select-option>
+            }
+          </ion-select>
+        }
       </ion-item>
     }
 

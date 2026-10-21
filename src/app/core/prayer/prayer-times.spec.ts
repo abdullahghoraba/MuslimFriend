@@ -73,9 +73,24 @@ describe('planReminders', () => {
   });
 
   it('supports "before Maghrib" for the evening reminder', () => {
-    const r = { ...DEFAULT_REMINDER_SETTINGS, evening: { enabled: true, anchor: 'beforeMaghrib' as const, minutes: 30 } };
+    const r = { ...DEFAULT_REMINDER_SETTINGS, evening: { enabled: true, anchor: 'beforeMaghrib' as const, minutes: 30, time: '17:00' } };
     const evening = planReminders(cairo, r, texts, wed, 1).find((x) => x.kind === 'evening')!;
     expect(evening.at).toBe(prayerTimesFor(cairo, wed)!.times.maghrib.getTime() - 30 * 60_000);
+  });
+
+  it('supports a fixed clock time for morning and evening, even without a location', () => {
+    const r = {
+      ...DEFAULT_REMINDER_SETTINGS,
+      morning: { enabled: true, mode: 'time' as const, minutesAfterFajr: 20, time: '07:15' },
+      evening: { enabled: true, anchor: 'time' as const, minutes: 15, time: '18:45' },
+    };
+    for (const prayer of [cairo, DEFAULT_PRAYER_SETTINGS]) {
+      const list = planReminders(prayer, r, texts, wed, 1);
+      const morning = new Date(list.find((x) => x.kind === 'morning')!.at);
+      const evening = new Date(list.find((x) => x.kind === 'evening')!.at);
+      expect([morning.getHours(), morning.getMinutes()]).toEqual([7, 15]);
+      expect([evening.getHours(), evening.getMinutes()]).toEqual([18, 45]);
+    }
   });
 
   it('adds Friday reminders only on Fridays', () => {

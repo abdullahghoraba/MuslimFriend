@@ -451,7 +451,9 @@
     "quran": "Quran",
     "wird": "Daily Quran reading (wird)",
     "athanSettings": "Athan settings",
-    "notificationsHint": "These reminders arrive as phone notifications at their time. Turn any switch off to stop that notification."
+    "notificationsHint": "These reminders arrive as phone notifications at their time. Turn any switch off to stop that notification.",
+    "afterFajr": "After Fajr",
+    "fixedTime": "Set time"
   },
   "stats": {
     "title": "Statistics",
