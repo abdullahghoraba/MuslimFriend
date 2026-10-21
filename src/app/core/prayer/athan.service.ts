@@ -3,7 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { Preferences } from '@capacitor/preferences';
 import { TranslateService } from '@ngx-translate/core';
-import { AthanEvent, AthanNative, AthanSound, AthanPluginMethods } from '../../native/athan-plugin';
+import { AthanEvent, AthanNative, AthanSound, AthanPluginMethods, AthanStopWay } from '../../native/athan-plugin';
 import { PrayerService } from './prayer.service';
 import { PrayerSettings, prayerTimesFor } from './prayer-times';
 
@@ -28,6 +28,11 @@ export interface AthanSettings {
   silentDuringPrayer: boolean;
   silentMinutes: number;
   customSounds: { name: string; path: string }[];
+  /** Stop the playing athan by turning the phone over, shaking it, or pressing a volume button. */
+  stopOn: Record<AthanStopWay, boolean>;
+}
+export function stopWays(settings: AthanSettings): AthanStopWay[] {
+  return (['flip', 'shake', 'volume'] as const).filter((w) => settings.stopOn[w]);
 }
 export function defaultAthanSettings(): AthanSettings {
   return {
@@ -43,6 +48,7 @@ export function defaultAthanSettings(): AthanSettings {
     silentDuringPrayer: false,
     silentMinutes: 20,
     customSounds: [],
+    stopOn: { flip: true, shake: true, volume: true },
   };
 }
 type Text = (key: string, params?: Record<string, unknown>) => string;
@@ -90,6 +96,7 @@ export function buildAthanEvents(
             ),
           }),
           body: t(kind + 'Body', params),
+          ...(sound !== 'none' && stopWays(settings).length ? { stopOn: stopWays(settings) } : {}),
           ...(kind === 'athan' && settings.silentDuringPrayer && settings.silentMinutes > 0
             ? { silentMinutes: settings.silentMinutes }
             : {}),
@@ -158,6 +165,7 @@ export class AthanService {
           ...defaults,
           ...saved,
           sunrise: { ...defaults.sunrise, ...saved.sunrise },
+          stopOn: { ...defaults.stopOn, ...saved.stopOn },
           perPrayer: Object.fromEntries(
             ATHAN_PRAYERS.map((p) => [p, { ...defaults.perPrayer[p], ...saved.perPrayer?.[p] }]),
           ) as AthanSettings['perPrayer'],
@@ -246,7 +254,7 @@ export class AthanService {
   async preview(sound: AthanSound): Promise<void> {
     await this.stopPreview();
     if (Capacitor.isNativePlatform()) {
-      await this.native.previewAthan({ sound, volume: this.state().volume });
+      await this.native.previewAthan({ sound, volume: this.state().volume, stopOn: stopWays(this.state()) });
       return;
     }
     if (!sound.startsWith('file:')) return;

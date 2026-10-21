@@ -73,7 +73,8 @@ class AthkarOverlayPlugin : Plugin() {
         try {
             val event = AthanEvent.fromJson(org.json.JSONObject().put("id", "preview").put("prayer", "fajr")
                 .put("kind", "athan").put("at", System.currentTimeMillis()).put("title", context.getString(com.muslimfriend.app.R.string.channel_athan))
-                .put("body", "").put("sound", call.getString("sound") ?: "tone").put("volume", call.getFloat("volume") ?: 1f))
+                .put("body", "").put("sound", call.getString("sound") ?: "tone").put("volume", call.getFloat("volume") ?: 1f)
+                .put("stopOn", call.getArray("stopOn") ?: org.json.JSONArray()))
             ContextCompat.startForegroundService(context, AthanService.intent(context, event, true))
             call.resolve()
         } catch (e: Exception) { call.reject("Unable to preview athan: " + e.message) }

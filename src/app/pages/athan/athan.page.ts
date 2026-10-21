@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject, signal } from '@angular/core';
+import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { App } from '@capacitor/app';
 import { Capacitor, PluginListenerHandle } from '@capacitor/core';
@@ -12,6 +12,7 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonListHeader,
   IonRange,
   IonSegment,
   IonSegmentButton,
@@ -20,6 +21,7 @@ import {
   IonTitle,
   IonToggle,
   IonToolbar,
+  AlertController,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
@@ -30,7 +32,7 @@ import {
   PrayerAthanSettings,
 } from '../../core/prayer/athan.service';
 import { SettingsService } from '../../core/services/settings.service';
-import { AthanNative, AthanSound } from '../../native/athan-plugin';
+import { AthanNative, AthanSound, AthanStopWay } from '../../native/athan-plugin';
 import { AthkarOverlay } from '../../native/athkar-overlay';
 
 @Component({
@@ -47,6 +49,7 @@ import { AthkarOverlay } from '../../native/athkar-overlay';
     IonItem,
     IonLabel,
     IonList,
+    IonListHeader,
     IonRange,
     IonSegment,
     IonSegmentButton,
@@ -63,6 +66,7 @@ export class AthanPage implements OnDestroy {
   readonly athan = inject(AthanService);
   private readonly appSettings = inject(SettingsService);
   private readonly translate = inject(TranslateService);
+  private readonly alerts = inject(AlertController);
   readonly settings = this.athan.settings;
   readonly prayers = ATHAN_PRAYERS;
   readonly before = [0, 5, 10, 15, 20, 30];
@@ -184,6 +188,38 @@ export class AthanPage implements OnDestroy {
         });
     });
     this.importing.set(false);
+  }
+  /** The shared mode when every prayer uses the same one, otherwise undefined (no segment selected). */
+  readonly allMode = computed(() => {
+    const modes = new Set(this.prayers.map((p) => this.settings().perPrayer[p].mode));
+    return modes.size === 1 ? [...modes][0] : undefined;
+  });
+  setAllModes(value: unknown): void {
+    if (value !== 'athan' && value !== 'notify' && value !== 'off') return;
+    if (this.allMode() === value) return;
+    this.update({
+      perPrayer: Object.fromEntries(
+        this.prayers.map((p) => [p, { ...this.settings().perPrayer[p], mode: value }]),
+      ) as AthanSettings['perPrayer'],
+    });
+  }
+  stopOn(way: AthanStopWay, on: boolean): void {
+    this.update({ stopOn: { ...this.settings().stopOn, [way]: on } });
+  }
+  async rename(path: string, current: string): Promise<void> {
+    const alert = await this.alerts.create({
+      header: this.translate.instant('athan.rename'),
+      inputs: [{ name: 'name', value: current, attributes: { maxlength: 60 } }],
+      buttons: [
+        { text: this.translate.instant('common.cancel'), role: 'cancel' },
+        { text: this.translate.instant('common.save'), role: 'confirm' },
+      ],
+    });
+    await alert.present();
+    const { role, data } = await alert.onDidDismiss<{ values: { name: string } }>();
+    const name = data?.values?.name?.trim();
+    if (role !== 'confirm' || !name) return;
+    this.update({ customSounds: this.settings().customSounds.map((s) => (s.path === path ? { ...s, name } : s)) });
   }
   applyAll(): void {
     const source = this.settings().perPrayer.fajr;

@@ -104,6 +104,18 @@ describe('athan event planning', () => {
         .every((e) => !('silentMinutes' in e)),
     ).toBe(true);
   });
+  it('passes the chosen stop gestures to sounded events only', () => {
+    const s = defaultAthanSettings();
+    s.enabled = true;
+    s.perPrayer.dhuhr = { ...s.perPrayer.dhuhr, mode: 'notify' };
+    s.stopOn = { flip: true, shake: false, volume: true };
+    const events = buildAthanEvents(cairo, s, text, now, 1);
+    expect(events.find((e) => e.prayer === 'fajr')!.stopOn).toEqual(['flip', 'volume']);
+    expect(events.find((e) => e.prayer === 'dhuhr')!.stopOn).toBeUndefined();
+    s.stopOn = { flip: false, shake: false, volume: false };
+    expect(buildAthanEvents(cairo, s, text, now, 1).every((e) => !('stopOn' in e))).toBe(true);
+  });
+
   it('respects madhab and manual adjustments', () => {
     const s = defaultAthanSettings();
     s.enabled = true;

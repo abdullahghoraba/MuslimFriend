@@ -10,13 +10,16 @@ export interface AthanEvent {
   sound: AthanSound;
   volume: number;
   silentMinutes?: number;
+  /** Ways the user can stop the sound while it plays. */
+  stopOn?: AthanStopWay[];
 }
+export type AthanStopWay = 'flip' | 'shake' | 'volume';
 export interface AthanPluginMethods {
   canScheduleExactAlarms(): Promise<{ granted: boolean }>;
   openExactAlarmSettings(): Promise<void>;
   scheduleAthan(options: { events: AthanEvent[] }): Promise<{ scheduled: number; exact: boolean }>;
   cancelAthan(): Promise<void>;
-  previewAthan(options: { sound: AthanSound; volume: number }): Promise<void>;
+  previewAthan(options: { sound: AthanSound; volume: number; stopOn?: AthanStopWay[] }): Promise<void>;
   stopAthan(): Promise<void>;
   hasDndAccess(): Promise<{ granted: boolean }>;
   openDndAccessSettings(): Promise<void>;

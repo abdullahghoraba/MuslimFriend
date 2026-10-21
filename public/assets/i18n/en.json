@@ -720,7 +720,15 @@
     "iqamaBody": "Reminder to begin the {{prayer}} prayer.",
     "sunriseTitle": "Sunrise",
     "sunriseBody": "The sun has risen.",
-    "minutesFew": "{{count}} min"
+    "minutesFew": "{{count}} min",
+    "allPrayers": "All prayers",
+    "allPrayersHelp": "One choice for all five prayers at once: athan, notification only (no sound), or off. You can still change each prayer afterwards.",
+    "stopTitle": "Stop the athan while it plays",
+    "stopFlip": "By turning the phone over (face down or face up)",
+    "stopShake": "By shaking the phone",
+    "stopVolume": "By pressing a volume button",
+    "stopHelp": "You can always stop it with the Stop button in the notification. Try these with the ▶ preview button.",
+    "rename": "Rename"
   },
   "athkarPrefs": {
     "title": "Athkar options",

@@ -55,6 +55,15 @@
     }
     <p class="note">{{ 'athan.fajrNote' | translate }}</p>
     <input #soundInput type="file" accept="audio/*" hidden (change)="filePicked($event)" />
+    <section class="prayer-card all-prayers" aria-labelledby="all-prayers">
+      <h2 id="all-prayers">{{ 'athan.allPrayers' | translate }}</h2>
+      <ion-segment [value]="allMode()" (ionChange)="setAllModes($event.detail.value)" aria-labelledby="all-prayers">
+        <ion-segment-button value="athan"><ion-label>{{ 'athan.athan' | translate }}</ion-label></ion-segment-button>
+        <ion-segment-button value="notify"><ion-label>{{ 'athan.notify' | translate }}</ion-label></ion-segment-button>
+        <ion-segment-button value="off"><ion-label>{{ 'athan.off' | translate }}</ion-label></ion-segment-button>
+      </ion-segment>
+      <p class="note">{{ 'athan.allPrayersHelp' | translate }}</p>
+    </section>
     @for (p of prayers; track p) {
       <section class="prayer-card" [attr.aria-labelledby]="'prayer-' + p">
         <h2 [id]="'prayer-' + p">{{ 'athan.prayers.' + p | translate }}</h2>
@@ -166,6 +175,25 @@
         >
       }
     </ion-list>
+    <ion-list>
+      <ion-list-header>{{ 'athan.stopTitle' | translate }}</ion-list-header>
+      <ion-item
+        ><ion-toggle [checked]="settings().stopOn.flip" (ionChange)="stopOn('flip', $event.detail.checked)">{{
+          'athan.stopFlip' | translate
+        }}</ion-toggle></ion-item
+      >
+      <ion-item
+        ><ion-toggle [checked]="settings().stopOn.shake" (ionChange)="stopOn('shake', $event.detail.checked)">{{
+          'athan.stopShake' | translate
+        }}</ion-toggle></ion-item
+      >
+      <ion-item
+        ><ion-toggle [checked]="settings().stopOn.volume" (ionChange)="stopOn('volume', $event.detail.checked)">{{
+          'athan.stopVolume' | translate
+        }}</ion-toggle></ion-item
+      >
+    </ion-list>
+    <p class="note">{{ 'athan.stopHelp' | translate }}</p>
     @if (settings().silentDuringPrayer && !dndGranted()) {
       <aside class="banner">
         <p>{{ 'athan.dndHelp' | translate }}</p>
@@ -183,6 +211,11 @@
         @for (s of settings().customSounds; track s.path) {
           <div class="sound-row">
             <span>{{ s.name }}</span
+            ><ion-button
+              fill="clear"
+              (click)="rename(s.path, s.name)"
+              [attr.aria-label]="('athan.rename' | translate) + ' ' + s.name"
+              >{{ 'athan.rename' | translate }}</ion-button
             ><ion-button
               fill="clear"
               (click)="remove(s.path)"

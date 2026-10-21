@@ -25,6 +25,7 @@ class AthanService : Service() {
     private var focus: AudioFocusRequest? = null
     private var event: AthanEvent? = null
     private var preview = false
+    private var gestures: AthanStopGestures? = null
     private val timeout = Runnable { finishPlayback() }
     private val attributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build()
     override fun onBind(intent: Intent?): IBinder? = null
@@ -55,7 +56,14 @@ class AthanService : Service() {
             media.setVolume(incoming.volume, incoming.volume)
             media.setOnCompletionListener { finishPlayback() }
             media.setOnErrorListener { _, _, _ -> finishPlayback(); true }
-            media.setOnPreparedListener { if (player === it) it.start() }
+            media.setOnPreparedListener {
+                if (player !== it) return@setOnPreparedListener
+                it.start()
+                if (incoming.stopOn.isNotEmpty()) {
+                    gestures = AthanStopGestures(this, "flip" in incoming.stopOn, "shake" in incoming.stopOn,
+                        "volume" in incoming.stopOn) { finishPlayback() }.also { g -> g.start() }
+                }
+            }
             handler.postDelayed(timeout, if (preview) 30_000L else 6 * 60_000L)
             media.prepareAsync()
         } catch (_: Exception) { finishPlayback() }
@@ -78,6 +86,7 @@ class AthanService : Service() {
         resources.openRawResourceFd(R.raw.athan_tone).use { media.setDataSource(it.fileDescriptor, it.startOffset, it.length) }
     }
     private fun release() {
+        gestures?.stop(); gestures = null
         handler.removeCallbacks(timeout)
         player?.let { runCatching { it.release() } }; player = null
         focus?.let { getSystemService(AudioManager::class.java).abandonAudioFocusRequest(it) }; focus = null
