@@ -124,3 +124,32 @@ describe('atTime', () => {
     expect([d.getHours(), d.getMinutes()]).toEqual([22, 45]);
   });
 });
+
+describe('hifz reminders', () => {
+  it('defaults off, schedules daily at the chosen time without location, and skips the past', () => {
+    expect(DEFAULT_REMINDER_SETTINGS.hifz).toEqual({ enabled: false, time: '18:00' });
+    expect(
+      planReminders(DEFAULT_PRAYER_SETTINGS, DEFAULT_REMINDER_SETTINGS, texts, wed, 2).some(
+        (r) => r.kind === 'hifz',
+      ),
+    ).toBe(false);
+    const settings = { ...DEFAULT_REMINDER_SETTINGS, hifz: { enabled: true, time: '18:15' } };
+    const list = planReminders(
+      DEFAULT_PRAYER_SETTINGS,
+      settings,
+      { ...texts, hifzTitle: 'Hifz', hifzBody: 'Review' },
+      wed,
+      2,
+    ).filter((r) => r.kind === 'hifz');
+    expect(list).toHaveLength(2);
+    expect(new Set(list.map((r) => r.id)).size).toBe(2);
+    expect(list[0]).toMatchObject({ route: '/hifz', title: 'Hifz', body: 'Review' });
+    expect(new Date(list[0].at).getHours()).toBe(18);
+    expect(new Date(list[0].at).getMinutes()).toBe(15);
+    expect(
+      planReminders(DEFAULT_PRAYER_SETTINGS, settings, texts, new Date(2026, 9, 21, 19), 2).filter(
+        (r) => r.kind === 'hifz',
+      ),
+    ).toHaveLength(1);
+  });
+});

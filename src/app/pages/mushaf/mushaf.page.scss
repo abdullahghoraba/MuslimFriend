@@ -182,3 +182,52 @@ ion-content.mushaf {
   ion-button.active { --color: var(--m-accent); }
   .small-select { max-width: 64px; font-size: 0.8rem; }
 }
+
+// Long-press selection must not open the system text-selection menu.
+.ayah { -webkit-touch-callout: none; user-select: none; }
+
+// Marked range: "from / to" lists above the ayah actions.
+.range-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 0;
+  color: var(--m-fg);
+
+  ion-select {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    --padding-start: 10px;
+    --padding-end: 6px;
+    border: 1px solid color-mix(in srgb, var(--m-accent) 45%, transparent);
+    border-radius: 12px;
+    color: var(--m-fg);
+  }
+}
+
+.range-count {
+  font-size: 0.8rem;
+  color: var(--m-muted);
+  white-space: nowrap;
+}
+
+.range-close {
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--m-muted);
+  font: inherit;
+  font-size: 1.1rem;
+}
+
+.range-hint {
+  margin: 4px 14px 0;
+  font-size: 0.75rem;
+  color: var(--m-muted);
+}
+
+// Memorised ayat (hifz plans): a thin underline in the plan's colour.
+.ayah.hifz { text-decoration: underline; text-decoration-color: var(--hifz); text-decoration-thickness: 2px; text-underline-offset: 0.45em; }

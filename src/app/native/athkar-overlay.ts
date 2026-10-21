@@ -29,7 +29,7 @@ export interface OverlayPoolItem {
   repeatCount: number;
 }
 
-export type ReminderKind = 'morning' | 'evening' | 'sleep' | 'friday-kahf' | 'friday-salawat' | 'wird';
+export type ReminderKind = 'morning' | 'evening' | 'sleep' | 'friday-kahf' | 'friday-salawat' | 'wird' | 'hifz';
 
 export interface NativeReminder {
   id: string;

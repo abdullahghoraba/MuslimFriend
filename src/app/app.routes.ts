@@ -53,6 +53,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/quran-marks/quran-marks.page').then((m) => m.QuranMarksPage),
   },
   {
+    path: 'hifz',
+    loadComponent: () => import('./pages/hifz/hifz.page').then((m) => m.HifzPage),
+  },
+  {
     path: 'khatmah',
     loadComponent: () => import('./pages/khatmah/khatmah.page').then((m) => m.KhatmahPage),
   },

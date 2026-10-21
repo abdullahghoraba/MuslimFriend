@@ -23,11 +23,13 @@ import {
   ModalController,
   RangeCustomEvent,
   ToastController,
+  NavController,
   createGesture,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { KhatmahService } from '../../core/quran/khatmah.service';
 import { MARK_COLORS, MarkColor, MarksService } from '../../core/quran/marks.service';
+import { HifzService } from '../../core/quran/hifz.service';
 import { AyahRef, TOTAL_PAGES, arabicDigits, splitBasmala } from '../../core/quran/quran-utils';
 import { Ayah, QuranService } from '../../core/quran/quran.service';
 import { RECITERS, RecitationService, RepeatMode } from '../../core/quran/recitation.service';
@@ -72,10 +74,13 @@ export class MushafPage {
   readonly pageParam = input<string>('1', { alias: 'page' });
   readonly sura = input<string | undefined>();
   readonly aya = input<string | undefined>();
+  /** Set when opened from a hifz plan («ابدأ الحفظ»): today's new portion is marked as a range. */
+  readonly hifzPlan = input<string | undefined>(undefined, { alias: 'hifz' });
 
   readonly quran = inject(QuranService);
   readonly marks = inject(MarksService);
   readonly recitation = inject(RecitationService);
+  readonly hifz = inject(HifzService);
   private readonly khatmah = inject(KhatmahService);
   private readonly settings = inject(SettingsService);
   private readonly haptics = inject(HapticsService);
@@ -86,6 +91,7 @@ export class MushafPage {
   private readonly sheets = inject(ActionSheetController);
   private readonly alerts = inject(AlertController);
   private readonly toasts = inject(ToastController);
+  private readonly nav = inject(NavController);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly reciters = RECITERS;
@@ -153,7 +159,7 @@ export class MushafPage {
   }
 
   async ionViewWillEnter(): Promise<void> {
-    await Promise.all([this.quran.load(), this.marks.load(), this.khatmah.load(), this.recitation.loadPrefs(), this.loadView()]);
+    await Promise.all([this.quran.load(), this.marks.load(), this.khatmah.load(), this.recitation.loadPrefs(), this.loadView(), this.hifz.load()]);
     const p = clampPage(Number(this.pageParam()));
     this.goTo(p, 'none');
     const sura = Number(this.sura());
@@ -161,8 +167,59 @@ export class MushafPage {
     if (sura && aya) {
       const ref = { sura, aya };
       this.selected.set(ref);
+      // From a hifz plan: mark today's portion (within this sura) as a range.
+      const planId = Number(this.hifzPlan());
+      if (planId) {
+        const portion = this.hifz.today(planId).newPortion.filter((r) => r.sura === sura);
+        const last = portion[portion.length - 1];
+        if (last && last.aya > aya) {
+          this.rangeTo.set(last.aya);
+          this.rangeMode.set(true);
+        }
+      }
       setTimeout(() => this.scrollToAyah(ref), 250);
     }
+  }
+
+  /** Memorised/learning marker colour for an ayah (hifz plans). */
+  hifzColor(a: AyahRef): string | null {
+    const m = this.hifz.memorizedIndex().get(this.key(a));
+    return m ? (MARK_COLORS.find((c) => c.id === m.color)?.hex ?? null) : null;
+  }
+
+  /** «حفظ»: mark the selected ayah(s) as memorised / being learnt in a plan, or remove them. */
+  async hifzAction(): Promise<void> {
+    const refs = this.selectedRefs();
+    if (!refs.length) return;
+    const plans = this.hifz.list();
+    if (!plans.length) {
+      await this.toast('mushaf.hifzNoPlan');
+      void this.nav.navigateForward('/hifz');
+      return;
+    }
+    const choosePlan = async (status: 'learning' | 'memorized' | null) => {
+      const apply = (planId: number) => void this.hifz.markRange(planId, refs, status).then(() => this.toast(status ? 'mushaf.hifzSaved' : 'mushaf.hifzRemoved'));
+      if (plans.length === 1) return apply(plans[0].id);
+      const sheet = await this.sheets.create({
+        header: this.translate.instant('mushaf.hifzChoosePlan'),
+        buttons: [
+          ...plans.map((p) => ({ text: p.name, handler: () => apply(p.id) })),
+          { text: this.translate.instant('common.cancel'), role: 'cancel' },
+        ],
+      });
+      await sheet.present();
+    };
+    const sheet = await this.sheets.create({
+      header: this.translate.instant('mushaf.hifz'),
+      buttons: [
+        { text: this.translate.instant('mushaf.hifzMemorized'), handler: () => void choosePlan('memorized') },
+        { text: this.translate.instant('mushaf.hifzLearning'), handler: () => void choosePlan('learning') },
+        { text: this.translate.instant('mushaf.hifzRemove'), role: 'destructive', handler: () => void choosePlan(null) },
+        { text: this.translate.instant('mushaf.hifzPlans'), handler: () => void this.nav.navigateForward('/hifz') },
+        { text: this.translate.instant('common.cancel'), role: 'cancel' },
+      ],
+    });
+    await sheet.present();
   }
 
   ionViewDidEnter(): void {
@@ -234,14 +291,114 @@ export class MushafPage {
   }
 
   isSelected(a: AyahRef): boolean {
-    const s = this.selected();
-    return !!s && s.sura === a.sura && s.aya === a.aya;
+    const r = this.range();
+    return !!r && a.sura === r.sura && a.aya >= r.from && a.aya <= r.to;
   }
 
+  /** Tap: select one ayah (or, while marking a range, move the range's end to it). */
   select(a: AyahRef, event: Event): void {
     event.stopPropagation();
+    if (this.longPressed) {
+      this.longPressed = false;
+      return;
+    }
     this.haptics.tap();
-    this.selected.set(this.isSelected(a) ? null : { sura: a.sura, aya: a.aya });
+    const s = this.selected();
+    if (this.rangeMode() && s && s.sura === a.sura) {
+      this.rangeTo.set(a.aya);
+      return;
+    }
+    const same = this.isSelected(a) && !this.isRange();
+    this.rangeMode.set(false);
+    this.rangeTo.set(null);
+    this.selected.set(same ? null : { sura: a.sura, aya: a.aya });
+  }
+
+  // ---- range selection: long-press an ayah, then tap another (or use the From/To lists) ----
+
+  /** End of the marked range (an ayah number in the selected ayah's sura); null = single ayah. */
+  readonly rangeTo = signal<number | null>(null);
+  readonly rangeMode = signal(false);
+  readonly range = computed(() => {
+    const s = this.selected();
+    if (!s) return null;
+    const t = this.rangeTo() ?? s.aya;
+    return { sura: s.sura, from: Math.min(s.aya, t), to: Math.max(s.aya, t) };
+  });
+  readonly isRange = computed(() => {
+    const r = this.range();
+    return !!r && r.to > r.from;
+  });
+  /** Ayah numbers of the selected sura, for the From/To lists. */
+  readonly suraAyat = computed(() => {
+    const r = this.range();
+    return r && this.quran.ready() ? Array.from({ length: this.quran.sura(r.sura).ayas }, (_, i) => i + 1) : [];
+  });
+  private pressTimer?: ReturnType<typeof setTimeout>;
+  private pressAt = { x: 0, y: 0 };
+  private longPressed = false;
+  private readonly resetRange = effect(() => {
+    if (!this.selected()) {
+      untracked(() => {
+        this.rangeTo.set(null);
+        this.rangeMode.set(false);
+      });
+    }
+  });
+
+  pressStart(a: AyahRef, e: PointerEvent): void {
+    this.longPressed = false;
+    this.pressAt = { x: e.clientX, y: e.clientY };
+    clearTimeout(this.pressTimer);
+    this.pressTimer = setTimeout(() => {
+      this.longPressed = true;
+      this.haptics.tap();
+      const s = this.selected();
+      if (this.rangeMode() && s && s.sura === a.sura) {
+        this.rangeTo.set(a.aya);
+      } else {
+        this.selected.set({ sura: a.sura, aya: a.aya });
+        this.rangeTo.set(a.aya);
+        this.rangeMode.set(true);
+      }
+    }, 450);
+  }
+
+  pressMove(e: PointerEvent): void {
+    if (Math.hypot(e.clientX - this.pressAt.x, e.clientY - this.pressAt.y) > 10) clearTimeout(this.pressTimer);
+  }
+
+  pressEnd(): void {
+    clearTimeout(this.pressTimer);
+  }
+
+  setRangeFrom(value: unknown): void {
+    const r = this.range();
+    const n = Number(value);
+    if (!r || !n) return;
+    this.selected.set({ sura: r.sura, aya: Math.min(n, r.to) });
+    this.rangeTo.set(Math.max(n, r.to));
+    this.rangeMode.set(true);
+  }
+
+  setRangeTo(value: unknown): void {
+    const r = this.range();
+    const n = Number(value);
+    if (!r || !n) return;
+    this.selected.set({ sura: r.sura, aya: Math.min(r.from, n) });
+    this.rangeTo.set(Math.max(r.from, n));
+    this.rangeMode.set(true);
+  }
+
+  /** Every ayah in the current selection, in order. */
+  private selectedRefs(): AyahRef[] {
+    const r = this.range();
+    if (!r) return [];
+    return Array.from({ length: r.to - r.from + 1 }, (_, i) => ({ sura: r.sura, aya: r.from + i }));
+  }
+
+  ayahNumber(n: number): string {
+    return this.lang() === 'ar' ? arabicDigits(n) : String(n);
   }
 
   private scrollToAyah(a: AyahRef): void {
@@ -263,6 +420,12 @@ export class MushafPage {
   }
 
   async playFromSelected(): Promise<void> {
+    const r = this.range();
+    if (r && this.isRange()) {
+      await this.recitation.play({ sura: r.sura, aya: r.from }, { sura: r.sura, aya: r.to });
+      if (this.recitation.error()) await this.toast('mushaf.audioError');
+      return;
+    }
     const ref = this.selected() ?? this.blocks()[0]?.ayah;
     if (!ref) return;
     await this.recitation.play(ref);
@@ -277,6 +440,14 @@ export class MushafPage {
     if (this.recitation.error()) await this.toast('mushaf.audioError');
   }
 
+  /** "علامة القراءة": remember this ayah to come back to (shown on the Quran tab). */
+  async markReading(): Promise<void> {
+    const ref = this.selected();
+    if (!ref) return;
+    await this.quran.setReadingMark(this.quran.pageOf(ref), ref);
+    await this.toast('mushaf.readingMarkSet');
+  }
+
   async toggleStar(): Promise<void> {
     const ref = this.selected();
     if (!ref) return;
@@ -284,11 +455,15 @@ export class MushafPage {
     await this.toast(on ? 'mushaf.starred' : 'mushaf.unstarred');
   }
 
+  /** Colours every ayah in the selection (one ayah or a marked range). */
   async highlight(color: MarkColor | null): Promise<void> {
-    const ref = this.selected();
-    if (!ref) return;
+    const refs = this.selectedRefs();
+    if (!refs.length) return;
+    const apply = async (c: MarkColor | null, tag?: string) => {
+      for (const ref of refs) await this.marks.setHighlight(ref, c, tag);
+    };
     if (color === null) {
-      await this.marks.setHighlight(ref, null);
+      await apply(null);
       return;
     }
     const tags = this.marks.tags();
@@ -297,8 +472,8 @@ export class MushafPage {
       message: this.translate.instant('mushaf.tagHint'),
       inputs: [{ name: 'tag', type: 'text', placeholder: tags.slice(0, 3).join('، ') || this.translate.instant('mushaf.tagExample') }],
       buttons: [
-        { text: this.translate.instant('mushaf.noTag'), handler: () => void this.marks.setHighlight(ref, color) },
-        { text: this.translate.instant('common.save'), handler: (d: { tag?: string }) => void this.marks.setHighlight(ref, color, d.tag?.trim() || undefined) },
+        { text: this.translate.instant('mushaf.noTag'), handler: () => void apply(color) },
+        { text: this.translate.instant('common.save'), handler: (d: { tag?: string }) => void apply(color, d.tag?.trim() || undefined) },
       ],
     });
     await alert.present();
@@ -380,12 +555,16 @@ export class MushafPage {
     if (text) await this.share.shareText(this.translate.instant('app.name'), text);
   }
 
+  /** The selected ayah(s) with their numbers, then the reference, e.g. "[البقرة: ٢٥٥–٢٥٧]". */
   private selectedText(): string {
-    const ref = this.selected();
-    if (!ref) return '';
-    const a = this.quran.ayah(ref);
-    const s = this.quran.sura(ref.sura);
-    return `${splitBasmala(ref, a.text).text} ﴿${arabicDigits(ref.aya)}﴾\n[${s.name}: ${ref.aya}]`;
+    const r = this.range();
+    if (!r) return '';
+    const s = this.quran.sura(r.sura);
+    const body = this.selectedRefs()
+      .map((ref) => `${splitBasmala(ref, this.quran.ayah(ref).text).text} ﴿${arabicDigits(ref.aya)}﴾`)
+      .join(' ');
+    const where = r.to > r.from ? `${arabicDigits(r.from)}–${arabicDigits(r.to)}` : arabicDigits(r.from);
+    return `${body}\n[${s.name}: ${where}]`;
   }
 
   async goToPrompt(): Promise<void> {

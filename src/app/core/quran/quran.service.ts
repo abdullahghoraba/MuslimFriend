@@ -35,6 +35,8 @@ export interface LastRead {
 }
 
 const LAST_READ_KEY = 'quranLastRead';
+const READING_MARK_KEY = 'quranReadingMark';
+const AUTO_RESUME_KEY = 'quranAutoResume';
 
 /**
  * Offline Quran: Tanzil Uthmani text, Madani 604-page layout, tafsir/translation on demand.
@@ -176,5 +178,44 @@ export class QuranService {
     const value: LastRead = { page, sura: ref.sura, aya: ref.aya, at: Date.now() };
     this.lastRead.set(value);
     await Preferences.set({ key: LAST_READ_KEY, value: JSON.stringify(value) });
+  }
+
+  // ---- reading mark & resume ------------------------------------------------------------
+
+  /** The ayah the user marked to come back to (set by hand, unlike lastRead which follows the open page). */
+  readonly readingMark = signal<LastRead | null>(null);
+  /** Open the Quran tab at the last page read, once per app start. */
+  readonly autoResume = signal(true);
+  private prefsLoaded?: Promise<void>;
+
+  loadReadingPrefs(): Promise<void> {
+    return (this.prefsLoaded ??= (async () => {
+      const [mark, resume] = await Promise.all([
+        Preferences.get({ key: READING_MARK_KEY }),
+        Preferences.get({ key: AUTO_RESUME_KEY }),
+      ]);
+      try {
+        if (mark.value) this.readingMark.set(JSON.parse(mark.value));
+      } catch {
+        /* ignore */
+      }
+      if (resume.value !== null) this.autoResume.set(resume.value !== 'false');
+    })());
+  }
+
+  async setReadingMark(page: number, ref: AyahRef | null): Promise<void> {
+    if (!ref) {
+      this.readingMark.set(null);
+      await Preferences.remove({ key: READING_MARK_KEY });
+      return;
+    }
+    const value: LastRead = { page, sura: ref.sura, aya: ref.aya, at: Date.now() };
+    this.readingMark.set(value);
+    await Preferences.set({ key: READING_MARK_KEY, value: JSON.stringify(value) });
+  }
+
+  async setAutoResume(on: boolean): Promise<void> {
+    this.autoResume.set(on);
+    await Preferences.set({ key: AUTO_RESUME_KEY, value: String(on) });
   }
 }

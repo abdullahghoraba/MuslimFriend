@@ -1,0 +1,51 @@
+main {
+  max-width: 48rem;
+  margin: auto;
+  padding: 1rem;
+  padding-bottom: 3rem;
+}
+section {
+  padding: 1rem;
+  margin-block: 1rem;
+  border: 1px solid var(--ion-color-light-shade);
+  border-radius: 1rem;
+}
+h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+h2 small {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+}
+.dot {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.form {
+  padding: 1.25rem;
+  padding-bottom: 3rem;
+  display: grid;
+  gap: 1rem;
+}
+ul {
+  max-height: 15rem;
+  overflow: auto;
+  padding-inline-start: 1.5rem;
+}
+ion-button {
+  white-space: normal;
+  height: auto;
+  min-height: 44px;
+}
+p {
+  line-height: 1.7;
+}
+[role='alert'] {
+  color: var(--ion-color-danger);
+}

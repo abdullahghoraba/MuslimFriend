@@ -79,4 +79,12 @@ export const MIGRATIONS: Migration[] = [
   { version: 5, statements: [
     `ALTER TABLE athkar ADD COLUMN repeat_override INTEGER NULL;`,
   ] },
+  {
+    version: 6,
+    statements: [
+      `CREATE TABLE IF NOT EXISTS hifz_plan (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, color TEXT NOT NULL, from_sura INTEGER, from_aya INTEGER, to_sura INTEGER, to_aya INTEGER, daily_new INTEGER NOT NULL DEFAULT 5, follow_up INTEGER NOT NULL DEFAULT 1, created_at INTEGER, archived INTEGER NOT NULL DEFAULT 0);`,
+      `CREATE TABLE IF NOT EXISTS hifz_ayah (plan_id INTEGER, sura INTEGER, aya INTEGER, status TEXT CHECK(status IN ('learning','memorized')), memorized_on TEXT NULL, last_review TEXT NULL, next_review TEXT NULL, reviews INTEGER NOT NULL DEFAULT 0, step INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(plan_id, sura, aya));`,
+      `CREATE TABLE IF NOT EXISTS hifz_log (date TEXT, plan_id INTEGER, kind TEXT CHECK(kind IN ('new','review')), ayat INTEGER, PRIMARY KEY(date, plan_id, kind));`,
+    ],
+  },
 ];

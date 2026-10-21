@@ -64,7 +64,7 @@
   }
 </ion-header>
 
-<ion-content [class]="'mushaf theme-' + theme()" (click)="selected.set(null)">
+<ion-content [class]="'mushaf theme-' + theme()" (click)="rangeMode() ? null : selected.set(null)">
   @if (!quran.ready()) {
     <div class="loading"><ion-spinner /></div>
   } @else {
@@ -88,7 +88,10 @@
           <span class="ayah" role="button" tabindex="0" [attr.data-ayah]="b.ayah.sura + ':' + b.ayah.aya"
                 [class.selected]="isSelected(b.ayah)" [class.playing]="isPlaying(b.ayah)"
                 [style.--hl]="highlightColor(b.ayah)" [class.hl]="!!highlightColor(b.ayah)"
+                [style.--hifz]="hifzColor(b.ayah)" [class.hifz]="!!hifzColor(b.ayah)"
                 (click)="select(b.ayah, $event)" (keydown.enter)="select(b.ayah, $event)"
+                (pointerdown)="pressStart(b.ayah, $event)" (pointermove)="pressMove($event)"
+                (pointerup)="pressEnd()" (pointercancel)="pressEnd()" (contextmenu)="$event.preventDefault()"
                 [attr.aria-label]="quran.sura(b.ayah.sura).name + ' ' + b.ayah.aya">{{ b.text }}<span class="end">&nbsp;﴿{{ b.num }}﴾</span>@if (isStarred(b.ayah)) {<span class="mark star" aria-hidden="true">★</span>}@if (hasNote(b.ayah)) {<span class="mark note" aria-hidden="true">✎</span>}</span>
           {{ ' ' }}
         }
@@ -108,10 +111,25 @@
 @if (selected() || recitation.current()) {
   <ion-footer [class]="'theme-' + theme()">
     @if (selected(); as sel) {
+      @if (rangeMode() && range(); as r) {
+        <div class="range-bar" role="group" [attr.aria-label]="'mushaf.range' | translate">
+          <ion-select interface="popover" [label]="'mushaf.rangeFrom' | translate" [value]="r.from" (ionChange)="setRangeFrom($event.detail.value)">
+            @for (n of suraAyat(); track n) { <ion-select-option [value]="n">{{ ayahNumber(n) }}</ion-select-option> }
+          </ion-select>
+          <ion-select interface="popover" [label]="'mushaf.rangeTo' | translate" [value]="r.to" (ionChange)="setRangeTo($event.detail.value)">
+            @for (n of suraAyat(); track n) { <ion-select-option [value]="n">{{ ayahNumber(n) }}</ion-select-option> }
+          </ion-select>
+          <span class="range-count">{{ 'mushaf.rangeCount' | translate: { n: ayahNumber(r.to - r.from + 1) } }}</span>
+          <button type="button" class="range-close" (click)="selected.set(null)" [attr.aria-label]="'common.close' | translate">✕</button>
+        </div>
+        <p class="range-hint">{{ 'mushaf.rangeHint' | translate }}</p>
+      }
       <div class="ayah-actions" role="toolbar" [attr.aria-label]="'mushaf.ayahActions' | translate">
         <button type="button" (click)="openTafsir()"><ion-icon name="book-outline" aria-hidden="true" /><span>{{ 'mushaf.tafsir' | translate }}</span></button>
         <button type="button" (click)="playFromSelected()"><ion-icon name="play" aria-hidden="true" /><span>{{ 'mushaf.listen' | translate }}</span></button>
         <button type="button" (click)="bookmark()"><ion-icon name="bookmark-outline" aria-hidden="true" /><span>{{ 'mushaf.bookmark' | translate }}</span></button>
+        <button type="button" (click)="hifzAction()"><ion-icon name="school-outline" aria-hidden="true" /><span>{{ 'mushaf.hifz' | translate }}</span></button>
+        <button type="button" (click)="markReading()"><ion-icon name="bookmark" aria-hidden="true" /><span>{{ 'mushaf.readingMark' | translate }}</span></button>
         <button type="button" (click)="toggleStar()"><ion-icon [name]="isStarred(sel) ? 'star' : 'star-outline'" aria-hidden="true" /><span>{{ 'mushaf.star' | translate }}</span></button>
         <button type="button" (click)="editNote()"><ion-icon name="document-text-outline" aria-hidden="true" /><span>{{ 'mushaf.note' | translate }}</span></button>
         <button type="button" (click)="copy()"><ion-icon name="copy-outline" aria-hidden="true" /><span>{{ 'mushaf.copy' | translate }}</span></button>

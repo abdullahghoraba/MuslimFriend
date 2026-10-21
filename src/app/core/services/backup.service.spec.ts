@@ -62,6 +62,31 @@ describe('BackupService', () => {
     original = await service.buildBackup();
   });
 
+  it('round trips hifz plans, tracked ayahs and activity, and accepts older backups', async () => {
+    await db.batch([
+      { sql: "INSERT INTO hifz_plan VALUES (1,'حفظ','green',1,1,2,286,5,1,123,0)" },
+      {
+        sql: "INSERT INTO hifz_ayah VALUES (1,1,1,'memorized','2026-10-20',NULL,'2026-10-21',0,0)",
+      },
+      { sql: "INSERT INTO hifz_log VALUES ('2026-10-20',1,'new',1)" },
+    ]);
+    const backup = await service.buildBackup();
+    expect(backup.data.hifzPlans).toHaveLength(1);
+    await service.restore(backup);
+    expect((await service.buildBackup()).data).toEqual(backup.data);
+    const bad = structuredClone(backup);
+    bad.data.hifzAyahs![0]['status'] = 'invalid';
+    await expect(service.restore(bad)).rejects.toBeInstanceOf(BackupError);
+    expect((await service.buildBackup()).data).toEqual(backup.data);
+    delete backup.data.hifzPlans;
+    delete backup.data.hifzAyahs;
+    delete backup.data.hifzLogs;
+    await service.restore(backup);
+    expect((await service.buildBackup()).data.hifzPlans).toEqual([]);
+    expect(await db.query('SELECT * FROM hifz_ayah')).toEqual([]);
+    expect(await db.query('SELECT * FROM hifz_log')).toEqual([]);
+  });
+
   it('round trips overrides and accepts older backups without them', async () => {
     await db.run('UPDATE athkar SET repeat_override = 7 WHERE id = ?', ['builtin']);
     const backup = await service.buildBackup();

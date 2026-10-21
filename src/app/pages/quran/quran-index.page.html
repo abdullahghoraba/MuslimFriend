@@ -8,6 +8,15 @@
         @if (quran.lastRead(); as last) { <strong>{{ 'quran.continue' | translate }}</strong><span class="arabic" lang="ar">{{ quran.sura(last.sura).name }}</span><small>{{ 'quran.ayah' | translate }} {{ digits(last.aya) }} · {{ 'quran.page' | translate }} {{ digits(last.page) }}</small> }
         @else { <strong>{{ 'quran.start' | translate }}</strong> }
       </span></button>
+      @if (quran.readingMark(); as mark) {
+        <div class="mark-card card">
+          <button class="mark-open" (click)="openMark()"><ion-icon name="bookmark" aria-hidden="true" /><span>
+            <strong>{{ 'quran.readingMark' | translate }}</strong><span class="arabic" lang="ar">{{ quran.sura(mark.sura).name }}</span><small>{{ 'quran.ayah' | translate }} {{ digits(mark.aya) }} · {{ 'quran.page' | translate }} {{ digits(mark.page) }}</small>
+          </span></button>
+          <button class="mark-clear" (click)="quran.setReadingMark(mark.page, null)" [attr.aria-label]="'quran.clearReadingMark' | translate">✕</button>
+        </div>
+      }
+      <label class="resume"><ion-toggle [checked]="quran.autoResume()" (ionChange)="quran.setAutoResume($event.detail.checked)">{{ 'quran.autoResume' | translate }}</ion-toggle></label>
       <nav class="actions" [attr.aria-label]="'quran.actions' | translate">
         @for (a of actions; track a.key) { <ion-button fill="outline" [routerLink]="a.route"><ion-icon slot="start" [name]="a.icon" aria-hidden="true" />{{ ('quran.' + a.key) | translate }}</ion-button> }
         <ion-button fill="outline" (click)="goToPage()"><ion-icon slot="start" name="list-outline" aria-hidden="true" />{{ 'quran.goToPage' | translate }}</ion-button>

@@ -448,7 +448,9 @@
       "salawatTitle": "Friday",
       "salawatBody": "Send abundant salawat upon the Prophet ﷺ today.",
       "wirdTitle": "Your daily wird",
-      "wirdBody": "Time for today's Quran reading."
+      "wirdBody": "Time for today's Quran reading.",
+      "hifzTitle": "Time for Quran memorisation",
+      "hifzBody": "Keep up with your memorisation and review today."
     },
     "quran": "Quran",
     "wird": "Daily Quran reading (wird)",
@@ -536,7 +538,23 @@
       "gold": "Gold",
       "red": "Red",
       "purple": "Purple"
-    }
+    },
+    "range": "Select several ayat",
+    "rangeFrom": "From",
+    "rangeTo": "To",
+    "rangeCount": "{{n}} ayat",
+    "rangeHint": "Tap another ayah to set the end of the passage, or change From and To. Share, copy, colour and listen apply to all selected ayat.",
+    "readingMark": "Reading mark",
+    "readingMarkSet": "Reading mark saved here. You'll find it on the Quran tab.",
+    "hifz": "Hifz",
+    "hifzMemorized": "I memorised these ayat",
+    "hifzLearning": "I'm memorising them now",
+    "hifzRemove": "Remove from hifz plan",
+    "hifzPlans": "Hifz plans & follow-up",
+    "hifzChoosePlan": "Choose a hifz plan",
+    "hifzSaved": "Saved to your hifz plan.",
+    "hifzRemoved": "Removed from your hifz plan.",
+    "hifzNoPlan": "Create a hifz plan first."
   },
   "quran": {
     "title": "Quran",
@@ -575,7 +593,11 @@
     "verseOfDay": "Verse of the day",
     "readMushaf": "Read in mushaf",
     "share": "Share",
-    "shareFailed": "Sharing was cancelled or unavailable."
+    "shareFailed": "Sharing was cancelled or unavailable.",
+    "readingMark": "Reading mark",
+    "clearReadingMark": "Remove reading mark",
+    "autoResume": "Open the Quran at the last page I read",
+    "hifz": "Hifz"
   },
   "qibla": {
     "title": "Qibla",
@@ -781,5 +803,48 @@
     "eveningUntil": "Until",
     "midnight": "Midnight (12 am)",
     "kahf": "Surat al-Kahf card (Thursday Maghrib to Friday Maghrib)"
+  },
+  "hifz": {
+    "title": "Quran memorisation",
+    "create": "New memorisation plan",
+    "emptyTitle": "Build a lasting connection with the Quran",
+    "emptyBody": "Choose a range, memorise a few ayahs each day, and enable follow-up to review them at spaced intervals. You can keep several plans with different colours.",
+    "range": "From {{from}} to {{to}}",
+    "progress": "{{done}} of {{total}} ayahs",
+    "streak": "{{days}} day streak",
+    "today": "Today",
+    "newPortion": "New portion",
+    "start": "Start memorising",
+    "memorized": "I memorised these",
+    "due": "Due for review",
+    "noDue": "No reviews due today",
+    "none": "No new ayahs remaining",
+    "good": "Reviewed: good",
+    "hard": "Difficult",
+    "edit": "Edit plan",
+    "archive": "Archive plan",
+    "archived": "Archived",
+    "delete": "Delete plan",
+    "confirm": "Apply this action to “{{name}}”?",
+    "cancel": "Cancel",
+    "save": "Save",
+    "name": "Plan name",
+    "color": "Colour",
+    "fromSura": "Starting sura",
+    "fromAya": "Starting ayah",
+    "toSura": "Ending sura",
+    "toAya": "Ending ayah",
+    "dailyNew": "New ayahs per day",
+    "followUp": "Follow-up and spaced review",
+    "reminder": "Daily memorisation reminder",
+    "time": "Reminder time",
+    "error": "Could not save or load the plan. Check the range and try again.",
+    "colors": {
+      "green": "Green",
+      "blue": "Blue",
+      "gold": "Gold",
+      "red": "Red",
+      "purple": "Purple"
+    }
   }
 }

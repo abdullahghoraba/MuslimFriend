@@ -1,0 +1,182 @@
+<ion-header
+  ><ion-toolbar
+    ><ion-buttons slot="start"><ion-back-button defaultHref="/quran" /></ion-buttons
+    ><ion-title>{{ 'hifz.title' | translate }}</ion-title></ion-toolbar
+  ></ion-header
+>
+<ion-content
+  ><main>
+    @if (error()) {
+      <p role="alert">{{ error() | translate }}</p>
+    }
+    @if (ready()) {
+      <ion-button (click)="open()" [disabled]="busy()">{{ 'hifz.create' | translate }}</ion-button>
+      @if (!service.list().length) {
+        <section>
+          <h2>{{ 'hifz.emptyTitle' | translate }}</h2>
+          <p>{{ 'hifz.emptyBody' | translate }}</p>
+        </section>
+      }
+      @for (p of service.plans(); track p.id) {
+        <section>
+          <h2>
+            <span class="dot" [style.background]="color(p.color)"></span>{{ p.name }}
+            @if (p.archived) {
+              <small>{{ 'hifz.archived' | translate }}</small>
+            }
+          </h2>
+          <p>{{ range(p) }}</p>
+          <ion-progress-bar
+            [value]="service.progress(p.id).percent / 100"
+            [attr.aria-label]="p.name"
+          />
+          <p>
+            {{
+              'hifz.progress'
+                | translate
+                  : {
+                      done: number(service.progress(p.id).memorized),
+                      total: number(service.progress(p.id).total),
+                    }
+            }}
+          </p>
+          <p>{{ 'hifz.streak' | translate: { days: number(service.streak(p.id)) } }}</p>
+          @if (!p.archived) {
+            <h3>{{ 'hifz.today' | translate }}</h3>
+            <p>
+              {{ 'hifz.newPortion' | translate }}: {{ portion(service.today(p.id).newPortion) }}
+            </p>
+            <ion-button
+              [disabled]="busy() || !service.today(p.id).newPortion.length"
+              (click)="start(p)"
+              >{{ 'hifz.start' | translate }}</ion-button
+            >
+            <ion-button
+              [disabled]="busy() || !service.today(p.id).newPortion.length"
+              (click)="memorize(p)"
+              >{{ 'hifz.memorized' | translate }}</ion-button
+            >
+            @if (p.followUp) {
+              <h3>{{ 'hifz.due' | translate }}</h3>
+              <ul>
+                @for (r of service.today(p.id).due; track r.sura + ':' + r.aya) {
+                  <li>{{ ref(r) }}</li>
+                } @empty {
+                  <li>{{ 'hifz.noDue' | translate }}</li>
+                }
+              </ul>
+              <ion-button
+                [disabled]="busy() || !service.today(p.id).due.length"
+                (click)="review(p, 'good')"
+                >{{ 'hifz.good' | translate }}</ion-button
+              >
+              <ion-button
+                [disabled]="busy() || !service.today(p.id).due.length"
+                (click)="review(p, 'hard')"
+                >{{ 'hifz.hard' | translate }}</ion-button
+              >
+            }
+            <ion-button fill="clear" [disabled]="busy()" (click)="open(p)">{{
+              'hifz.edit' | translate
+            }}</ion-button>
+            <ion-button fill="clear" [disabled]="busy()" (click)="confirm(p, 'archive')">{{
+              'hifz.archive' | translate
+            }}</ion-button>
+          }
+          <ion-button
+            fill="clear"
+            color="danger"
+            [disabled]="busy()"
+            (click)="confirm(p, 'delete')"
+            >{{ 'hifz.delete' | translate }}</ion-button
+          >
+        </section>
+      }
+      <section>
+        <h2>{{ 'hifz.followUp' | translate }}</h2>
+        <ion-toggle
+          [ngModel]="prayer.reminders().hifz.enabled"
+          (ngModelChange)="reminder($event)"
+          [disabled]="busy()"
+          >{{ 'hifz.reminder' | translate }}</ion-toggle
+        ><ion-input
+          type="time"
+          [label]="'hifz.time' | translate"
+          [ngModel]="prayer.reminders().hifz.time"
+          (ngModelChange)="reminder(prayer.reminders().hifz.enabled, $event)"
+          [disabled]="busy()"
+        />
+      </section>
+    }
+  </main>
+  <ion-modal
+    [isOpen]="sheet()"
+    [initialBreakpoint]="0.9"
+    [breakpoints]="[0, 0.9, 1]"
+    (didDismiss)="sheet.set(false)"
+  >
+    <ng-template
+      ><ion-header
+        ><ion-toolbar
+          ><ion-title>{{ (editing === null ? 'hifz.create' : 'hifz.edit') | translate }}</ion-title
+          ><ion-buttons slot="end"
+            ><ion-button (click)="sheet.set(false)">{{
+              'hifz.cancel' | translate
+            }}</ion-button></ion-buttons
+          ></ion-toolbar
+        ></ion-header
+      ><ion-content
+        ><div class="form">
+          <ion-input [label]="'hifz.name' | translate" [(ngModel)]="draft.name" />
+          <ion-select [label]="'hifz.color' | translate" [(ngModel)]="draft.color">
+            @for (c of colors; track c.id) {
+              <ion-select-option [value]="c.id">{{
+                'hifz.colors.' + c.id | translate
+              }}</ion-select-option>
+            }
+          </ion-select>
+          <ion-select
+            [label]="'hifz.fromSura' | translate"
+            [(ngModel)]="draft.from.sura"
+            (ionChange)="draft.from.aya = 1"
+          >
+            @for (s of quran.suras; track s.index) {
+              <ion-select-option [value]="s.index">{{ suraName(s.index) }}</ion-select-option>
+            }
+          </ion-select>
+          <ion-select [label]="'hifz.fromAya' | translate" [(ngModel)]="draft.from.aya">
+            @for (a of ayas(draft.from.sura); track a) {
+              <ion-select-option [value]="a">{{ number(a) }}</ion-select-option>
+            }
+          </ion-select>
+          <ion-select
+            [label]="'hifz.toSura' | translate"
+            [(ngModel)]="draft.to.sura"
+            (ionChange)="draft.to.aya = quran.sura(draft.to.sura).ayas"
+          >
+            @for (s of quran.suras; track s.index) {
+              <ion-select-option [value]="s.index">{{ suraName(s.index) }}</ion-select-option>
+            }
+          </ion-select>
+          <ion-select [label]="'hifz.toAya' | translate" [(ngModel)]="draft.to.aya">
+            @for (a of ayas(draft.to.sura); track a) {
+              <ion-select-option [value]="a">{{ number(a) }}</ion-select-option>
+            }
+          </ion-select>
+          <ion-select [label]="'hifz.dailyNew' | translate" [(ngModel)]="draft.dailyNew">
+            @for (n of quotas; track n) {
+              <ion-select-option [value]="n">{{ number(n) }}</ion-select-option>
+            }
+          </ion-select>
+          <ion-toggle [(ngModel)]="draft.followUp">{{ 'hifz.followUp' | translate }}</ion-toggle>
+          @if (error()) {
+            <p role="alert">{{ error() | translate }}</p>
+          }
+          <ion-button expand="block" [disabled]="busy() || !draft.name.trim()" (click)="save()">{{
+            'hifz.save' | translate
+          }}</ion-button>
+        </div></ion-content
+      ></ng-template
+    >
+  </ion-modal></ion-content
+>

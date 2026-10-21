@@ -31,6 +31,9 @@ export interface BackupFile {
     quranMarks?: Row[];
     khatmah?: Row[];
     quranReadingLog?: Row[];
+    hifzPlans?: Row[];
+    hifzAyahs?: Row[];
+    hifzLogs?: Row[];
   };
 }
 export class BackupError extends Error {
@@ -125,6 +128,36 @@ const schemas: Record<keyof BackupFile['data'], Record<string, Check>> = {
     completed_at: (v) => v === null || nonnegative(v),
     created_at: nonnegative,
   },
+  hifzPlans: {
+    id: nonnegative,
+    name: id,
+    color: (v) => ['green', 'blue', 'gold', 'red', 'purple'].includes(v as string),
+    from_sura: (v) => v === null || (integer(v) && Number(v) >= 1 && Number(v) <= 114),
+    from_aya: (v) => v === null || (integer(v) && Number(v) >= 1 && Number(v) <= 286),
+    to_sura: (v) => v === null || (integer(v) && Number(v) >= 1 && Number(v) <= 114),
+    to_aya: (v) => v === null || (integer(v) && Number(v) >= 1 && Number(v) <= 286),
+    daily_new: (v) => integer(v) && Number(v) > 0,
+    follow_up: flag,
+    created_at: nonnegative,
+    archived: flag,
+  },
+  hifzAyahs: {
+    plan_id: nonnegative,
+    sura: (v) => integer(v) && Number(v) >= 1 && Number(v) <= 114,
+    aya: (v) => integer(v) && Number(v) >= 1 && Number(v) <= 286,
+    status: (v) => v === 'learning' || v === 'memorized',
+    memorized_on: (v) => v === null || date(v),
+    last_review: (v) => v === null || date(v),
+    next_review: (v) => v === null || date(v),
+    reviews: nonnegative,
+    step: (v) => nonnegative(v) && Number(v) <= 5,
+  },
+  hifzLogs: {
+    date,
+    plan_id: nonnegative,
+    kind: (v) => v === 'new' || v === 'review',
+    ayat: nonnegative,
+  },
   quranReadingLog: { date, page: (v) => integer(v) && Number(v) >= 1 && Number(v) <= 604 },
 };
 const optionalTables = [
@@ -136,6 +169,7 @@ const optionalTables = [
   'quranMarks',
   'khatmah',
   'quranReadingLog',
+  'hifzPlans', 'hifzAyahs', 'hifzLogs',
 ];
 function fields(value: unknown, schema: Record<string, Check>): boolean {
   return (
@@ -226,6 +260,9 @@ export class BackupService {
         tasbihDaily: await this.db.query<Row>(
           'SELECT * FROM tasbih_daily ORDER BY date, counter_id',
         ),
+        hifzPlans: await this.db.query<Row>('SELECT * FROM hifz_plan ORDER BY id'),
+        hifzAyahs: await this.db.query<Row>('SELECT * FROM hifz_ayah ORDER BY plan_id, sura, aya'),
+        hifzLogs: await this.db.query<Row>('SELECT * FROM hifz_log ORDER BY date, plan_id, kind'),
         quranBookmarks: await this.db.query<Row>('SELECT * FROM quran_bookmark ORDER BY id'),
         quranMarks: await this.db.query<Row>('SELECT * FROM quran_mark ORDER BY sura, aya, kind'),
         khatmah: await this.db.query<Row>('SELECT * FROM khatmah ORDER BY id'),
@@ -242,6 +279,7 @@ export class BackupService {
       { sql: 'DELETE FROM athkar WHERE is_custom = 1' },
       { sql: 'UPDATE athkar SET hidden = 0, repeat_override = NULL WHERE is_custom = 0' },
       ...[
+        'hifz_ayah', 'hifz_log', 'hifz_plan',
         'user_category',
         'home_hidden',
         'dhikr_daily',
@@ -255,6 +293,7 @@ export class BackupService {
       ].map((table) => ({ sql: 'DELETE FROM ' + table })),
     ];
     const tables = {
+      hifzPlans: 'hifz_plan', hifzAyahs: 'hifz_ayah', hifzLogs: 'hifz_log',
       userCategories: 'user_category',
       homeHidden: 'home_hidden',
       customAthkar: 'athkar',
@@ -341,6 +380,7 @@ export class BackupService {
   async resetAll(): Promise<void> {
     await this.db.batch(
       [
+        'hifz_ayah', 'hifz_log', 'hifz_plan',
         'user_category',
         'home_hidden',
         'athkar',
