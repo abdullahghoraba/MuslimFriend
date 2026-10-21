@@ -17,6 +17,9 @@ export interface RemoteTafsir {
   source?: string;
   /** File name in assets/personal-tafsir/ when it came built into a personal build. */
   bundledFile?: string;
+  /** Where downloads come from: quran.com (default) or the spa5k open dataset ([slug] folder). */
+  provider?: 'spa5k';
+  slug?: string;
 }
 
 /** Ids of imported tafsirs start here, well away from quran.com resource ids. */
@@ -94,6 +97,51 @@ export const REMOTE_TAFSIRS: RemoteTafsir[] = [
   { apiId: 93, nameAr: 'التفسير الوسيط (طنطاوي)', nameEn: 'Al-Wasit (Tantawi)', lang: 'ar', sizeMb: 25 },
   { apiId: 169, nameAr: 'ابن كثير المختصر (إنجليزي)', nameEn: 'Ibn Kathir Abridged (English)', lang: 'en', sizeMb: 20 },
   { apiId: 157, nameAr: 'في ظلال القرآن - سيد قطب (ترجمة أردية)', nameEn: 'Fi Zilal al-Quran - Sayyid Qutb (Urdu translation)', lang: 'ur', sizeMb: 18 },
+  { apiId: 168, nameAr: 'معارف القرآن (إنجليزي)', nameEn: "Ma'arif al-Qur'an (English)", lang: 'en', sizeMb: 30 },
+  { apiId: 817, nameAr: 'تذكير القرآن (إنجليزي)', nameEn: 'Tazkirul Quran (English)', lang: 'en', sizeMb: 6 },
+  // Classical tafsirs (public domain) and openly licensed ones, from the spa5k/tafsir_api open dataset (QUL data).
+  // Ids are fixed: they name the offline folder on the phone.
+  ...spa5k(700_001, 'ar-tafseer-tahrir-al-tanwir', 'التحرير والتنوير - ابن عاشور', 'Al-Tahrir wa al-Tanwir (Ibn Ashur)', 80),
+  ...spa5k(700_002, 'tafsir-al-razi', 'مفاتيح الغيب (التفسير الكبير) - الرازي', 'Mafatih al-Ghayb (al-Razi)', 96),
+  ...spa5k(700_003, 'tafsir-al-alusi', 'روح المعاني - الألوسي', "Ruh al-Ma'ani (al-Alusi)", 57),
+  ...spa5k(700_004, 'al-kashshaf-al-zamakhshari', 'الكشاف - الزمخشري', 'Al-Kashshaf (al-Zamakhshari)', 29),
+  ...spa5k(700_005, 'tafsir-al-baydawi', 'أنوار التنزيل - البيضاوي', 'Anwar al-Tanzil (al-Baydawi)', 9),
+  ...spa5k(700_006, 'tafsir-al-nasafi', 'مدارك التنزيل - النسفي', 'Madarik al-Tanzil (al-Nasafi)', 8),
+  ...spa5k(700_007, 'fath-al-qadir-al-shawkani', 'فتح القدير - الشوكاني', 'Fath al-Qadir (al-Shawkani)', 180),
+  ...spa5k(700_008, 'tafsir-ibn-juzay', 'التسهيل لعلوم التنزيل - ابن جزي', 'Al-Tashil (Ibn Juzay)', 9),
+  ...spa5k(700_009, 'al-muharrar-al-wajiz-ibn-atiyyah', 'المحرر الوجيز - ابن عطية', 'Al-Muharrar al-Wajiz (Ibn Atiyyah)', 65),
+  ...spa5k(700_010, 'al-bahr-al-muhit', 'البحر المحيط - أبو حيان', 'Al-Bahr al-Muhit (Abu Hayyan)', 173),
+  ...spa5k(700_011, 'tafsir-ibn-al-jawzi', 'زاد المسير - ابن الجوزي', 'Zad al-Masir (Ibn al-Jawzi)', 47),
+  ...spa5k(700_012, 'al-durr-al-manthur', 'الدر المنثور - السيوطي', 'Al-Durr al-Manthur (al-Suyuti)', 62),
+  ...spa5k(700_013, 'tafsir-ibn-abi-hatim', 'تفسير ابن أبي حاتم', 'Tafsir Ibn Abi Hatim', 11),
+  ...spa5k(700_014, 'tafsir-abi-al-su-ood', 'إرشاد العقل السليم - أبو السعود', "Irshad al-'Aql al-Salim (Abu al-Su'ud)", 17),
+  ...spa5k(700_015, 'tafsir-al-mawardi', 'النكت والعيون - الماوردي', "Al-Nukat wa al-'Uyun (al-Mawardi)", 31),
+  ...spa5k(700_016, 'tafsir-al-samarqandi', 'بحر العلوم - السمرقندي', "Bahr al-'Ulum (al-Samarqandi)", 31),
+  ...spa5k(700_017, 'tafsir-al-sam-ani', 'تفسير السمعاني', "Tafsir al-Sam'ani", 8),
+  ...spa5k(700_018, 'al-wajiz-wahidi', 'الوجيز - الواحدي', 'Al-Wajiz (al-Wahidi)', 1),
+  ...spa5k(700_019, 'al-basit', 'البسيط - الواحدي', 'Al-Basit (al-Wahidi)', 30),
+  ...spa5k(700_020, 'nazam-al-durar-al-biqa-i', 'نظم الدرر - البقاعي', "Nazm al-Durar (al-Biqa'i)", 28),
+  ...spa5k(700_021, 'mahasin-al-ta-wil-al-qasimi', 'محاسن التأويل - القاسمي', "Mahasin al-Ta'wil (al-Qasimi)", 35),
+  ...spa5k(700_022, 'tafsir-ibn-abi-zamanin', 'تفسير ابن أبي زمنين', 'Tafsir Ibn Abi Zamanin', 3),
+  ...spa5k(700_023, 'tafsir-makhi', 'الهداية إلى بلوغ النهاية - مكي بن أبي طالب', 'Al-Hidayah (Makki ibn Abi Talib)', 61),
+  ...spa5k(700_024, 'al-lubab-fi-ulum-al-kitab', 'اللباب في علوم الكتاب - ابن عادل', "Al-Lubab (Ibn 'Adil)", 134),
+  ...spa5k(700_025, 'jamia-al-bayan-aliji', 'جامع البيان - الإيجي', "Jami' al-Bayan (al-Iji)", 43),
+  ...spa5k(700_026, 'fath-al-bayan-li-al-qanuji', 'فتح البيان - القنوجي', 'Fath al-Bayan (al-Qanuji)', 16),
+  ...spa5k(700_027, 'tafsir-ibn-al-qayyim', 'تفسير ابن القيم', 'Tafsir Ibn al-Qayyim', 30),
+  ...spa5k(700_028, 'adwa-al-bayan', 'أضواء البيان - الشنقيطي', "Adwa' al-Bayan (al-Shanqiti)", 17),
+  ...spa5k(700_029, 'al-dur-al-masun-lil-samin-al-halabi', 'الدر المصون - السمين الحلبي', 'Al-Durr al-Masun (al-Samin al-Halabi)', 14),
+  ...spa5k(700_030, 'ar-tafseer-tanwir-al-miqbas', 'تنوير المقباس من تفسير ابن عباس', 'Tanwir al-Miqbas', 29),
+  ...spa5k(700_031, 'ar-tafsir-al-jami-al-wajiz', 'الجامع الوجيز - د. أيمن العامر (CC BY-ND)', "Al-Jami' al-Wajiz (CC BY-ND 4.0)", 10),
+];
+
+/** A tafsir served as static per-sura JSON files by the open spa5k/tafsir_api dataset. */
+function spa5k(apiId: number, slug: string, nameAr: string, nameEn: string, sizeMb: number): RemoteTafsir[] {
+  return [{ apiId, slug, nameAr, nameEn, lang: 'ar', sizeMb, provider: 'spa5k' }];
+}
+const SPA5K_URLS = [
+  'https://cdn.jsdelivr.net/gh/spa5k/tafsir_api@main/tafsir',
+  // jsDelivr refuses some very large files; GitHub serves them (with CORS).
+  'https://raw.githubusercontent.com/spa5k/tafsir_api/main/tafsir',
 ];
 
 const API = 'https://api.quran.com/api/v4';
@@ -288,6 +336,8 @@ export class TafsirLibraryService {
 
   private async fetchSura(apiId: number, sura: number): Promise<string[]> {
     const ayas = (await this.counts())[sura - 1];
+    const info = this.find(apiId);
+    if (info?.provider === 'spa5k' && info.slug) return this.fetchSpa5k(info.slug, sura, ayas);
     const out: string[] = Array.from({ length: ayas }, () => '');
     let page: number | null = 1;
     while (page) {
@@ -301,6 +351,20 @@ export class TafsirLibraryService {
       page = body.pagination?.next_page ?? null;
     }
     return out;
+  }
+
+  private async fetchSpa5k(slug: string, sura: number, ayas: number): Promise<string[]> {
+    let lastError: unknown;
+    for (const base of SPA5K_URLS) {
+      try {
+        const res = await fetch(`${base}/${slug}/${sura}.json`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return spa5kToAyat((await res.json()) as { ayah: number; text: string }[], ayas);
+      } catch (e) {
+        lastError = e;
+      }
+    }
+    throw lastError;
   }
 
   private async counts(): Promise<number[]> {
@@ -335,6 +399,27 @@ export class TafsirLibraryService {
       recursive: true,
     });
   }
+}
+
+/**
+ * spa5k files list every ayah; a passage explained once is repeated on each of its ayat.
+ * Keep it on the first ayah only ('' after it), so the reader shows it once and storage stays small.
+ */
+export function spa5kToAyat(entries: { ayah: number; text: string }[], ayas: number): string[] {
+  const out: string[] = Array.from({ length: ayas }, () => '');
+  let previous = '';
+  for (const e of [...entries].sort((a, b) => a.ayah - b.ayah)) {
+    if (!(e.ayah >= 1 && e.ayah <= ayas) || typeof e.text !== 'string') continue;
+    // Printed-edition page markers ("صفحة ١٣٧", "(p-٣٦٩)") mean nothing on a phone.
+    const text = cleanHtml(e.text)
+      .replace(/^\s*صفحة\s*[٠-٩0-9]+\s*$/gm, '')
+      .replace(/\(p-[٠-٩0-9]+\)/g, '')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+    out[e.ayah - 1] = text && text !== previous ? text : '';
+    if (text) previous = text;
+  }
+  return out;
 }
 
 /** The API returns light HTML (spans, <p>, <br>); keep the text and paragraph breaks only. */

@@ -1,4 +1,26 @@
-import { parseTafsirFile } from './tafsir-library.service';
+import { REMOTE_TAFSIRS, parseTafsirFile, spa5kToAyat } from './tafsir-library.service';
+
+describe('spa5kToAyat', () => {
+  it('keeps a passage repeated over several ayat on the first one only', () => {
+    const out = spa5kToAyat([
+      { ayah: 2, text: 'B' }, { ayah: 1, text: 'A' }, { ayah: 3, text: 'B' }, { ayah: 4, text: '<p>C</p>' }, { ayah: 9, text: 'x' },
+    ], 5);
+    expect(out).toEqual(['A', 'B', '', 'C', '']);
+  });
+
+  it('drops printed page markers', () => {
+    expect(spa5kToAyat([{ ayah: 1, text: 'صفحة ١٣٧\nالبسملة اسم' }, { ayah: 2, text: '(p-٣٦٩)سورة الإخلاص' }], 2))
+      .toEqual(['البسملة اسم', 'سورة الإخلاص']);
+  });
+});
+
+describe('REMOTE_TAFSIRS', () => {
+  it('has unique ids and every open-dataset entry names its folder', () => {
+    const ids = REMOTE_TAFSIRS.map((t) => t.apiId);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(REMOTE_TAFSIRS.filter((t) => t.provider === 'spa5k').every((t) => !!t.slug)).toBe(true);
+  });
+});
 
 const counts = [7, 286, 200];
 

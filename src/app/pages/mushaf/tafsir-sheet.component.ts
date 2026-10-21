@@ -145,7 +145,7 @@ export class TafsirSheetComponent implements OnInit {
   readonly sourceBy = computed(() => {
     const r = this.remoteInfo();
     if (r?.imported) return `${this.lang() === 'ar' ? r.nameAr : r.nameEn} · ${r.source || (this.lang() === 'ar' ? 'ملف مستورد' : 'Imported file')}`;
-    if (r) return `${this.lang() === 'ar' ? r.nameAr : r.nameEn} · quran.com`;
+    if (r) return `${this.lang() === 'ar' ? r.nameAr : r.nameEn} · ${r.provider === 'spa5k' ? 'QUL (Tarteel)' : 'quran.com'}`;
     return `${this.quran.meta.sources.tafsir[this.source() as TafsirId].by} · tanzil.net`;
   });
 
