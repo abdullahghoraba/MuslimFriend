@@ -14,19 +14,21 @@ export interface Reciter {
 
 /** A curated set of well-known Hafs reciters on EveryAyah (verse-by-verse MP3s). */
 export const RECITERS: Reciter[] = [
-  { id: 'Alafasy_128kbps', nameAr: 'مشاري راشد العفاسي', nameEn: 'Mishary Alafasy' },
+  { id: 'Muhsin_Al_Qasim_192kbps', nameAr: 'عبد المحسن القاسم', nameEn: 'Abdulmohsen Al-Qasim' },
   { id: 'Abdul_Basit_Murattal_192kbps', nameAr: 'عبد الباسط عبد الصمد (مرتل)', nameEn: 'Abdul Basit (Murattal)' },
   { id: 'Abdul_Basit_Mujawwad_128kbps', nameAr: 'عبد الباسط عبد الصمد (مجود)', nameEn: 'Abdul Basit (Mujawwad)' },
   { id: 'Husary_128kbps', nameAr: 'محمود خليل الحصري', nameEn: 'Mahmoud Khalil Al-Husary' },
   { id: 'Husary_Muallim_128kbps', nameAr: 'الحصري (المعلم)', nameEn: 'Al-Husary (Teacher)' },
   { id: 'Minshawy_Murattal_128kbps', nameAr: 'محمد صديق المنشاوي (مرتل)', nameEn: 'Al-Minshawi (Murattal)' },
-  { id: 'Abdurrahmaan_As-Sudais_192kbps', nameAr: 'عبد الرحمن السديس', nameEn: 'Abdurrahman As-Sudais' },
+  { id: 'Minshawy_Mujawwad_192kbps', nameAr: 'محمد صديق المنشاوي (مجود)', nameEn: 'Al-Minshawi (Mujawwad)' },
+  { id: 'Mohammad_al_Tablaway_128kbps', nameAr: 'محمد محمود الطبلاوي', nameEn: 'Mohammad Al-Tablawi' },
+  { id: 'Mustafa_Ismail_48kbps', nameAr: 'مصطفى إسماعيل', nameEn: 'Mustafa Ismail' },
+  { id: 'Mahmoud_Ali_Al_Banna_32kbps', nameAr: 'محمود علي البنا', nameEn: 'Mahmoud Ali Al-Banna' },
+  { id: 'Muhammad_Jibreel_128kbps', nameAr: 'محمد جبريل', nameEn: 'Muhammad Jibreel' },
   { id: 'Saood_ash-Shuraym_128kbps', nameAr: 'سعود الشريم', nameEn: 'Saud Ash-Shuraim' },
   { id: 'MaherAlMuaiqly128kbps', nameAr: 'ماهر المعيقلي', nameEn: 'Maher Al-Muaiqly' },
   { id: 'Yasser_Ad-Dussary_128kbps', nameAr: 'ياسر الدوسري', nameEn: 'Yasser Ad-Dossary' },
   { id: 'Abu_Bakr_Ash-Shaatree_128kbps', nameAr: 'أبو بكر الشاطري', nameEn: 'Abu Bakr Ash-Shatri' },
-  { id: 'Hudhaify_128kbps', nameAr: 'علي الحذيفي', nameEn: 'Ali Al-Hudhaify' },
-  { id: 'Muhammad_Ayyoub_128kbps', nameAr: 'محمد أيوب', nameEn: 'Muhammad Ayyub' },
   { id: 'Ghamadi_40kbps', nameAr: 'سعد الغامدي', nameEn: 'Saad Al-Ghamdi' },
 ];
 
@@ -80,6 +82,8 @@ export class RecitationService {
         /* defaults */
       }
     }
+    // A reciter removed from the list falls back to the default one.
+    if (!RECITERS.some((r) => r.id === this.prefs().reciterId)) this.prefs.update((p) => ({ ...p, reciterId: RECITERS[0].id }));
     this.prefsLoaded = true;
   }
 

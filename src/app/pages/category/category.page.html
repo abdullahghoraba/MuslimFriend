@@ -47,8 +47,12 @@
         (ionChange)="setFontScale($event)"
         [attr.aria-label]="'reader.fontSize' | translate"
       >
-        <ion-icon slot="start" name="remove-outline" aria-hidden="true" />
-        <ion-icon slot="end" name="add-outline" aria-hidden="true" />
+        <ion-button slot="start" fill="clear" (click)="stepFont(-0.1)" [attr.aria-label]="'common.smaller' | translate">
+          <ion-icon slot="icon-only" name="remove-outline" aria-hidden="true" />
+        </ion-button>
+        <ion-button slot="end" fill="clear" (click)="stepFont(0.1)" [attr.aria-label]="'common.larger' | translate">
+          <ion-icon slot="icon-only" name="add-outline" aria-hidden="true" />
+        </ion-button>
       </ion-range>
     </ion-toolbar>
   }

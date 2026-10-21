@@ -25,7 +25,9 @@
     "times": "{{count}} مرة",
     "reorder": "ترتيب",
     "finishReorder": "إنهاء الترتيب",
-    "pressBackAgain": "اضغط رجوع مرة أخرى للخروج"
+    "pressBackAgain": "اضغط رجوع مرة أخرى للخروج",
+    "smaller": "تصغير",
+    "larger": "تكبير"
   },
   "home": {
     "title": "رفيق المسلم",

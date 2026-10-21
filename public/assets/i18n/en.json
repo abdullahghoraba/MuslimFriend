@@ -25,7 +25,9 @@
     "times": "{{count}}×",
     "reorder": "Reorder",
     "finishReorder": "Done reordering",
-    "pressBackAgain": "Press back again to exit"
+    "pressBackAgain": "Press back again to exit",
+    "smaller": "Smaller",
+    "larger": "Larger"
   },
   "home": {
     "title": "Muslim Friend",

@@ -12,7 +12,7 @@ Arabic (default, RTL) and English.
 
 - **Quran:** 604-page Madani layout (Tanzil Uthmani text, Amiri Quran font), juz/hizb/rub', paper/sepia/night themes,
   tafsir per ayah (al-Muyassar, al-Jalalayn and Saheeh International bundled; 7 more downloadable for offline use),
-  14 reciters verse-by-verse (EveryAyah) with highlighting, repeat, range loop, speed and offline sura downloads,
+  16 reciters verse-by-verse (EveryAyah) with highlighting, repeat, range loop, speed and offline sura downloads,
   coloured bookmarks, starred ayat, colour highlights with topics, notes, khatmah plans with daily wird, search
   without diacritics, verse of the day, Qibla, Hijri date.
 - **Athkar:** every category on one page with a counter per dhikr, sources and grades, add your own dhikr to any list,

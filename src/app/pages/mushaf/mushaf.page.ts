@@ -439,6 +439,12 @@ export class MushafPage {
     await this.saveView();
   }
 
+  /** − / + buttons beside the text-size slider. */
+  async stepScale(delta: number): Promise<void> {
+    this.quranScale.set(Math.round(Math.min(1.8, Math.max(0.8, this.quranScale() + delta)) * 100) / 100);
+    await this.saveView();
+  }
+
   async setScale(e: RangeCustomEvent): Promise<void> {
     this.quranScale.set(Number(e.detail.value));
     await this.saveView();

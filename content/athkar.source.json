@@ -1,5 +1,5 @@
 {
-  "contentVersion": 4,
+  "contentVersion": 5,
   "notes": "Source file for the bundled dataset. Quran items reference Tanzil Uthmani text by surah/ayah (and optional 1-based word range); scripts/build-content.mjs copies the text verbatim. Every item ships with reviewed=false until a qualified reviewer signs it off in content/review.csv. Virtue fields are summaries of meaning, not hadith wording.",
   "items": [
     {
@@ -333,7 +333,7 @@
       "textAr": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
       "transliteration": "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa 'ala kulli shay'in qadir.",
       "meaningEn": "There is no god but Allah alone, without partner. His is the dominion and His is the praise, and He has power over all things. (Ten times in the morning.)",
-      "virtueAr": "ورد أن من قالها عشر مرات حين يصبح كُتبت له عشر حسنات، ومُحيت عنه عشر سيئات، ورُفعت له عشر درجات، وكانت له عدل عشر رقاب، وحُفظ بها من الشيطان حتى يمسي.",
+      "virtueAr": "ورد أن من قالها عشر مرات حين يصبح كُتبت له عشر حسنات، ومُحيت عنه عشر سيئات، ورُفعت له عشر درجات، وكانت له عدل عشر رقاب، وحُفظ بها من الشيطان حتى يمسي. ومن قالها حين يمسي فله مثل ذلك حتى يصبح.",
       "virtueEn": "It is reported that whoever says it ten times in the morning has ten good deeds recorded, ten sins erased, is raised ten degrees, receives the reward of freeing ten slaves, and is protected from Shaytan until evening.",
       "sourceRef": "Musnad Ahmad (from Abu Ayyash az-Zuraqi); an-Nasa'i, as-Sunan al-Kubra; Ibn Hibban",
       "grade": "Sahih (al-Albani, as-Silsilah as-Sahihah)",
@@ -577,6 +577,11 @@
       "id": "evening-subhanallahi-wa-bihamdih-100",
       "categoryId": "evening",
       "copyOf": "morning-subhanallahi-wa-bihamdih-100"
+    },
+    {
+      "id": "evening-tahlil-10",
+      "categoryId": "evening",
+      "copyOf": "morning-tahlil-10"
     },
     {
       "id": "evening-audhu-bikalimat",

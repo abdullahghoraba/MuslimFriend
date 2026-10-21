@@ -19,7 +19,7 @@ Character limits are checked by `node scripts/check-listing.mjs` (title ≤ 30, 
 القرآن الكريم
 • مصحف بتقسيم صفحات مصحف المدينة (٦٠٤ صفحات) والأجزاء والأحزاب، بنص تنزيل الموثّق بالرسم العثماني.
 • التفسير الميسر وتفسير الجلالين، والترجمة الإنجليزية (صحيح إنترناشونال)، لكل آية.
-• الاستماع لأكثر من ١٤ قارئًا آية بآية مع تظليل الآية، وتكرار الآية أو المقطع للحفظ، والتحكم في السرعة، وتنزيل السور للاستماع دون إنترنت.
+• الاستماع ل١٦ قارئًا آية بآية مع تظليل الآية، وتكرار الآية أو المقطع للحفظ، والتحكم في السرعة، وتنزيل السور للاستماع دون إنترنت.
 • علامات ملونة متعددة لمواضع القراءة، وتمييز الآيات بنجمة، وتظليلها بالألوان مع تصنيفها حسب الموضوع، وكتابة تدبّراتك.
 • الختمة: خطة بعدد الأيام الذي تختاره، وورد يومي محسوب تلقائيًا، وتذكير يومي بالورد.
 • بحث سريع في القرآن دون الحاجة للتشكيل، وآية اليوم، واتجاه القبلة، والتاريخ الهجري.
@@ -54,7 +54,7 @@ Muslim Friend keeps you company all day: the Holy Quran with tafsir and recitati
 The Holy Quran
 • Mushaf with the Madinah page layout (604 pages), juz and hizb, using the verified Tanzil Uthmani text.
 • Tafsir al-Muyassar, Tafsir al-Jalalayn and the Saheeh International English translation for every ayah.
-• 14+ reciters, verse by verse with highlighting; repeat an ayah or a range for memorisation, speed control, and sura downloads for offline listening.
+• 16 reciters, verse by verse with highlighting; repeat an ayah or a range for memorisation, speed control, and sura downloads for offline listening.
 • Multiple coloured bookmarks, starred ayat, colour highlights grouped by topic, and personal notes.
 • Khatmah plans with an automatic daily wird and a daily reminder.
 • Fast search without diacritics, verse of the day, Qibla direction and Hijri date.
@@ -77,7 +77,7 @@ No accounts, no ads, no analytics. Everything works offline except recitation au
 | Arabic | English |
 | --- | --- |
 | المصحف بالتفسير | Quran with tafsir |
-| أكثر من ١٤ قارئًا مع تنزيل السور | 14+ reciters with downloads |
+| ١٦ قارئًا مع تنزيل السور | 16 reciters with downloads |
 | علامات ملونة وتظليل وتدبّرات | Coloured bookmarks, highlights, notes |
 | ختمة بورد يومي | Khatmah with daily wird |
 | أذكار بمصادرها | Sourced athkar |

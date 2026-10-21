@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import {
   IonContent,
   IonHeader,
+  IonButton,
   IonIcon,
   IonItem,
   IonLabel,
@@ -29,7 +30,7 @@ import { DataSectionComponent } from './data-section.component';
 @Component({
   selector: 'app-settings',
   imports: [
-    RouterLink, TranslatePipe, IonHeader, IonIcon, IonToolbar, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonLabel,
+    RouterLink, TranslatePipe, IonHeader, IonButton, IonIcon, IonToolbar, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonLabel,
     IonNote, IonSegment, IonSegmentButton, IonToggle, IonRange, DataSectionComponent,
   ],
   templateUrl: './settings.page.html',
@@ -64,6 +65,12 @@ export class SettingsPage {
     if (value === 'system' || value === 'light' || value === 'dark') {
       await this.settingsService.update({ theme: value as ThemeMode });
     }
+  }
+
+  /** − / + buttons beside the text-size slider. */
+  async stepFont(delta: number): Promise<void> {
+    const next = Math.round(Math.min(2, Math.max(0.8, this.fontScale() + delta)) * 10) / 10;
+    await this.settingsService.update({ fontScale: next });
   }
 
   async setFontScale(event: RangeCustomEvent): Promise<void> {

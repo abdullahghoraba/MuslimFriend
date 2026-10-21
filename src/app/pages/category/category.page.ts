@@ -383,6 +383,12 @@ export class CategoryPage {
     await this.athkar.reorder(reordered.map((i) => i.id));
   }
 
+  /** − / + buttons beside the text-size slider. */
+  async stepFont(delta: number): Promise<void> {
+    const next = Math.round(Math.min(2, Math.max(0.8, this.fontScale() + delta)) * 10) / 10;
+    await this.settings.update({ fontScale: next });
+  }
+
   async setFontScale(event: RangeCustomEvent): Promise<void> {
     await this.settings.update({ fontScale: Number(event.detail.value) });
   }
