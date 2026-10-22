@@ -57,15 +57,10 @@ function composeQuran(refs, verses, id) {
         }
         text = words.slice(first - 1, last).join(' ');
       }
-      // Verse-end marker uses Arabic-Indic digits so readers can follow along.
-      parts.push(`${text} ﴿${toArabicDigits(a)}﴾`);
+      parts.push(`${text} ﴿${a}﴾`);
     }
   }
   return parts.join(' ');
-}
-
-function toArabicDigits(n) {
-  return String(n).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[Number(d)]);
 }
 
 function quranRefLabel(refs) {

@@ -292,11 +292,11 @@ export class AthanPage implements OnDestroy {
     return value === 0
       ? this.translate.instant('athan.off')
       : this.translate.instant(value >= 3 && value <= 10 ? 'athan.minutesFew' : 'athan.minutes', {
-          count: new Intl.NumberFormat(this.appSettings.settings().language).format(value),
+          count: new Intl.NumberFormat(this.appSettings.settings().language + '-u-nu-latn').format(value),
         });
   }
   time(at: Date): string {
-    return new Intl.DateTimeFormat(this.appSettings.settings().language, {
+    return new Intl.DateTimeFormat(this.appSettings.settings().language + '-u-nu-latn', {
       hour: 'numeric',
       minute: '2-digit',
       weekday: 'short',

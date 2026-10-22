@@ -58,5 +58,5 @@ export class QiblaPage {
     window.removeEventListener('deviceorientationabsolute',this.orientation);
     window.removeEventListener('deviceorientation',this.orientation);
   }
-  number(n:number):string { return new Intl.NumberFormat(this.lang(),{maximumFractionDigits:0}).format(n); }
+  number(n:number):string { return new Intl.NumberFormat(this.lang() + '-u-nu-latn',{maximumFractionDigits:0}).format(n); }
 }

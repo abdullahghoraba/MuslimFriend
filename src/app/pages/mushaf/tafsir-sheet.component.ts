@@ -18,7 +18,7 @@ import {
 } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
 import { TranslatePipe } from '@ngx-translate/core';
-import { AyahRef, TAFSIR_IDS, TafsirId, arabicDigits, splitBasmala } from '../../core/quran/quran-utils';
+import { AyahRef, TAFSIR_IDS, TafsirId, splitBasmala } from '../../core/quran/quran-utils';
 import { QuranService } from '../../core/quran/quran.service';
 import { TafsirLibraryService } from '../../core/quran/tafsir-library.service';
 import { SettingsService } from '../../core/services/settings.service';
@@ -136,11 +136,11 @@ export class TafsirSheetComponent implements OnInit {
   readonly textLang = computed(() => (this.isRemote() ? this.remoteInfo()?.lang : this.source() === 'sahih' ? 'en' : 'ar') ?? 'ar');
   readonly ref = computed(() => this.quran.ayahAt(this.index()));
   readonly ayahText = computed(() => splitBasmala(this.ref(), this.ref().text).text);
-  readonly num = computed(() => arabicDigits(this.ref().aya));
+  readonly num = computed(() => String(this.ref().aya));
   readonly title = computed(() => {
     const r = this.ref();
     const s = this.quran.sura(r.sura);
-    return this.lang() === 'ar' ? `${s.name} · ${arabicDigits(r.aya)}` : `${s.tname} ${r.sura}:${r.aya}`;
+    return this.lang() === 'ar' ? `${s.name} · ${r.aya}` : `${s.tname} ${r.sura}:${r.aya}`;
   });
   readonly sourceBy = computed(() => {
     const r = this.remoteInfo();

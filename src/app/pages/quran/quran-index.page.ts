@@ -3,7 +3,7 @@ import { RouterLink, Router } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonSpinner, IonSearchbar, IonSegment, IonSegmentButton, IonLabel, IonToggle, AlertController } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { QuranService } from '../../core/quran/quran.service';
-import { AyahRef, arabicDigits, normalizeArabic, TOTAL_PAGES } from '../../core/quran/quran-utils';
+import { AyahRef, normalizeArabic, TOTAL_PAGES } from '../../core/quran/quran-utils';
 import { SettingsService } from '../../core/services/settings.service';
 
 @Component({ selector: 'app-quran-index', imports: [RouterLink, TranslatePipe, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonSpinner, IonSearchbar, IonSegment, IonSegmentButton, IonLabel, IonToggle], templateUrl: './quran-index.page.html', styleUrl: './quran-index.page.scss' })
@@ -38,7 +38,7 @@ export class QuranIndexPage {
     }).catch(() => this.failed.set(true));
   }
   openMark(): void { const m = this.quran.readingMark(); if (m) void this.router.navigate(['/mushaf', m.page], { queryParams: { sura: m.sura, aya: m.aya } }); }
-  digits(n: number): string { return this.lang() === 'ar' ? arabicDigits(n) : String(n); }
+  digits(n: number): string { return String(n); }
   words(ref: AyahRef): string { return this.quran.ayah(ref).text.split(/\s+/).slice(0,6).join(' ') + '…'; }
   open(ref: AyahRef): void { void this.router.navigate(['/mushaf', this.quran.pageOf(ref)], {queryParams: ref}); }
   continue(): void { const last=this.quran.lastRead(); void this.router.navigate(['/mushaf', last?.page ?? 1], {queryParams: last ? {sura:last.sura,aya:last.aya} : undefined}); }

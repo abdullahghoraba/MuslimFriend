@@ -278,7 +278,7 @@ class TasbihBubble(
 
     private fun updateViews(state: BubbleState) {
         bubbleView?.update(state)
-        val fmt = NumberFormat.getIntegerInstance(if (state.language == "ar") Locale.forLanguageTag("ar-EG") else Locale.ENGLISH)
+        val fmt = NumberFormat.getIntegerInstance(if (state.language == "ar") Locale.forLanguageTag("ar-EG-u-nu-latn") else Locale.ENGLISH)
         bigCount?.text = fmt.format(state.count)
         bigTarget?.text = when {
             state.target <= 0 -> ""
@@ -504,7 +504,7 @@ class TasbihBubble(
     }
 
     private fun describe(s: BubbleState): String {
-        val fmt = NumberFormat.getIntegerInstance(if (s.language == "ar") Locale.forLanguageTag("ar-EG") else Locale.ENGLISH)
+        val fmt = NumberFormat.getIntegerInstance(if (s.language == "ar") Locale.forLanguageTag("ar-EG-u-nu-latn") else Locale.ENGLISH)
         return if (s.language == "ar") {
             "${s.name.ifBlank { "تسبيح" }}: ${fmt.format(s.count)}" + (if (s.target > 0) " من ${fmt.format(s.target)}" else "") + ". اضغط للعد"
         } else {
@@ -575,7 +575,7 @@ class TasbihBubble(
 
         fun update(s: BubbleState) {
             state = s
-            val fmt = NumberFormat.getIntegerInstance(if (s.language == "ar") Locale.forLanguageTag("ar-EG") else Locale.ENGLISH)
+            val fmt = NumberFormat.getIntegerInstance(if (s.language == "ar") Locale.forLanguageTag("ar-EG-u-nu-latn") else Locale.ENGLISH)
             label = fmt.format(s.count)
             contentDescription = if (s.language == "ar") {
                 "${s.name.ifBlank { "تسبيح" }}: ${fmt.format(s.count)}" + (if (s.target > 0) " من ${fmt.format(s.target)}" else "") + ". اضغط للعد"

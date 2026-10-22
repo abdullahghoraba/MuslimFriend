@@ -11,6 +11,9 @@ ion-footer {
   color: var(--m-fg);
 }
 
+// The footer has no ion-toolbar, so it must keep clear of the Android navigation bar itself.
+ion-footer { padding-bottom: var(--ion-safe-area-bottom, 0px); }
+
 ion-content.mushaf {
   --background: var(--m-bg);
   --color: var(--m-fg);
@@ -63,8 +66,10 @@ ion-content.mushaf {
   color: var(--m-fg);
   font-size: calc(1.55rem * var(--quran-font-scale, 1));
   line-height: 2.3;
-  text-align: justify;
-  text-align-last: center;
+  // Justifying a phone-width line stretches the spaces between words; keep them natural.
+  text-align: center;
+  // Amiri's space is 0.29em, about twice a printed mushaf's; bring the words closer together.
+  word-spacing: -0.12em;
 }
 
 .sura-frame {
@@ -164,23 +169,27 @@ ion-content.mushaf {
 
 .player {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: 0;
   padding: 2px 6px 4px;
   border-top: 1px solid color-mix(in srgb, var(--m-muted) 30%, transparent);
 
+  // Its own line above the controls: on a phone the eight buttons leave it no room beside them.
   .now {
-    flex: 1;
+    flex: 1 0 100%;
     min-width: 0;
+    padding: 4px 8px 0;
     display: flex;
     flex-direction: column;
     strong { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     small { font-size: 0.7rem; color: var(--m-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   }
 
-  ion-button { --color: var(--m-fg); }
+  ion-button { --color: var(--m-fg); --padding-start: 6px; --padding-end: 6px; margin: 0; }
   ion-button.active { --color: var(--m-accent); }
-  .small-select { max-width: 64px; font-size: 0.8rem; }
+  .small-select { max-width: 58px; min-height: 44px; font-size: 0.8rem; --padding-start: 4px; --padding-end: 0; }
 }
 
 // Long-press selection must not open the system text-selection menu.

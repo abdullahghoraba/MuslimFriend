@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonContent, IonSearchbar, IonSpinner, IonButton } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
 import { QuranService } from '../../core/quran/quran.service';
-import { AyahRef, arabicDigits, normalizeArabic } from '../../core/quran/quran-utils';
+import { AyahRef, normalizeArabic } from '../../core/quran/quran-utils';
 import { SettingsService } from '../../core/services/settings.service';
 
 @Component({ selector:'app-quran-search', imports:[TranslatePipe, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonContent, IonSearchbar, IonSpinner, IonButton], templateUrl:'./quran-search.page.html', styleUrl:'./quran-search.page.scss' })
@@ -28,7 +28,7 @@ export class QuranSearchPage {
   readonly searching=computed(() => normalizeArabic(this.query()).length>=2);
   ionViewWillEnter(): void { this.quran.load().catch(()=>this.failed.set(true)); }
   ionViewDidEnter(): void { void this.searchbar()?.setFocus(); }
-  digits(n:number):string { return this.lang()==='ar' ? arabicDigits(n) : String(n); }
+  digits(n:number):string { return String(n); }
   open(ref:AyahRef):void { void this.router.navigate(['/mushaf',this.quran.pageOf(ref)],{queryParams:ref}); }
   submit():void { const ref=this.direct(); if(ref) this.open(ref); }
   // Prefix lengths map normalised offsets back to original Unicode without inserting HTML.

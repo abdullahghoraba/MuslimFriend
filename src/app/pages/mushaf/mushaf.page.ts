@@ -30,7 +30,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { KhatmahService } from '../../core/quran/khatmah.service';
 import { MARK_COLORS, MarkColor, MarksService } from '../../core/quran/marks.service';
 import { HifzService } from '../../core/quran/hifz.service';
-import { AyahRef, TOTAL_PAGES, arabicDigits, splitBasmala } from '../../core/quran/quran-utils';
+import { AyahRef, TOTAL_PAGES, splitBasmala } from '../../core/quran/quran-utils';
 import { Ayah, QuranService } from '../../core/quran/quran.service';
 import { RECITERS, RecitationService, RepeatMode } from '../../core/quran/recitation.service';
 import { HapticsService } from '../../core/services/haptics.service';
@@ -76,6 +76,8 @@ export class MushafPage {
   readonly aya = input<string | undefined>();
   /** Set when opened from a hifz plan («ابدأ الحفظ»): today's new portion is marked as a range. */
   readonly hifzPlan = input<string | undefined>(undefined, { alias: 'hifz' });
+  /** Set by «استمع وكرّر»: ask how many times to repeat, then play the marked portion. */
+  readonly repeatParam = input<string | undefined>(undefined, { alias: 'repeat' });
 
   readonly quran = inject(QuranService);
   readonly marks = inject(MarksService);
@@ -96,7 +98,7 @@ export class MushafPage {
 
   readonly reciters = RECITERS;
   readonly colors = MARK_COLORS;
-  readonly repeatOptions: RepeatMode[] = [1, 2, 3, 5, 10, 0];
+  readonly repeatOptions: RepeatMode[] = [1, 2, 3, 5, 7, 10, 15, 20, 0];
   readonly speeds = [0.75, 1, 1.25, 1.5];
 
   readonly page = signal(1);
@@ -118,7 +120,7 @@ export class MushafPage {
         basmalaText: split.basmalaText,
         ayah,
         text: split.text,
-        num: arabicDigits(ayah.aya),
+        num: String(ayah.aya),
       };
     });
   });
@@ -132,14 +134,14 @@ export class MushafPage {
     const rub = ((q - 1) % 4) + 1;
     return {
       sura: ar ? `سورة ${this.quran.sura(first.sura).name}` : this.quran.sura(first.sura).tname,
-      juz: ar ? `الجزء ${arabicDigits(this.quran.juzOf(first))}` : `Juz ${this.quran.juzOf(first)}`,
+      juz: ar ? `الجزء ${this.quran.juzOf(first)}` : `Juz ${this.quran.juzOf(first)}`,
       hizb: ar
-        ? `الحزب ${arabicDigits(hizb)}${rub > 1 ? ` · ${['', '', 'ربع', 'نصف', 'ثلاثة أرباع'][rub]}` : ''}`
+        ? `الحزب ${hizb}${rub > 1 ? ` · ${['', '', 'ربع', 'نصف', 'ثلاثة أرباع'][rub]}` : ''}`
         : `Hizb ${hizb}${rub > 1 ? ` · ${['', '', '¼', '½', '¾'][rub]}` : ''}`,
     };
   });
 
-  readonly pageLabel = computed(() => (this.lang() === 'ar' ? arabicDigits(this.page()) : String(this.page())));
+  readonly pageLabel = computed(() => String(this.page()));
   /** Bookmarks placed on this page (shown as coloured ribbons). */
   readonly pageBookmarks = computed(() => this.marks.bookmarks().filter((b) => b.page === this.page()));
 
@@ -178,6 +180,7 @@ export class MushafPage {
         }
       }
       setTimeout(() => this.scrollToAyah(ref), 250);
+      if (this.repeatParam()) void this.repeatSelected();
     }
   }
 
@@ -398,7 +401,7 @@ export class MushafPage {
   }
 
   ayahNumber(n: number): string {
-    return this.lang() === 'ar' ? arabicDigits(n) : String(n);
+    return String(n);
   }
 
   private scrollToAyah(a: AyahRef): void {
@@ -429,6 +432,32 @@ export class MushafPage {
     const ref = this.selected() ?? this.blocks()[0]?.ayah;
     if (!ref) return;
     await this.recitation.play(ref);
+    if (this.recitation.error()) await this.toast('mushaf.audioError');
+  }
+
+  /** Memorisation: choose how many times each ayah repeats, then play the selected ayah or range. */
+  async repeatSelected(): Promise<void> {
+    const t = (key: string, params?: object) => this.translate.instant(key, params);
+    const sheet = await this.sheets.create({
+      header: t('mushaf.repeatHow'),
+      buttons: [
+        ...this.repeatOptions
+          .filter((r) => r !== 1)
+          .map((r) => ({
+            text: r === 0 ? t('mushaf.repeatEndless') : t('mushaf.repeatTimes', { n: r }),
+            handler: () => void this.playRepeated(r),
+          })),
+        { text: t('common.cancel'), role: 'cancel' },
+      ],
+    });
+    await sheet.present();
+  }
+
+  private async playRepeated(times: RepeatMode): Promise<void> {
+    const r = this.range();
+    if (!r) return;
+    await this.recitation.setPrefs({ repeatEach: times });
+    await this.recitation.play({ sura: r.sura, aya: r.from }, { sura: r.sura, aya: r.to });
     if (this.recitation.error()) await this.toast('mushaf.audioError');
   }
 
@@ -555,15 +584,15 @@ export class MushafPage {
     if (text) await this.share.shareText(this.translate.instant('app.name'), text);
   }
 
-  /** The selected ayah(s) with their numbers, then the reference, e.g. "[البقرة: ٢٥٥–٢٥٧]". */
+  /** The selected ayah(s) with their numbers, then the reference, e.g. "[البقرة: 255–257]". */
   private selectedText(): string {
     const r = this.range();
     if (!r) return '';
     const s = this.quran.sura(r.sura);
     const body = this.selectedRefs()
-      .map((ref) => `${splitBasmala(ref, this.quran.ayah(ref).text).text} ﴿${arabicDigits(ref.aya)}﴾`)
+      .map((ref) => `${splitBasmala(ref, this.quran.ayah(ref).text).text} ﴿${ref.aya}﴾`)
       .join(' ');
-    const where = r.to > r.from ? `${arabicDigits(r.from)}–${arabicDigits(r.to)}` : arabicDigits(r.from);
+    const where = r.to > r.from ? `${r.from}–${r.to}` : String(r.from);
     return `${body}\n[${s.name}: ${where}]`;
   }
 
@@ -640,7 +669,7 @@ export class MushafPage {
 
   repeatLabel(r: RepeatMode): string {
     if (r === 0) return '∞';
-    return this.lang() === 'ar' ? `×${arabicDigits(r)}` : `×${r}`;
+    return `×${r}`;
   }
 
   async download(): Promise<void> {

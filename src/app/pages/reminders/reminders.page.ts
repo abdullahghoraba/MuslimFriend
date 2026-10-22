@@ -91,7 +91,7 @@ export class RemindersPage {
 
   time(d: Date | undefined): string {
     if (!d) return '—';
-    return new Intl.DateTimeFormat(this.lang() === 'ar' ? 'ar-EG' : 'en-GB', { hour: 'numeric', minute: '2-digit' }).format(d);
+    return new Intl.DateTimeFormat(this.lang() === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { hour: 'numeric', minute: '2-digit' }).format(d);
   }
 
   cityName(c: City): string {

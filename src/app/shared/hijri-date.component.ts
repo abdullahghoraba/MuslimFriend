@@ -12,8 +12,8 @@ export class HijriDateComponent {
   readonly lang=computed(()=>this.settings.settings().language);
   readonly today=signal(new Date());
   readonly isoDate=computed(()=> { const d=this.today(); return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-'); });
-  readonly hijri=computed(()=>new Intl.DateTimeFormat(this.lang()==='ar' ? 'ar-SA-u-ca-islamic-umalqura' : 'en-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(this.today()));
-  readonly gregorian=computed(()=>new Intl.DateTimeFormat(this.lang()==='ar' ? 'ar-u-ca-gregory' : 'en-u-ca-gregory',{day:'numeric',month:'long',year:'numeric'}).format(this.today()));
+  readonly hijri=computed(()=>new Intl.DateTimeFormat(this.lang()==='ar' ? 'ar-SA-u-ca-islamic-umalqura-nu-latn' : 'en-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(this.today()));
+  readonly gregorian=computed(()=>new Intl.DateTimeFormat(this.lang()==='ar' ? 'ar-u-ca-gregory-nu-latn' : 'en-u-ca-gregory',{day:'numeric',month:'long',year:'numeric'}).format(this.today()));
   private timer?:ReturnType<typeof setTimeout>;
   constructor() {
     const update=()=> { const now=new Date(); this.today.set(now); this.timer=setTimeout(update,new Date(now.getFullYear(),now.getMonth(),now.getDate()+1).getTime()-now.getTime()+50); };

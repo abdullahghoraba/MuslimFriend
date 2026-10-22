@@ -79,7 +79,7 @@ export function buildAthanEvents(
         const at = times[name].getTime() + minutes * 60000;
         const params = {
           prayer: t('prayers.' + name),
-          minutes: new Intl.NumberFormat(t('locale').startsWith('ar') ? 'ar-EG' : 'en').format(
+          minutes: new Intl.NumberFormat(t('locale').startsWith('ar') ? 'ar-EG-u-nu-latn' : 'en').format(
             Math.abs(minutes),
           ),
         };

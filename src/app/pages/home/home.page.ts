@@ -25,7 +25,6 @@ import { OverlayService } from '../../core/services/overlay.service';
 import { NowSuggestion, nowSuggestions, recentPrayer } from '../../core/prayer/time-windows';
 import { prayerTimesFor } from '../../core/prayer/prayer-times';
 import { QuranService } from '../../core/quran/quran.service';
-import { arabicDigits } from '../../core/quran/quran-utils';
 import { HijriDateComponent } from '../../shared/hijri-date.component';
 import { HomeCategoriesComponent } from '../../shared/home-categories.component';
 import { VerseOfDayComponent } from '../../shared/verse-of-day.component';
@@ -89,7 +88,7 @@ export class HomePage {
   });
 
   minutesLabel(n: number): string {
-    const fmt = new Intl.NumberFormat(this.lang() === 'ar' ? 'ar-EG' : 'en').format(n);
+    const fmt = new Intl.NumberFormat(this.lang() === 'ar' ? 'ar-EG-u-nu-latn' : 'en').format(n);
     if (this.lang() !== 'ar') return n === 1 ? '1 minute' : fmt + ' minutes';
     if (n === 0) return 'الآن';
     if (n === 1) return 'دقيقة';
@@ -115,7 +114,7 @@ export class HomePage {
   }
 
   digits(n: number): string {
-    return this.lang() === 'ar' ? arabicDigits(n) : String(n);
+    return String(n);
   }
 
   async openSuggestion(kind: NowSuggestion): Promise<void> {
@@ -153,7 +152,7 @@ export class HomePage {
   }
 
   time(d: Date): string {
-    return new Intl.DateTimeFormat(this.lang() === 'ar' ? 'ar-EG' : 'en-GB', {
+    return new Intl.DateTimeFormat(this.lang() === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', {
       hour: 'numeric',
       minute: '2-digit',
     }).format(d);
@@ -164,7 +163,7 @@ export class HomePage {
     const mins = Math.max(0, Math.round((d.getTime() - this.prayer.now().getTime()) / 60_000));
     const h = Math.floor(mins / 60);
     const m = mins % 60;
-    const fmt = new Intl.NumberFormat(this.lang() === 'ar' ? 'ar-EG' : 'en');
+    const fmt = new Intl.NumberFormat(this.lang() === 'ar' ? 'ar-EG-u-nu-latn' : 'en');
     if (h) return `${fmt.format(h)}:${String(m).padStart(2, '0')}`;
     return this.lang() === 'ar' ? `${fmt.format(m)} د` : `${m} min`;
   }

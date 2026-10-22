@@ -1,5 +1,5 @@
 import metaJson from '../../../../public/assets/quran/meta.json';
-import { QuranMeta, SuraMeta, BASMALA, TOTAL_AYAT, TOTAL_PAGES, globalIndex, refAt, pageOf, juzOf, pageRange, splitBasmala, normalizeArabic, arabicDigits, verseOfDayIndex } from './quran-utils';
+import { QuranMeta, SuraMeta, BASMALA, TOTAL_AYAT, TOTAL_PAGES, globalIndex, refAt, pageOf, juzOf, pageRange, splitBasmala, normalizeArabic, verseOfDayIndex } from './quran-utils';
 
 const meta=metaJson as QuranMeta;
 const fake:QuranMeta={...meta,suras:[{...meta.suras[0],index:1,start:0,ayas:3},{...meta.suras[1],index:2,start:3,ayas:2},{...meta.suras[2],index:3,start:5,ayas:4}] as SuraMeta[]};
@@ -37,15 +37,11 @@ describe('splitBasmala',()=> {
     expect(splitBasmala({sura:2,aya:1},BASMALA)).toEqual({basmala:false,basmalaText:'',text:BASMALA});
   });
 });
-describe('Arabic search and digits',()=> {
+describe('Arabic search',()=> {
   it('strips Quranic marks and tatweel',()=> {expect(normalizeArabic('ٱلرَّحْمَـٰنِ')).toBe('الرحمن');});
   it('unifies alef, hamza carriers, yaa and taa marbuta',()=> {
     expect(normalizeArabic('آأإٱ ؤ ئ ى ة')).toBe('اااا و ي ي ه');
     expect(normalizeArabic('  رَحْمَةٌ   ۞  ')).toBe('رحمه');
-  });
-  it('converts every decimal digit and preserves punctuation',()=> {
-    expect(arabicDigits(1234567890)).toBe('١٢٣٤٥٦٧٨٩٠');
-    expect(arabicDigits(0)).toBe('٠'); expect(arabicDigits(-42)).toBe('-٤٢');
   });
 });
 describe('verseOfDayIndex',()=> {

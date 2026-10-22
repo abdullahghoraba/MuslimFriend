@@ -40,7 +40,7 @@ export class OverlayPage {
   readonly startFailed = signal(false);
   readonly now = signal(Date.now());
   readonly paused = computed(() => this.service.pausedUntil() > this.now());
-  readonly pauseTime = computed(() => new Intl.DateTimeFormat(this.language(), { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(this.service.pausedUntil()));
+  readonly pauseTime = computed(() => new Intl.DateTimeFormat(this.language() + '-u-nu-latn', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(this.service.pausedUntil()));
   private listener?: PluginListenerHandle;
   private active = false;
   private timer?: ReturnType<typeof setInterval>;

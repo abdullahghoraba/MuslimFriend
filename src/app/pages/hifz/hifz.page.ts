@@ -21,7 +21,7 @@ import {
 import { HifzPlan, HifzPlanInput, HifzService } from '../../core/quran/hifz.service';
 import { MARK_COLORS } from '../../core/quran/marks.service';
 import { QuranService } from '../../core/quran/quran.service';
-import { AyahRef, arabicDigits } from '../../core/quran/quran-utils';
+import { AyahRef } from '../../core/quran/quran-utils';
 import { PrayerService } from '../../core/prayer/prayer.service';
 @Component({
   selector: 'app-hifz',
@@ -87,7 +87,7 @@ export class HifzPage {
     }
   }
   number(n: number): string {
-    return this.translate.getCurrentLang() === 'ar' ? arabicDigits(n) : String(n);
+    return String(n);
   }
   suraName(n: number): string {
     const s = this.quran.sura(n);
@@ -131,11 +131,12 @@ export class HifzPage {
       this.sheet.set(false);
     });
   }
-  start(p: HifzPlan): void {
+  /** Opens today's portion in the mushaf; [repeat] then asks how many times to repeat each ayah. */
+  start(p: HifzPlan, repeat = false): void {
     const r = this.service.today(p.id).newPortion[0];
     if (r)
       void this.router.navigate(['/mushaf', this.quran.pageOf(r)], {
-        queryParams: { sura: r.sura, aya: r.aya, hifz: p.id },
+        queryParams: { sura: r.sura, aya: r.aya, hifz: p.id, ...(repeat ? { repeat: 1 } : {}) },
       });
   }
   memorize(p: HifzPlan): Promise<void> {

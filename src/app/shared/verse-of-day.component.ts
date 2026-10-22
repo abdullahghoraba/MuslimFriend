@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { IonButton } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { QuranService } from '../core/quran/quran.service';
-import { arabicDigits } from '../core/quran/quran-utils';
 import { SettingsService } from '../core/services/settings.service';
 import { ShareService } from '../core/services/share.service';
 
@@ -31,7 +30,7 @@ export class VerseOfDayComponent {
     document.addEventListener('visibilitychange',resume);
     inject(DestroyRef).onDestroy(()=> {clearTimeout(this.timer); document.removeEventListener('visibilitychange',resume);});
   }
-  digits(n:number):string { return this.lang()==='ar' ? arabicDigits(n) : String(n); }
+  digits(n:number):string { return String(n); }
   read():void { const v=this.verse(); if(v) void this.router.navigate(['/mushaf',this.quran.pageOf(v)],{queryParams:{sura:v.sura,aya:v.aya}}); }
   async share():Promise<void> {
     const v=this.verse(); if(!v || this.sharing()) return;

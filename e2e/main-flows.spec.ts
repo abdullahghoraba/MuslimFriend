@@ -26,9 +26,6 @@ async function count(page: Page, repetitions: number) {
   await expect(card).toHaveClass(/done/);
 }
 
-/** The Arabic UI shows Arabic-Indic digits. */
-const arabic = (n: number) => String(n).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[Number(d)]);
-
 test('first launch can skip setup and shows morning and evening cards', async ({ page }) => {
   await onboard(page);
   await expect(page.locator('.daily-card').filter({ hasText: ar.home.morning })).toBeVisible();
@@ -58,13 +55,13 @@ test('all morning items render together and progress can be restarted', async ({
   await expect(cards).toHaveCount(items.length);
   // Exact text per card, in order (some athkar start with the same words as others).
   await expect(page.locator('app-category article.card .dhikr-text')).toHaveText(items.map(item => item.textAr));
-  await expect(page.locator('app-category .position')).toHaveText(arabic(0) + ' من ' + arabic(items.length));
+  await expect(page.locator('app-category .position')).toHaveText(`0 من ${items.length}`);
   await count(page, items[0].repeatCount);
-  await expect(page.locator('app-category .position')).toHaveText(arabic(1) + ' من ' + arabic(items.length));
+  await expect(page.locator('app-category .position')).toHaveText(`1 من ${items.length}`);
   await listMenu(page, ar.category.resetToday);
   await expect(cards.first()).not.toHaveClass(/done/);
   await expect(cards.first().locator('.of')).toHaveText('0/' + items[0].repeatCount);
-  await expect(page.locator('app-category .position')).toHaveText(arabic(0) + ' من ' + arabic(items.length));
+  await expect(page.locator('app-category .position')).toHaveText(`0 من ${items.length}`);
 });
 
 /** Less frequent list actions live in the header's "More options" (⋮) action sheet. */
@@ -135,7 +132,7 @@ test('choosing Cairo calculates all six prayer times', async ({ page }) => {
   const list = page.locator('app-reminders ion-list').filter({ has: page.getByText(ar.reminders.todayTimes, { exact: true }) });
   await expect(list.locator('ion-item')).toHaveCount(6);
   for (const row of await list.locator('ion-item').all()) {
-    await expect(row.locator('.time')).toHaveText(/[0-9٠-٩]{1,2}:[0-9٠-٩]{2}/);
+    await expect(row.locator('.time')).toHaveText(/\d{1,2}:\d{2}/);
   }
 });
 

@@ -35,12 +35,26 @@ export const RECITERS: Reciter[] = [
 const AUDIO_BASE = 'https://everyayah.com/data';
 const PREFS_KEY = 'recitation';
 
-export type RepeatMode = 1 | 2 | 3 | 5 | 10 | 0; // 0 = endless
+export type RepeatMode = 1 | 2 | 3 | 5 | 7 | 10 | 15 | 20 | 0; // 0 = endless
 
 interface RecitationPrefs {
   reciterId: string;
   repeatEach: RepeatMode;
   speed: number;
+}
+
+/** One play of one ayah ([rep] counts its repeats). */
+interface Step {
+  index: number;
+  rep: number;
+}
+
+/** A step scheduled on the audio clock, linked to the step queued after it. */
+interface Slot {
+  step: Step;
+  end: number;
+  ended: boolean;
+  next?: Slot;
 }
 
 const fileName = (ref: AyahRef) => `${String(ref.sura).padStart(3, '0')}${String(ref.aya).padStart(3, '0')}.mp3`;
@@ -54,6 +68,15 @@ const fileName = (ref: AyahRef) => `${String(ref.sura).padStart(3, '0')}${String
 export class RecitationService {
   private readonly quran = inject(QuranService);
   private audio?: HTMLAudioElement;
+  /** The next ayah, already buffering so it starts without a gap or a stall. */
+  private upcoming?: { index: number; src: string; audio: HTMLAudioElement };
+  /** Bumped on every play/stop; events from an older ayah's audio are ignored. */
+  private token = 0;
+  private ctx?: AudioContext;
+  /** True while the gapless engine is the one playing. */
+  private gapless = false;
+  private sources: AudioBufferSourceNode[] = [];
+  private readonly decoded = new Map<string, AudioBuffer>();
   private prefsLoaded = false;
   private repeatsLeft = 0;
   /** Inclusive end of the current play range (global ayah index). */
@@ -90,7 +113,11 @@ export class RecitationService {
   async setPrefs(patch: Partial<RecitationPrefs>): Promise<void> {
     this.prefs.update((p) => ({ ...p, ...patch }));
     await Preferences.set({ key: PREFS_KEY, value: JSON.stringify(this.prefs()) });
-    if (this.audio && patch.speed) this.audio.playbackRate = patch.speed;
+    const cur = this.current();
+    if (patch.speed === undefined || !cur) return;
+    // 1× plays gaplessly; other speeds need a media element (it keeps the reciter's pitch).
+    if (this.audio && patch.speed !== 1) this.audio.playbackRate = patch.speed;
+    else void this.playIndex(this.quran.ayah(cur).index);
   }
 
   /** Plays from [from] to [to] (inclusive refs; default: end of the sura). */
@@ -105,7 +132,14 @@ export class RecitationService {
   }
 
   toggle(): void {
-    if (!this.audio || !this.current()) return;
+    if (!this.current()) return;
+    if (this.gapless && this.ctx) {
+      const resume = this.ctx.state !== 'running';
+      void (resume ? this.ctx.resume() : this.ctx.suspend());
+      this.playing.set(resume);
+      return;
+    }
+    if (!this.audio) return;
     if (this.audio.paused) {
       void this.audio.play();
       this.playing.set(true);
@@ -116,8 +150,12 @@ export class RecitationService {
   }
 
   stop(): void {
-    this.audio?.pause();
+    this.token++;
+    this.stopSources();
+    release(this.audio);
+    release(this.upcoming?.audio);
     this.audio = undefined;
+    this.upcoming = undefined;
     this.current.set(null);
     this.playing.set(false);
     this.loading.set(false);
@@ -143,43 +181,203 @@ export class RecitationService {
     }
   }
 
-  private async playIndex(index: number): Promise<void> {
+  private playIndex(index: number): Promise<void> {
+    return this.prefs().speed === 1 && typeof AudioContext !== 'undefined' ? this.playGapless(index) : this.playElement(index);
+  }
+
+  // ---- Gapless engine (1×) ----------------------------------------------------------------
+  // Each ayah is decoded ahead and started on the audio clock at the exact moment the previous
+  // one ends, so the recitation flows like one recording instead of pausing between files.
+
+  private async playGapless(index: number): Promise<void> {
+    const token = ++this.token;
+    this.stopSources();
+    release(this.audio);
+    release(this.upcoming?.audio);
+    this.audio = undefined;
+    this.upcoming = undefined;
+    this.gapless = true;
+    this.ctx ??= new AudioContext();
+    this.error.set(null);
+    this.loading.set(true);
+    this.showAyah(index);
+    // Not awaited: sources scheduled meanwhile simply start once the context runs.
+    if (this.ctx.state !== 'running') void this.ctx.resume();
+    const buffer = await this.decode(index, token);
+    if (!buffer || token !== this.token) return;
+    this.playing.set(true);
+    this.begin(this.startAt({ index, rep: 0 }, buffer, this.ctx.currentTime + 0.05, token), token);
+  }
+
+  private startAt(step: Step, buffer: AudioBuffer, at: number, token: number): Slot {
+    const ctx = this.ctx!;
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(ctx.destination);
+    source.start(at);
+    this.sources.push(source);
+    const slot: Slot = { step, end: at + buffer.duration, ended: false };
+    source.onended = () => {
+      this.sources = this.sources.filter((s) => s !== source);
+      if (token !== this.token) return;
+      slot.ended = true;
+      if (slot.next) this.begin(slot.next, token);
+      else if (!this.following(step)) this.finish();
+      else this.loading.set(true); // the next ayah is still downloading
+    };
+    return slot;
+  }
+
+  /** [slot] is now sounding: show it and get the one after it ready to start on time. */
+  private begin(slot: Slot, token: number): void {
+    this.loading.set(false);
+    this.showAyah(slot.step.index);
+    const after = this.following(slot.step);
+    if (!after) return;
+    void this.decode(after.index, token).then((buffer) => {
+      if (!buffer || token !== this.token) return;
+      const late = slot.ended;
+      slot.next = this.startAt(after, buffer, Math.max(slot.end, this.ctx!.currentTime + 0.02), token);
+      if (late) this.begin(slot.next, token);
+    });
+  }
+
+  /** What plays after [step]: a repeat, the next ayah, the range again, or nothing. */
+  private following({ index, rep }: Step): Step | null {
+    const reps = this.prefs().repeatEach === 0 ? Infinity : this.prefs().repeatEach;
+    if (rep + 1 < reps) return { index, rep: rep + 1 };
+    if (index < this.rangeEnd) return { index: index + 1, rep: 0 };
+    if (this.loopRange()) return { index: this.rangeStart, rep: 0 };
+    return null;
+  }
+
+  private async decode(index: number, token: number): Promise<AudioBuffer | null> {
+    const src = await this.sourceFor(this.quran.ayahAt(index));
+    const cached = this.decoded.get(src);
+    if (cached) return cached;
+    for (let attempt = 0; ; attempt++) {
+      if (token !== this.token) return null;
+      try {
+        const res = await fetch(src);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const buffer = await this.ctx!.decodeAudioData(await res.arrayBuffer());
+        this.decoded.set(src, buffer);
+        // Decoded audio is large; keep only the few ayat around the current one.
+        if (this.decoded.size > 4) this.decoded.delete(this.decoded.keys().next().value!);
+        return buffer;
+      } catch {
+        // A dropped connection mid-sura: try again before giving up.
+        if (attempt >= 3) {
+          if (token === this.token) {
+            this.loading.set(false);
+            this.playing.set(false);
+            this.error.set('network');
+          }
+          return null;
+        }
+        await new Promise((r) => setTimeout(r, 1500));
+      }
+    }
+  }
+
+  private showAyah(index: number): void {
+    const ref = this.quran.ayahAt(index);
+    const cur = this.current();
+    if (cur?.sura === ref.sura && cur.aya === ref.aya) return;
+    this.current.set({ sura: ref.sura, aya: ref.aya });
+    this.setMediaSession(ref);
+  }
+
+  private finish(): void {
+    this.playing.set(false);
+    this.current.set(null);
+  }
+
+  private stopSources(): void {
+    for (const s of this.sources) {
+      s.onended = null;
+      try {
+        s.stop();
+      } catch {
+        /* not started */
+      }
+      s.disconnect();
+    }
+    this.sources = [];
+    this.gapless = false;
+  }
+
+  // ---- Media element engine (other speeds) -------------------------------------------------
+
+  private async playElement(index: number): Promise<void> {
+    const token = ++this.token;
+    this.stopSources();
     const ref = this.quran.ayahAt(index);
     this.current.set({ sura: ref.sura, aya: ref.aya });
     this.repeatsLeft = this.prefs().repeatEach === 0 ? Infinity : this.prefs().repeatEach - 1;
     this.error.set(null);
     this.loading.set(true);
-    const src = await this.sourceFor(ref);
-    this.audio?.pause();
-    const audio = new Audio(src);
+    // Stop the previous ayah at once, so two recitations never overlap.
+    release(this.audio);
+    this.audio = undefined;
+    const ready = this.upcoming?.index === index ? this.upcoming : undefined;
+    if (!ready) release(this.upcoming?.audio);
+    this.upcoming = undefined;
+    const src = ready?.src ?? (await this.sourceFor(ref));
+    if (token !== this.token) return;
+    const audio = ready?.audio ?? newAudio(src);
     audio.playbackRate = this.prefs().speed;
-    audio.onended = () => this.onEnded(index);
+    let retries = 0;
+    audio.onended = () => token === this.token && this.onEnded(index, token);
     audio.onerror = () => {
+      if (token !== this.token) return;
+      // A dropped connection mid-sura: try the same ayah again before giving up.
+      if (retries++ < 3 && src.startsWith('http')) {
+        const at = audio.currentTime;
+        setTimeout(() => {
+          if (token !== this.token) return;
+          audio.src = src;
+          audio.currentTime = at;
+          void audio.play().catch(() => {});
+        }, 1500);
+        return;
+      }
       this.loading.set(false);
       this.playing.set(false);
       this.error.set('network');
     };
-    audio.oncanplay = () => this.loading.set(false);
+    audio.onwaiting = () => token === this.token && this.loading.set(true);
+    audio.onplaying = () => token === this.token && this.loading.set(false);
+    audio.oncanplay = () => token === this.token && this.loading.set(false);
     this.audio = audio;
     this.setMediaSession(ref);
     try {
       await audio.play();
-      this.playing.set(true);
+      if (token === this.token) this.playing.set(true);
     } catch {
+      // An error event follows a failed load; it decides whether to retry.
+      if (token !== this.token || audio.error) return;
       this.playing.set(false);
       this.loading.set(false);
       this.error.set('network');
+      return;
     }
-    // Warm the next file so playback is gapless when streaming.
-    if (index + 1 <= this.rangeEnd) void this.sourceFor(this.quran.ayahAt(index + 1)).then((s) => fetchHead(s));
+    if (index + 1 <= this.rangeEnd) void this.prepare(index + 1, token);
   }
 
-  private onEnded(index: number): void {
+  /** Starts buffering ayah [index] while the current one plays. */
+  private async prepare(index: number, token: number): Promise<void> {
+    const src = await this.sourceFor(this.quran.ayahAt(index));
+    if (token !== this.token) return;
+    this.upcoming = { index, src, audio: newAudio(src) };
+  }
+
+  private onEnded(index: number, token: number): void {
     if (this.repeatsLeft > 0) {
       this.repeatsLeft--;
       if (this.audio) {
         this.audio.currentTime = 0;
-        void this.audio.play();
+        void this.audio.play().catch(() => token === this.token && this.error.set('network'));
       }
       return;
     }
@@ -290,7 +488,18 @@ function blobToBase64(blob: Blob): Promise<string> {
   });
 }
 
-/** Best-effort warm-up of the HTTP cache for the next ayah (ignored when offline). */
-function fetchHead(src: string): void {
-  if (src.startsWith('http')) fetch(src, { cache: 'force-cache' }).catch(() => {});
+function newAudio(src: string): HTMLAudioElement {
+  const audio = new Audio();
+  audio.preload = 'auto';
+  audio.src = src;
+  return audio;
+}
+
+/** Stops an ayah's audio and frees its connection. */
+function release(audio?: HTMLAudioElement): void {
+  if (!audio) return;
+  audio.onended = audio.onerror = audio.onwaiting = audio.onplaying = audio.oncanplay = null;
+  audio.pause();
+  audio.removeAttribute('src');
+  audio.load();
 }

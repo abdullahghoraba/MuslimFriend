@@ -62,13 +62,13 @@ export class StatsPage {
     if (value === 7 || value === 30) this.days.set(value);
   }
 
-  number(value: number): string { return new Intl.NumberFormat(this.lang()).format(value); }
+  number(value: number): string { return new Intl.NumberFormat(this.lang() + '-u-nu-latn').format(value); }
   percent(value: number): string {
-    return new Intl.NumberFormat(this.lang(), { style: 'percent', maximumFractionDigits: 0 }).format(value);
+    return new Intl.NumberFormat(this.lang() + '-u-nu-latn', { style: 'percent', maximumFractionDigits: 0 }).format(value);
   }
   dayLabel(date: string): string {
     const [y, m, d] = date.split('-').map(Number);
-    return new Intl.DateTimeFormat(this.lang(), { weekday: 'short' }).format(new Date(y, m - 1, d));
+    return new Intl.DateTimeFormat(this.lang() + '-u-nu-latn', { weekday: 'short' }).format(new Date(y, m - 1, d));
   }
   height(value: number): number { return value / this.maximum() * 140; }
 }

@@ -39,7 +39,7 @@ class PrayerWidget : AppWidgetProvider() {
             val next = future.firstOrNull()
             val views = RemoteViews(c.packageName, R.layout.prayer_widget)
             views.setTextViewText(R.id.widget_app, p.getString("appName", c.getString(R.string.app_name)))
-            val time = java.text.SimpleDateFormat(if (DateFormat.is24HourFormat(c)) "HH:mm" else "h:mm a", java.util.Locale.getDefault())
+            val time = java.text.SimpleDateFormat(if (DateFormat.is24HourFormat(c)) "HH:mm" else "h:mm a", java.util.Locale.Builder().setLocale(java.util.Locale.getDefault()).setUnicodeLocaleKeyword("nu", "latn").build())
             views.setTextViewText(R.id.widget_next, next?.let { p.getString("nextLabel", c.getString(R.string.widget_next)) + " · " + it.first + " " + time.format(Date(it.second)) } ?: c.getString(R.string.widget_empty))
             val mins = next?.let { ((it.second - now + 59_999) / 60_000) } ?: 0
             views.setTextViewText(R.id.widget_countdown, if (next == null) "" else c.getString(R.string.widget_in, mins / 60, mins % 60))

@@ -52,6 +52,12 @@
               >{{ 'hifz.start' | translate }}</ion-button
             >
             <ion-button
+              fill="outline"
+              [disabled]="busy() || !service.today(p.id).newPortion.length"
+              (click)="start(p, true)"
+              >{{ 'hifz.listenRepeat' | translate }}</ion-button
+            >
+            <ion-button
               [disabled]="busy() || !service.today(p.id).newPortion.length"
               (click)="memorize(p)"
               >{{ 'hifz.memorized' | translate }}</ion-button

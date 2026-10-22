@@ -2,7 +2,6 @@ import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { SingleViewComponent } from './single-view.component';
 import { nextDhikrCount, visibleItems } from './counting';
-import { arabicDigits } from '../../core/quran/quran-utils';
 import { AthkarPrefsService } from '../../core/services/athkar-prefs.service';
 import { Component, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import {
@@ -75,7 +74,7 @@ export class CategoryPage {
   }
 
   digits(n: number): string {
-    return this.lang() === 'ar' ? arabicDigits(n) : String(n);
+    return String(n);
   }
 
   readonly showCompleted = signal(false);

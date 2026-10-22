@@ -117,11 +117,6 @@ export function normalizeArabic(s: string): string {
     .trim();
 }
 
-/** Arabic-Indic digits for ayah numbers. */
-export function arabicDigits(n: number): string {
-  return String(n).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[Number(d)]);
-}
-
 /** Deterministic "verse of the day": same verse all day, changes daily, avoids very long verses. */
 export function verseOfDayIndex(date: Date, texts: string[]): number {
   const day = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86_400_000);

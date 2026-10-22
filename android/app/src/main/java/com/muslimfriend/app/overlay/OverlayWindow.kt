@@ -76,9 +76,8 @@ class OverlayWindow(
         }
         card.addView(text, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
-        val countLabel = if (config.language == "ar") "+١" else "+1"
         val plusOne = Button(context).apply {
-            this.text = countLabel
+            this.text = "+1"
             setTextColor(accentOn)
             isAllCaps = false
             minHeight = dp(48)
