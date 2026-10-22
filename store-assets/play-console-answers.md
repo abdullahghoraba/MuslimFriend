@@ -88,8 +88,8 @@ Expected rating: **Everyone / PEGI 3 / 3+**.
 ## 12b. Foreground service declaration — `mediaPlayback` (athan)
 
 **Type:** `mediaPlayback` (service `AthanService`).
-**Describe the feature:** At each prayer time the user enabled, the app plays the athan sound the user chose (their own
-audio file, a built-in tone or the system alarm sound) for up to a few minutes, with a notification that has a Stop
+**Describe the feature:** At each prayer time the user enabled, the app plays the athan sound the user chose (a muezzin
+recording downloaded in the app, their own audio file, a built-in tone or the system alarm sound) for up to a few minutes, with a notification that has a Stop
 button. The service starts from the user's exact alarm and stops when the sound ends or the user taps Stop.
 **Why a foreground service:** audio must keep playing while the screen is off or another app is open; only a
 foreground service with type mediaPlayback can do that reliably.
