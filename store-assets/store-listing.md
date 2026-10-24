@@ -32,7 +32,7 @@ Character limits are checked by `node scripts/check-listing.mjs` (title ≤ 30, 
 
 الصلاة
 • مواقيت الصلاة لموقعك في أي مكان في العالم، بطرق الحساب المعتمدة.
-• الأذان في وقته بصوت مؤذن المسجد الحرام أو بتسجيلات أخرى تختارها، مع تذكير قبل الصلاة.
+• الأذان كاملًا في وقته يعمل دون إنترنت، ويمكنك تنزيل أذان المسجد الحرام أو تسجيلات أخرى أو اختيار ملف صوتي من هاتفك، مع تذكير قبل الصلاة.
 • ويدجت للشاشة الرئيسية بالصلاة القادمة.
 
 الأذكار
@@ -78,7 +78,7 @@ Memorise the Quran
 
 Prayer
 • Prayer times for your location anywhere in the world, with the standard calculation methods.
-• The athan on time in the voice of the Masjid al-Haram muezzin or another recording you choose, with a reminder before each prayer.
+• The full athan on time, built in and working offline; download the Masjid al-Haram athan or other recordings, or pick your own audio file, with a reminder before each prayer.
 • A home-screen widget with the next prayer.
 
 Athkar
@@ -102,7 +102,7 @@ No accounts, no ads, no analytics. Your data stays on your phone, and everything
 | 16 قارئًا بتلاوة متصلة | 16 reciters, continuous recitation |
 | مكتبة تفاسير دون إنترنت | Offline tafsir library |
 | خطط حفظ مع تكرار الآيات | Memorisation plans with ayah repeat |
-| الأذان بصوت مؤذن الحرم | Athan in the Haram muezzin's voice |
+| الأذان كاملًا دون إنترنت | Full athan, works offline |
 | علامات ملونة وتظليل وتدبّرات | Coloured bookmarks, highlights, notes |
 | ختمة بورد يومي | Khatmah with daily wird |
 | أذكار بمصادرها | Sourced athkar |
