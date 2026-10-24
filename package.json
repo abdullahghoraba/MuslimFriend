@@ -13,7 +13,7 @@
     "cap:open": "npx cap open android",
     "i18n": "node scripts/merge-i18n.mjs",
     "test:android": "node scripts/gradle.mjs testDebugUnitTest",
-    "release": "npm run i18n && npm run content && node scripts/personal-tafsir.mjs --clear && ng build && npx cap sync android && node scripts/gradle.mjs :app:clean bundleRelease",
+    "release": "npm run i18n && npm run content && node scripts/personal-tafsir.mjs --clear && ng build && npx cap sync android && node scripts/gradle.mjs :app:clean bundleRelease && node -e \"const fs=require('fs');fs.mkdirSync('release',{recursive:true});fs.copyFileSync('android/app/build/outputs/bundle/release/app-release.aab','release/app-release.aab')\"",
     "apk:debug": "npm run i18n && npm run content && node scripts/personal-tafsir.mjs && ng build && npx cap sync android && node scripts/gradle.mjs :app:clean assembleDebug",
     "e2e": "playwright test"
   },
