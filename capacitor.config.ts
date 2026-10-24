@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   // Permanent once published on Google Play — change it before the first upload if needed.
-  appId: 'com.muslimfriend.app',
+  appId: 'com.abdullahghoraba.muslimfriend',
   appName: 'Muslim Friend',
   webDir: 'dist/muslim-friend/browser',
   android: {

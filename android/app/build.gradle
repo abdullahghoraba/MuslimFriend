@@ -11,7 +11,7 @@ android {
     namespace = "com.muslimfriend.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.muslimfriend.app"
+        applicationId "com.abdullahghoraba.muslimfriend"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

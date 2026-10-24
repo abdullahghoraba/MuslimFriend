@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">Muslim Friend</string>
     <string name="title_activity_main">Muslim Friend</string>
-    <string name="package_name">com.muslimfriend.app</string>
-    <string name="custom_url_scheme">com.muslimfriend.app</string>
+    <string name="package_name">com.abdullahghoraba.muslimfriend</string>
+    <string name="custom_url_scheme">com.abdullahghoraba.muslimfriend</string>
 
     <string name="channel_overlay_service">Athkar over other apps</string>
     <string name="channel_overlay_service_desc">Keeps the athkar overlay running. You can hide this notification here.</string>
