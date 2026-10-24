@@ -41,7 +41,7 @@ class AthanRulesTest {
         assertEquals(128849018820000L, AthanRules.restoreAt(0, Int.MAX_VALUE))
     }
     @Test fun jsonRoundTripPreservesUnicodeAndAllFields() {
-        for (sound in listOf("none", "system", "tone", "file:/data/user/0/com.muslimfriend.app/files/أذان.mp3")) {
+        for (sound in listOf("none", "system", "tone", "athan", "file:/data/user/0/com.muslimfriend.app/files/أذان.mp3")) {
             val original = event(1792520000000).copy(sound = sound)
             assertEquals(original, AthanEvent.fromJson(JSONObject(original.toJson().toString())))
         }

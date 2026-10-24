@@ -387,6 +387,7 @@
     "maghrib": "Maghrib",
     "isha": "Isha",
     "next": "Next prayer",
+    "nextTime": "Next",
     "in": "in {{time}}",
     "setLocation": "Set your location to see prayer times",
     "methods": {

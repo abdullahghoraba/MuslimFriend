@@ -37,7 +37,7 @@ const cairo: PrayerSettings = {
 const now = new Date(2026, 9, 21, 0, 0, 0);
 const text = (key: string) => (key === 'locale' ? 'en' : key);
 describe('athan event planning', () => {
-  it('defaults to disabled, independent tone settings for every prayer and volume 0.8', () => {
+  it('defaults to disabled, the built-in athan for every prayer and volume 0.8', () => {
     const s = defaultAthanSettings();
     expect(s.enabled).toBe(false);
     expect(s.volume).toBe(0.8);
@@ -45,7 +45,7 @@ describe('athan event planning', () => {
     for (const p of ATHAN_PRAYERS)
       expect(s.perPrayer[p]).toEqual({
         mode: 'athan',
-        sound: 'tone',
+        sound: 'athan',
         preMinutes: 0,
         iqamaMinutes: 0,
       });

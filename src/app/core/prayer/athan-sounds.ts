@@ -1,7 +1,7 @@
 /**
  * Athan recordings the user can download once (then they play offline). Every one is freely licensed on
  * Wikimedia Commons; the credit line is shown in the app as the licences require.
- * The first entry is the default athan.
+ * The default athan is BUILTIN_ATHAN below, which needs no download.
  */
 export interface AthanRecording {
   id: string;
@@ -71,4 +71,10 @@ export const ATHAN_RECORDINGS: AthanRecording[] = [
   },
 ];
 
-export const DEFAULT_ATHAN_RECORDING = ATHAN_RECORDINGS[0].id;
+/** The athan shipped inside the app (android res/raw/athan_default.mp3): sound 'athan', the default for every prayer. */
+export const BUILTIN_ATHAN = {
+  nameAr: 'أذان - عاقب عزيز (مدمج في التطبيق)',
+  nameEn: 'Athan - Aaqib Azeez (built in)',
+  credit: 'Atcovi · CC BY-SA 4.0',
+  source: 'https://commons.wikimedia.org/wiki/File:The_Adhan_-_Muslim_Call_to_Prayer_-_Aaqib_Azeez.mp3',
+};

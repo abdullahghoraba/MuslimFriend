@@ -61,7 +61,7 @@ export function prayerTimesFor(s: PrayerSettings, date: Date): DayTimes | null {
   };
 }
 
-/** The next prayer (excluding sunrise) after [now], looking into tomorrow if needed. */
+/** The next prayer time after [now] (sunrise included, as it ends Fajr), looking into tomorrow if needed. */
 export function nextPrayer(s: PrayerSettings, now = new Date()): { name: PrayerName; at: Date } | null {
   for (let d = 0; d < 2; d++) {
     const day = new Date(now);
@@ -69,7 +69,6 @@ export function nextPrayer(s: PrayerSettings, now = new Date()): { name: PrayerN
     const t = prayerTimesFor(s, day);
     if (!t) return null;
     for (const name of PRAYER_NAMES) {
-      if (name === 'sunrise') continue;
       if (t.times[name].getTime() > now.getTime()) return { name, at: t.times[name] };
     }
   }

@@ -75,6 +75,7 @@ export class AthkarRepository {
     this.categories().filter((c) => (c.isUser ? c.showOnHome : !this.homeHidden().has(c.id))),
   );
   quranAttribution = '';
+  private refsAr: NonNullable<ContentDataset['refsAr']> = { sources: {}, grades: {} };
 
   /** For unit tests. */
   useDb(db: SqlDb): void {
@@ -85,8 +86,18 @@ export class AthkarRepository {
     const dataset = await firstValueFrom(this.http.get<ContentDataset>('assets/data/athkar.json'));
     this.builtins = dataset.categories;
     this.quranAttribution = dataset.quranAttribution;
+    if (dataset.refsAr) this.refsAr = dataset.refsAr;
     await this.seed(dataset);
     await this.refreshCategories();
+  }
+
+  /** A source reference in the UI language (custom athkar keep what the user wrote). */
+  sourceIn(lang: string, sourceRef: string): string {
+    return lang === 'ar' ? this.refsAr.sources[sourceRef] ?? sourceRef : sourceRef;
+  }
+
+  gradeIn(lang: string, grade: string): string {
+    return lang === 'ar' ? this.refsAr.grades[grade] ?? grade : grade;
   }
 
   /** Upserts built-in content when the bundled content version changes. */

@@ -83,7 +83,8 @@ class AthanService : Service() {
                 media.reset(); media.setAudioAttributes(attributes)
             }
         }
-        resources.openRawResourceFd(R.raw.athan_tone).use { media.setDataSource(it.fileDescriptor, it.startOffset, it.length) }
+        val raw = if (sound == "athan") R.raw.athan_default else R.raw.athan_tone
+        resources.openRawResourceFd(raw).use { media.setDataSource(it.fileDescriptor, it.startOffset, it.length) }
     }
     private fun release() {
         gestures?.stop(); gestures = null

@@ -58,6 +58,14 @@
     <section class="prayer-card muezzins" aria-labelledby="muezzins">
       <h2 id="muezzins">{{ 'athan.muezzin' | translate }}</h2>
       <p class="note">{{ 'athan.muezzinHelp' | translate }}</p>
+      <div class="rec-row">
+        <div class="rec-info">
+          <strong>{{ lang() === 'ar' ? builtin.nameAr : builtin.nameEn }}</strong>
+          <small>{{ builtin.credit }}</small>
+        </div>
+        <ion-button fill="clear" (click)="preview('athan')" [attr.aria-label]="('athan.preview' | translate) + ' ' + (lang() === 'ar' ? builtin.nameAr : builtin.nameEn)"><ion-icon slot="icon-only" name="play" aria-hidden="true" /></ion-button>
+        <ion-button [fill]="usedForAll('athan') ? 'solid' : 'outline'" size="small" (click)="useForAll('athan')">{{ (usedForAll('athan') ? 'athan.inUse' : 'athan.useForAll') | translate }}</ion-button>
+      </div>
       @for (r of recordings; track r.id) {
         <div class="rec-row">
           <div class="rec-info">
@@ -112,6 +120,7 @@
             [disabled]="importing()"
             (ionChange)="sound(p, $event.detail.value, soundInput, soundSelect)"
           >
+            <ion-select-option value="athan">{{ lang() === 'ar' ? builtin.nameAr : builtin.nameEn }}</ion-select-option>
             <ion-select-option value="tone">{{ 'athan.tone' | translate }}</ion-select-option>
             <ion-select-option value="system">{{ 'athan.system' | translate }}</ion-select-option>
             <ion-select-option value="none">{{ 'athan.noSound' | translate }}</ion-select-option>

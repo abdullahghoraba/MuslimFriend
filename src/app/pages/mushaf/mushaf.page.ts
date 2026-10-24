@@ -78,6 +78,8 @@ export class MushafPage {
   readonly hifzPlan = input<string | undefined>(undefined, { alias: 'hifz' });
   /** Set by «استمع وكرّر»: ask how many times to repeat, then play the marked portion. */
   readonly repeatParam = input<string | undefined>(undefined, { alias: 'repeat' });
+  /** Set by the Friday al-Kahf card: reading here leaves the saved place («متابعة القراءة») where it was. */
+  readonly visit = input<string | undefined>();
 
   readonly quran = inject(QuranService);
   readonly marks = inject(MarksService);
@@ -263,7 +265,7 @@ export class MushafPage {
     this.location.replaceState(`/mushaf/${p}`);
     this.host.nativeElement.querySelector('ion-content')?.scrollToTop(0);
     const first = this.quran.ready() ? this.quran.pageAyahs(p)[0] : undefined;
-    if (first) void this.quran.setLastRead(p, first);
+    if (first && !this.visit()) void this.quran.setLastRead(p, first);
     clearTimeout(this.readTimer);
     this.readTimer = setTimeout(() => void this.khatmah.recordPageRead(p), READ_AFTER_MS);
     setTimeout(() => this.slide.set('none'), 260);

@@ -74,11 +74,12 @@
   color: var(--app-muted);
 }
 
+// One line, so the counter keeps its place when the reset button appears after the first tap.
 .bar {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   margin-top: 10px;
   padding-top: 8px;
   border-top: 1px solid var(--app-border);
@@ -87,6 +88,15 @@
 
 .spacer {
   flex: 1;
+}
+
+// The details label gives way first on narrow screens.
+.link {
+  flex-shrink: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .mine {
@@ -110,9 +120,9 @@
   align-items: center;
   gap: 6px;
   min-height: 44px;
-  min-width: 44px;
+  min-width: 40px;
   justify-content: center;
-  padding: 0 6px;
+  padding: 0 4px;
   background: none;
   border: 0;
   color: var(--ion-color-primary);

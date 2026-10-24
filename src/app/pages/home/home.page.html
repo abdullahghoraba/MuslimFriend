@@ -11,10 +11,10 @@
       <span class="prayer-label">{{ 'home.sinceAthan' | translate: { prayer: ('prayer.' + r.name | translate) } }}</span>
       <span class="prayer-name">{{ minutesLabel(r.elapsedMin) }}</span>
       @if (next(); as n) {
-        <span class="prayer-time">{{ 'prayer.next' | translate }}: {{ 'prayer.' + n.name | translate }} · {{ time(n.at) }}</span>
+        <span class="prayer-time">{{ (n.name === 'sunrise' ? 'prayer.nextTime' : 'prayer.next') | translate }}: {{ 'prayer.' + n.name | translate }} · {{ time(n.at) }}</span>
       }
     } @else if (next(); as n) {
-      <span class="prayer-label">{{ 'prayer.next' | translate }}</span>
+      <span class="prayer-label">{{ (n.name === 'sunrise' ? 'prayer.nextTime' : 'prayer.next') | translate }}</span>
       <span class="prayer-name">{{ 'prayer.' + n.name | translate }}</span>
       <span class="prayer-time"
         >{{ time(n.at) }} · {{ 'prayer.in' | translate: { time: countdown(n.at) } }}</span

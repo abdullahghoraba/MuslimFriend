@@ -1,5 +1,6 @@
 import { AthkarOverlay } from './athkar-overlay';
-export type AthanSound = 'none' | 'system' | 'tone' | `file:${string}`;
+/** 'athan' is the full athan bundled with the app (the default); 'tone' a short chime. */
+export type AthanSound = 'none' | 'system' | 'tone' | 'athan' | `file:${string}`;
 export interface AthanEvent {
   id: string;
   prayer: 'fajr' | 'sunrise' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';

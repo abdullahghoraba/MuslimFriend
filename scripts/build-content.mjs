@@ -17,6 +17,8 @@ const paths = {
   source: resolve(root, 'content/athkar.source.json'),
   categories: resolve(root, 'content/categories.json'),
   tanzil: resolve(root, 'content/tanzil/quran-uthmani.txt'),
+  // Arabic wording of each English source reference and grade, keyed by the English text.
+  refsAr: resolve(root, 'content/athkar.ar-refs.json'),
   outJson: resolve(root, 'public/assets/data/athkar.json'),
   outCsv: resolve(root, 'content/review.csv'),
 };
@@ -135,6 +137,17 @@ function build() {
     if (!items.some((i) => i.categoryId === c.id)) errors.push(`category ${c.id} has no items`);
   }
 
+  const refsAr = JSON.parse(readFileSync(paths.refsAr, 'utf8'));
+  const sourcesAr = {};
+  const gradesAr = {};
+  for (const i of items) {
+    if (!refsAr.sources[i.sourceRef]) errors.push(`${i.id}: no Arabic for source "${i.sourceRef}" in athkar.ar-refs.json`);
+    else sourcesAr[i.sourceRef] = refsAr.sources[i.sourceRef];
+    if (!i.grade) continue;
+    if (!refsAr.grades[i.grade]) errors.push(`${i.id}: no Arabic for grade "${i.grade}" in athkar.ar-refs.json`);
+    else gradesAr[i.grade] = refsAr.grades[i.grade];
+  }
+
   if (errors.length) {
     console.error(`Content validation failed:\n  ${errors.join('\n  ')}`);
     process.exit(1);
@@ -145,6 +158,7 @@ function build() {
     quranAttribution: 'Quran text: Tanzil Quran Text (Uthmani, Version 1.1), Copyright (C) 2007-2026 Tanzil Project, CC BY 3.0 — https://tanzil.net',
     categories,
     items: items.map(({ reviewNote, ...rest }) => rest),
+    refsAr: { sources: sourcesAr, grades: gradesAr },
   };
 
   const header = ['id', 'category', 'text', 'source', 'grade', 'quran_ref', 'reviewer_note', 'reviewed', 'reviewer', 'review_date', 'corrections'];

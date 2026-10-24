@@ -24,7 +24,7 @@ data class AthanEvent(val id: String, val prayer: String, val kind: String, val 
             require(o.getString("id").isNotBlank() && o.getLong("at") > 0)
             require(o.getString("prayer") in setOf("fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"))
             require(o.getString("kind") in setOf("athan", "pre", "iqama"))
-            require(sound in setOf("none", "system", "tone") || (sound.startsWith("file:/")))
+            require(sound in setOf("none", "system", "tone", "athan") || (sound.startsWith("file:/")))
             require(volume.isFinite() && volume in 0.0..1.0)
             return AthanEvent(o.getString("id"), o.getString("prayer"), o.getString("kind"), o.getLong("at"),
                 o.getString("title"), o.getString("body"), sound, volume.toFloat(), o.optInt("silentMinutes", 0).coerceAtLeast(0),

@@ -37,7 +37,7 @@ import { SettingsService } from '../../core/services/settings.service';
 import { AthanNative, AthanSound, AthanStopWay } from '../../native/athan-plugin';
 import { AthkarOverlay } from '../../native/athkar-overlay';
 import { LocationService } from '../../core/prayer/location.service';
-import { ATHAN_RECORDINGS, DEFAULT_ATHAN_RECORDING } from '../../core/prayer/athan-sounds';
+import { ATHAN_RECORDINGS, BUILTIN_ATHAN } from '../../core/prayer/athan-sounds';
 
 @Component({
   selector: 'app-athan',
@@ -75,6 +75,7 @@ export class AthanPage implements OnDestroy {
   private readonly locationService = inject(LocationService);
   private readonly toastCtrl = inject(ToastController);
   readonly recordings = ATHAN_RECORDINGS;
+  readonly builtin = BUILTIN_ATHAN;
   readonly locating = signal(false);
   readonly lang = computed(() => this.appSettings.settings().language);
 
@@ -188,10 +189,6 @@ export class AthanPage implements OnDestroy {
   }
   update(patch: Partial<AthanSettings>): void {
     void this.run(() => this.athan.update(patch));
-    // Turning the athan on for the first time fetches the default athan (al-Masjid al-Haram) once.
-    if (patch.enabled && !this.recordings.some((r) => this.athan.recordingSound(r.id))) {
-      this.downloadRecording(DEFAULT_ATHAN_RECORDING);
-    }
   }
   patch(prayer: AthanPrayer, patch: Partial<PrayerAthanSettings>): void {
     this.update({
@@ -214,7 +211,8 @@ export class AthanPage implements OnDestroy {
     }
     if (
       typeof value === 'string' &&
-      (value === 'tone' ||
+      (value === 'athan' ||
+        value === 'tone' ||
         value === 'system' ||
         value === 'none' ||
         this.settings().customSounds.some((s) => 'file:' + s.path === value))

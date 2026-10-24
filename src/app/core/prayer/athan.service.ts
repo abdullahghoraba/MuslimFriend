@@ -42,7 +42,7 @@ export function defaultAthanSettings(): AthanSettings {
     perPrayer: Object.fromEntries(
       ATHAN_PRAYERS.map((p) => [
         p,
-        { mode: 'athan', sound: 'tone', preMinutes: 0, iqamaMinutes: 0 },
+        { mode: 'athan', sound: 'athan', preMinutes: 0, iqamaMinutes: 0 },
       ]),
     ) as AthanSettings['perPrayer'],
     sunrise: { notify: false },
@@ -296,7 +296,7 @@ export class AthanService {
     await this.stopPreview();
     const perPrayer = { ...this.state().perPrayer };
     for (const p of ATHAN_PRAYERS)
-      if (perPrayer[p].sound === 'file:' + path) perPrayer[p] = { ...perPrayer[p], sound: 'tone' };
+      if (perPrayer[p].sound === 'file:' + path) perPrayer[p] = { ...perPrayer[p], sound: 'athan' };
     await this.update({
       perPrayer,
       customSounds: this.state().customSounds.filter((s) => s.path !== path),

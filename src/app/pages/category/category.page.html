@@ -146,10 +146,10 @@
           @if (prefs().showSource && openDetails().has(d.id)) {
             <dl class="details" (click)="$event.stopPropagation()">
               <dt>{{ 'reader.source' | translate }}</dt>
-              <dd>{{ d.sourceRef }}</dd>
+              <dd>{{ source(d) }}</dd>
               @if (d.grade) {
                 <dt>{{ 'reader.grade' | translate }}</dt>
-                <dd>{{ d.grade }}</dd>
+                <dd>{{ grade(d) }}</dd>
               }
               @if (lang() === 'ar' ? d.virtueAr : d.virtueEn; as virtue) {
                 <dt>{{ 'reader.virtue' | translate }}</dt>
@@ -170,7 +170,7 @@
           <ion-item>
             <ion-label class="ion-text-wrap">
               <p class="preview" dir="auto">{{ d.textAr }}</p>
-              <ion-note>{{ d.isCustom ? ('myAthkar.mine' | translate) : d.sourceRef }}</ion-note>
+              <ion-note>{{ d.isCustom ? ('myAthkar.mine' | translate) : source(d) }}</ion-note>
             </ion-label>
             <ion-reorder slot="end" />
           </ion-item>
@@ -238,7 +238,7 @@
   @if (sharing(); as s) {
     <div class="share-card" aria-hidden="true">
       <p class="dhikr-text" lang="ar" dir="rtl">{{ s.textAr }}</p>
-      <p class="share-source">{{ s.sourceRef }}</p>
+      <p class="share-source">{{ source(s) }}</p>
       <p class="share-brand">{{ 'app.name' | translate }}</p>
     </div>
   }

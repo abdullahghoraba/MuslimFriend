@@ -120,7 +120,7 @@ export class HomePage {
   async openSuggestion(kind: NowSuggestion): Promise<void> {
     if (kind !== 'kahf') return this.openReader(kind);
     await this.quran.load();
-    await this.nav.navigateForward(['/mushaf', this.quran.suraPage(18)], { queryParams: { sura: 18, aya: 1 } });
+    await this.nav.navigateForward(['/mushaf', this.quran.suraPage(18)], { queryParams: { sura: 18, aya: 1, visit: 1 } });
   }
 
   readonly overlayFallback = computed(

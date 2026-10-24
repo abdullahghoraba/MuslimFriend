@@ -35,6 +35,8 @@ export interface ContentDataset {
   quranAttribution: string;
   categories: Category[];
   items: DhikrContent[];
+  /** Arabic wording of the English source references and grades, keyed by the English text. */
+  refsAr?: { sources: Record<string, string>; grades: Record<string, string> };
 }
 
 /** A dhikr as stored in SQLite: built-in content plus user state, or a custom dhikr. */

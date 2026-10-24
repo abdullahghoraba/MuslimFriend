@@ -51,9 +51,10 @@ describe('prayerTimesFor', () => {
 });
 
 describe('nextPrayer', () => {
-  it('skips sunrise and rolls over to tomorrow after Isha', () => {
+  it('shows sunrise after Fajr, then Dhuhr, and rolls over to tomorrow after Isha', () => {
     const t = prayerTimesFor(cairo, wed)!.times;
-    expect(nextPrayer(cairo, new Date(t.fajr.getTime() + 60_000))!.name).toBe('dhuhr');
+    expect(nextPrayer(cairo, new Date(t.fajr.getTime() + 60_000))!.name).toBe('sunrise');
+    expect(nextPrayer(cairo, new Date(t.sunrise.getTime() + 60_000))!.name).toBe('dhuhr');
     const late = new Date(t.isha.getTime() + 60_000);
     const n = nextPrayer(cairo, late)!;
     expect(n.name).toBe('fajr');

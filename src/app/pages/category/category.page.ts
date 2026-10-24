@@ -73,6 +73,14 @@ export class CategoryPage {
     await this.preferences.update({ readingMode: this.prefs().readingMode === 'list' ? 'single' : 'list' });
   }
 
+  source(d: { sourceRef: string }): string {
+    return this.athkar.sourceIn(this.lang(), d.sourceRef);
+  }
+
+  grade(d: { grade: string }): string {
+    return this.athkar.gradeIn(this.lang(), d.grade);
+  }
+
   digits(n: number): string {
     return String(n);
   }
