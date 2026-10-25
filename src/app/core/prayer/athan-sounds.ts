@@ -21,6 +21,13 @@ export interface AthanRecording {
 const COMMONS = 'https://upload.wikimedia.org/wikipedia/commons';
 const ARCHIVE = 'https://archive.org/download/azaan-of-world-mosques-english';
 
+function archive(id: string, nameAr: string, nameEn: string, file: string, sizeMb: number): AthanRecording {
+  return {
+    id, nameAr, nameEn, url: `${ARCHIVE}/${encodeURIComponent(file)}`, ext: 'mp3', sizeMb,
+    credit: 'Internet Archive · Public Domain Mark', source: 'https://archive.org/details/azaan-of-world-mosques-english',
+  };
+}
+
 /** Downloaded automatically when the athan is turned on, and then the athan for every prayer. */
 export const DEFAULT_RECORDING = 'madinah-essam-bukhari';
 
@@ -42,6 +49,15 @@ export const ATHAN_RECORDINGS: AthanRecording[] = [
       sizeMb: 2.6,
     },
   },
+  // From the same collection; each was checked to hold a complete athan that ends in silence.
+  archive('madinah-khashoggi', 'أذان المسجد النبوي - عبدالرحمن خاشقجي', "Prophet's Mosque, Madinah - Abdulrahman Khashoggi", 'عبدالرحمن خاشقجي (www.alqurantranslation.com).MP3', 3.8),
+  archive('makkah-ali-mulla', 'أذان المسجد الحرام - علي ملا', 'al-Masjid al-Haram, Makkah - Ali Mulla', '4th Haram Makkah by Mulla.mp3', 2.6),
+  archive('makkah-abdulmalik-mulla', 'أذان مكة المكرمة - عبدالملك الملا', 'Makkah - Abdulmalik al-Mulla', 'عبدالملك الملا_مكة (www.alqurantranslation.com).mp3', 4),
+  archive('aqsa-naji-qazzaz', 'أذان المسجد الأقصى - ناجي قزاز', 'al-Aqsa Mosque - Naji Qazzaz', 'Al-Aqsa Masjid Naaji Qazzaaz.mp3', 3.2),
+  archive('cairo-abdulbasit', 'أذان - عبدالباسط عبدالصمد', 'Abdul Basit Abdus-Samad', 'Cairo Abdul Baset.mp3', 2.9),
+  archive('cairo-husary', 'أذان - محمود خليل الحصري', 'Mahmoud Khalil al-Husary', 'Cairo Al Hosari.mp3', 1.6),
+  archive('cairo-banna', 'أذان - البنا (القاهرة)', 'al-Banna (Cairo)', 'Cairo Mohammed Al Banna.mp3', 2.2),
+  archive('cairo-shuaisha', 'أذان - أبو العينين شعيشع', 'Abu al-Ainain Shuaisha', 'Cairo Shuaisha.mp3', 3.4),
   {
     id: 'haram-makkah',
     nameAr: 'أذان المسجد الحرام - مكة المكرمة',

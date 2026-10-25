@@ -776,7 +776,13 @@
     "download": "Download",
     "downloadFailed": "Couldn't download the athan. Check your internet connection and try again.",
     "useForAll": "Use for all",
-    "inUse": "In use ✓"
+    "inUse": "In use ✓",
+    "voiceTitle": "The {{prayer}} prayer is near",
+    "voiceBody": "Prepare for the {{prayer}} prayer.",
+    "voiceReminder": "Spoken reminder before prayer",
+    "voiceReminderHelp": "The phone says, for example, \"The Asr prayer is near\" the chosen time before each athan that isn't off. It uses your phone's text-to-speech; if that can't speak the language, a chime plays instead.",
+    "voiceMinutes": "Before the athan",
+    "voicePreview": "Hear the spoken reminder"
   },
   "athkarPrefs": {
     "title": "Athkar options",

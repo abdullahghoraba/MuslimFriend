@@ -9,15 +9,19 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.RingtoneManager
+import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.muslimfriend.app.MainActivity
 import com.muslimfriend.app.R
 import org.json.JSONObject
 import java.io.File
+import java.util.Locale
 
 class AthanService : Service() {
     private val handler = Handler(Looper.getMainLooper())
@@ -26,6 +30,7 @@ class AthanService : Service() {
     private var event: AthanEvent? = null
     private var preview = false
     private var gestures: AthanStopGestures? = null
+    private var tts: TextToSpeech? = null
     private val timeout = Runnable { finishPlayback() }
     private val attributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build()
     override fun onBind(intent: Intent?): IBinder? = null
@@ -49,10 +54,17 @@ class AthanService : Service() {
             if (audio.requestAudioFocus(request) != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                 finishPlayback(); return START_NOT_STICKY
             }
+            handler.postDelayed(timeout, if (preview) 30_000L else 6 * 60_000L)
+            if (incoming.sound == "voice") speak(incoming) else play(incoming, incoming.sound)
+        } catch (_: Exception) { finishPlayback() }
+        return START_NOT_STICKY
+    }
+    private fun play(incoming: AthanEvent, sound: String) {
+        try {
             val media = MediaPlayer()
             player = media
             media.setAudioAttributes(attributes)
-            setSource(media, incoming.sound)
+            setSource(media, sound)
             media.setVolume(incoming.volume, incoming.volume)
             media.setOnCompletionListener { finishPlayback() }
             media.setOnErrorListener { _, _, _ -> finishPlayback(); true }
@@ -64,10 +76,41 @@ class AthanService : Service() {
                         "volume" in incoming.stopOn) { finishPlayback() }.also { g -> g.start() }
                 }
             }
-            handler.postDelayed(timeout, if (preview) 30_000L else 6 * 60_000L)
             media.prepareAsync()
         } catch (_: Exception) { finishPlayback() }
-        return START_NOT_STICKY
+    }
+    /**
+     * The spoken reminder («اقتربت صلاة العصر»), said twice with the phone's text-to-speech in the text's language.
+     * Phones without a voice for that language hear the system notification sound instead.
+     */
+    private fun speak(incoming: AthanEvent) {
+        val text = incoming.speech.ifBlank { incoming.title }
+        val locale = if (text.any { it in '؀'..'ۿ' }) Locale.forLanguageTag("ar") else Locale.ENGLISH
+        var engine: TextToSpeech? = null
+        engine = TextToSpeech(this) { status ->
+            handler.post {
+                val t = engine
+                if (t == null || tts !== t || event !== incoming) return@post
+                val lang = if (status == TextToSpeech.SUCCESS) t.setLanguage(locale) else TextToSpeech.LANG_NOT_SUPPORTED
+                if (lang == TextToSpeech.LANG_MISSING_DATA || lang == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    tts = null; runCatching { t.shutdown() }
+                    play(incoming, "system")
+                    return@post
+                }
+                t.setAudioAttributes(attributes)
+                t.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                    override fun onStart(id: String?) {}
+                    override fun onDone(id: String?) { if (id == "second") handler.post { if (event === incoming) finishPlayback() } }
+                    @Deprecated("Deprecated in Java")
+                    override fun onError(id: String?) { handler.post { if (event === incoming) finishPlayback() } }
+                })
+                val params = Bundle().apply { putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, incoming.volume) }
+                t.speak(text, TextToSpeech.QUEUE_FLUSH, params, "first")
+                t.playSilentUtterance(700, TextToSpeech.QUEUE_ADD, "pause")
+                t.speak(text, TextToSpeech.QUEUE_ADD, params, "second")
+            }
+        }
+        tts = engine
     }
     private fun setSource(media: MediaPlayer, sound: String) {
         val file = if (sound.startsWith("file:")) File(sound.removePrefix("file:")).canonicalFile else null
@@ -90,6 +133,7 @@ class AthanService : Service() {
         gestures?.stop(); gestures = null
         handler.removeCallbacks(timeout)
         player?.let { runCatching { it.release() } }; player = null
+        tts?.let { runCatching { it.stop(); it.shutdown() } }; tts = null
         focus?.let { getSystemService(AudioManager::class.java).abandonAudioFocusRequest(it) }; focus = null
     }
     private fun finishPlayback() {

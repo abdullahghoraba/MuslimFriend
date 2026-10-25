@@ -121,6 +121,7 @@ export class AthanPage implements OnDestroy {
   readonly before = [0, 5, 10, 15, 20, 30];
   readonly after = [0, 10, 15, 20, 25, 30];
   readonly silentOptions = [10, 15, 20, 30, 45];
+  readonly voiceOptions = [5, 10, 15, 20, 30];
   readonly native = Capacitor.isNativePlatform();
   readonly exactGranted = signal(true);
   readonly notificationsGranted = signal(true);
@@ -281,6 +282,10 @@ export class AthanPage implements OnDestroy {
   }
   preview(sound: AthanSound): void {
     void this.run(() => this.athan.preview(sound));
+  }
+  /** Says the reminder for the next prayer, as it will sound before the athan. */
+  previewVoice(): void {
+    void this.run(() => this.athan.previewVoice(this.athan.upcoming()[0]?.name ?? 'asr'));
   }
   stop(): void {
     void this.run(() => this.athan.stopPreview());

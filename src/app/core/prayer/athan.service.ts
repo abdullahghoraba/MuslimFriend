@@ -32,6 +32,8 @@ export interface AthanSettings {
   customSounds: { name: string; path: string; recordingId?: string }[];
   /** Stop the playing athan by turning the phone over, shaking it, or pressing a volume button. */
   stopOn: Record<AthanStopWay, boolean>;
+  /** Spoken reminder («اقتربت صلاة العصر») some minutes before each prayer that isn't off. Off by default. */
+  voiceReminder: { enabled: boolean; minutes: number };
   /** The Madinah athan was made the default once (never again, so a later choice of the user stays). */
   defaultRecordingSet: boolean;
 }
@@ -54,6 +56,7 @@ export function defaultAthanSettings(): AthanSettings {
     customSounds: [],
     stopOn: { flip: true, shake: true, volume: true },
     defaultRecordingSet: false,
+    voiceReminder: { enabled: false, minutes: 15 },
   };
 }
 type Text = (key: string, params?: Record<string, unknown>) => string;
@@ -102,6 +105,7 @@ export function buildAthanEvents(
           }),
           body: t(kind + 'Body', params),
           ...(sound !== 'none' && stopWays(settings).length ? { stopOn: stopWays(settings) } : {}),
+          ...(kind === 'voice' ? { speech: t('voiceTitle', params) } : {}),
           ...(kind === 'athan' && settings.silentDuringPrayer && settings.silentMinutes > 0
             ? { silentMinutes: settings.silentMinutes }
             : {}),
@@ -109,6 +113,7 @@ export function buildAthanEvents(
       };
       add('athan', 0, s.mode === 'notify' ? 'none' : s.sound);
       if (s.preMinutes > 0) add('pre', -s.preMinutes, 'system');
+      if (settings.voiceReminder.enabled && settings.voiceReminder.minutes > 0) add('voice', -settings.voiceReminder.minutes, 'voice');
       if (s.iqamaMinutes > 0) add('iqama', s.iqamaMinutes, 'system');
     }
     if (settings.sunrise.notify)
@@ -171,6 +176,7 @@ export class AthanService {
           ...saved,
           sunrise: { ...defaults.sunrise, ...saved.sunrise },
           stopOn: { ...defaults.stopOn, ...saved.stopOn },
+          voiceReminder: { ...defaults.voiceReminder, ...saved.voiceReminder },
           perPrayer: Object.fromEntries(
             ATHAN_PRAYERS.map((p) => [p, { ...defaults.perPrayer[p], ...saved.perPrayer?.[p] }]),
           ) as AthanSettings['perPrayer'],
@@ -373,6 +379,12 @@ export class AthanService {
     this.audio.volume = this.state().volume;
     await this.audio.play();
     this.previewTimer = setTimeout(() => void this.stopPreview(), 30000);
+  }
+  async previewVoice(prayer: AthanPrayer): Promise<void> {
+    await this.stopPreview();
+    if (!Capacitor.isNativePlatform()) return;
+    const speech = this.translate.instant('athan.voiceTitle', { prayer: this.translate.instant('athan.prayers.' + prayer) });
+    await this.native.previewAthan({ sound: 'voice', volume: this.state().volume, speech });
   }
   async stopPreview(): Promise<void> {
     clearTimeout(this.previewTimer);

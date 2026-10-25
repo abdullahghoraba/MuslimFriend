@@ -141,6 +141,19 @@ describe('athan event planning', () => {
       prayerTimesFor(adjusted, now)!.times.asr.getTime(),
     );
   });
+  it('adds the spoken reminder only when it is on, the chosen minutes before each prayer that is not off', () => {
+    const s = defaultAthanSettings();
+    s.enabled = true;
+    expect(buildAthanEvents(cairo, s, text, now, 1).some((e) => e.kind === 'voice')).toBe(false);
+    s.voiceReminder = { enabled: true, minutes: 15 };
+    s.perPrayer.isha.mode = 'off';
+    const voice = buildAthanEvents(cairo, s, text, now, 2).filter((e) => e.kind === 'voice');
+    const asr = voice.find((e) => e.prayer === 'asr')!;
+    expect(asr.sound).toBe('voice');
+    expect(asr.speech).toBe('voiceTitle');
+    expect(asr.at).toBe(prayerTimesFor(cairo, new Date(asr.at))!.times.asr.getTime() - 15 * 60000);
+    expect(voice.some((e) => e.prayer === 'isha')).toBe(false);
+  });
   it('skips past events, disabled schedules and missing location', () => {
     const s = defaultAthanSettings();
     expect(buildAthanEvents(cairo, s, text, now)).toEqual([]);

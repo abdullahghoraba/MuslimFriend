@@ -9,7 +9,7 @@ class AthanReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Channels.ensure(context)
         AthanScheduler.takeDue(context).forEach { event ->
-            if (event.kind == "athan" && event.sound != "none") {
+            if ((event.kind == "athan" || event.kind == "voice") && event.sound != "none") {
                 runCatching { ContextCompat.startForegroundService(context, AthanService.intent(context, event)) }
                     .onFailure { AthanService.post(context, event) }
             } else {

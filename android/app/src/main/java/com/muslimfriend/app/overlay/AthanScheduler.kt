@@ -11,11 +11,13 @@ import org.json.JSONObject
 data class AthanEvent(val id: String, val prayer: String, val kind: String, val at: Long,
     val title: String, val body: String, val sound: String, val volume: Float, val silentMinutes: Int = 0,
     /** Ways to stop the sound: "flip", "shake", "volume". */
-    val stopOn: Set<String> = emptySet()) {
+    val stopOn: Set<String> = emptySet(),
+    /** Spoken with text-to-speech when sound is "voice". */
+    val speech: String = "") {
     fun toJson(): JSONObject = JSONObject().put("id", id).put("prayer", prayer).put("kind", kind)
         .put("at", at).put("title", title).put("body", body).put("sound", sound)
         .put("volume", volume.toDouble()).put("silentMinutes", silentMinutes)
-        .put("stopOn", org.json.JSONArray(stopOn.toList()))
+        .put("stopOn", org.json.JSONArray(stopOn.toList())).put("speech", speech)
     companion object {
         val STOP_WAYS = setOf("flip", "shake", "volume")
         fun fromJson(o: JSONObject): AthanEvent {
@@ -23,13 +25,14 @@ data class AthanEvent(val id: String, val prayer: String, val kind: String, val 
             val volume = o.getDouble("volume")
             require(o.getString("id").isNotBlank() && o.getLong("at") > 0)
             require(o.getString("prayer") in setOf("fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"))
-            require(o.getString("kind") in setOf("athan", "pre", "iqama"))
-            require(sound in setOf("none", "system", "tone", "athan") || (sound.startsWith("file:/")))
+            require(o.getString("kind") in setOf("athan", "pre", "iqama", "voice"))
+            require(sound in setOf("none", "system", "tone", "athan", "voice") || (sound.startsWith("file:/")))
             require(volume.isFinite() && volume in 0.0..1.0)
             return AthanEvent(o.getString("id"), o.getString("prayer"), o.getString("kind"), o.getLong("at"),
                 o.getString("title"), o.getString("body"), sound, volume.toFloat(), o.optInt("silentMinutes", 0).coerceAtLeast(0),
                 o.optJSONArray("stopOn")?.let { arr -> (0 until arr.length()).map { arr.optString(it) }.filter { it in STOP_WAYS }.toSet() }
-                    ?: emptySet())
+                    ?: emptySet(),
+                o.optString("speech", "").take(200))
         }
     }
 }

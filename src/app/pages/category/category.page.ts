@@ -407,16 +407,34 @@ export class CategoryPage {
 
   async shareImage(d: Dhikr): Promise<void> {
     this.sharing.set(d);
-    // Let the off-screen share layout render before capturing it.
-    await new Promise((r) => setTimeout(r, 50));
-    const el = this.host.nativeElement.querySelector<HTMLElement>('.share-card');
     try {
-      if (el) await this.share.shareElementAsImage(el, this.title());
-    } catch {
+      // Let the off-screen share layout render (a long list can take a few frames) and its fonts load.
+      let el: HTMLElement | null = null;
+      for (let i = 0; i < 30 && !el; i++) {
+        await new Promise((r) => requestAnimationFrame(r));
+        el = this.host.nativeElement.querySelector<HTMLElement>('.share-card');
+      }
+      await document.fonts?.ready;
+      try {
+        if (!el) throw new Error('share card not rendered');
+        await this.share.shareElementAsImage(el, this.title());
+      } catch (e) {
+        if (isShareCancel(e)) return;
+        // The picture could not be made on this phone: share the words instead of failing.
+        console.warn('[share] image failed, sharing text', e);
+        await this.share.shareText(this.title(), [d.textAr, this.source(d), this.translate.instant('app.name')].filter(Boolean).join('\n\n'));
+      }
+    } catch (e) {
+      if (isShareCancel(e)) return;
       const t = await this.toast.create({ message: this.translate.instant('reader.shareFailed'), duration: 2000 });
       await t.present();
     } finally {
       this.sharing.set(null);
     }
   }
+}
+
+/** Closing the share sheet without picking an app rejects the call; that is not a failure. */
+function isShareCancel(e: unknown): boolean {
+  return /cancel/i.test(e instanceof Error ? e.message : String(e));
 }

@@ -206,6 +206,32 @@
       }
     </ion-list>
     <ion-list>
+      <ion-item
+        ><ion-toggle
+          [checked]="settings().voiceReminder.enabled"
+          (ionChange)="update({ voiceReminder: { ...settings().voiceReminder, enabled: $event.detail.checked } })"
+          >{{ 'athan.voiceReminder' | translate }}</ion-toggle
+        ></ion-item
+      >
+      @if (settings().voiceReminder.enabled) {
+        <ion-item
+          ><ion-select
+            [label]="'athan.voiceMinutes' | translate"
+            [value]="settings().voiceReminder.minutes"
+            (ionChange)="update({ voiceReminder: { ...settings().voiceReminder, minutes: +$event.detail.value } })"
+          >
+            @for (n of voiceOptions; track n) {
+              <ion-select-option [value]="n">{{ minutes(n) }}</ion-select-option>
+            }
+          </ion-select></ion-item
+        >
+        <ion-item button (click)="previewVoice()" [detail]="false"
+          ><ion-icon slot="start" name="play" aria-hidden="true" /><ion-label>{{ 'athan.voicePreview' | translate }}</ion-label></ion-item
+        >
+      }
+    </ion-list>
+    <p class="note">{{ 'athan.voiceReminderHelp' | translate }}</p>
+    <ion-list>
       <ion-list-header>{{ 'athan.stopTitle' | translate }}</ion-list-header>
       <ion-item
         ><ion-toggle [checked]="settings().stopOn.flip" (ionChange)="stopOn('flip', $event.detail.checked)">{{

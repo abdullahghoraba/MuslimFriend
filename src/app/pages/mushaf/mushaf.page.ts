@@ -545,23 +545,34 @@ export class MushafPage {
     await sheet.present();
   }
 
+  /** Two steps, because an Ionic alert can't mix a text field with radios (the radios lose their labels). */
   private async newBookmark(ref: AyahRef): Promise<void> {
+    const used = new Set(this.marks.bookmarks().map((b) => b.color));
+    const first = MARK_COLORS.find((c) => !used.has(c.id)) ?? MARK_COLORS[0];
+    const pick = await this.alerts.create({
+      header: this.translate.instant('mushaf.newBookmark'),
+      inputs: MARK_COLORS.map((c) => ({
+        type: 'radio' as const, label: this.translate.instant(`mushaf.colors.${c.id}`), value: c.id, checked: c.id === first.id,
+      })),
+      buttons: [
+        { text: this.translate.instant('common.cancel'), role: 'cancel' },
+        { text: this.translate.instant('common.next'), handler: (color: MarkColor) => void this.nameBookmark(ref, color ?? first.id) },
+      ],
+    });
+    await pick.present();
+  }
+
+  private async nameBookmark(ref: AyahRef, color: MarkColor): Promise<void> {
+    const colorName = this.translate.instant(`mushaf.colors.${color}`);
     const alert = await this.alerts.create({
       header: this.translate.instant('mushaf.newBookmark'),
-      inputs: [
-        { name: 'name', type: 'text', placeholder: this.translate.instant('mushaf.bookmarkName') },
-        ...MARK_COLORS.map((c, i) => ({
-          name: 'color', type: 'radio' as const, label: this.translate.instant(`mushaf.colors.${c.id}`), value: c.id, checked: i === 0,
-        })),
-      ],
+      inputs: [{ name: 'name', type: 'text', value: colorName, placeholder: this.translate.instant('mushaf.bookmarkName') }],
       buttons: [
         { text: this.translate.instant('common.cancel'), role: 'cancel' },
         {
           text: this.translate.instant('common.save'),
-          handler: (data: string | { name?: string }) => {
-            // Ionic returns the radio value when radios are present.
-            const color = (typeof data === 'string' ? data : 'green') as MarkColor;
-            const name = this.translate.instant(`mushaf.colors.${color}`);
+          handler: (data: { name?: string }) => {
+            const name = data?.name?.trim() || colorName;
             void this.marks.addBookmark(name, color, ref, this.page()).then(() => this.toast('mushaf.bookmarkAdded'));
           },
         },
