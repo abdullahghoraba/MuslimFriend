@@ -222,7 +222,8 @@
     "styleRose": "Soft rose",
     "styleClassic": "Classic teal",
     "athkarOptions": "Athkar reading & counting options",
-    "athanSettings": "Athan settings"
+    "athanSettings": "Athan settings",
+    "citiesCredit": "City list: GeoNames (geonames.org), CC BY 4.0"
   },
   "language": {
     "ar": "العربية",
@@ -402,7 +403,19 @@
       "NorthAmerica": "ISNA (North America)",
       "Singapore": "Singapore",
       "Tehran": "Institute of Geophysics, Tehran",
-      "Turkey": "Diyanet, Turkey"
+      "Turkey": "Diyanet, Turkey",
+      "Gulf": "Gulf region",
+      "Jordan": "Ministry of Awqaf, Jordan",
+      "Algeria": "Ministry of Religious Affairs, Algeria",
+      "Morocco": "Ministry of Habous, Morocco",
+      "Tunisia": "Ministry of Religious Affairs, Tunisia",
+      "Malaysia": "JAKIM, Malaysia",
+      "Indonesia": "Kemenag, Indonesia",
+      "Russia": "Spiritual Administration of Muslims of Russia",
+      "France": "UOIF, France (12°)",
+      "France15": "France (15°)",
+      "France18": "France (18°)",
+      "Jafari": "Shia Ithna-Ashari (Leva Institute, Qum)"
     }
   },
   "reminders": {

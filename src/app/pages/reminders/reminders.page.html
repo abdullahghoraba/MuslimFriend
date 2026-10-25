@@ -296,7 +296,7 @@
           @for (c of filteredCities(); track c.id) {
             <ion-item button (click)="chooseCity(c)">
               <ion-label>{{ cityName(c) }}</ion-label>
-              <ion-note slot="end">{{ c.country }}</ion-note>
+              <ion-note slot="end">{{ country(c) }}</ion-note>
             </ion-item>
           }
         </ion-list>

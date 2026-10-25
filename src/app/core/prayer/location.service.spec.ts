@@ -1,4 +1,4 @@
-import { City, distanceKm, nearestCity } from './location.service';
+import { City, distanceKm, nearestCity, searchCities } from './location.service';
 
 const cities: City[] = [
   { id: 'cairo', ar: 'القاهرة', en: 'Cairo', country: 'EG', lat: 30.04, lng: 31.24, method: 'Egyptian' },
@@ -18,5 +18,15 @@ describe('location helpers', () => {
     expect(giza.city.id).toBe('cairo');
     expect(giza.km).toBeLessThan(10);
     expect(nearestCity([], 0, 0)).toBeNull();
+  });
+});
+
+describe('city search', () => {
+  it('matches Arabic without hamza, English in any case, and the country name or code', () => {
+    expect(searchCities(cities, 'مكه', 'ar').map((c) => c.id)).toEqual(['makkah']);
+    expect(searchCities(cities, 'CAIRO', 'en').map((c) => c.id)).toEqual(['cairo']);
+    expect(searchCities(cities, 'مصر', 'ar').map((c) => c.id)).toEqual(['cairo']);
+    expect(searchCities(cities, 'sa', 'en').map((c) => c.id)).toEqual(['makkah']);
+    expect(searchCities(cities, '', 'ar', 1)).toHaveLength(1);
   });
 });

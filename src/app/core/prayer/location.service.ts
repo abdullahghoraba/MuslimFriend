@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { AthkarOverlay } from '../../native/athkar-overlay';
 import { MethodId } from './prayer-times';
 import { PrayerService } from './prayer.service';
+import { normalizeArabic } from '../quran/quran-utils';
 
 export interface City { id: string; ar: string; en: string; country: string; lat: number; lng: number; method: MethodId }
 
@@ -29,6 +30,35 @@ export function nearestCity(cities: City[], lat: number, lng: number): { city: C
     if (!best || km < best.km) best = { city, km };
   }
   return best;
+}
+
+/** The country's name in the app language ("EG" → "مصر"), or the code when the phone doesn't know it. */
+export function countryName(code: string, lang: string): string {
+  try {
+    return new Intl.DisplayNames([lang], { type: 'region' }).of(code) ?? code;
+  } catch {
+    return code;
+  }
+}
+
+const fold = (s: string) => normalizeArabic(s).toLocaleLowerCase();
+
+/**
+ * Cities matching [query] in Arabic or English (hamza, tashkeel and case ignored), or by country name or code.
+ * The list is sorted biggest first, so the first [limit] matches are the likely ones.
+ */
+export function searchCities(cities: City[], query: string, lang: string, limit = 60): City[] {
+  const q = fold(query.trim());
+  if (!q) return cities.slice(0, limit);
+  const countries = new Map<string, string>();
+  const out: City[] = [];
+  for (const c of cities) {
+    let country = countries.get(c.country);
+    if (country === undefined) countries.set(c.country, (country = fold(`${countryName(c.country, lang)} ${c.country}`)));
+    if (fold(c.ar).includes(q) || fold(c.en).includes(q) || country.includes(q)) out.push(c);
+    if (out.length >= limit) break;
+  }
+  return out;
 }
 
 const round2 = (n: number) => Math.round(n * 100) / 100;

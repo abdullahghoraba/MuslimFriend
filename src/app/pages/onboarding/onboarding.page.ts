@@ -1,20 +1,16 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { App } from '@capacitor/app';
 import { PluginListenerHandle } from '@capacitor/core';
 import { Preferences } from '@capacitor/preferences';
 import { IonContent, IonIcon, NavController } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
-import { firstValueFrom } from 'rxjs';
-import { MethodId } from '../../core/prayer/prayer-times';
 import { PrayerService } from '../../core/prayer/prayer.service';
-import { LocationService } from '../../core/prayer/location.service';
+import { City, LocationService, countryName, searchCities } from '../../core/prayer/location.service';
 import { AppearanceService } from '../../core/services/appearance.service';
 import { OverlayService } from '../../core/services/overlay.service';
 import { SettingsService } from '../../core/services/settings.service';
 import { AthkarOverlay } from '../../native/athkar-overlay';
 
-interface City { id: string; ar: string; en: string; country: string; lat: number; lng: number; method: MethodId; }
 type Permission = 'notifications' | 'overlay' | 'battery' | 'location';
 type Feature = 'overlay' | 'daily' | 'sleep' | 'friday';
 
@@ -31,7 +27,6 @@ export class OnboardingPage implements OnInit, OnDestroy {
   private readonly prayerService = inject(PrayerService);
   private readonly locationService = inject(LocationService);
   private readonly nav = inject(NavController);
-  private readonly http = inject(HttpClient);
   private readonly heading = viewChild<ElementRef<HTMLElement>>('heading');
   readonly step = signal(1);
   readonly ready = signal(false);
@@ -49,8 +44,7 @@ export class OnboardingPage implements OnInit, OnDestroy {
   readonly cities = signal<City[]>([]);
   readonly query = signal('');
   readonly filteredCities = computed(() => {
-    const q = this.query().trim().toLocaleLowerCase();
-    return this.cities().filter(c => !q || (c.ar + ' ' + c.en + ' ' + c.country).toLocaleLowerCase().includes(q));
+    return searchCities(this.cities(), this.query(), this.settings.settings().language);
   });
   readonly permission = computed<Permission | undefined>(() => {
     const f = this.features();
@@ -183,9 +177,13 @@ export class OnboardingPage implements OnInit, OnDestroy {
 
   async chooseCity(): Promise<void> {
     await this.run(async () => {
-      if (!this.cities().length) this.cities.set(await firstValueFrom(this.http.get<City[]>('assets/data/cities.json')));
+      if (!this.cities().length) this.cities.set(await this.locationService.loadCities());
       this.picker.set(true);
     });
+  }
+
+  country(city: City): string {
+    return countryName(city.country, this.settings.settings().language);
   }
 
   async selectCity(city: City): Promise<void> {

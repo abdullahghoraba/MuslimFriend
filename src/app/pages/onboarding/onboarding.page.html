@@ -38,7 +38,7 @@
               <label class="search">{{ 'onboarding.searchCity' | translate }}<input type="search" [value]="query()" (input)="query.set($any($event.target).value)" /></label>
               <ul class="cities">
                 @for (city of filteredCities(); track city.id) {
-                  <li><button [disabled]="busy()" (click)="selectCity(city)">{{ settings.settings().language === 'ar' ? city.ar : city.en }} <small>{{ city.country }}</small></button></li>
+                  <li><button [disabled]="busy()" (click)="selectCity(city)">{{ settings.settings().language === 'ar' ? city.ar : city.en }} <small>{{ country(city) }}</small></button></li>
                 } @empty { <li>{{ 'onboarding.noCities' | translate }}</li> }
               </ul>
             }

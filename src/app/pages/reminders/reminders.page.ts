@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -27,22 +26,11 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { firstValueFrom } from 'rxjs';
 import { METHOD_IDS, MethodId, PRAYER_NAMES, PrayerName, ReminderSettings } from '../../core/prayer/prayer-times';
 import { PrayerService } from '../../core/prayer/prayer.service';
-import { LocationService } from '../../core/prayer/location.service';
+import { City, LocationService, countryName, searchCities } from '../../core/prayer/location.service';
 import { SettingsService } from '../../core/services/settings.service';
 import { AthkarOverlay } from '../../native/athkar-overlay';
-
-interface City {
-  id: string;
-  ar: string;
-  en: string;
-  country: string;
-  lat: number;
-  lng: number;
-  method: MethodId;
-}
 
 @Component({
   selector: 'app-reminders',
@@ -58,7 +46,6 @@ export class RemindersPage {
   private readonly prayerService = inject(PrayerService);
   private readonly locationService = inject(LocationService);
   private readonly settings = inject(SettingsService);
-  private readonly http = inject(HttpClient);
   private readonly toast = inject(ToastController);
   private readonly translate = inject(TranslateService);
 
@@ -76,16 +63,14 @@ export class RemindersPage {
   readonly locating = signal(false);
   readonly notificationsGranted = signal(true);
   readonly filteredCities = computed(() => {
-    const q = this.cityQuery().trim().toLowerCase();
-    const list = this.cities();
-    return q ? list.filter((c) => c.ar.includes(q) || c.en.toLowerCase().includes(q)) : list;
+    return searchCities(this.cities(), this.cityQuery(), this.lang());
   });
 
   async ionViewWillEnter(): Promise<void> {
     await this.prayerService.load();
     this.notificationsGranted.set((await AthkarOverlay.checkNotificationPermission()).granted);
     if (!this.cities().length) {
-      this.cities.set(await firstValueFrom(this.http.get<City[]>('assets/data/cities.json')));
+      this.cities.set(await this.locationService.loadCities());
     }
   }
 
@@ -96,6 +81,10 @@ export class RemindersPage {
 
   cityName(c: City): string {
     return this.lang() === 'ar' ? c.ar : c.en;
+  }
+
+  country(c: City): string {
+    return countryName(c.country, this.lang());
   }
 
   async chooseCity(c: City): Promise<void> {

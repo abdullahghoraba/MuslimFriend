@@ -1,6 +1,7 @@
 import {
   DEFAULT_PRAYER_SETTINGS,
   DEFAULT_REMINDER_SETTINGS,
+  METHOD_IDS,
   PrayerSettings,
   ReminderTexts,
   atTime,
@@ -152,5 +153,22 @@ describe('hifz reminders', () => {
         (r) => r.kind === 'hifz',
       ),
     ).toHaveLength(1);
+  });
+});
+
+describe('calculation methods', () => {
+  it('gives ordered times for every listed method', () => {
+    const day = new Date(2026, 9, 25);
+    for (const method of METHOD_IDS) {
+      const t = prayerTimesFor({ ...cairo, method }, day)!.times;
+      expect([t.fajr, t.sunrise, t.dhuhr, t.asr, t.maghrib, t.isha].every((d, i, a) => !i || d > a[i - 1]), method).toBe(true);
+    }
+  });
+  it("uses each authority's angles: France 12° Fajr is later than Malaysia 20°; Jafari Maghrib is after sunset", () => {
+    const day = new Date(2026, 9, 25);
+    const at = (method: (typeof METHOD_IDS)[number]) => prayerTimesFor({ ...cairo, method }, day)!.times;
+    expect(at('France').fajr.getTime()).toBeGreaterThan(at('Malaysia').fajr.getTime());
+    expect(at('Jafari').maghrib.getTime()).toBeGreaterThan(at('MuslimWorldLeague').maghrib.getTime() + 10 * 60000);
+    expect(at('Gulf').isha.getTime() - at('Gulf').maghrib.getTime()).toBe(90 * 60000);
   });
 });

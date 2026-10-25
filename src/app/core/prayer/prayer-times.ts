@@ -1,13 +1,39 @@
 import { CalculationMethod, CalculationParameters, Coordinates, HighLatitudeRule, Madhab, PrayerTimes } from 'adhan';
 import { NativeReminder } from '../../native/athkar-overlay';
 
-export type MethodId =
-  | 'Egyptian' | 'UmmAlQura' | 'MuslimWorldLeague' | 'Karachi' | 'Dubai' | 'Kuwait' | 'Qatar'
-  | 'MoonsightingCommittee' | 'NorthAmerica' | 'Singapore' | 'Tehran' | 'Turkey';
+type AdhanMethodId = keyof typeof CalculationMethod;
+
+/**
+ * Official methods that the adhan library doesn't ship, by their published Fajr/Isha angles
+ * (Isha as minutes after Maghrib when the authority uses a fixed interval) and Maghrib offsets.
+ */
+const EXTRA_METHODS = {
+  Gulf: () => new CalculationParameters(null, 19.5, 0, 90),
+  Jordan: () => withAdjustments(new CalculationParameters(null, 18, 18), { maghrib: 5 }),
+  Algeria: () => withAdjustments(new CalculationParameters(null, 18, 17), { maghrib: 3 }),
+  Morocco: () => withAdjustments(new CalculationParameters(null, 19, 17), { dhuhr: 5, maghrib: 5 }),
+  Tunisia: () => new CalculationParameters(null, 18, 18),
+  Malaysia: () => withAdjustments(new CalculationParameters(null, 20, 18), { dhuhr: 1 }),
+  Indonesia: () => withAdjustments(new CalculationParameters(null, 20, 18), { fajr: 2, dhuhr: 2, asr: 2, maghrib: 2, isha: 2 }),
+  Russia: () => new CalculationParameters(null, 16, 15),
+  France: () => new CalculationParameters(null, 12, 12),
+  France15: () => new CalculationParameters(null, 15, 15),
+  France18: () => new CalculationParameters(null, 18, 18),
+  // Shia Ithna-Ashari (Leva Institute, Qum): Maghrib when the sun is 4° below the horizon.
+  Jafari: () => new CalculationParameters(null, 16, 14, 0, 4),
+} satisfies Record<string, () => CalculationParameters>;
+
+function withAdjustments(p: CalculationParameters, adj: Partial<CalculationParameters['methodAdjustments']>): CalculationParameters {
+  p.methodAdjustments = { ...p.methodAdjustments, ...adj };
+  return p;
+}
+
+export type MethodId = AdhanMethodId | keyof typeof EXTRA_METHODS;
 
 export const METHOD_IDS: MethodId[] = [
-  'Egyptian', 'UmmAlQura', 'MuslimWorldLeague', 'Karachi', 'Dubai', 'Kuwait', 'Qatar',
-  'MoonsightingCommittee', 'NorthAmerica', 'Singapore', 'Tehran', 'Turkey',
+  'Egyptian', 'UmmAlQura', 'MuslimWorldLeague', 'Karachi', 'Dubai', 'Kuwait', 'Qatar', 'Gulf', 'Jordan',
+  'Algeria', 'Morocco', 'Tunisia', 'Turkey', 'Tehran', 'Jafari', 'Singapore', 'Malaysia', 'Indonesia',
+  'Russia', 'France', 'France15', 'France18', 'NorthAmerica', 'MoonsightingCommittee',
 ];
 
 export type PrayerName = 'fajr' | 'sunrise' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';
@@ -42,7 +68,9 @@ export interface DayTimes {
 }
 
 export function calculationParams(s: PrayerSettings): CalculationParameters {
-  const params = CalculationMethod[s.method]();
+  const params = s.method in EXTRA_METHODS
+    ? EXTRA_METHODS[s.method as keyof typeof EXTRA_METHODS]()
+    : CalculationMethod[(s.method in CalculationMethod ? s.method : 'Egyptian') as AdhanMethodId]();
   params.madhab = s.madhab === 'hanafi' ? Madhab.Hanafi : Madhab.Shafi;
   // Keeps Fajr/Isha sane at high latitudes in summer.
   params.highLatitudeRule = HighLatitudeRule.recommended(new Coordinates(s.location?.latitude ?? 0, s.location?.longitude ?? 0));
