@@ -11,11 +11,11 @@ import { Dhikr } from '../../core/models';
     <section class="single" (touchstart)="touchStart($event)" (touchend)="touchEnd($event)" (touchcancel)="cancelTouch()">
       <nav [attr.aria-label]="'athkarPrefs.single' | translate">
         <button type="button" [disabled]="index() === 0" (click)="move(-1)" [attr.aria-label]="'category.previousDhikr' | translate">
-          <ion-icon [name]="rtl() ? 'chevron-forward' : 'chevron-back'" />
+          <ion-icon name="chevron-back" />
         </button>
         <span aria-live="polite" dir="ltr">{{ index() + 1 }} / {{ items().length }}</span>
         <button type="button" [disabled]="index() >= items().length - 1" (click)="move(1)" [attr.aria-label]="'category.nextDhikr' | translate">
-          <ion-icon [name]="rtl() ? 'chevron-back' : 'chevron-forward'" />
+          <ion-icon name="chevron-forward" />
         </button>
       </nav>
       <ng-container *ngTemplateOutlet="card(); context: { $implicit: items()[index()], index: index() }" />

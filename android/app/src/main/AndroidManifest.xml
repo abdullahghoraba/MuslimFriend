@@ -84,6 +84,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- Requested at runtime only if the user chooses automatic location for prayer times -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- Optional: the user may grant precise instead of approximate; only improves the fix, never required -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-feature android:name="android.hardware.location" android:required="false" />
 
     <!-- Used only to stream or download Quran recitation audio when the user asks for it.

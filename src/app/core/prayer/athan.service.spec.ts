@@ -27,6 +27,15 @@ const nativeMock = {
   previewAthan: vi.fn(async () => {}),
   stopAthan: vi.fn(async () => {}),
 };
+vi.mock('@capacitor/filesystem', () => ({
+  Directory: { Data: 'DATA' },
+  Filesystem: {
+    writeFile: vi.fn(async () => ({ uri: '' })),
+    getUri: vi.fn(async ({ path }: { path: string }) => ({ uri: 'file:///data/' + path })),
+    deleteFile: vi.fn(async () => {}),
+    readFile: vi.fn(async () => ({ data: '' })),
+  },
+}));
 vi.mock('@capacitor/preferences', () => ({
   Preferences: { get: vi.fn(async () => ({ value: null })), set: vi.fn(async () => {}) },
 }));
@@ -171,9 +180,36 @@ describe('AthanService persistence and platform bridge', () => {
     await service.update({ volume: 0.5 });
     expect(Preferences.set).toHaveBeenCalledWith({
       key: 'athanSettings',
-      value: JSON.stringify(service.settings()),
+      value: expect.stringContaining('"volume":0.5'),
     });
     expect(nativeMock.scheduleAthan).toHaveBeenCalled();
+  });
+  it('downloads the Madinah athan once and makes it the default, with its own Fajr athan', async () => {
+    const fetched: string[] = [];
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+      fetched.push(url);
+      return { ok: true, blob: async () => new Blob(['mp3']) };
+    }));
+    await service.update({ enabled: true });
+    await vi.waitFor(() => expect(service.settings().defaultRecordingSet).toBe(true));
+    const sounds = service.settings().perPrayer;
+    expect(fetched).toHaveLength(2);
+    expect(sounds.fajr.sound).toBe('file:/data/athan/rec-madinah-essam-bukhari-fajr.mp3');
+    for (const p of ['dhuhr', 'asr', 'maghrib', 'isha'] as const)
+      expect(sounds[p].sound).toBe('file:/data/athan/rec-madinah-essam-bukhari.mp3');
+    await service.reschedule();
+    expect(fetched).toHaveLength(2);
+    vi.unstubAllGlobals();
+  });
+  it('keeps a sound the user picked instead of the Madinah default', async () => {
+    const fetch = vi.fn();
+    vi.stubGlobal('fetch', fetch);
+    const perPrayer = { ...service.settings().perPrayer, asr: { ...service.settings().perPrayer.asr, sound: 'system' as const } };
+    await service.update({ enabled: true, perPrayer });
+    await vi.waitFor(() => expect(service.settings().defaultRecordingSet).toBe(true));
+    expect(fetch).not.toHaveBeenCalled();
+    expect(service.settings().perPrayer.dhuhr.sound).toBe('athan');
+    vi.unstubAllGlobals();
   });
   it('updates the 15 widget prayers even when disabled, then cancels alarms', async () => {
     await service.reschedule();

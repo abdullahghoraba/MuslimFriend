@@ -3,11 +3,13 @@ package com.muslimfriend.app.overlay
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
-import android.os.CancellationSignal
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
@@ -32,6 +34,7 @@ import com.getcapacitor.annotation.PermissionCallback
     permissions = [
         Permission(alias = "notifications", strings = [Manifest.permission.POST_NOTIFICATIONS]),
         Permission(alias = "location", strings = [Manifest.permission.ACCESS_COARSE_LOCATION]),
+        Permission(alias = "preciseLocation", strings = [Manifest.permission.ACCESS_FINE_LOCATION]),
     ],
 )
 class AthkarOverlayPlugin : Plugin() {
@@ -341,7 +344,8 @@ class AthkarOverlayPlugin : Plugin() {
     @PluginMethod
     fun getApproximateLocation(call: PluginCall) {
         if (getPermissionState("location") != PermissionState.GRANTED) {
-            requestPermissionForAlias("location", call, "locationPermissionCallback")
+            // Asks for both: Android 12+ lets the user pick "precise" or "approximate", and either works.
+            requestPermissionForAliases(arrayOf("location", "preciseLocation"), call, "locationPermissionCallback")
             return
         }
         readLocation(call)
@@ -354,9 +358,10 @@ class AthkarOverlayPlugin : Plugin() {
     }
 
     /**
-     * Current position (coarse is enough for prayer times). Tries Android's fused provider first (it uses GPS,
-     * Wi-Fi and cell under the hood, also with the coarse permission), then network, then the freshest
-     * last-known fix from any provider. Rejects with "OFF" when location is switched off on the phone.
+     * Current position. Listens to every enabled provider at once (fused, network, and GPS when the user allowed
+     * precise location) and takes the first accurate fix, else the most accurate one within 25 s, else the
+     * freshest last-known fix. A good fix from the last few minutes is used straight away. Rejects with "OFF"
+     * when location is switched off on the phone.
      */
     @SuppressLint("MissingPermission")
     private fun readLocation(call: PluginCall) {
@@ -365,36 +370,46 @@ class AthkarOverlayPlugin : Plugin() {
             call.reject("Location is turned off", "OFF")
             return
         }
+        val precise = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED
+        // An approximate fix is about 2 km off on purpose; that still moves prayer times by seconds, not minutes.
+        val goodEnough = if (precise) 150f else 3_000f
         val enabled = lm.getProviders(true)
-        val candidates = buildList {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) add(LocationManager.FUSED_PROVIDER)
-            add(LocationManager.NETWORK_PROVIDER)
-            add(LocationManager.GPS_PROVIDER)
-        }.filter { it in enabled }
-        val lastKnown = {
-            enabled.mapNotNull { p -> runCatching { lm.getLastKnownLocation(p) }.getOrNull() }.maxByOrNull { it.time }
-        }
-        var done = false
-        val handler = Handler(Looper.getMainLooper())
-        val finish = { loc: Location? ->
-            if (!done) {
-                done = true
-                val best = loc ?: lastKnown()
-                if (best == null) call.reject("Location unavailable", "UNAVAILABLE")
-                else call.resolve(JSObject().put("latitude", best.latitude).put("longitude", best.longitude))
-            }
-        }
-        val provider = candidates.firstOrNull()
-        if (provider == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            finish(null)
+        val providers = enabled.filter { it != LocationManager.PASSIVE_PROVIDER && (precise || it != LocationManager.GPS_PROVIDER) }
+        val lastKnown = enabled.mapNotNull { p -> runCatching { lm.getLastKnownLocation(p) }.getOrNull() }.maxByOrNull { it.time }
+        val resolve = { loc: Location -> call.resolve(JSObject().put("latitude", loc.latitude).put("longitude", loc.longitude)) }
+        if (lastKnown != null && System.currentTimeMillis() - lastKnown.time < 5 * 60_000 && lastKnown.accuracy <= goodEnough) {
+            resolve(lastKnown)
             return
         }
-        val cancel = CancellationSignal()
-        // Don't keep the user waiting more than 15 s; fall back to the last known fix.
-        handler.postDelayed({ cancel.cancel(); finish(null) }, 15_000)
-        runCatching {
-            lm.getCurrentLocation(provider, cancel, ContextCompat.getMainExecutor(context)) { loc -> finish(loc) }
-        }.onFailure { finish(null) }
+        val handler = Handler(Looper.getMainLooper())
+        var best: Location? = null
+        var done = false
+        lateinit var listener: LocationListener
+        val finish = {
+            if (!done) {
+                done = true
+                handler.removeCallbacksAndMessages(null)
+                runCatching { lm.removeUpdates(listener) }
+                val loc = best ?: lastKnown
+                if (loc == null) call.reject("Location unavailable", "UNAVAILABLE") else resolve(loc)
+            }
+        }
+        listener = object : LocationListener {
+            override fun onLocationChanged(loc: Location) {
+                if (best.let { it == null || loc.accuracy < it.accuracy }) best = loc
+                if (loc.accuracy <= goodEnough) finish()
+            }
+            // Android 8-10 declare these without a default body.
+            override fun onProviderEnabled(provider: String) {}
+            override fun onProviderDisabled(provider: String) {}
+            @Deprecated("Deprecated in Java")
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+        }
+        val listening = providers.count { p ->
+            runCatching { lm.requestLocationUpdates(p, 1_000L, 0f, listener, Looper.getMainLooper()) }.isSuccess
+        }
+        if (listening == 0) finish() else handler.postDelayed({ finish() }, 25_000)
     }
 
     @PluginMethod

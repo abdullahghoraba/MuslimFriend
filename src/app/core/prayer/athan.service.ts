@@ -5,7 +5,7 @@ import { Preferences } from '@capacitor/preferences';
 import { TranslateService } from '@ngx-translate/core';
 import { AthanEvent, AthanNative, AthanSound, AthanPluginMethods, AthanStopWay } from '../../native/athan-plugin';
 import { PrayerService } from './prayer.service';
-import { ATHAN_RECORDINGS } from './athan-sounds';
+import { ATHAN_RECORDINGS, AthanRecording, DEFAULT_RECORDING } from './athan-sounds';
 import { PrayerSettings, prayerTimesFor } from './prayer-times';
 
 export const ATHAN_PLUGIN = new InjectionToken<AthanPluginMethods>('ATHAN_PLUGIN', {
@@ -32,6 +32,8 @@ export interface AthanSettings {
   customSounds: { name: string; path: string; recordingId?: string }[];
   /** Stop the playing athan by turning the phone over, shaking it, or pressing a volume button. */
   stopOn: Record<AthanStopWay, boolean>;
+  /** The Madinah athan was made the default once (never again, so a later choice of the user stays). */
+  defaultRecordingSet: boolean;
 }
 export function stopWays(settings: AthanSettings): AthanStopWay[] {
   return (['flip', 'shake', 'volume'] as const).filter((w) => settings.stopOn[w]);
@@ -51,6 +53,7 @@ export function defaultAthanSettings(): AthanSettings {
     silentMinutes: 20,
     customSounds: [],
     stopOn: { flip: true, shake: true, volume: true },
+    defaultRecordingSet: false,
   };
 }
 type Text = (key: string, params?: Record<string, unknown>) => string;
@@ -198,6 +201,7 @@ export class AthanService {
   }
   private async schedule(): Promise<void> {
     if (!Capacitor.isNativePlatform()) return;
+    this.ensureDefaultRecording();
     const t: Text = (k, params) => this.translate.instant('athan.' + k, params);
     const now = new Date();
     const prayers: { name: string; at: number }[] = [];
@@ -250,31 +254,15 @@ export class AthanService {
    */
   async downloadRecording(id: string, useForAll = false): Promise<AthanSound> {
     await this.load();
-    const existing = this.recordingSound(id);
     const rec = ATHAN_RECORDINGS.find((r) => r.id === id);
     if (!rec) throw new Error('unknown recording');
-    let sound = existing;
-    if (!sound) {
+    let sound = this.recordingSound(id);
+    if (!sound || (rec.fajr && !this.recordingSound(rec.fajr.id))) {
       this.downloading.set(id);
       try {
-        const res = await fetch(rec.url);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const blob = await res.blob();
-        const data = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(String(reader.result).split(',')[1]);
-          reader.onerror = () => reject(reader.error);
-          reader.readAsDataURL(blob);
-        });
-        const relative = 'athan/rec-' + rec.id + '.' + rec.ext;
-        await Filesystem.writeFile({ path: relative, directory: Directory.Data, data, recursive: true });
-        const { uri } = await Filesystem.getUri({ path: relative, directory: Directory.Data });
-        const path = uri.startsWith('file://') ? uri.slice(7) : uri;
-        if (!Capacitor.isNativePlatform()) this.webSounds.set(path, URL.createObjectURL(blob));
-        await this.update({
-          customSounds: [...this.state().customSounds.filter((c) => c.recordingId !== id), { name: rec.nameAr, path, recordingId: id }],
-        });
-        sound = ('file:' + path) as AthanSound;
+        // The Fajr file first: the recording only counts as downloaded once both are on the phone.
+        if (rec.fajr && !this.recordingSound(rec.fajr.id)) await this.saveRecording(rec.fajr.id, rec.fajr.url, rec.fajr.ext, rec.nameAr);
+        sound = this.recordingSound(id) ?? (await this.saveRecording(id, rec.url, rec.ext, rec.nameAr));
       } finally {
         this.downloading.set(null);
       }
@@ -284,11 +272,63 @@ export class AthanService {
     return sound;
   }
 
-  /** Same athan sound for all five prayers. */
+  private async saveRecording(id: string, url: string, ext: AthanRecording['ext'], name: string): Promise<AthanSound> {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const blob = await res.blob();
+    const data = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result).split(',')[1]);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(blob);
+    });
+    const relative = 'athan/rec-' + id + '.' + ext;
+    await Filesystem.writeFile({ path: relative, directory: Directory.Data, data, recursive: true });
+    const { uri } = await Filesystem.getUri({ path: relative, directory: Directory.Data });
+    const path = uri.startsWith('file://') ? uri.slice(7) : uri;
+    if (!Capacitor.isNativePlatform()) this.webSounds.set(path, URL.createObjectURL(blob));
+    await this.update({
+      customSounds: [...this.state().customSounds.filter((c) => c.recordingId !== id), { name, path, recordingId: id }],
+    });
+    return ('file:' + path) as AthanSound;
+  }
+
+  /** The sound Fajr gets when [sound] is used for all prayers: the same muezzin's Fajr athan when there is one. */
+  fajrSoundFor(sound: AthanSound): AthanSound {
+    const id = this.state().customSounds.find((c) => 'file:' + c.path === sound)?.recordingId;
+    const fajr = ATHAN_RECORDINGS.find((r) => r.id === id)?.fajr;
+    return (fajr && this.recordingSound(fajr.id)) || sound;
+  }
+
+  /** Same athan sound for all five prayers (Fajr gets the muezzin's Fajr athan when there is one). */
   async useForAll(sound: AthanSound): Promise<void> {
     const perPrayer = { ...this.state().perPrayer };
-    for (const p of ATHAN_PRAYERS) perPrayer[p] = { ...perPrayer[p], sound };
+    for (const p of ATHAN_PRAYERS) perPrayer[p] = { ...perPrayer[p], sound: p === 'fajr' ? this.fajrSoundFor(sound) : sound };
     await this.update({ perPrayer });
+  }
+
+  private defaultDownload?: Promise<void>;
+
+  /**
+   * Makes the Madinah athan the default once: when the athan is on and every prayer still uses the built-in athan,
+   * downloads it in the background and switches to it. Retried on the next schedule when offline.
+   */
+  private ensureDefaultRecording(): void {
+    const s = this.state();
+    if (s.defaultRecordingSet || !s.enabled || this.defaultDownload || !Capacitor.isNativePlatform()) return;
+    this.defaultDownload = (async () => {
+      if (ATHAN_PRAYERS.some((p) => this.state().perPrayer[p].sound !== 'athan')) {
+        await this.update({ defaultRecordingSet: true }); // the user already picked a sound
+        return;
+      }
+      const sound = await this.downloadRecording(DEFAULT_RECORDING);
+      // The user may have picked another sound while it downloaded.
+      if (ATHAN_PRAYERS.every((p) => ['athan', sound, this.fajrSoundFor(sound)].includes(this.state().perPrayer[p].sound)))
+        await this.useForAll(sound);
+      await this.update({ defaultRecordingSet: true });
+    })()
+      .catch((e) => console.warn('[athan] default recording', e))
+      .finally(() => (this.defaultDownload = undefined));
   }
 
   async removeSound(path: string): Promise<void> {

@@ -1,7 +1,7 @@
 /**
- * Athan recordings the user can download once (then they play offline). Every one is freely licensed on
- * Wikimedia Commons; the credit line is shown in the app as the licences require.
- * The default athan is BUILTIN_ATHAN below, which needs no download.
+ * Athan recordings the user can download once (then they play offline), from Wikimedia Commons or the Internet
+ * Archive under the licence shown in their credit line. The Madinah athan (DEFAULT_RECORDING) downloads by itself
+ * when the athan is turned on; until it is on the phone, BUILTIN_ATHAN below plays, which needs no download.
  */
 export interface AthanRecording {
   id: string;
@@ -14,11 +14,34 @@ export interface AthanRecording {
   /** "Author · licence" as required for attribution. */
   credit: string;
   source: string;
+  /** The same muezzin's Fajr athan (with «الصلاة خير من النوم»): downloaded alongside and used for Fajr. */
+  fajr?: { id: string; url: string; ext: AthanRecording['ext']; sizeMb: number };
 }
 
 const COMMONS = 'https://upload.wikimedia.org/wikipedia/commons';
+const ARCHIVE = 'https://archive.org/download/azaan-of-world-mosques-english';
+
+/** Downloaded automatically when the athan is turned on, and then the athan for every prayer. */
+export const DEFAULT_RECORDING = 'madinah-essam-bukhari';
 
 export const ATHAN_RECORDINGS: AthanRecording[] = [
+  {
+    // Both files were checked to hold the complete athan (12 and 14 phrases), ending in silence.
+    id: DEFAULT_RECORDING,
+    nameAr: 'أذان المسجد النبوي - عصام بخاري',
+    nameEn: "Athan of the Prophet's Mosque, Madinah - Essam Bukhari",
+    url: `${ARCHIVE}/${encodeURIComponent('عصام بخاري2 (www.alqurantranslation.com).MP3')}`,
+    ext: 'mp3',
+    sizeMb: 4.7,
+    credit: 'Internet Archive · Public Domain Mark',
+    source: 'https://archive.org/details/azaan-of-world-mosques-english',
+    fajr: {
+      id: DEFAULT_RECORDING + '-fajr',
+      url: `${ARCHIVE}/${encodeURIComponent('عصام بخاري1 (www.alqurantranslation.com).MP3')}`,
+      ext: 'mp3',
+      sizeMb: 2.6,
+    },
+  },
   {
     id: 'haram-makkah',
     nameAr: 'أذان المسجد الحرام - مكة المكرمة',

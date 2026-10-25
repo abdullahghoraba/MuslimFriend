@@ -772,12 +772,11 @@
     "stopHelp": "You can always stop it with the Stop button in the notification. Try these with the ▶ preview button.",
     "rename": "Rename",
     "muezzin": "Muezzin (athan voice)",
-    "muezzinHelp": "Download an athan once and it works offline. The al-Masjid al-Haram athan is the default and downloads automatically when you turn the athan on. You can still pick a different voice per prayer below.",
+    "muezzinHelp": "The athan of the Prophet's Mosque in Madinah by Sheikh Essam Bukhari is the default: it downloads by itself (about 5 MB) when you turn the athan on, together with its Fajr athan, and then works offline. Until the download finishes, the athan built into the app plays. You can still pick a different voice per prayer below.",
     "download": "Download",
     "downloadFailed": "Couldn't download the athan. Check your internet connection and try again.",
     "useForAll": "Use for all",
-    "inUse": "In use ✓",
-    "noMadinah": "No recording of the Prophet's Mosque (Madinah) athan is available under a licence that allows including it in the app. If you have one, add it under \"Sound → Add sound…\", name it and tap \"Use for all\"."
+    "inUse": "In use ✓"
   },
   "athkarPrefs": {
     "title": "Athkar options",

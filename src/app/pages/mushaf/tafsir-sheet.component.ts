@@ -86,7 +86,7 @@ type Source = TafsirId | `r${number}`;
       <p class="source">{{ sourceBy() }}</p>
       <div class="nav">
         <ion-button fill="clear" (click)="step(-1)" [disabled]="index() === 0">
-          <ion-icon slot="start" name="chevron-forward" class="prev" aria-hidden="true" />
+          <ion-icon slot="start" name="chevron-back" class="prev" aria-hidden="true" />
           {{ 'mushaf.prevAyah' | translate }}
         </ion-button>
         <ion-button fill="clear" (click)="share()" [disabled]="!text()">
@@ -94,7 +94,7 @@ type Source = TafsirId | `r${number}`;
         </ion-button>
         <ion-button fill="clear" (click)="step(1)" [disabled]="index() === 6235">
           {{ 'mushaf.nextAyah' | translate }}
-          <ion-icon slot="end" name="chevron-back" class="next" aria-hidden="true" />
+          <ion-icon slot="end" name="chevron-forward" class="next" aria-hidden="true" />
         </ion-button>
       </div>
     </ion-content>
@@ -107,7 +107,6 @@ type Source = TafsirId | `r${number}`;
     .covered, .source { font-size: 0.8rem; color: var(--app-muted); }
     .offline { text-align: center; color: var(--app-muted); padding: 16px 0; }
     .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
-    :host-context([dir='ltr']) .prev, :host-context([dir='ltr']) .next { transform: scaleX(-1); }
   `,
 })
 export class TafsirSheetComponent implements OnInit {

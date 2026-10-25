@@ -97,7 +97,8 @@
         }
       </div>
 
-      <div class="page-footer">
+      <!-- Laid out like a printed mushaf in every language: the next page is on the left. -->
+      <div class="page-footer" dir="ltr">
         <button type="button" class="turn" (click)="next(); $event.stopPropagation()" [disabled]="page() >= 604"
                 [attr.aria-label]="'mushaf.nextPage' | translate">‹</button>
         <span class="page-num">{{ pageLabel() }}</span>
