@@ -13,7 +13,10 @@ export class ShareService {
     // athkar) at 2x came out blank or failed. Keep under 12 MP, and never above 2x.
     const area = Math.max(1, element.offsetWidth * element.offsetHeight);
     const pixelRatio = Math.min(2, Math.sqrt(12_000_000 / area));
-    const dataUrl = await toPng(element, { pixelRatio, backgroundColor: background, cacheBust: true });
+    // The card waits off-screen (position: fixed, 10000px past the inline start). The copy that is drawn keeps
+    // those styles, so in Arabic the words landed outside the picture and the image came out empty.
+    const style = { position: 'static', inset: 'auto', left: 'auto', right: 'auto', top: 'auto', margin: '0' };
+    const dataUrl = await toPng(element, { pixelRatio, backgroundColor: background, cacheBust: true, style });
     if (dataUrl.length < 100) throw new Error('empty image');
 
     if (!Capacitor.isNativePlatform()) {
