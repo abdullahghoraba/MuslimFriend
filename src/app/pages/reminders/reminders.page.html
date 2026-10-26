@@ -35,7 +35,7 @@
         <p>{{ 'reminders.useApproxHint' | translate }}</p>
       </ion-label>
     </ion-item>
-    <ion-item button (click)="cityPickerOpen.set(true)">
+    <ion-item button (click)="chooseCity()">
       <ion-icon slot="start" name="list-outline" aria-hidden="true" />
       <ion-label>{{ 'reminders.chooseCity' | translate }}</ion-label>
     </ion-item>
@@ -277,30 +277,4 @@
   }
   <p class="note">{{ 'reminders.inexactNote' | translate }}</p>
 
-  <ion-modal [isOpen]="cityPickerOpen()" (didDismiss)="cityPickerOpen.set(false)">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>{{ 'reminders.chooseCity' | translate }}</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="cityPickerOpen.set(false)">{{ 'common.close' | translate }}</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-        <ion-toolbar>
-          <ion-searchbar [placeholder]="'reminders.searchCity' | translate" [value]="cityQuery()"
-                         (ionInput)="cityQuery.set($event.detail.value ?? '')" />
-        </ion-toolbar>
-      </ion-header>
-      <ion-content>
-        <ion-list>
-          @for (c of filteredCities(); track c.id) {
-            <ion-item button (click)="chooseCity(c)">
-              <ion-label>{{ cityName(c) }}</ion-label>
-              <ion-note slot="end">{{ country(c) }}</ion-note>
-            </ion-item>
-          }
-        </ion-list>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
 </ion-content>

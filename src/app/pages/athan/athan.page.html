@@ -169,10 +169,41 @@
       <ion-item
         ><ion-toggle
           [checked]="settings().sunrise.notify"
-          (ionChange)="update({ sunrise: { notify: $event.detail.checked } })"
+          (ionChange)="update({ sunrise: { ...settings().sunrise, notify: $event.detail.checked } })"
           >{{ 'athan.sunrise' | translate }}</ion-toggle
         ></ion-item
       >
+      <ion-item
+        ><ion-select
+          [label]="'athan.sunrisePre' | translate"
+          [value]="settings().sunrise.preMinutes"
+          (ionChange)="update({ sunrise: { ...settings().sunrise, preMinutes: +$event.detail.value } })"
+        >
+          @for (n of before; track n) {
+            <ion-select-option [value]="n">{{ minutes(n) }}</ion-select-option>
+          }
+        </ion-select></ion-item
+      >
+      <ion-item
+        ><ion-toggle
+          [checked]="settings().sunrise.duha"
+          (ionChange)="update({ sunrise: { ...settings().sunrise, duha: $event.detail.checked } })"
+          >{{ 'athan.duha' | translate }}</ion-toggle
+        ></ion-item
+      >
+      @if (settings().sunrise.duha) {
+        <ion-item
+          ><ion-select
+            [label]="'athan.duhaAfter' | translate"
+            [value]="settings().sunrise.duhaMinutes"
+            (ionChange)="update({ sunrise: { ...settings().sunrise, duhaMinutes: +$event.detail.value } })"
+          >
+            @for (n of duhaOptions; track n) {
+              <ion-select-option [value]="n">{{ minutes(n) }}</ion-select-option>
+            }
+          </ion-select></ion-item
+        >
+      }
       <ion-item
         ><ion-range
           [label]="'athan.volume' | translate"

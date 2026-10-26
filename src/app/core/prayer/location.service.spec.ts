@@ -1,4 +1,4 @@
-import { City, distanceKm, nearestCity, searchCities } from './location.service';
+import { City, citiesIn, countriesOf, distanceKm, nearestCity, searchCountries } from './location.service';
 
 const cities: City[] = [
   { id: 'cairo', ar: 'القاهرة', en: 'Cairo', country: 'EG', lat: 30.04, lng: 31.24, method: 'Egyptian' },
@@ -21,12 +21,17 @@ describe('location helpers', () => {
   });
 });
 
-describe('city search', () => {
-  it('matches Arabic without hamza, English in any case, and the country name or code', () => {
-    expect(searchCities(cities, 'مكه', 'ar').map((c) => c.id)).toEqual(['makkah']);
-    expect(searchCities(cities, 'CAIRO', 'en').map((c) => c.id)).toEqual(['cairo']);
-    expect(searchCities(cities, 'مصر', 'ar').map((c) => c.id)).toEqual(['cairo']);
-    expect(searchCities(cities, 'sa', 'en').map((c) => c.id)).toEqual(['makkah']);
-    expect(searchCities(cities, '', 'ar', 1)).toHaveLength(1);
+describe('country then city', () => {
+  it('lists countries by name in the app language and finds them by name or code', () => {
+    const countries = countriesOf(cities, 'ar');
+    expect(countries.map((c) => c.code).sort()).toEqual(['EG', 'SA']);
+    expect(searchCountries(countries, 'مصر').map((c) => c.code)).toEqual(['EG']);
+    expect(searchCountries(countriesOf(cities, 'en'), 'sa').map((c) => c.code)).toEqual(['SA']);
+  });
+  it('lists the cities of one country, matching Arabic without hamza and English in any case', () => {
+    expect(citiesIn(cities, 'SA', '').map((c) => c.id)).toEqual(['makkah']);
+    expect(citiesIn(cities, 'SA', 'مكه').map((c) => c.id)).toEqual(['makkah']);
+    expect(citiesIn(cities, 'EG', 'CAIRO').map((c) => c.id)).toEqual(['cairo']);
+    expect(citiesIn(cities, 'EG', 'makkah')).toEqual([]);
   });
 });

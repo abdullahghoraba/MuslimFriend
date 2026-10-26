@@ -2,10 +2,11 @@ import { Component, ElementRef, OnDestroy, OnInit, computed, inject, signal, vie
 import { App } from '@capacitor/app';
 import { PluginListenerHandle } from '@capacitor/core';
 import { Preferences } from '@capacitor/preferences';
-import { IonContent, IonIcon, NavController } from '@ionic/angular';
+import { IonContent, IonIcon, ModalController, NavController } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
 import { PrayerService } from '../../core/prayer/prayer.service';
-import { City, LocationService, countryName, searchCities } from '../../core/prayer/location.service';
+import { LocationService } from '../../core/prayer/location.service';
+import { pickCity } from '../../shared/city-picker.component';
 import { AppearanceService } from '../../core/services/appearance.service';
 import { OverlayService } from '../../core/services/overlay.service';
 import { SettingsService } from '../../core/services/settings.service';
@@ -22,6 +23,7 @@ type Feature = 'overlay' | 'daily' | 'sleep' | 'friday';
 })
 export class OnboardingPage implements OnInit, OnDestroy {
   readonly settings = inject(SettingsService);
+  private readonly modals = inject(ModalController);
   private readonly appearance = inject(AppearanceService);
   private readonly overlayService = inject(OverlayService);
   private readonly prayerService = inject(PrayerService);
@@ -40,12 +42,6 @@ export class OnboardingPage implements OnInit, OnDestroy {
   readonly notifications = signal(false);
   readonly overlayGranted = signal(false);
   readonly battery = signal(false);
-  readonly picker = signal(false);
-  readonly cities = signal<City[]>([]);
-  readonly query = signal('');
-  readonly filteredCities = computed(() => {
-    return searchCities(this.cities(), this.query(), this.settings.settings().language);
-  });
   readonly permission = computed<Permission | undefined>(() => {
     const f = this.features();
     const queue: Permission[] = [];
@@ -120,7 +116,7 @@ export class OnboardingPage implements OnInit, OnDestroy {
 
   async move(step: number): Promise<void> {
     await Preferences.set({ key: 'onboardingStep', value: String(step) });
-    this.step.set(step); this.error.set(false); this.picker.set(false); this.focusHeading();
+    this.step.set(step); this.error.set(false); this.focusHeading();
   }
 
   async next(): Promise<void> {
@@ -143,7 +139,7 @@ export class OnboardingPage implements OnInit, OnDestroy {
   private advancePermission(): void {
     const p = this.permission();
     if (p) this.completed.update(list => [...list, p]);
-    this.pendingOverlay = false; this.picker.set(false); this.focusHeading();
+    this.pendingOverlay = false; this.focusHeading();
   }
 
   async allow(): Promise<void> {
@@ -175,18 +171,10 @@ export class OnboardingPage implements OnInit, OnDestroy {
     if (this.permission() === 'overlay') this.advancePermission();
   }
 
+  /** Country first, then city. */
   async chooseCity(): Promise<void> {
-    await this.run(async () => {
-      if (!this.cities().length) this.cities.set(await this.locationService.loadCities());
-      this.picker.set(true);
-    });
-  }
-
-  country(city: City): string {
-    return countryName(city.country, this.settings.settings().language);
-  }
-
-  async selectCity(city: City): Promise<void> {
+    const city = await pickCity(this.modals);
+    if (!city) return;
     await this.run(async () => {
       await this.prayerService.updatePrayer({ location: { latitude: round2(city.lat), longitude: round2(city.lng), name: city.ar + '|' + city.en, source: 'manual' }, method: city.method });
       this.advancePermission();

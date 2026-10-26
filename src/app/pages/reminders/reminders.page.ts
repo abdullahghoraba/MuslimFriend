@@ -13,9 +13,7 @@ import {
   IonLabel,
   IonList,
   IonListHeader,
-  IonModal,
   IonNote,
-  IonSearchbar,
   IonSegment,
   IonSegmentButton,
   IonSelect,
@@ -23,12 +21,14 @@ import {
   IonTitle,
   IonToggle,
   IonToolbar,
+  ModalController,
   ToastController,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { METHOD_IDS, MethodId, PRAYER_NAMES, PrayerName, ReminderSettings } from '../../core/prayer/prayer-times';
 import { PrayerService } from '../../core/prayer/prayer.service';
-import { City, LocationService, countryName, searchCities } from '../../core/prayer/location.service';
+import { LocationService } from '../../core/prayer/location.service';
+import { pickCity } from '../../shared/city-picker.component';
 import { SettingsService } from '../../core/services/settings.service';
 import { AthkarOverlay } from '../../native/athkar-overlay';
 
@@ -37,7 +37,7 @@ import { AthkarOverlay } from '../../native/athkar-overlay';
   imports: [
     RouterLink, FormsModule, TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList,
     IonListHeader, IonItem, IonLabel, IonNote, IonToggle, IonSelect, IonSelectOption, IonSegment, IonSegmentButton,
-    IonButton, IonIcon, IonModal, IonSearchbar, IonInput,
+    IonButton, IonIcon, IonInput,
   ],
   templateUrl: './reminders.page.html',
   styleUrl: './reminders.page.scss',
@@ -46,6 +46,7 @@ export class RemindersPage {
   private readonly prayerService = inject(PrayerService);
   private readonly locationService = inject(LocationService);
   private readonly settings = inject(SettingsService);
+  private readonly modals = inject(ModalController);
   private readonly toast = inject(ToastController);
   private readonly translate = inject(TranslateService);
 
@@ -57,21 +58,12 @@ export class RemindersPage {
   readonly offsets = [0, 5, 10, 15, 20, 30, 45, 60, 90];
   readonly lang = computed(() => this.settings.settings().language);
 
-  readonly cities = signal<City[]>([]);
-  readonly cityQuery = signal('');
-  readonly cityPickerOpen = signal(false);
   readonly locating = signal(false);
   readonly notificationsGranted = signal(true);
-  readonly filteredCities = computed(() => {
-    return searchCities(this.cities(), this.cityQuery(), this.lang());
-  });
 
   async ionViewWillEnter(): Promise<void> {
     await this.prayerService.load();
     this.notificationsGranted.set((await AthkarOverlay.checkNotificationPermission()).granted);
-    if (!this.cities().length) {
-      this.cities.set(await this.locationService.loadCities());
-    }
   }
 
   time(d: Date | undefined): string {
@@ -79,16 +71,10 @@ export class RemindersPage {
     return new Intl.DateTimeFormat(this.lang() === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { hour: 'numeric', minute: '2-digit' }).format(d);
   }
 
-  cityName(c: City): string {
-    return this.lang() === 'ar' ? c.ar : c.en;
-  }
-
-  country(c: City): string {
-    return countryName(c.country, this.lang());
-  }
-
-  async chooseCity(c: City): Promise<void> {
-    this.cityPickerOpen.set(false);
+  /** Country first, then city. */
+  async chooseCity(): Promise<void> {
+    const c = await pickCity(this.modals);
+    if (!c) return;
     await this.prayerService.updatePrayer({
       location: { latitude: c.lat, longitude: c.lng, name: `${c.ar}|${c.en}`, source: 'manual' },
       method: c.method,

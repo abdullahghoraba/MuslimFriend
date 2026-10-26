@@ -25,7 +25,7 @@ import { SettingsService } from '../../core/services/settings.service';
 import { ShareService } from '../../core/services/share.service';
 
 const TAFSIR_PREF = 'tafsirChoice';
-/** Bundled id ('muyassar' | 'jalalayn' | 'sahih') or a downloadable one ('r14', 'r91', ...). */
+/** The bundled 'muyassar' or a downloadable one ('r14', 'r91', ...). */
 type Source = TafsirId | `r${number}`;
 
 /** Tafsir / translation for one ayah, with next/previous ayah navigation. Opened as a sheet modal. */
@@ -132,7 +132,7 @@ export class TafsirSheetComponent implements OnInit {
   readonly lang = computed(() => this.settings.settings().language);
   readonly isRemote = computed(() => this.source().startsWith('r'));
   readonly remoteInfo = computed(() => (this.isRemote() ? this.library.find(Number(this.source().slice(1))) : undefined));
-  readonly textLang = computed(() => (this.isRemote() ? this.remoteInfo()?.lang : this.source() === 'sahih' ? 'en' : 'ar') ?? 'ar');
+  readonly textLang = computed(() => (this.isRemote() ? this.remoteInfo()?.lang : 'ar') ?? 'ar');
   readonly ref = computed(() => this.quran.ayahAt(this.index()));
   readonly ayahText = computed(() => splitBasmala(this.ref(), this.ref().text).text);
   readonly num = computed(() => String(this.ref().aya));
@@ -152,7 +152,6 @@ export class TafsirSheetComponent implements OnInit {
     await this.library.loadImported();
     const { value } = await Preferences.get({ key: TAFSIR_PREF });
     if (value && (isBundled(value) || this.library.find(Number(value.slice(1))))) this.source.set(value as Source);
-    else if (this.lang() === 'en') this.source.set('sahih');
     this.index.set(this.quran.ayah(this.ayahRef()).index);
     await this.loadText();
   }

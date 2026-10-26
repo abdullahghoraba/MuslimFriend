@@ -96,7 +96,6 @@ export const REMOTE_TAFSIRS: RemoteTafsir[] = [
   { apiId: 15, nameAr: 'تفسير الطبري', nameEn: 'Tafsir al-Tabari', lang: 'ar', sizeMb: 60 },
   { apiId: 90, nameAr: 'تفسير القرطبي', nameEn: 'Tafsir al-Qurtubi', lang: 'ar', sizeMb: 35 },
   { apiId: 94, nameAr: 'تفسير البغوي', nameEn: 'Tafsir al-Baghawi', lang: 'ar', sizeMb: 12 },
-  { apiId: 93, nameAr: 'التفسير الوسيط (طنطاوي)', nameEn: 'Al-Wasit (Tantawi)', lang: 'ar', sizeMb: 25 },
   { apiId: 169, nameAr: 'ابن كثير المختصر (إنجليزي)', nameEn: 'Ibn Kathir Abridged (English)', lang: 'en', sizeMb: 20 },
   { apiId: 168, nameAr: 'معارف القرآن (إنجليزي)', nameEn: "Ma'arif al-Qur'an (English)", lang: 'en', sizeMb: 30 },
   { apiId: 817, nameAr: 'تذكير القرآن (إنجليزي)', nameEn: 'Tazkirul Quran (English)', lang: 'en', sizeMb: 6 },

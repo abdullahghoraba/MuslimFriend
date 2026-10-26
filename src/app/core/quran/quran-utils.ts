@@ -31,8 +31,9 @@ export interface QuranMeta {
   };
 }
 
-export type TafsirId = 'muyassar' | 'jalalayn' | 'sahih';
-export const TAFSIR_IDS: TafsirId[] = ['muyassar', 'jalalayn', 'sahih'];
+/** The only tafsir bundled with the app; the others are downloads (tafsir library). */
+export type TafsirId = 'muyassar';
+export const TAFSIR_IDS: TafsirId[] = ['muyassar'];
 
 export const TOTAL_AYAT = 6236;
 export const TOTAL_PAGES = 604;

@@ -129,11 +129,7 @@ export class TafsirLibraryPage {
 
   readonly remote = REMOTE_TAFSIRS;
   readonly lang = computed(() => this.settings.settings().language);
-  readonly bundled = computed(() =>
-    this.lang() === 'ar'
-      ? ['التفسير الميسر', 'تفسير الجلالين', 'الترجمة الإنجليزية (صحيح إنترناشونال)']
-      : ['Al-Muyassar', 'Al-Jalalayn', 'Saheeh International (English)'],
-  );
+  readonly bundled = computed(() => [this.lang() === 'ar' ? 'التفسير الميسر' : 'Al-Muyassar']);
 
   ionViewWillEnter(): void {
     void this.lib.refreshCounts();

@@ -154,6 +154,19 @@ describe('athan event planning', () => {
     expect(asr.at).toBe(prayerTimesFor(cairo, new Date(asr.at))!.times.asr.getTime() - 15 * 60000);
     expect(voice.some((e) => e.prayer === 'isha')).toBe(false);
   });
+  it('reminds before sunrise and of the Duha prayer after it, only when chosen', () => {
+    const s = defaultAthanSettings();
+    s.enabled = true;
+    const sunriseOf = (e: { at: number }) => prayerTimesFor(cairo, new Date(e.at))!.times.sunrise.getTime();
+    expect(buildAthanEvents(cairo, s, text, now, 2).some((e) => e.prayer === 'sunrise')).toBe(false);
+    s.sunrise = { notify: false, preMinutes: 10, duha: true, duhaMinutes: 20 };
+    const events = buildAthanEvents(cairo, s, text, now, 2).filter((e) => e.prayer === 'sunrise');
+    const pre = events.find((e) => e.title === 'sunrisePreTitle')!;
+    const duha = events.find((e) => e.title === 'duhaTitle')!;
+    expect(pre.at).toBe(sunriseOf(pre) - 10 * 60000);
+    expect(duha.at).toBe(sunriseOf(duha) + 20 * 60000);
+    expect(new Set(events.map((e) => e.id)).size).toBe(events.length);
+  });
   it('skips past events, disabled schedules and missing location', () => {
     const s = defaultAthanSettings();
     expect(buildAthanEvents(cairo, s, text, now)).toEqual([]);

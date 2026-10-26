@@ -43,22 +43,24 @@ export function countryName(code: string, lang: string): string {
 
 const fold = (s: string) => normalizeArabic(s).toLocaleLowerCase();
 
-/**
- * Cities matching [query] in Arabic or English (hamza, tashkeel and case ignored), or by country name or code.
- * The list is sorted biggest first, so the first [limit] matches are the likely ones.
- */
-export function searchCities(cities: City[], query: string, lang: string, limit = 60): City[] {
+export interface Country { code: string; name: string }
+
+/** Every country in [cities], named in [lang] and sorted alphabetically in that language. */
+export function countriesOf(cities: City[], lang: string): Country[] {
+  const codes = [...new Set(cities.map((c) => c.country))];
+  return codes.map((code) => ({ code, name: countryName(code, lang) })).sort((a, b) => a.name.localeCompare(b.name, lang));
+}
+
+/** Countries whose name (in [lang]) or code contains [query]. */
+export function searchCountries(countries: Country[], query: string): Country[] {
   const q = fold(query.trim());
-  if (!q) return cities.slice(0, limit);
-  const countries = new Map<string, string>();
-  const out: City[] = [];
-  for (const c of cities) {
-    let country = countries.get(c.country);
-    if (country === undefined) countries.set(c.country, (country = fold(`${countryName(c.country, lang)} ${c.country}`)));
-    if (fold(c.ar).includes(q) || fold(c.en).includes(q) || country.includes(q)) out.push(c);
-    if (out.length >= limit) break;
-  }
-  return out;
+  return q ? countries.filter((c) => fold(`${c.name} ${c.code}`).includes(q)) : countries;
+}
+
+/** The cities of one country (biggest first) whose Arabic or English name contains [query]. */
+export function citiesIn(cities: City[], country: string, query: string): City[] {
+  const q = fold(query.trim());
+  return cities.filter((c) => c.country === country && (!q || fold(c.ar).includes(q) || fold(c.en).includes(q)));
 }
 
 const round2 = (n: number) => Math.round(n * 100) / 100;

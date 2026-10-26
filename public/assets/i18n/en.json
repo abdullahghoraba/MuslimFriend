@@ -795,7 +795,16 @@
     "voiceReminder": "Spoken reminder before prayer",
     "voiceReminderHelp": "The phone says, for example, \"The Asr prayer is near\" the chosen time before each athan that isn't off. It uses your phone's text-to-speech; if that can't speak the language, a chime plays instead.",
     "voiceMinutes": "Before the athan",
-    "voicePreview": "Hear the spoken reminder"
+    "voicePreview": "Hear the spoken reminder",
+    "sunrisePreTitle": "Sunrise in {{duration}}",
+    "sunrisePreBody": "Pray Fajr before its time ends.",
+    "sunriseVoiceTitle": "Sunrise is near",
+    "sunriseVoiceBody": "Pray Fajr before its time ends.",
+    "duhaTitle": "Time for the Duha prayer",
+    "duhaBody": "From when the sun has risen until shortly before Dhuhr; at least two rak'ahs.",
+    "sunrisePre": "Notice before sunrise",
+    "duha": "Duha prayer reminder",
+    "duhaAfter": "After sunrise"
   },
   "athkarPrefs": {
     "title": "Athkar options",
@@ -893,6 +902,9 @@
     "denied": "Location access wasn't allowed. Allow it in the app settings or choose a city from the list.",
     "offTitle": "Location is off",
     "off": "Turn on location on your phone, then tap \"Locate me automatically\" again.",
-    "openSettings": "Open location settings"
+    "openSettings": "Open location settings",
+    "chooseCountry": "Choose a country",
+    "countries": "Countries",
+    "searchCountry": "Search for a country"
   }
 }

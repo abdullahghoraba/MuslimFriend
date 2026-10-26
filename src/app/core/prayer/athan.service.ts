@@ -24,7 +24,11 @@ export interface PrayerAthanSettings {
 export interface AthanSettings {
   enabled: boolean;
   perPrayer: Record<AthanPrayer, PrayerAthanSettings>;
-  sunrise: { notify: boolean };
+  /**
+   * Sunrise (the end of Fajr): a notice at sunrise, one some minutes before it, and a reminder of the Duha prayer
+   * some minutes after it.
+   */
+  sunrise: { notify: boolean; preMinutes: number; duha: boolean; duhaMinutes: number };
   volume: number;
   silentDuringPrayer: boolean;
   silentMinutes: number;
@@ -49,7 +53,7 @@ export function defaultAthanSettings(): AthanSettings {
         { mode: 'athan', sound: 'athan', preMinutes: 0, iqamaMinutes: 0 },
       ]),
     ) as AthanSettings['perPrayer'],
-    sunrise: { notify: false },
+    sunrise: { notify: false, preMinutes: 0, duha: false, duhaMinutes: 20 },
     volume: 0.8,
     silentDuringPrayer: false,
     silentMinutes: 20,
@@ -116,17 +120,27 @@ export function buildAthanEvents(
       if (settings.voiceReminder.enabled && settings.voiceReminder.minutes > 0) add('voice', -settings.voiceReminder.minutes, 'voice');
       if (s.iqamaMinutes > 0) add('iqama', s.iqamaMinutes, 'system');
     }
-    if (settings.sunrise.notify)
+    const sunrise = (kind: AthanEvent['kind'], minutes: number, name: string, sound: AthanSound) => {
+      const count = new Intl.NumberFormat(t('locale').startsWith('ar') ? 'ar-EG-u-nu-latn' : 'en').format(Math.abs(minutes));
+      const duration = t(Math.abs(minutes) >= 3 && Math.abs(minutes) <= 10 ? 'minutesFew' : 'minutes', { count });
+      const title = t(name + 'Title', { duration, minutes: count });
       events.push({
-        id: 'athan-sunrise-' + key,
+        id: 'athan-sunrise-' + key + (name === 'sunrise' ? '' : '-' + name),
         prayer: 'sunrise',
-        kind: 'athan',
-        at: times.sunrise.getTime(),
-        title: t('sunriseTitle'),
-        body: t('sunriseBody'),
-        sound: 'none',
+        kind,
+        at: times.sunrise.getTime() + minutes * 60000,
+        title,
+        body: t(name + 'Body', { duration, minutes: count }),
+        sound,
         volume: settings.volume,
+        ...(kind === 'voice' ? { speech: title } : {}),
       });
+    };
+    if (settings.sunrise.notify) sunrise('athan', 0, 'sunrise', 'none');
+    if (settings.sunrise.preMinutes > 0) sunrise('pre', -settings.sunrise.preMinutes, 'sunrisePre', 'system');
+    if (settings.voiceReminder.enabled && settings.voiceReminder.minutes > 0)
+      sunrise('voice', -settings.voiceReminder.minutes, 'sunriseVoice', 'voice');
+    if (settings.sunrise.duha && settings.sunrise.duhaMinutes > 0) sunrise('pre', settings.sunrise.duhaMinutes, 'duha', 'system');
   }
   return events
     .filter((e) => Number.isFinite(e.at) && e.at > now.getTime())

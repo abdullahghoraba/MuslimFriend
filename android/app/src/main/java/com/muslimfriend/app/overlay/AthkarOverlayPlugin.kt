@@ -16,6 +16,12 @@ import android.provider.Settings
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.getcapacitor.JSArray
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.location.CurrentLocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.getcapacitor.JSObject
 import com.getcapacitor.PermissionState
 import com.getcapacitor.Plugin
@@ -361,10 +367,9 @@ class AthkarOverlayPlugin : Plugin() {
     }
 
     /**
-     * Current position. Listens to every enabled provider at once (fused, network, and GPS when the user allowed
-     * precise location) and takes the first accurate fix, else the most accurate one within 25 s, else the
-     * freshest last-known fix. A good fix from the last few minutes is used straight away. Rejects with "OFF"
-     * when location is switched off on the phone.
+     * Current position. Uses Google's fused location when Google Play services are on the phone (GPS, Wi-Fi and cell
+     * towers together, the most reliable indoors), else Android's own providers. Rejects with "OFF" when location
+     * is switched off on the phone.
      */
     @SuppressLint("MissingPermission")
     private fun readLocation(call: PluginCall) {
@@ -373,6 +378,39 @@ class AthkarOverlayPlugin : Plugin() {
             call.reject("Location is turned off", "OFF")
             return
         }
+        val hasPlayServices = runCatching {
+            GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS
+        }.getOrDefault(false)
+        if (!hasPlayServices) return readWithLocationManager(call, lm)
+        val precise = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED
+        val client = LocationServices.getFusedLocationProviderClient(context)
+        val request = CurrentLocationRequest.Builder()
+            .setPriority(if (precise) Priority.PRIORITY_HIGH_ACCURACY else Priority.PRIORITY_BALANCED_POWER_ACCURACY)
+            .setDurationMillis(25_000)
+            .setMaxUpdateAgeMillis(5 * 60_000)
+            .build()
+        val resolve = { loc: Location -> call.resolve(JSObject().put("latitude", loc.latitude).put("longitude", loc.longitude)) }
+        // No fix from Google's service (or an error): its last known position, then Android's own providers.
+        val fallback = {
+            client.lastLocation
+                .addOnSuccessListener { last -> if (last != null) resolve(last) else readWithLocationManager(call, lm) }
+                .addOnFailureListener { readWithLocationManager(call, lm) }
+        }
+        runCatching {
+            client.getCurrentLocation(request, CancellationTokenSource().token)
+                .addOnSuccessListener { loc -> if (loc != null) resolve(loc) else fallback() }
+                .addOnFailureListener { fallback() }
+        }.onFailure { readWithLocationManager(call, lm) }
+    }
+
+    /**
+     * Without Google Play services: listens to every enabled provider at once (fused, network, and GPS when the
+     * user allowed precise location) and takes the first accurate fix, else the most accurate one within 25 s,
+     * else the freshest last-known fix. A good fix from the last few minutes is used straight away.
+     */
+    @SuppressLint("MissingPermission")
+    private fun readWithLocationManager(call: PluginCall, lm: LocationManager) {
         val precise = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
             PackageManager.PERMISSION_GRANTED
         // An approximate fix is about 2 km off on purpose; that still moves prayer times by seconds, not minutes.

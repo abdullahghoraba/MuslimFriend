@@ -2,12 +2,10 @@
 //   content/tanzil/quran-uthmani.txt          Uthmani text (CC BY 3.0)
 //   content/quran-sources/quran-data.xml      metadata: suras, juz, hizb quarters, 604 Madani pages, sajdas
 //   content/quran-sources/ar.muyassar.txt     Tafsir al-Muyassar (King Fahd Complex) — Tanzil, non-commercial
-//   content/quran-sources/ar.jalalayn.txt     Tafsir al-Jalalayn — Tanzil, non-commercial
-//   content/quran-sources/en.sahih.txt        Saheeh International — Tanzil, non-commercial
 // Output (public/assets/quran/):
 //   text.json                 string[6236] — global ayah index = sura start + ayah - 1
 //   meta.json                 suras, juz, quarters, pages, sajdas, sources
-//   tafsir/<id>/<sss>.json    string[] per sura (muyassar, jalalayn, sahih)
+//   tafsir/<id>/<sss>.json    string[] per sura (muyassar)
 // Usage: node scripts/build-quran.mjs [--check]
 
 import { mkdirSync, readFileSync, writeFileSync, copyFileSync } from 'node:fs';
@@ -52,8 +50,6 @@ const meta = {
     metadata: 'Tanzil Quran Metadata — tanzil.net',
     tafsir: {
       muyassar: { nameAr: 'التفسير الميسر', nameEn: 'Al-Muyassar', by: 'King Fahd Glorious Quran Printing Complex', lang: 'ar' },
-      jalalayn: { nameAr: 'تفسير الجلالين', nameEn: 'Al-Jalalayn', by: 'Jalal ad-Din al-Mahalli & Jalal ad-Din as-Suyuti', lang: 'ar' },
-      sahih: { nameAr: 'الترجمة الإنجليزية (صحيح إنترناشونال)', nameEn: 'Saheeh International (English)', by: 'Saheeh International', lang: 'en' },
     },
     tafsirNote: 'Tafsir and translation texts from tanzil.net/trans — for non-commercial use.',
   },
@@ -73,7 +69,8 @@ for (const s of suras) for (let a = 1; a <= s.ayas; a++) text.push(quran.get(`${
 expect(text.length === 6236 && text.every(Boolean), 'quran text incomplete');
 suras.forEach((s) => expect(text.length && s.start < 6236, `bad start for ${s.index}`));
 
-const tafsirs = { muyassar: 'ar.muyassar.txt', jalalayn: 'ar.jalalayn.txt', sahih: 'en.sahih.txt' };
+// Only al-Muyassar ships with the app; every other tafsir is a download in the tafsir library.
+const tafsirs = { muyassar: 'ar.muyassar.txt' };
 const tafsirData = {};
 for (const [id, file] of Object.entries(tafsirs)) {
   const lines = readTanzilLines(src(file));

@@ -14,8 +14,8 @@ android {
         applicationId "com.abdullahghoraba.muslimfriend"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
-        versionName "1.0.4"
+        versionCode 7
+        versionName "1.0.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // ARM phones only: x86 Android phones are no longer sold, and the two x86 copies of the SQLite library
         // (2.2 MB) kept the bundle over the size the release upload accepts.
@@ -70,6 +70,8 @@ dependencies {
     implementation project(':capacitor-android')
     implementation "androidx.core:core-ktx:$androidxCoreVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0"
+    // Google's fused location (GPS + Wi-Fi + cell): finds the phone indoors where the plain LocationManager often can't.
+    implementation "com.google.android.gms:play-services-location:21.3.0"
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.json:json:20250517"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"

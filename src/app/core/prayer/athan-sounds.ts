@@ -98,16 +98,6 @@ export const ATHAN_RECORDINGS: AthanRecording[] = [
     credit: 'Andrewler · CC BY-SA 4.0',
     source: 'https://commons.wikimedia.org/wiki/File:Azan.ogg',
   },
-  {
-    id: 'call-to-worship',
-    nameAr: 'أذان (تسجيل آخر)',
-    nameEn: 'Athan (another recording)',
-    url: `${COMMONS}/d/d2/Islamic_call_to_worship.oga`,
-    ext: 'ogg',
-    sizeMb: 1.3,
-    credit: 'Mahfoudou · CC BY-SA 4.0',
-    source: 'https://commons.wikimedia.org/wiki/File:Islamic_call_to_worship.oga',
-  },
 ];
 
 /** The athan shipped inside the app (android res/raw/athan_default.mp3): sound 'athan', the default for every prayer. */
