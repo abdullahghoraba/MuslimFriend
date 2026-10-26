@@ -1,5 +1,5 @@
 <ion-content>
-  <main [attr.aria-busy]="busy()" [attr.dir]="settings.settings().language === 'ar' ? 'rtl' : 'ltr'">
+  <main [attr.aria-busy]="busy()" [attr.dir]="rtl() ? 'rtl' : 'ltr'">
     <div class="step"><span>{{ 'onboarding.setup' | translate }}</span><b dir="ltr">{{ step() }}/3</b></div>
     <div class="dots" aria-hidden="true">@for (n of [1, 2, 3]; track n) { <span [class.active]="step() >= n"></span> }</div>
     <ion-icon class="hero" [name]="step() === 1 ? 'heart-outline' : step() === 2 ? 'layers-outline' : 'hand-left-outline'" aria-hidden="true" />
@@ -7,8 +7,9 @@
     @if (step() === 1) {
       <p>{{ 'onboarding.promise' | translate }}</p>
       <div class="languages" role="group" [attr.aria-label]="'onboarding.language' | translate">
-        <button lang="ar" dir="rtl" [attr.aria-pressed]="settings.settings().language === 'ar'" [disabled]="busy() || !ready()" (click)="language('ar')">العربية</button>
-        <button lang="en" dir="ltr" [attr.aria-pressed]="settings.settings().language === 'en'" [disabled]="busy() || !ready()" (click)="language('en')">English</button>
+        @for (l of languages; track l.code) {
+          <button [attr.lang]="l.code" [attr.dir]="l.rtl ? 'rtl' : 'ltr'" [attr.aria-pressed]="settings.settings().language === l.code" [disabled]="busy() || !ready()" (click)="language(l.code)">{{ l.name }}</button>
+        }
       </div>
     }
     @if (step() === 2) {

@@ -1,5 +1,5 @@
 <ion-header><ion-toolbar><ion-buttons slot="start"><ion-back-button defaultHref="/quran" /></ion-buttons><ion-title>{{ 'qibla.title' | translate }}</ion-title></ion-toolbar></ion-header>
-<ion-content [attr.dir]="lang() === 'ar' ? 'rtl' : 'ltr'">
+<ion-content>
   <main>
     @if (failed()) { <p role="alert">{{ 'qibla.loadFailed' | translate }}</p> }
     @if (!location()) { <section class="empty"><h2>{{ 'qibla.locationTitle' | translate }}</h2><p>{{ 'qibla.locationHint' | translate }}</p><ion-button routerLink="/reminders">{{ 'qibla.setCity' | translate }}</ion-button></section> }

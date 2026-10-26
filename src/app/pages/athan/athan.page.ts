@@ -38,6 +38,7 @@ import { AthanNative, AthanSound, AthanStopWay } from '../../native/athan-plugin
 import { AthkarOverlay } from '../../native/athkar-overlay';
 import { LocationService } from '../../core/prayer/location.service';
 import { ATHAN_RECORDINGS, BUILTIN_ATHAN } from '../../core/prayer/athan-sounds';
+import { SelectTextsDirective } from '../../shared/select-texts.directive';
 
 @Component({
   selector: 'app-athan',
@@ -57,7 +58,7 @@ import { ATHAN_RECORDINGS, BUILTIN_ATHAN } from '../../core/prayer/athan-sounds'
     IonRange,
     IonSegment,
     IonSegmentButton,
-    IonSelect,
+    IonSelect, SelectTextsDirective,
     IonSelectOption,
     IonTitle,
     IonToggle,

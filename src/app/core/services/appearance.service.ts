@@ -2,7 +2,7 @@ import { DOCUMENT, Injectable, effect, inject, signal } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
-import { Language, ThemeMode } from '../models';
+import { Language, ThemeMode, isRtl } from '../models';
 import { SettingsService } from './settings.service';
 
 export type ColorStyle = 'calm' | 'night' | 'rose' | 'classic';
@@ -55,7 +55,7 @@ export class AppearanceService {
   private async applyLanguage(language: Language): Promise<void> {
     const html = this.document.documentElement;
     html.lang = language;
-    html.dir = language === 'ar' ? 'rtl' : 'ltr';
+    html.dir = isRtl(language) ? 'rtl' : 'ltr';
     await firstValueFrom(this.translate.use(language));
   }
 

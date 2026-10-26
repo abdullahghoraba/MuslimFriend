@@ -31,12 +31,14 @@ import { LocationService } from '../../core/prayer/location.service';
 import { pickCity } from '../../shared/city-picker.component';
 import { SettingsService } from '../../core/services/settings.service';
 import { AthkarOverlay } from '../../native/athkar-overlay';
+import { intlLocale } from '../../core/models';
+import { SelectTextsDirective } from '../../shared/select-texts.directive';
 
 @Component({
   selector: 'app-reminders',
   imports: [
     RouterLink, FormsModule, TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList,
-    IonListHeader, IonItem, IonLabel, IonNote, IonToggle, IonSelect, IonSelectOption, IonSegment, IonSegmentButton,
+    IonListHeader, IonItem, IonLabel, IonNote, IonToggle, IonSelect, SelectTextsDirective, IonSelectOption, IonSegment, IonSegmentButton,
     IonButton, IonIcon, IonInput,
   ],
   templateUrl: './reminders.page.html',
@@ -68,7 +70,7 @@ export class RemindersPage {
 
   time(d: Date | undefined): string {
     if (!d) return '—';
-    return new Intl.DateTimeFormat(this.lang() === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { hour: 'numeric', minute: '2-digit' }).format(d);
+    return new Intl.DateTimeFormat(this.lang() === 'en' ? 'en-GB' : intlLocale(this.lang()), { hour: 'numeric', minute: '2-digit' }).format(d);
   }
 
   /** Country first, then city. */

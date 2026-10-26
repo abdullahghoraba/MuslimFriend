@@ -85,7 +85,11 @@ class AthanService : Service() {
      */
     private fun speak(incoming: AthanEvent) {
         val text = incoming.speech.ifBlank { incoming.title }
-        val locale = if (text.any { it in '؀'..'ۿ' }) Locale.forLanguageTag("ar") else Locale.ENGLISH
+        val locale = when {
+            incoming.speechLang.isNotBlank() -> Locale.forLanguageTag(incoming.speechLang)
+            text.any { it in '؀'..'ۿ' } -> Locale.forLanguageTag("ar")
+            else -> Locale.ENGLISH
+        }
         var engine: TextToSpeech? = null
         engine = TextToSpeech(this) { status ->
             handler.post {

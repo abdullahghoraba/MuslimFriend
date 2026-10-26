@@ -2,9 +2,10 @@ import { Component, inject } from '@angular/core';
 import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList, IonItem, IonToggle, IonSelect, IonSelectOption } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AthkarPrefs, AthkarPrefsService } from '../../core/services/athkar-prefs.service';
+import { SelectTextsDirective } from '../../shared/select-texts.directive';
 @Component({
   selector: 'app-athkar-settings',
-  imports: [TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList, IonItem, IonToggle, IonSelect, IonSelectOption],
+  imports: [TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList, IonItem, IonToggle, IonSelect, SelectTextsDirective, IonSelectOption],
   templateUrl: './athkar-settings.page.html',
   styleUrl: './athkar-settings.page.scss',
 })

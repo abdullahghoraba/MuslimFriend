@@ -7,10 +7,12 @@ import { OverlayService, OverlaySettings, FREQUENCY_OPTIONS, MAX_OVERLAY_TEXT_LE
 import { AthkarRepository } from '../../core/services/athkar.repository';
 import { SettingsService } from '../../core/services/settings.service';
 import { AthkarOverlay } from '../../native/athkar-overlay';
+import { SelectTextsDirective } from '../../shared/select-texts.directive';
+import { Category } from '../../core/models';
 
 @Component({
   selector: 'app-overlay',
-  imports: [TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonLabel, IonToggle, IonButton, IonSelect, IonSelectOption, IonRange, IonSegment, IonSegmentButton, IonCheckbox],
+  imports: [TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonLabel, IonToggle, IonButton, IonSelect, SelectTextsDirective, IonSelectOption, IonRange, IonSegment, IonSegmentButton, IonCheckbox],
   templateUrl: './overlay.page.html',
   styleUrl: './overlay.page.scss',
 })
@@ -25,6 +27,7 @@ export class OverlayPage {
     const custom = this.repository.category('custom');
     return custom ? [...builtIn, custom] : builtIn;
   });
+  categoryName(c: Category): string { return this.repository.nameIn(this.language(), c); }
   readonly frequencies = FREQUENCY_OPTIONS;
   readonly maxLength = MAX_OVERLAY_TEXT_LENGTH;
   readonly positions = ['top', 'center', 'bottom'] as const;

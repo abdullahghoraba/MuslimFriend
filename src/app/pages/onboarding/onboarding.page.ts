@@ -10,6 +10,7 @@ import { pickCity } from '../../shared/city-picker.component';
 import { AppearanceService } from '../../core/services/appearance.service';
 import { OverlayService } from '../../core/services/overlay.service';
 import { SettingsService } from '../../core/services/settings.service';
+import { LANGUAGES, Language, isRtl } from '../../core/models';
 import { AthkarOverlay } from '../../native/athkar-overlay';
 
 type Permission = 'notifications' | 'overlay' | 'battery' | 'location';
@@ -30,6 +31,8 @@ export class OnboardingPage implements OnInit, OnDestroy {
   private readonly locationService = inject(LocationService);
   private readonly nav = inject(NavController);
   private readonly heading = viewChild<ElementRef<HTMLElement>>('heading');
+  readonly languages = LANGUAGES;
+  readonly rtl = computed(() => isRtl(this.settings.settings().language));
   readonly step = signal(1);
   readonly ready = signal(false);
   readonly busy = signal(false);
@@ -92,7 +95,7 @@ export class OnboardingPage implements OnInit, OnDestroy {
     this.notifications.set(n.granted); this.overlayGranted.set(o.granted); this.battery.set(b.ignoring);
   }
 
-  async language(lang: 'ar' | 'en'): Promise<void> {
+  async language(lang: Language): Promise<void> {
     await this.run(async () => {
       await Preferences.set({ key: 'onboardingStep', value: String(this.step()) });
       await this.appearance.setLanguage(lang);

@@ -13,25 +13,28 @@ import {
   IonRange,
   IonSegment,
   IonSegmentButton,
+  IonSelect,
+  IonSelectOption,
   IonTitle,
   IonToggle,
   IonToolbar,
   RangeCustomEvent,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Language, ThemeMode } from '../../core/models';
+import { LANGUAGES, ThemeMode, isLanguage } from '../../core/models';
 import { AppearanceService, COLOR_STYLES, ColorStyle, STYLE_SWATCHES } from '../../core/services/appearance.service';
 import { SettingsService } from '../../core/services/settings.service';
 import { ShareService } from '../../core/services/share.service';
 import { AthkarOverlay } from '../../native/athkar-overlay';
 import packageJson from '../../../../package.json';
 import { DataSectionComponent } from './data-section.component';
+import { SelectTextsDirective } from '../../shared/select-texts.directive';
 
 @Component({
   selector: 'app-settings',
   imports: [
     RouterLink, TranslatePipe, IonHeader, IonButton, IonIcon, IonToolbar, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonLabel,
-    IonNote, IonSegment, IonSegmentButton, IonToggle, IonRange, DataSectionComponent,
+    IonNote, IonSegment, IonSegmentButton, IonSelect, SelectTextsDirective, IonSelectOption, IonToggle, IonRange, DataSectionComponent,
   ],
   templateUrl: './settings.page.html',
   styleUrl: './settings.page.scss',
@@ -48,6 +51,7 @@ export class SettingsPage {
   readonly styles = COLOR_STYLES;
   readonly swatches = STYLE_SWATCHES;
   readonly colorStyle = this.appearance.colorStyle;
+  readonly languages = LANGUAGES;
 
   styleName(s: ColorStyle): string {
     return { calm: 'settings.styleCalm', night: 'settings.styleNight', rose: 'settings.styleRose', classic: 'settings.styleClassic' }[s];
@@ -58,7 +62,7 @@ export class SettingsPage {
   }
 
   async setLanguage(value: unknown): Promise<void> {
-    if (value === 'ar' || value === 'en') await this.appearance.setLanguage(value as Language);
+    if (isLanguage(value)) await this.appearance.setLanguage(value);
   }
 
   async setTheme(value: unknown): Promise<void> {

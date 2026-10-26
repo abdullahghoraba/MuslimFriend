@@ -8,14 +8,12 @@
   <ion-list inset>
     <ion-list-header>{{ 'settings.appearance' | translate }}</ion-list-header>
 
-    <ion-item lines="none">
-      <ion-label id="lang-label">{{ 'settings.language' | translate }}</ion-label>
-    </ion-item>
     <ion-item>
-      <ion-segment [value]="settings().language" (ionChange)="setLanguage($event.detail.value)" aria-labelledby="lang-label">
-        <ion-segment-button value="ar"><ion-label lang="ar">{{ 'language.ar' | translate }}</ion-label></ion-segment-button>
-        <ion-segment-button value="en"><ion-label lang="en">{{ 'language.en' | translate }}</ion-label></ion-segment-button>
-      </ion-segment>
+      <ion-select [label]="'settings.language' | translate" [value]="settings().language" (ionChange)="setLanguage($event.detail.value)">
+        @for (l of languages; track l.code) {
+          <ion-select-option [value]="l.code">{{ l.name }}</ion-select-option>
+        }
+      </ion-select>
     </ion-item>
 
     <ion-item lines="none">

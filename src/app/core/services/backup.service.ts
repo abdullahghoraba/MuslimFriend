@@ -4,7 +4,7 @@ import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { Preferences } from '@capacitor/preferences';
 import { Share } from '@capacitor/share';
 import { DatabaseService, SqlDb } from '../db/database.service';
-import { AppSettings } from '../models';
+import { AppSettings, isLanguage } from '../models';
 import { AthkarPrefsService } from './athkar-prefs.service';
 import { AthkarRepository } from './athkar.repository';
 import { SettingsService } from './settings.service';
@@ -193,7 +193,7 @@ function validate(value: unknown): asserts value is BackupFile {
         Number.isFinite(Date.parse(v as string)),
       settings: (v) =>
         fields(v, {
-          language: (x) => x === 'ar' || x === 'en',
+          language: isLanguage,
           theme: (x) => ['system', 'light', 'dark'].includes(x as string),
           fontScale: (x) => typeof x === 'number' && Number.isFinite(x) && x >= 0.8 && x <= 2,
           haptics: (x) => typeof x === 'boolean',

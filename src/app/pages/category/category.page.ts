@@ -162,7 +162,7 @@ export class CategoryPage {
   readonly title = computed(() => {
     const c = this.category();
     if (!c) return '';
-    return this.lang() === 'ar' ? c.nameAr : c.nameEn;
+    return this.athkar.nameIn(this.lang(), c);
   });
   readonly doneCount = computed(() => this.items().filter((d) => this.countOf(d) >= d.repeatCount).length);
   readonly allDone = computed(() => this.items().length > 0 && this.doneCount() === this.items().length);
@@ -176,7 +176,7 @@ export class CategoryPage {
   }
 
   private name(c: Category): string {
-    return this.lang() === 'ar' ? c.nameAr : c.nameEn;
+    return this.athkar.nameIn(this.lang(), c);
   }
 
   async more(d: Dhikr): Promise<void> {

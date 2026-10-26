@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
-import { AppSettings, DEFAULT_SETTINGS, ReaderPosition } from '../models';
+import { AppSettings, DEFAULT_SETTINGS, ReaderPosition, isLanguage } from '../models';
 
 const SETTINGS_KEY = 'settings';
 const READER_POSITION_KEY = 'readerPosition';
@@ -19,6 +19,11 @@ export class SettingsService {
       } catch {
         this.state.set(DEFAULT_SETTINGS);
       }
+      if (!isLanguage(this.state().language)) this.state.update((s) => ({ ...s, language: DEFAULT_SETTINGS.language }));
+    } else {
+      // First run: start in the phone's language when the app has it.
+      const phone = (globalThis.navigator?.language ?? '').split('-')[0];
+      if (isLanguage(phone)) this.state.update((s) => ({ ...s, language: phone }));
     }
     return this.state();
   }

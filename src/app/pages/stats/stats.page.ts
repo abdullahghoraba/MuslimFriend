@@ -3,6 +3,7 @@ import { IonBackButton, IonButtons, IonContent, IonHeader, IonLabel, IonProgress
 import { TranslatePipe } from '@ngx-translate/core';
 import { SettingsService } from '../../core/services/settings.service';
 import { DailyTotal, StatsService, Streak, Totals } from '../../core/services/stats.service';
+import { isRtl } from '../../core/models';
 
 @Component({
   selector: 'app-stats',
@@ -13,7 +14,7 @@ import { DailyTotal, StatsService, Streak, Totals } from '../../core/services/st
 export class StatsPage {
   private readonly stats = inject(StatsService);
   private readonly settings = inject(SettingsService);
-  readonly lang = computed(() => this.settings.settings().language === 'ar' ? 'ar' : 'en');
+  readonly lang = computed(() => this.settings.settings().language);
   readonly days = signal(7);
   readonly daily = signal<DailyTotal[]>([]);
   readonly today = signal<Totals>({ athkar: 0, tasbih: 0 });
@@ -26,7 +27,7 @@ export class StatsPage {
   readonly failed = signal(false);
   readonly chart = computed(() => {
     const rows = this.daily().slice(-this.days());
-    return this.lang() === 'ar' ? [...rows].reverse() : rows;
+    return isRtl(this.lang()) ? [...rows].reverse() : rows;
   });
   readonly maximum = computed(() => Math.max(1, ...this.chart().map(d => d.athkar + d.tasbih)));
   readonly chartTotals = computed(() => this.chart().reduce((sum, d) =>

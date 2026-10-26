@@ -1,5 +1,5 @@
 <ion-header><ion-toolbar><ion-buttons slot="start"><ion-back-button defaultHref="/quran" /></ion-buttons><ion-title>{{ 'quran.search' | translate }}</ion-title></ion-toolbar></ion-header>
-<ion-content [attr.dir]="lang() === 'ar' ? 'rtl' : 'ltr'">
+<ion-content>
   <main>
     <ion-searchbar [autofocus]="true" [debounce]="300" [value]="query()" (ionInput)="query.set($event.detail.value ?? '')" (keydown.enter)="submit()" [placeholder]="'quran.searchHint' | translate" [attr.aria-label]="'quran.search' | translate" />
     @if (failed()) { <p class="empty" role="alert">{{ 'quran.loadFailed' | translate }}</p> }

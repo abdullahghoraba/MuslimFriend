@@ -23,6 +23,7 @@ import { MARK_COLORS } from '../../core/quran/marks.service';
 import { QuranService } from '../../core/quran/quran.service';
 import { AyahRef } from '../../core/quran/quran-utils';
 import { PrayerService } from '../../core/prayer/prayer.service';
+import { SelectTextsDirective } from '../../shared/select-texts.directive';
 @Component({
   selector: 'app-hifz',
   standalone: true,
@@ -38,7 +39,7 @@ import { PrayerService } from '../../core/prayer/prayer.service';
     IonButton,
     IonModal,
     IonInput,
-    IonSelect,
+    IonSelect, SelectTextsDirective,
     IonSelectOption,
     IonToggle,
     IonProgressBar,

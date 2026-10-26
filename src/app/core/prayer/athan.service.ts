@@ -5,6 +5,7 @@ import { Preferences } from '@capacitor/preferences';
 import { TranslateService } from '@ngx-translate/core';
 import { AthanEvent, AthanNative, AthanSound, AthanPluginMethods, AthanStopWay } from '../../native/athan-plugin';
 import { PrayerService } from './prayer.service';
+import { intlLocale } from '../models';
 import { ATHAN_RECORDINGS, AthanRecording, DEFAULT_RECORDING } from './athan-sounds';
 import { PrayerSettings, prayerTimesFor } from './prayer-times';
 
@@ -89,7 +90,7 @@ export function buildAthanEvents(
         const at = times[name].getTime() + minutes * 60000;
         const params = {
           prayer: t('prayers.' + name),
-          minutes: new Intl.NumberFormat(t('locale').startsWith('ar') ? 'ar-EG-u-nu-latn' : 'en').format(
+          minutes: new Intl.NumberFormat(intlLocale(t('locale'))).format(
             Math.abs(minutes),
           ),
         };
@@ -109,7 +110,7 @@ export function buildAthanEvents(
           }),
           body: t(kind + 'Body', params),
           ...(sound !== 'none' && stopWays(settings).length ? { stopOn: stopWays(settings) } : {}),
-          ...(kind === 'voice' ? { speech: t('voiceTitle', params) } : {}),
+          ...(kind === 'voice' ? { speech: t('voiceTitle', params), speechLang: t('locale') } : {}),
           ...(kind === 'athan' && settings.silentDuringPrayer && settings.silentMinutes > 0
             ? { silentMinutes: settings.silentMinutes }
             : {}),
@@ -121,7 +122,7 @@ export function buildAthanEvents(
       if (s.iqamaMinutes > 0) add('iqama', s.iqamaMinutes, 'system');
     }
     const sunrise = (kind: AthanEvent['kind'], minutes: number, name: string, sound: AthanSound) => {
-      const count = new Intl.NumberFormat(t('locale').startsWith('ar') ? 'ar-EG-u-nu-latn' : 'en').format(Math.abs(minutes));
+      const count = new Intl.NumberFormat(intlLocale(t('locale'))).format(Math.abs(minutes));
       const duration = t(Math.abs(minutes) >= 3 && Math.abs(minutes) <= 10 ? 'minutesFew' : 'minutes', { count });
       const title = t(name + 'Title', { duration, minutes: count });
       events.push({
@@ -133,7 +134,7 @@ export function buildAthanEvents(
         body: t(name + 'Body', { duration, minutes: count }),
         sound,
         volume: settings.volume,
-        ...(kind === 'voice' ? { speech: title } : {}),
+        ...(kind === 'voice' ? { speech: title, speechLang: t('locale') } : {}),
       });
     };
     if (settings.sunrise.notify) sunrise('athan', 0, 'sunrise', 'none');
@@ -398,7 +399,7 @@ export class AthanService {
     await this.stopPreview();
     if (!Capacitor.isNativePlatform()) return;
     const speech = this.translate.instant('athan.voiceTitle', { prayer: this.translate.instant('athan.prayers.' + prayer) });
-    await this.native.previewAthan({ sound: 'voice', volume: this.state().volume, speech });
+    await this.native.previewAthan({ sound: 'voice', volume: this.state().volume, speech, speechLang: this.translate.instant('athan.locale') });
   }
   async stopPreview(): Promise<void> {
     clearTimeout(this.previewTimer);

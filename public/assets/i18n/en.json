@@ -11,6 +11,7 @@
   },
   "common": {
     "save": "Save",
+    "ok": "OK",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
@@ -828,7 +829,7 @@
     "strong": "Strong",
     "vibrationHelp": "The app’s main vibration setting must also be enabled.",
     "display": "Visible content",
-    "displayHelp": "These choices apply in both Arabic and English. Arabic text size can be changed in the reader.",
+    "displayHelp": "These choices apply in every app language. Arabic text size can be changed in the reader.",
     "showSource": "Source and virtue button",
     "showTransliteration": "Transliteration",
     "showMeaning": "English meaning / translation",
@@ -906,5 +907,20 @@
     "chooseCountry": "Choose a country",
     "countries": "Countries",
     "searchCountry": "Search for a country"
+  },
+  "categoryNames": {
+    "morning": "Morning Athkar",
+    "evening": "Evening Athkar",
+    "sleep": "Before Sleep",
+    "waking": "Waking Up",
+    "mosque": "Entering & Leaving the Mosque",
+    "after-prayer": "After Prayer",
+    "tasbih": "Tasbih",
+    "istighfar": "Istighfar",
+    "dua": "Selected Du'a",
+    "distress": "Distress & Worry",
+    "travel": "Travel",
+    "eating": "Eating",
+    "custom": "My Athkar"
   }
 }

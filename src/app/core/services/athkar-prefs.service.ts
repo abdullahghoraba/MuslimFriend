@@ -24,8 +24,8 @@ export class AthkarPrefsService {
   private readonly stored = signal<Partial<AthkarPrefs>>({});
   readonly prefs = computed<AthkarPrefs>(() => ({
     ...defaults,
-    showTransliteration: this.settings.settings().language === 'en',
-    showMeaning: this.settings.settings().language === 'en',
+    showTransliteration: this.settings.settings().language !== 'ar',
+    showMeaning: this.settings.settings().language !== 'ar',
     ...this.stored(),
   }));
   private pending = Promise.resolve();

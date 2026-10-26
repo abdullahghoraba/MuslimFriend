@@ -1,5 +1,5 @@
 <ion-header><ion-toolbar><ion-title>{{ 'quran.title' | translate }}</ion-title></ion-toolbar></ion-header>
-<ion-content [attr.dir]="lang() === 'ar' ? 'rtl' : 'ltr'">
+<ion-content>
   @if (failed()) { <p role="alert" class="empty">{{ 'quran.loadFailed' | translate }}</p> }
   @else if (!quran.ready()) { <div class="empty"><ion-spinner [attr.aria-label]="'quran.loading' | translate" /></div> }
   @else {
@@ -28,7 +28,7 @@
         <ion-searchbar [value]="filter()" (ionInput)="filter.set($event.detail.value ?? '')" [placeholder]="'quran.filter' | translate" [attr.aria-label]="'quran.filter' | translate" />
         @for (s of suras(); track s.index) {
           <button class="row card" (click)="open({sura:s.index,aya:1})"><span class="badge">{{ digits(s.index) }}</span><span class="body"><strong class="arabic" lang="ar" dir="rtl">{{ s.name }}</strong>
-            @if (lang() === 'en') { <small>{{ s.tname }} · {{ s.ename }}</small> } @else { <small>{{ (s.type === 'Meccan' ? 'quran.meccan' : 'quran.medinan') | translate }} · {{ digits(s.ayas) }} {{ 'quran.ayahs' | translate }}</small> }
+            @if (lang() !== 'ar') { <small>{{ s.tname }} · {{ s.ename }}</small> } @else { <small>{{ (s.type === 'Meccan' ? 'quran.meccan' : 'quran.medinan') | translate }} · {{ digits(s.ayas) }} {{ 'quran.ayahs' | translate }}</small> }
           </span><small>{{ 'quran.page' | translate }} {{ digits(quran.suraPage(s.index)) }}</small></button>
         } @empty { <p class="empty">{{ 'quran.noResults' | translate }}</p> }
       } @else if (segment() === 'juz') {

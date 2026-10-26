@@ -13,11 +13,13 @@ data class AthanEvent(val id: String, val prayer: String, val kind: String, val 
     /** Ways to stop the sound: "flip", "shake", "volume". */
     val stopOn: Set<String> = emptySet(),
     /** Spoken with text-to-speech when sound is "voice". */
-    val speech: String = "") {
+    val speech: String = "",
+    /** BCP 47 language of [speech] ("ur"); blank means guess from the script. */
+    val speechLang: String = "") {
     fun toJson(): JSONObject = JSONObject().put("id", id).put("prayer", prayer).put("kind", kind)
         .put("at", at).put("title", title).put("body", body).put("sound", sound)
         .put("volume", volume.toDouble()).put("silentMinutes", silentMinutes)
-        .put("stopOn", org.json.JSONArray(stopOn.toList())).put("speech", speech)
+        .put("stopOn", org.json.JSONArray(stopOn.toList())).put("speech", speech).put("speechLang", speechLang)
     companion object {
         val STOP_WAYS = setOf("flip", "shake", "volume")
         fun fromJson(o: JSONObject): AthanEvent {
@@ -32,7 +34,8 @@ data class AthanEvent(val id: String, val prayer: String, val kind: String, val 
                 o.getString("title"), o.getString("body"), sound, volume.toFloat(), o.optInt("silentMinutes", 0).coerceAtLeast(0),
                 o.optJSONArray("stopOn")?.let { arr -> (0 until arr.length()).map { arr.optString(it) }.filter { it in STOP_WAYS }.toSet() }
                     ?: emptySet(),
-                o.optString("speech", "").take(200))
+                o.optString("speech", "").take(200),
+                o.optString("speechLang", "").take(20))
         }
     }
 }

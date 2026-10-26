@@ -1,11 +1,11 @@
-<ion-header [attr.dir]="lang() === 'ar' ? 'rtl' : 'ltr'">
+<ion-header>
   <ion-toolbar>
     <ion-buttons slot="start"><ion-back-button defaultHref="/settings" [text]="'stats.back' | translate" /></ion-buttons>
     <ion-title>{{ 'stats.title' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <main [attr.dir]="lang() === 'ar' ? 'rtl' : 'ltr'" [attr.aria-busy]="loading()">
+  <main [attr.aria-busy]="loading()">
     @if (loading()) { <p role="status">{{ 'stats.loading' | translate }}</p> }
     @else if (failed()) { <p role="alert">{{ 'stats.error' | translate }}</p> }
     @else {

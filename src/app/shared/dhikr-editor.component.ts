@@ -21,6 +21,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CUSTOM_CATEGORY_ID, Dhikr } from '../core/models';
 import { AthkarRepository } from '../core/services/athkar.repository';
 import { SettingsService } from '../core/services/settings.service';
+import { SelectTextsDirective } from './select-texts.directive';
 
 export type EditorResult = 'saved' | 'deleted' | 'cancel';
 
@@ -33,7 +34,7 @@ export type EditorResult = 'saved' | 'deleted' | 'cancel';
   selector: 'app-dhikr-editor',
   imports: [
     TranslatePipe, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent, IonList, IonItem,
-    IonTextarea, IonInput, IonToggle, IonSelect, IonSelectOption, IonIcon,
+    IonTextarea, IonInput, IonToggle, IonSelect, SelectTextsDirective, IonSelectOption, IonIcon,
   ],
   template: `
     <ion-header>
@@ -116,9 +117,9 @@ export class DhikrEditorComponent implements OnInit {
   readonly busy = signal(false);
 
   readonly categoryOptions = computed(() => {
-    const ar = this.settings.settings().language === 'ar';
+    const lang = this.settings.settings().language;
     const mine = this.athkar.category(CUSTOM_CATEGORY_ID)!;
-    return [mine, ...this.athkar.categories()].map((c) => ({ id: c.id, name: ar ? c.nameAr : c.nameEn }));
+    return [mine, ...this.athkar.categories()].map((c) => ({ id: c.id, name: this.athkar.nameIn(lang, c) }));
   });
 
   ngOnInit(): void {

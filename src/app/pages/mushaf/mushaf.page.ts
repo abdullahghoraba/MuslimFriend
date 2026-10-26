@@ -37,6 +37,7 @@ import { HapticsService } from '../../core/services/haptics.service';
 import { SettingsService } from '../../core/services/settings.service';
 import { ShareService } from '../../core/services/share.service';
 import { TafsirSheetComponent } from './tafsir-sheet.component';
+import { SelectTextsDirective } from '../../shared/select-texts.directive';
 
 type MushafTheme = 'paper' | 'sepia' | 'night';
 
@@ -64,7 +65,7 @@ const READ_AFTER_MS = 3000;
   selector: 'app-mushaf',
   imports: [
     TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonContent,
-    IonFooter, IonRange, IonSegment, IonSegmentButton, IonLabel, IonSelect, IonSelectOption, IonSpinner,
+    IonFooter, IonRange, IonSegment, IonSegmentButton, IonLabel, IonSelect, SelectTextsDirective, IonSelectOption, IonSpinner,
   ],
   templateUrl: './mushaf.page.html',
   styleUrl: './mushaf.page.scss',

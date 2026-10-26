@@ -13,8 +13,8 @@ button { min-height: 48px; min-width: 48px; padding: 12px 18px; border: 1px soli
 button:disabled { opacity: .55; cursor: default; }
 button:focus-visible, input:focus-visible, h1:focus-visible { outline: 3px solid var(--ion-color-primary); outline-offset: 4px; }
 .primary, button[aria-pressed='true'] { background: var(--ion-color-primary); color: var(--ion-color-primary-contrast); border-color: var(--ion-color-primary); }
-.languages { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-block: 28px; }
-.languages button { min-height: 72px; font-size: 1.2rem; }
+.languages { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-block: 24px; }
+.languages button { min-height: 52px; font-size: 1.05rem; }
 .features { padding-block: 4px; }
 .features label { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; padding-block: 8px; cursor: pointer; }
 .features label + label { border-top: 1px solid var(--app-border); }

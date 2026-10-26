@@ -16,7 +16,7 @@ import {
   NavController,
 } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Category, ReaderPosition } from '../../core/models';
+import { Category, ReaderPosition, intlLocale } from '../../core/models';
 import { AthkarRepository } from '../../core/services/athkar.repository';
 import { CategoryProgress, ProgressService } from '../../core/services/progress.service';
 import { SettingsService } from '../../core/services/settings.service';
@@ -88,8 +88,8 @@ export class HomePage {
   });
 
   minutesLabel(n: number): string {
-    const fmt = new Intl.NumberFormat(this.lang() === 'ar' ? 'ar-EG-u-nu-latn' : 'en').format(n);
-    if (this.lang() !== 'ar') return n === 1 ? '1 minute' : fmt + ' minutes';
+    const fmt = new Intl.NumberFormat(intlLocale(this.lang())).format(n);
+    if (this.lang() !== 'ar') return new Intl.NumberFormat(intlLocale(this.lang()), { style: 'unit', unit: 'minute', unitDisplay: 'long' }).format(n);
     if (n === 0) return 'الآن';
     if (n === 1) return 'دقيقة';
     if (n === 2) return 'دقيقتان';
@@ -152,7 +152,7 @@ export class HomePage {
   }
 
   time(d: Date): string {
-    return new Intl.DateTimeFormat(this.lang() === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', {
+    return new Intl.DateTimeFormat(this.lang() === 'en' ? 'en-GB' : intlLocale(this.lang()), {
       hour: 'numeric',
       minute: '2-digit',
     }).format(d);
@@ -163,14 +163,15 @@ export class HomePage {
     const mins = Math.max(0, Math.round((d.getTime() - this.prayer.now().getTime()) / 60_000));
     const h = Math.floor(mins / 60);
     const m = mins % 60;
-    const fmt = new Intl.NumberFormat(this.lang() === 'ar' ? 'ar-EG-u-nu-latn' : 'en');
+    const fmt = new Intl.NumberFormat(intlLocale(this.lang()));
     if (h) return `${fmt.format(h)}:${String(m).padStart(2, '0')}`;
-    return this.lang() === 'ar' ? `${fmt.format(m)} د` : `${m} min`;
+    if (this.lang() === 'ar') return `${fmt.format(m)} د`;
+    return new Intl.NumberFormat(intlLocale(this.lang()), { style: 'unit', unit: 'minute', unitDisplay: 'short' }).format(m);
   }
 
   categoryName(c: Category | undefined): string {
     if (!c) return '';
-    return this.lang() === 'ar' ? c.nameAr : c.nameEn;
+    return this.athkar.nameIn(this.lang(), c);
   }
 
   positionCategory(p: ReaderPosition): Category | undefined {

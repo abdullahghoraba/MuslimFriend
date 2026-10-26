@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import { DatabaseService, SqlDb } from '../db/database.service';
 import {
@@ -66,6 +67,7 @@ export function rowToDhikr(r: AthkarRow): Dhikr {
 export class AthkarRepository {
   private readonly http = inject(HttpClient);
   private db: SqlDb = inject(DatabaseService);
+  private readonly translate = inject(TranslateService, { optional: true });
 
   private readonly categoriesState = signal<Category[]>([]);
   readonly categories = this.categoriesState.asReadonly();
@@ -89,6 +91,15 @@ export class AthkarRepository {
     if (dataset.refsAr) this.refsAr = dataset.refsAr;
     await this.seed(dataset);
     await this.refreshCategories();
+  }
+
+  /** A category's name in [lang]: Arabic and English come with the content, other languages from categoryNames.<id>. */
+  nameIn(lang: string, c: Category): string {
+    if (lang === 'ar') return c.nameAr;
+    if (lang === 'en' || c.isUser) return c.nameEn;
+    const key = 'categoryNames.' + c.id;
+    const name = this.translate?.instant(key);
+    return typeof name === 'string' && name !== key ? name : c.nameEn;
   }
 
   /** A source reference in the UI language (custom athkar keep what the user wrote). */

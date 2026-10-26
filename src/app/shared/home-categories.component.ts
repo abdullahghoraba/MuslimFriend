@@ -15,6 +15,7 @@ import {
 import { TranslatePipe } from '@ngx-translate/core';
 import { AthkarRepository } from '../core/services/athkar.repository';
 import { SettingsService } from '../core/services/settings.service';
+import { Category } from '../core/models';
 @Component({
   selector: 'app-home-categories',
   imports: [
@@ -49,7 +50,7 @@ import { SettingsService } from '../core/services/settings.service';
               [disabled]="busy()"
               [checked]="c.isUser ? c.showOnHome : !athkar.homeHidden().has(c.id)"
               (ionChange)="setVisible(c.id, $event.detail.checked)"
-              >{{ settings.settings().language === 'ar' ? c.nameAr : c.nameEn }}</ion-toggle
+              >{{ categoryName(c) }}</ion-toggle
             ></ion-item
           >
         }
@@ -62,6 +63,7 @@ export class HomeCategoriesComponent {
   readonly settings = inject(SettingsService);
   private readonly modalCtrl = inject(ModalController);
   readonly busy = signal(false);
+  categoryName(c: Category): string { return this.athkar.nameIn(this.settings.settings().language, c); }
   close(): Promise<boolean> {
     return this.modalCtrl.dismiss();
   }

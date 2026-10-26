@@ -23,6 +23,7 @@ import { QuranService } from '../../core/quran/quran.service';
 import { TafsirLibraryService } from '../../core/quran/tafsir-library.service';
 import { SettingsService } from '../../core/services/settings.service';
 import { ShareService } from '../../core/services/share.service';
+import { SelectTextsDirective } from '../../shared/select-texts.directive';
 
 const TAFSIR_PREF = 'tafsirChoice';
 /** The bundled 'muyassar' or a downloadable one ('r14', 'r91', ...). */
@@ -33,7 +34,7 @@ type Source = TafsirId | `r${number}`;
   selector: 'app-tafsir-sheet',
   imports: [
     TranslatePipe, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonContent, IonSegment,
-    IonSegmentButton, IonLabel, IonSpinner, IonSelect, IonSelectOption,
+    IonSegmentButton, IonLabel, IonSpinner, IonSelect, SelectTextsDirective, IonSelectOption,
   ],
   template: `
     <ion-header>

@@ -15,7 +15,8 @@ export interface OverlayConfig {
   /** Minutes after midnight. */
   quietStart: number;
   quietEnd: number;
-  language: 'ar' | 'en';
+  /** App language; the native overlay and bubble use Arabic for 'ar' and English otherwise. */
+  language: string;
   notificationTitle: string;
   notificationText: string;
   actionPause: string;
@@ -58,7 +59,8 @@ export interface BubbleState {
   count: number;
   /** 0 = no target. */
   target: number;
-  language: 'ar' | 'en';
+  /** App language; the native overlay and bubble use Arabic for 'ar' and English otherwise. */
+  language: string;
   /** Bubble diameter in dp (44–120). */
   sizeDp: number;
   /** 0.4–1. */

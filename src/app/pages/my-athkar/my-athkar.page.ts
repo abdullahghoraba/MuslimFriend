@@ -140,7 +140,7 @@ export class MyAthkarPage {
   readonly customId = CUSTOM_CATEGORY_ID;
 
   readonly groups = computed<Group[]>(() => {
-    const ar = this.settings.settings().language === 'ar';
+    const lang = this.settings.settings().language;
     const byCategory = new Map<string, Dhikr[]>();
     for (const d of this.items())
       byCategory.set(d.categoryId, [...(byCategory.get(d.categoryId) ?? []), d]);
@@ -150,7 +150,7 @@ export class MyAthkarPage {
       .filter((id) => byCategory.has(id))
       .map((id) => {
         const c = this.athkar.category(id)!;
-        return { categoryId: id, name: ar ? c.nameAr : c.nameEn, items: byCategory.get(id)! };
+        return { categoryId: id, name: this.athkar.nameIn(lang, c), items: byCategory.get(id)! };
       });
   });
 

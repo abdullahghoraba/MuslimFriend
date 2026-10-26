@@ -88,7 +88,7 @@ class AthkarOverlayPlugin : Plugin() {
                 .put("kind", if (sound == "voice") "voice" else "athan").put("at", System.currentTimeMillis())
                 .put("title", speech.ifBlank { context.getString(com.muslimfriend.app.R.string.channel_athan) })
                 .put("body", "").put("sound", sound).put("volume", call.getFloat("volume") ?: 1f)
-                .put("stopOn", call.getArray("stopOn") ?: org.json.JSONArray()).put("speech", speech))
+                .put("stopOn", call.getArray("stopOn") ?: org.json.JSONArray()).put("speech", speech).put("speechLang", call.getString("speechLang") ?: ""))
             ContextCompat.startForegroundService(context, AthanService.intent(context, event, true))
             call.resolve()
         } catch (e: Exception) { call.reject("Unable to preview athan: " + e.message) }

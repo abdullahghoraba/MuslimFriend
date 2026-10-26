@@ -17,6 +17,8 @@ export interface AthanEvent {
   stopOn?: AthanStopWay[];
   /** Text spoken for kind 'voice'. */
   speech?: string;
+  /** Language of [speech] for text-to-speech, e.g. 'ur'. */
+  speechLang?: string;
 }
 export type AthanStopWay = 'flip' | 'shake' | 'volume';
 export interface AthanPluginMethods {
@@ -24,7 +26,7 @@ export interface AthanPluginMethods {
   openExactAlarmSettings(): Promise<void>;
   scheduleAthan(options: { events: AthanEvent[] }): Promise<{ scheduled: number; exact: boolean }>;
   cancelAthan(): Promise<void>;
-  previewAthan(options: { sound: AthanSound; volume: number; stopOn?: AthanStopWay[]; speech?: string }): Promise<void>;
+  previewAthan(options: { sound: AthanSound; volume: number; stopOn?: AthanStopWay[]; speech?: string; speechLang?: string }): Promise<void>;
   stopAthan(): Promise<void>;
   hasDndAccess(): Promise<{ granted: boolean }>;
   openDndAccessSettings(): Promise<void>;
