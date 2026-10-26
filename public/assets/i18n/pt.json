@@ -726,7 +726,10 @@
     "importDone": "\"{{name}}\" importado. Você o encontrará na lista de tafsirs ao tocar em qualquer versículo.",
     "importBad": "Não foi possível ler o arquivo. Deve ser um arquivo JSON com texto para cada versículo.",
     "importEmpty": "O arquivo não tem texto de tafsir para nenhum versículo.",
-    "importNote": "Você pode importar um tafsir do qual tenha uma cópia (um arquivo JSON com texto por versículo, com chaves como \"1:1\"). Ele fica guardado no seu celular, funciona offline e nunca é enviado a lugar nenhum."
+    "importNote": "Você pode importar um tafsir do qual tenha uma cópia (um arquivo JSON com texto por versículo, com chaves como \"1:1\"). Ele fica guardado no seu celular, funciona offline e nunca é enviado a lugar nenhum.",
+    "translation": "Tradução",
+    "translations": "Traduções do significado",
+    "translationsNote": "Uma tradução conhecida por idioma, da biblioteca do quran.com, guardada no celular após o download. Uma tradução transmite o sentido; não é o próprio Alcorão."
   },
   "athan": {
     "title": "Ajustes do adhan",

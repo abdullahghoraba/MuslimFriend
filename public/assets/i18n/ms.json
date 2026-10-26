@@ -726,7 +726,10 @@
     "importDone": "\"{{name}}\" diimport. Anda akan menemuinya dalam senarai tafsir apabila mengetik mana-mana ayat.",
     "importBad": "Fail tidak dapat dibaca. Ia mesti fail JSON dengan teks bagi setiap ayat.",
     "importEmpty": "Fail tiada teks tafsir untuk sebarang ayat.",
-    "importNote": "Anda boleh mengimport tafsir yang anda miliki salinannya (fail JSON dengan teks bagi setiap ayat, berkunci seperti \"1:1\"). Ia disimpan pada telefon anda, berfungsi di luar talian dan tidak pernah dihantar ke mana-mana."
+    "importNote": "Anda boleh mengimport tafsir yang anda miliki salinannya (fail JSON dengan teks bagi setiap ayat, berkunci seperti \"1:1\"). Ia disimpan pada telefon anda, berfungsi di luar talian dan tidak pernah dihantar ke mana-mana.",
+    "translation": "Terjemahan",
+    "translations": "Terjemahan makna Al-Quran",
+    "translationsNote": "Satu terjemahan terkenal bagi setiap bahasa daripada perpustakaan quran.com, disimpan pada telefon selepas dimuat turun. Terjemahan menyampaikan makna; ia bukan Al-Quran itu sendiri."
   },
   "athan": {
     "title": "Tetapan azan",

@@ -8,7 +8,8 @@ export interface RemoteTafsir {
   apiId: number;
   nameAr: string;
   nameEn: string;
-  lang: 'ar' | 'en' | 'ur';
+  /** Language of the text (BCP 47 code, e.g. 'ar', 'en', 'ur'). */
+  lang: string;
   /** Rough size of the full download, for the UI. */
   sizeMb: number;
   /** Set for a tafsir the user imported from a file on the device (never fetched from the network). */
@@ -20,6 +21,45 @@ export interface RemoteTafsir {
   /** Where downloads come from: quran.com (default) or the spa5k open dataset ([slug] folder). */
   provider?: 'spa5k';
   slug?: string;
+  /** A translation of the meanings (quran.com translation [remoteId]) rather than a tafsir. */
+  kind?: 'translation';
+  remoteId?: number;
+  /** Translator, shown with the language name. */
+  by?: string;
+}
+
+/** Local ids of translations: TRANSLATION_BASE + the quran.com translation id (their ids overlap tafsir ids). */
+export const TRANSLATION_BASE = 800_000;
+/**
+ * One widely used translation of the meanings per app language, from quran.com. Downloaded per sura (about 1–2 MB
+ * for the whole Quran) and kept offline like the tafsirs.
+ */
+export const REMOTE_TRANSLATIONS: RemoteTafsir[] = ([
+  ['en', 20, 'Saheeh International'], ['ur', 54, 'Muhammad Junagarhi'], ['fa', 135, 'IslamHouse.com'], ['tr', 77, 'Diyanet İşleri'],
+  ['id', 134, 'King Fahad Quran Complex'], ['ms', 39, 'Abdullah Muhammad Basmeih'], ['bn', 161, 'Taisirul Quran'], ['hi', 122, 'Azizul Haque al-Umari'],
+  ['fr', 31, 'Muhammad Hamidullah'], ['es', 83, 'Isa Garcia'], ['de', 27, 'Bubenheim & Nadeem'], ['ru', 45, 'Elmir Kuliev'],
+  ['pt', 43, 'Samir El-Hayek'], ['zh', 56, 'Ma Jian'], ['sw', 49, 'Ali Muhsin Al-Barwani'], ['ha', 32, 'Abubakar Gumi'], ['uz', 55, 'Muhammad Sodiq Muhammad Yusuf'],
+] as const).map(([lang, id, by]) => ({
+  apiId: TRANSLATION_BASE + id, remoteId: id, kind: 'translation' as const, lang, by, nameAr: by, nameEn: by, sizeMb: 2,
+}));
+
+/** A tafsir's name in the UI language, or for a translation its language and translator ("Français — Muhammad Hamidullah"). */
+export function tafsirName(t: RemoteTafsir, uiLang: string): string {
+  if (t.kind === 'translation') {
+    let language = t.lang;
+    try {
+      language = new Intl.DisplayNames([uiLang], { type: 'language' }).of(t.lang) ?? t.lang;
+    } catch {
+      /* keep the code */
+    }
+    return `${language} — ${t.by}`;
+  }
+  return uiLang === 'ar' ? t.nameAr : t.nameEn;
+}
+
+/** The translation in [lang], or the English one (for Arabic and any language without one). */
+export function translationFor(lang: string): RemoteTafsir {
+  return REMOTE_TRANSLATIONS.find((t) => t.lang === lang) ?? REMOTE_TRANSLATIONS[0];
 }
 
 /** Ids of imported tafsirs start here, well away from quran.com resource ids. */
@@ -170,7 +210,7 @@ export class TafsirLibraryService {
   /** Tafsirs the user imported from files on the device. */
   readonly imported = signal<RemoteTafsir[]>([]);
   /** Every non-bundled tafsir: downloadable ones, then imported ones. */
-  readonly all = computed(() => [...REMOTE_TAFSIRS, ...this.imported()]);
+  readonly all = computed(() => [...REMOTE_TAFSIRS, ...REMOTE_TRANSLATIONS, ...this.imported()]);
   private importedLoaded?: Promise<void>;
 
   find(apiId: number): RemoteTafsir | undefined {
@@ -342,6 +382,7 @@ export class TafsirLibraryService {
     const ayas = (await this.counts())[sura - 1];
     const info = this.find(apiId);
     if (info?.provider === 'spa5k' && info.slug) return this.fetchSpa5k(info.slug, sura, ayas);
+    if (info?.kind === 'translation') return this.fetchTranslation(info.remoteId!, sura, ayas);
     const out: string[] = Array.from({ length: ayas }, () => '');
     let page: number | null = 1;
     while (page) {
@@ -353,6 +394,19 @@ export class TafsirLibraryService {
         if (aya >= 1 && aya <= ayas) out[aya - 1] = cleanHtml(t.text);
       }
       page = body.pagination?.next_page ?? null;
+    }
+    return out;
+  }
+
+  private async fetchTranslation(id: number, sura: number, ayas: number): Promise<string[]> {
+    const res = await fetch(`${API}/quran/translations/${id}?chapter_number=${sura}&fields=verse_key`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const body = (await res.json()) as { translations: { verse_key: string; text: string }[] };
+    const out: string[] = Array.from({ length: ayas }, () => '');
+    for (const t of body.translations) {
+      const aya = Number(t.verse_key?.split(':')[1]);
+      // Footnote markers (<sup foot_note=…>1</sup>) point to notes this app doesn't show.
+      if (aya >= 1 && aya <= ayas) out[aya - 1] = cleanHtml(t.text.replace(/<sup[^>]*>.*?<\/sup>/g, ''));
     }
     return out;
   }

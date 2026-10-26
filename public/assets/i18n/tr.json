@@ -726,7 +726,10 @@
     "importDone": "\"{{name}}\" içe aktarıldı. Herhangi bir ayete dokunduğunuzda tefsir listesinde bulacaksınız.",
     "importBad": "Dosya okunamadı. Her ayet için metin içeren bir JSON dosyası olmalıdır.",
     "importEmpty": "Dosyada hiçbir ayet için tefsir metni yok.",
-    "importNote": "Elinizde kopyası olan bir tefsiri içe aktarabilirsiniz (\"1:1\" gibi anahtarlarla ayet başına metin içeren bir JSON dosyası). Telefonunuzda saklanır, çevrimdışı çalışır ve hiçbir yere gönderilmez."
+    "importNote": "Elinizde kopyası olan bir tefsiri içe aktarabilirsiniz (\"1:1\" gibi anahtarlarla ayet başına metin içeren bir JSON dosyası). Telefonunuzda saklanır, çevrimdışı çalışır ve hiçbir yere gönderilmez.",
+    "translation": "Meal",
+    "translations": "Kuran mealleri",
+    "translationsNote": "quran.com kütüphanesinden her dil için tanınmış bir meal; indirildikten sonra telefonda saklanır. Meal anlamı aktarır, Kuran'ın kendisi değildir."
   },
   "athan": {
     "title": "Ezan ayarları",

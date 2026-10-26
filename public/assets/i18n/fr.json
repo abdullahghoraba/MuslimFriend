@@ -726,7 +726,10 @@
     "importDone": "« {{name}} » importé. Vous le trouverez dans la liste des tafsirs en touchant un verset.",
     "importBad": "Impossible de lire le fichier. Ce doit être un fichier JSON avec un texte pour chaque verset.",
     "importEmpty": "Le fichier ne contient de tafsir pour aucun verset.",
-    "importNote": "Vous pouvez importer un tafsir dont vous avez une copie (un fichier JSON avec un texte par verset, avec des clés comme \"1:1\"). Il est enregistré sur votre téléphone, fonctionne hors ligne et n'est jamais envoyé ailleurs."
+    "importNote": "Vous pouvez importer un tafsir dont vous avez une copie (un fichier JSON avec un texte par verset, avec des clés comme \"1:1\"). Il est enregistré sur votre téléphone, fonctionne hors ligne et n'est jamais envoyé ailleurs.",
+    "translation": "Traduction",
+    "translations": "Traductions des sens",
+    "translationsNote": "Une traduction reconnue par langue, de la bibliothèque quran.com, gardée sur le téléphone après téléchargement. Une traduction rend le sens ; elle n'est pas le Coran lui-même."
   },
   "athan": {
     "title": "Réglages de l'adhan",

@@ -726,7 +726,10 @@
     "importDone": "Se importó «{{name}}». Lo encontrarás en la lista de tafsires al tocar cualquier aleya.",
     "importBad": "No se pudo leer el archivo. Debe ser un archivo JSON con texto para cada aleya.",
     "importEmpty": "El archivo no tiene texto de tafsir para ninguna aleya.",
-    "importNote": "Puedes importar un tafsir del que tengas copia (un archivo JSON con texto por aleya, con claves como \"1:1\"). Se guarda en tu teléfono, funciona sin conexión y nunca se envía a ninguna parte."
+    "importNote": "Puedes importar un tafsir del que tengas copia (un archivo JSON con texto por aleya, con claves como \"1:1\"). Se guarda en tu teléfono, funciona sin conexión y nunca se envía a ninguna parte.",
+    "translation": "Traducción",
+    "translations": "Traducciones del significado",
+    "translationsNote": "Una traducción reconocida por idioma, de la biblioteca de quran.com, guardada en el teléfono tras descargarla. Una traducción transmite el sentido; no es el Corán en sí."
   },
   "athan": {
     "title": "Ajustes del adhan",

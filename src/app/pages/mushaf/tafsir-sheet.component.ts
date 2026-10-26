@@ -20,7 +20,8 @@ import { Preferences } from '@capacitor/preferences';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AyahRef, TAFSIR_IDS, TafsirId, splitBasmala } from '../../core/quran/quran-utils';
 import { QuranService } from '../../core/quran/quran.service';
-import { TafsirLibraryService } from '../../core/quran/tafsir-library.service';
+import { RemoteTafsir, TafsirLibraryService, tafsirName, translationFor } from '../../core/quran/tafsir-library.service';
+import { isRtl } from '../../core/models';
 import { SettingsService } from '../../core/services/settings.service';
 import { ShareService } from '../../core/services/share.service';
 import { SelectTextsDirective } from '../../shared/select-texts.directive';
@@ -47,23 +48,26 @@ type Source = TafsirId | `r${number}`;
         </ion-buttons>
       </ion-toolbar>
       <ion-toolbar>
-        <ion-segment [value]="isRemote() ? 'more' : source()" (ionChange)="onSegment($event.detail.value)">
+        <ion-segment [value]="isTranslation() ? 'translation' : isRemote() ? 'more' : source()" (ionChange)="onSegment($event.detail.value)">
           @for (id of ids; track id) {
             <ion-segment-button [value]="id">
               <ion-label>{{ sourceName(id) }}</ion-label>
             </ion-segment-button>
           }
+          <ion-segment-button value="translation">
+            <ion-label>{{ 'tafsirLib.translation' | translate }}</ion-label>
+          </ion-segment-button>
           <ion-segment-button value="more">
             <ion-label>{{ 'tafsirLib.more' | translate }}</ion-label>
           </ion-segment-button>
         </ion-segment>
       </ion-toolbar>
-      @if (isRemote() || showMore()) {
+      @if ((isRemote() && !isTranslation()) || showMore()) {
         <ion-toolbar>
           <ion-select [label]="'tafsirLib.choose' | translate" interface="action-sheet" [value]="source()"
                       (ionChange)="setSource($event.detail.value)">
             @for (t of remote(); track t.apiId) {
-              <ion-select-option [value]="'r' + t.apiId">{{ lang() === 'ar' ? t.nameAr : t.nameEn }}</ion-select-option>
+              <ion-select-option [value]="'r' + t.apiId">{{ remoteName(t) }}</ion-select-option>
             }
           </ion-select>
         </ion-toolbar>
@@ -82,7 +86,7 @@ type Source = TafsirId | `r${number}`;
         @if (covered()) {
           <p class="covered">{{ 'tafsirLib.covered' | translate }}</p>
         }
-        <p class="tafsir" [attr.dir]="textLang() === 'en' ? 'ltr' : 'rtl'" [attr.lang]="textLang()">{{ text() }}</p>
+        <p class="tafsir" [attr.dir]="rtl() ? 'rtl' : 'ltr'" [attr.lang]="textLang()">{{ text() }}</p>
       }
       <p class="source">{{ sourceBy() }}</p>
       <div class="nav">
@@ -134,6 +138,10 @@ export class TafsirSheetComponent implements OnInit {
   readonly isRemote = computed(() => this.source().startsWith('r'));
   readonly remoteInfo = computed(() => (this.isRemote() ? this.library.find(Number(this.source().slice(1))) : undefined));
   readonly textLang = computed(() => (this.isRemote() ? this.remoteInfo()?.lang : 'ar') ?? 'ar');
+  readonly rtl = computed(() => isRtl(this.textLang()));
+  /** The translation of the meanings in the app language (English for Arabic). */
+  readonly translation = computed(() => translationFor(this.lang()));
+  readonly isTranslation = computed(() => this.remoteInfo()?.kind === 'translation');
   readonly ref = computed(() => this.quran.ayahAt(this.index()));
   readonly ayahText = computed(() => splitBasmala(this.ref(), this.ref().text).text);
   readonly num = computed(() => String(this.ref().aya));
@@ -145,7 +153,7 @@ export class TafsirSheetComponent implements OnInit {
   readonly sourceBy = computed(() => {
     const r = this.remoteInfo();
     if (r?.imported) return `${this.lang() === 'ar' ? r.nameAr : r.nameEn} · ${r.source || (this.lang() === 'ar' ? 'ملف مستورد' : 'Imported file')}`;
-    if (r) return `${this.lang() === 'ar' ? r.nameAr : r.nameEn} · ${r.provider === 'spa5k' ? 'QUL (Tarteel)' : 'quran.com'}`;
+    if (r) return `${this.remoteName(r)} · ${r.provider === 'spa5k' ? 'QUL (Tarteel)' : 'quran.com'}`;
     return `${this.quran.meta.sources.tafsir[this.source() as TafsirId].by} · tanzil.net`;
   });
 
@@ -153,8 +161,15 @@ export class TafsirSheetComponent implements OnInit {
     await this.library.loadImported();
     const { value } = await Preferences.get({ key: TAFSIR_PREF });
     if (value && (isBundled(value) || this.library.find(Number(value.slice(1))))) this.source.set(value as Source);
+    // Readers of another language start with the meaning in their own language.
+    else if (this.lang() !== 'ar') this.source.set(('r' + this.translation().apiId) as Source);
     this.index.set(this.quran.ayah(this.ayahRef()).index);
     await this.loadText();
+  }
+
+  /** A tafsir's name, or for a translation its language and translator ("Français — Muhammad Hamidullah"). */
+  remoteName(t: RemoteTafsir): string {
+    return tafsirName(t, this.lang());
   }
 
   sourceName(id: TafsirId): string {
@@ -163,6 +178,11 @@ export class TafsirSheetComponent implements OnInit {
   }
 
   async onSegment(value: unknown): Promise<void> {
+    if (value === 'translation') {
+      this.showMore.set(false);
+      await this.setSource('r' + this.translation().apiId);
+      return;
+    }
     if (value === 'more') {
       this.showMore.set(true);
       return;

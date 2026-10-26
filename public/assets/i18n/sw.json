@@ -726,7 +726,10 @@
     "importDone": "\"{{name}}\" imeletwa. Utaipata kwenye orodha ya tafsiri unapogusa aya yoyote.",
     "importBad": "Faili haikuweza kusomwa. Lazima iwe faili ya JSON yenye maandishi kwa kila aya.",
     "importEmpty": "Faili haina maandishi ya tafsiri kwa aya yoyote.",
-    "importNote": "Unaweza kuleta tafsiri uliyo na nakala yake (faili ya JSON yenye maandishi kwa kila aya, yenye funguo kama \"1:1\"). Huhifadhiwa kwenye simu yako, hufanya kazi bila mtandao na haitumwi popote."
+    "importNote": "Unaweza kuleta tafsiri uliyo na nakala yake (faili ya JSON yenye maandishi kwa kila aya, yenye funguo kama \"1:1\"). Huhifadhiwa kwenye simu yako, hufanya kazi bila mtandao na haitumwi popote.",
+    "translation": "Tafsiri ya maana",
+    "translations": "Tafsiri za maana za Kurani",
+    "translationsNote": "Tafsiri moja inayojulikana kwa kila lugha kutoka maktaba ya quran.com, huhifadhiwa kwenye simu baada ya kupakuliwa. Tafsiri huwasilisha maana; si Kurani yenyewe."
   },
   "athan": {
     "title": "Mipangilio ya adhana",

@@ -726,7 +726,10 @@
     "importDone": "An shigo da \"{{name}}\". Za ka same shi a jerin tafsirai idan ka taɓa kowace aya.",
     "importBad": "Ba a iya karanta fayil ɗin ba. Dole ya zama fayil ɗin JSON mai rubutu ga kowace aya.",
     "importEmpty": "Fayil ɗin ba shi da rubutun tafsiri ga kowace aya.",
-    "importNote": "Kana iya shigo da tafsirin da kake da kwafinsa (fayil ɗin JSON mai rubutu ga kowace aya, da maɓallai kamar \"1:1\"). Ana ajiye shi a wayarka, yana aiki ba tare da intanet ba kuma ba a aika shi ko'ina."
+    "importNote": "Kana iya shigo da tafsirin da kake da kwafinsa (fayil ɗin JSON mai rubutu ga kowace aya, da maɓallai kamar \"1:1\"). Ana ajiye shi a wayarka, yana aiki ba tare da intanet ba kuma ba a aika shi ko'ina.",
+    "translation": "Fassara",
+    "translations": "Fassarorin ma'anonin Alƙur'ani",
+    "translationsNote": "Fassara ɗaya sananniya ga kowane harshe daga ɗakin karatu na quran.com, ana ajiye ta a waya bayan saukewa. Fassara tana isar da ma'ana; ba ita ce Alƙur'ani kansa ba."
   },
   "athan": {
     "title": "Saitunan kiran sallah",

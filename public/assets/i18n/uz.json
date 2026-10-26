@@ -726,7 +726,10 @@
     "importDone": "\"{{name}}\" import qilindi. Istalgan oyatni bosganingizda uni tafsirlar ro'yxatida topasiz.",
     "importBad": "Faylni o'qib bo'lmadi. U har bir oyat uchun matni bo'lgan JSON fayl bo'lishi kerak.",
     "importEmpty": "Faylda hech bir oyat uchun tafsir matni yo'q.",
-    "importNote": "Nusxasi o'zingizda bo'lgan tafsirni import qilishingiz mumkin (\"1:1\" kabi kalitli, har bir oyat uchun matni bo'lgan JSON fayl). U telefoningizda saqlanadi, oflayn ishlaydi va hech qayerga yuborilmaydi."
+    "importNote": "Nusxasi o'zingizda bo'lgan tafsirni import qilishingiz mumkin (\"1:1\" kabi kalitli, har bir oyat uchun matni bo'lgan JSON fayl). U telefoningizda saqlanadi, oflayn ishlaydi va hech qayerga yuborilmaydi.",
+    "translation": "Tarjima",
+    "translations": "Qur'on ma'nolari tarjimalari",
+    "translationsNote": "quran.com kutubxonasidan har bir til uchun bitta mashhur tarjima, yuklab olingach telefonda saqlanadi. Tarjima ma'noni yetkazadi; u Qur'onning o'zi emas."
   },
   "athan": {
     "title": "Azon sozlamalari",

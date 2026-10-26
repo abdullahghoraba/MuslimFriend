@@ -726,7 +726,10 @@
     "importDone": "„{{name}}“ importiert. Du findest ihn in der Tafsir-Liste, wenn du auf einen Vers tippst.",
     "importBad": "Die Datei konnte nicht gelesen werden. Es muss eine JSON-Datei mit Text für jeden Vers sein.",
     "importEmpty": "Die Datei enthält für keinen Vers einen Tafsir-Text.",
-    "importNote": "Du kannst einen Tafsir importieren, von dem du eine Kopie hast (eine JSON-Datei mit Text pro Vers, mit Schlüsseln wie \"1:1\"). Er wird auf deinem Telefon gespeichert, funktioniert offline und wird nirgendwohin gesendet."
+    "importNote": "Du kannst einen Tafsir importieren, von dem du eine Kopie hast (eine JSON-Datei mit Text pro Vers, mit Schlüsseln wie \"1:1\"). Er wird auf deinem Telefon gespeichert, funktioniert offline und wird nirgendwohin gesendet.",
+    "translation": "Übersetzung",
+    "translations": "Übersetzungen der Bedeutungen",
+    "translationsNote": "Eine bekannte Übersetzung je Sprache aus der Bibliothek von quran.com, nach dem Herunterladen auf dem Telefon gespeichert. Eine Übersetzung gibt die Bedeutung wieder; sie ist nicht der Koran selbst."
   },
   "athan": {
     "title": "Adhan-Einstellungen",

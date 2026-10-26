@@ -726,7 +726,10 @@
     "importDone": "\"{{name}}\" diimpor. Anda akan menemukannya di daftar tafsir saat mengetuk ayat mana pun.",
     "importBad": "File tidak dapat dibaca. Harus berupa file JSON dengan teks untuk setiap ayat.",
     "importEmpty": "File tidak berisi teks tafsir untuk ayat mana pun.",
-    "importNote": "Anda dapat mengimpor tafsir yang salinannya Anda miliki (file JSON berisi teks per ayat, dengan kunci seperti \"1:1\"). File disimpan di ponsel Anda, berfungsi luring, dan tidak pernah dikirim ke mana pun."
+    "importNote": "Anda dapat mengimpor tafsir yang salinannya Anda miliki (file JSON berisi teks per ayat, dengan kunci seperti \"1:1\"). File disimpan di ponsel Anda, berfungsi luring, dan tidak pernah dikirim ke mana pun.",
+    "translation": "Terjemahan",
+    "translations": "Terjemahan makna Al-Qur'an",
+    "translationsNote": "Satu terjemahan terkenal per bahasa dari perpustakaan quran.com, disimpan di ponsel setelah diunduh. Terjemahan menyampaikan makna; bukan Al-Qur'an itu sendiri."
   },
   "athan": {
     "title": "Pengaturan azan",

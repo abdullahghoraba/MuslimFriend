@@ -18,7 +18,7 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { REMOTE_TAFSIRS, RemoteTafsir, TafsirLibraryService } from '../../core/quran/tafsir-library.service';
+import { REMOTE_TAFSIRS, REMOTE_TRANSLATIONS, RemoteTafsir, TafsirLibraryService, tafsirName, translationFor } from '../../core/quran/tafsir-library.service';
 import { SettingsService } from '../../core/services/settings.service';
 
 /** Download extra tafsirs once and read them offline. Bundled tafsirs are always offline. */
@@ -48,6 +48,37 @@ import { SettingsService } from '../../core/services/settings.service';
           </ion-item>
         }
       </ion-list>
+
+      <ion-list inset>
+        <ion-list-header>{{ 'tafsirLib.translations' | translate }}</ion-list-header>
+        @for (t of translations(); track t.apiId) {
+          <ion-item lines="full">
+            <ion-label class="ion-text-wrap">
+              <h3>{{ name(t) }}</h3>
+              <p>
+                {{ 'tafsirLib.offlineCount' | translate: { n: count(t), total: 114 } }}
+                · ~{{ t.sizeMb }} {{ 'common.mb' | translate }}
+              </p>
+              @if (lib.progress()?.apiId === t.apiId) {
+                <ion-progress-bar [value]="(lib.progress()?.done ?? 0) / 114" />
+              }
+            </ion-label>
+            @if (lib.progress()?.apiId === t.apiId) {
+              <ion-button slot="end" fill="clear" (click)="lib.cancelDownload()">{{ 'common.cancel' | translate }}</ion-button>
+            } @else if (count(t) === 114) {
+              <ion-button slot="end" fill="clear" color="danger" (click)="remove(t)" [attr.aria-label]="('common.delete' | translate) + ' ' + name(t)">
+                <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true" />
+              </ion-button>
+            } @else {
+              <ion-button slot="end" fill="clear" [disabled]="!!lib.progress()" (click)="download(t)"
+                          [attr.aria-label]="('tafsirLib.download' | translate) + ' ' + name(t)">
+                <ion-icon slot="icon-only" name="cloud-download-outline" aria-hidden="true" />
+              </ion-button>
+            }
+          </ion-item>
+        }
+      </ion-list>
+      <p class="note">{{ 'tafsirLib.translationsNote' | translate }}</p>
 
       <ion-list inset>
         <ion-list-header>{{ 'tafsirLib.downloadable' | translate }}</ion-list-header>
@@ -136,8 +167,14 @@ export class TafsirLibraryPage {
   }
 
   name(t: RemoteTafsir): string {
-    return this.lang() === 'ar' ? t.nameAr : t.nameEn;
+    return tafsirName(t, this.lang());
   }
+
+  /** Translations of the meanings, the one in the app language first. */
+  readonly translations = computed(() => {
+    const own = translationFor(this.lang());
+    return [own, ...REMOTE_TRANSLATIONS.filter((t) => t !== own)];
+  });
 
   count(t: RemoteTafsir): number {
     return this.lib.offlineCounts()[t.apiId] ?? 0;

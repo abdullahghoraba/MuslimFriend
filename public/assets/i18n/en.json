@@ -726,7 +726,10 @@
     "importDone": "Imported \"{{name}}\". You'll find it in the tafsir list when you tap any verse.",
     "importBad": "Couldn't read the file. It must be a JSON file with text for each verse.",
     "importEmpty": "The file has no tafsir text for any verse.",
-    "importNote": "You can import a tafsir you have a copy of (a JSON file with text per verse, keyed like \"1:1\"). It's stored on your phone, works offline, and is never sent anywhere."
+    "importNote": "You can import a tafsir you have a copy of (a JSON file with text per verse, keyed like \"1:1\"). It's stored on your phone, works offline, and is never sent anywhere.",
+    "translation": "Translation",
+    "translations": "Translations of the meanings",
+    "translationsNote": "One well-known translation per language from the quran.com library, kept on the phone once downloaded. A translation conveys the meaning; it is not the Quran itself."
   },
   "athan": {
     "title": "Athan settings",
