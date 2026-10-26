@@ -63,6 +63,6 @@
   </fieldset>
   <ion-list inset><ion-list-header>{{ 'overlay.battery' | translate }}</ion-list-header>
     <ion-item lines="none"><ion-label class="ion-text-wrap"><p>{{ 'overlay.batteryText' | translate }}</p><p>{{ ('overlay.tips.' + batteryTip()) | translate }}</p>@if (ignoringBattery()) { <p class="ok">{{ 'overlay.batteryOk' | translate }}</p> }</ion-label></ion-item>
-    <div class="actions"><ion-button fill="outline" [disabled]="busy()" (click)="batterySettings()">{{ 'overlay.batterySettings' | translate }}</ion-button></div>
+    <div class="actions" role="listitem"><ion-button fill="outline" [disabled]="busy()" (click)="batterySettings()">{{ 'overlay.batterySettings' | translate }}</ion-button></div>
   </ion-list>
 </ion-content>

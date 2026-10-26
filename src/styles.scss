@@ -152,6 +152,8 @@ ion-segment {
 }
 ion-segment-button {
   --indicator-color: var(--ion-color-primary);
+  // Unselected labels: the muted text colour (Ionic's faded default is under 4.5:1 on the segment background).
+  --color: var(--app-muted);
   text-transform: none;
   letter-spacing: 0;
   font-weight: 600;
@@ -179,4 +181,15 @@ ion-range > ion-button[slot] {
   height: 40px;
   margin: 0 4px;
   font-size: 1.1rem;
+}
+
+// Tablets and wide windows: keep pages in a readable centred column (the mushaf uses the whole width).
+@media (min-width: 900px) {
+  ion-content:not(.mushaf)::part(scroll) {
+    padding-inline: max(0px, calc((100% - 820px) / 2));
+  }
+  ion-modal:not(.full-screen) {
+    --width: min(640px, 92vw);
+    --height: min(760px, 90vh);
+  }
 }

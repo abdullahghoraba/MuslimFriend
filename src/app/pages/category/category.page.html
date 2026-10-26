@@ -62,15 +62,10 @@
   <ng-template #dhikrCard let-d let-i="index">
         <article
           class="card ion-activatable"
-          [attr.role]="prefs().tapTarget === 'card' ? 'button' : null"
-          [attr.tabindex]="prefs().tapTarget === 'card' ? 0 : null"
           [attr.data-index]="i"
           [class.done]="isDone(d)"
           (click)="prefs().tapTarget === 'card' && count(d, i)"
           (keydown)="onCardKey($event, d, i)"
-          [attr.aria-label]="
-            'reader.counterButton' | translate: { count: countOf(d), total: d.repeatCount }
-          "
         >
           <p class="dhikr-text" lang="ar" dir="rtl">{{ d.textAr }}</p>
 

@@ -21,7 +21,7 @@
 
 <ion-content>
   <ion-list inset>
-    <ion-list-header
+    <ion-list-header role="listitem"
       ><ion-label>{{ 'myAthkar.collections' | translate }}</ion-label
       ><ion-button size="small" (click)="editCollection()"
         ><ion-icon slot="start" name="add-outline" aria-hidden="true" />{{
@@ -64,7 +64,7 @@
   } @else {
     @for (g of groups(); track g.categoryId) {
       <ion-list inset>
-        <ion-list-header>
+        <ion-list-header role="listitem">
           <ion-label>{{ g.name }}</ion-label>
           @if (g.categoryId !== customId) {
             <ion-button size="small" (click)="openList(g.categoryId)">{{

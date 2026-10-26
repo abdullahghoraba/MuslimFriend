@@ -242,3 +242,8 @@ ion-content.mushaf {
 
 // Memorised ayat (hifz plans): a thin underline in the plan's colour.
 .ayah.hifz { text-decoration: underline; text-decoration-color: var(--hifz); text-decoration-thickness: 2px; text-underline-offset: 0.45em; }
+
+// Tablets: a book-like line length instead of lines across the whole screen.
+@media (min-width: 900px) {
+  .page-surface { max-width: 860px; margin-inline: auto; }
+}
