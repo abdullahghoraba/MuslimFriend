@@ -23,6 +23,9 @@ const methodOf = (country) => METHOD_BY_COUNTRY[country] ?? curatedMethod[countr
 // Arabic script without the letters only Persian, Urdu, Pashto and Kurdish use.
 const ARABIC = /^[ء-يً-ْٰ\s\-'()]+$/;
 const arabicName = (alternates) => alternates.split(',').find((n) => ARABIC.test(n) && /[ء-ي]/.test(n));
+// Wikidata labels for the cities GeoNames has no Arabic name for (scripts/fetch-arabic-city-names.mjs), without a leading «مدينة» ("city of").
+const wikidataArabic = JSON.parse(readFileSync(new URL('../content/cities.ar-names.json', import.meta.url), 'utf8'));
+const fromWikidata = (id) => wikidataArabic[id]?.replace(/^مدينة\s+/, '');
 
 // About 1 km: prayer times move by seconds, and the file stays small.
 const round = (n) => Math.round(n * 100) / 100;
@@ -34,7 +37,7 @@ for (const line of readFileSync(source, 'utf8').split('\n')) {
   const population = Number(f[14]);
   if (population < 50_000 && feature !== 'PPLC') continue;
   cities.push({
-    id, ar: arabicName(alternates) ?? name, en: name !== ascii && /[^\x00-\x7F]/.test(name) ? name : ascii,
+    id, ar: arabicName(alternates) ?? fromWikidata(id) ?? name, en: name !== ascii && /[^\x00-\x7F]/.test(name) ? name : ascii,
     country, lat: round(+lat), lng: round(+lng), method: methodOf(country), population,
   });
 }
