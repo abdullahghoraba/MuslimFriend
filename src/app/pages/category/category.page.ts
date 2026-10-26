@@ -31,10 +31,11 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Category, CUSTOM_CATEGORY_ID, Dhikr } from '../../core/models';
+import { Category, CUSTOM_CATEGORY_ID, Dhikr, isRtl } from '../../core/models';
 import { CollectionEditorComponent } from '../../shared/collection-editor.component';
 import { DhikrEditorComponent } from '../../shared/dhikr-editor.component';
 import { AthkarRepository } from '../../core/services/athkar.repository';
+import { AthkarMeaningService, LocalMeaning } from '../../core/services/athkar-meaning.service';
 import { HapticsService } from '../../core/services/haptics.service';
 import { ProgressService } from '../../core/services/progress.service';
 import { SettingsService } from '../../core/services/settings.service';
@@ -151,6 +152,10 @@ export class CategoryPage {
   readonly hiddenOpen = signal(false);
 
   readonly items = signal<Dhikr[]>([]);
+  private readonly meanings = inject(AthkarMeaningService);
+  /** Meanings in the app language for athkar that are whole Quran verses (other languages than Arabic and English). */
+  readonly localMeanings = signal<Record<string, LocalMeaning>>({});
+  readonly rtl = computed(() => isRtl(this.lang()));
   readonly counts = signal<Map<string, number>>(new Map());
   readonly reordering = signal(false);
   readonly fontPanelOpen = signal(false);
@@ -295,12 +300,22 @@ export class CategoryPage {
     if (this.id()) void this.load();
   }
 
+  private async loadMeanings(items: Dhikr[]): Promise<void> {
+    const lang = this.lang();
+    if (lang === 'ar' || lang === 'en') return;
+    for (const d of items) {
+      const m = await this.meanings.meaning(d, lang);
+      if (m) this.localMeanings.update((all) => ({ ...all, [d.id]: m }));
+    }
+  }
+
   async load(): Promise<void> {
     clearTimeout(this.advanceTimer);
     await this.preferences.ready;
     const items = await this.athkar.byCategory(this.id());
     this.singleIndex.update(i => Math.max(0, Math.min(i, items.length - 1)));
     this.items.set(items);
+    void this.loadMeanings(items);
     this.hiddenItems.set(await this.athkar.hiddenIn(this.id()));
     this.counts.set(await this.progress.countsFor(items.map((i) => i.id)));
     const start = Number(this.start());
