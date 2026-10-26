@@ -18,7 +18,7 @@ Character limits are checked by `node scripts/check-listing.mjs` (title ≤ 30, 
 
 القرآن الكريم
 • مصحف بتقسيم صفحات مصحف المدينة (604 صفحات) والأجزاء والأحزاب، بنص تنزيل الموثّق بالرسم العثماني.
-• التفسير الميسر وتفسير الجلالين لكل آية، ومكتبة تفاسير تنزّلها لتعمل دون إنترنت: ابن كثير والطبري والقرطبي والسعدي والرازي والألوسي وابن عاشور والزمخشري والشوكاني وغيرها، والترجمة الإنجليزية (صحيح إنترناشونال).
+• التفسير الميسر لكل آية مدمج في التطبيق، ومكتبة تفاسير تنزّلها لتعمل دون إنترنت: ابن كثير والطبري والقرطبي والسعدي والرازي والألوسي وابن عاشور والزمخشري والشوكاني وغيرها، وتفاسير بالإنجليزية.
 • الاستماع لـ16 قارئًا متصلًا دون توقف بين الآيات، مع تظليل الآية التي تُتلى، والتحكم في السرعة، وتنزيل السور للاستماع دون إنترنت.
 • حدّد آية أو مقطعًا بضغطة مطوّلة، ثم استمع أو انسخ أو شارك أو ظلّل الكل مرة واحدة.
 • علامات ملونة لمواضع القراءة، وعلامة القراءة الأخيرة، وتمييز الآيات بنجمة، وتظليلها بالألوان، وكتابة تدبّراتك.
@@ -31,8 +31,9 @@ Character limits are checked by `node scripts/check-listing.mjs` (title ≤ 30, 
 • مراجعة على فترات متباعدة لما حفظته، وتذكير يومي بالحفظ والمراجعة.
 
 الصلاة
-• مواقيت الصلاة لموقعك في أي مكان في العالم، بطرق الحساب المعتمدة.
-• الأذان كاملًا في وقته يعمل دون إنترنت، ويمكنك تنزيل أذان المسجد الحرام أو تسجيلات أخرى أو اختيار ملف صوتي من هاتفك، مع تذكير قبل الصلاة.
+• مواقيت الصلاة لموقعك في أي مكان في العالم: حدّد موقعك تلقائيًا أو اختر دولتك ثم مدينتك من أكثر من 12 ألف مدينة، مع 24 طريقة حساب معتمدة تُضبط حسب دولتك.
+• الأذان كاملًا في وقته: أذان المسجد النبوي بصوت الشيخ عصام بخاري مع أذان الفجر الخاص به، وأذانات من مكة والمدينة والأقصى والقاهرة تنزّلها مرة واحدة ثم تعمل دون إنترنت، أو اختر ملفًا صوتيًا من هاتفك.
+• تنبيه قبل كل صلاة وقبل الشروق، وتنبيه صوتي اختياري «اقتربت صلاة العصر»، وتذكير بصلاة الضحى.
 • ويدجت للشاشة الرئيسية بالصلاة القادمة.
 
 الأذكار
@@ -44,7 +45,7 @@ Character limits are checked by `node scripts/check-listing.mjs` (title ≤ 30, 
 • السبحة بأهداف وعدادات متعددة، وإحصاءات وسلاسل أيام على جهازك فقط.
 
 الخصوصية أولًا
-لا حسابات ولا إعلانات ولا تحليلات. بياناتك تبقى على هاتفك، ويعمل كل شيء دون إنترنت ما عدا التلاوات والتفاسير التي تطلب تنزيلها.
+لا حسابات ولا إعلانات ولا تحليلات. بياناتك تبقى على هاتفك، ويعمل كل شيء دون إنترنت ما عدا التلاوات والتفاسير والأذانات التي تطلب تنزيلها.
 
 نسأل الله أن يجعله خالصًا لوجهه الكريم، وأن ينفع به.
 
@@ -64,7 +65,7 @@ Muslim Friend keeps you company all day: the Holy Quran with tafsir, recitations
 
 The Holy Quran
 • Mushaf with the Madinah page layout (604 pages), juz and hizb, using the verified Tanzil Uthmani text.
-• Tafsir al-Muyassar and al-Jalalayn for every ayah, plus a tafsir library you can download for offline use: Ibn Kathir, al-Tabari, al-Qurtubi, al-Sa'di, al-Razi, al-Alusi, Ibn Ashur, al-Zamakhshari, al-Shawkani and more, and the Saheeh International English translation.
+• Tafsir al-Muyassar for every ayah, built in, plus a tafsir library you can download for offline use: Ibn Kathir, al-Tabari, al-Qurtubi, al-Sa'di, al-Razi, al-Alusi, Ibn Ashur, al-Zamakhshari, al-Shawkani and more, and English tafsirs.
 • 16 reciters playing continuously with no pause between ayat, the recited ayah highlighted, speed control, and sura downloads for offline listening.
 • Long-press to select an ayah or a range, then listen, copy, share or highlight it all at once.
 • Coloured bookmarks, a last-read mark, starred ayat, colour highlights and personal notes.
@@ -77,8 +78,9 @@ Memorise the Quran
 • Spaced review of what you have memorised, with a daily reminder.
 
 Prayer
-• Prayer times for your location anywhere in the world, with the standard calculation methods.
-• The full athan on time, built in and working offline; download the Masjid al-Haram athan or other recordings, or pick your own audio file, with a reminder before each prayer.
+• Prayer times for your location anywhere in the world: locate automatically, or choose your country and then your city from over 12,000 cities, with 24 official calculation methods set by country.
+• The full athan on time: the Prophet's Mosque athan by Sheikh Essam Bukhari with its own Fajr athan, and athans from Makkah, Madinah, al-Aqsa and Cairo that you download once and then play offline, or pick your own audio file.
+• A notice before each prayer and before sunrise, an optional spoken reminder ("The Asr prayer is near"), and a Duha prayer reminder.
 • A home-screen widget with the next prayer.
 
 Athkar
@@ -90,7 +92,7 @@ Athkar
 • Tasbih with targets and multiple counters; local-only stats and streaks.
 
 Privacy first
-No accounts, no ads, no analytics. Your data stays on your phone, and everything works offline except recitations and tafsirs you choose to download.
+No accounts, no ads, no analytics. Your data stays on your phone, and everything works offline except recitations, tafsirs and athans you choose to download.
 
 ---
 
