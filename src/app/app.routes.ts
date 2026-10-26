@@ -73,6 +73,8 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/privacy/privacy.page').then((m) => m.PrivacyPage),
   },
   { path: 'athkar-settings', loadComponent: () => import('./pages/athkar-settings/athkar-settings.page').then((m) => m.AthkarSettingsPage) },
+  { path: 'occasions', loadComponent: () => import('./pages/occasions/occasions.page').then((m) => m.OccasionsPage) },
+  { path: 'qada', loadComponent: () => import('./pages/qada/qada.page').then((m) => m.QadaPage) },
   { path: 'athan', loadComponent: () => import('./pages/athan/athan.page').then(m => m.AthanPage) },
   { path: '**', redirectTo: 'home' },
 ];

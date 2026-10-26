@@ -21,6 +21,8 @@ export interface OverlayConfig {
   notificationText: string;
   actionPause: string;
   actionStop: string;
+  /** Overlay card texts in the app language: addOne, dismiss. */
+  labels?: Record<string, string>;
 }
 
 export interface OverlayPoolItem {
@@ -30,7 +32,7 @@ export interface OverlayPoolItem {
   repeatCount: number;
 }
 
-export type ReminderKind = 'morning' | 'evening' | 'sleep' | 'friday-kahf' | 'friday-salawat' | 'wird' | 'hifz';
+export type ReminderKind = 'morning' | 'evening' | 'sleep' | 'friday-kahf' | 'friday-salawat' | 'wird' | 'hifz' | 'fasting' | 'qada';
 
 export interface NativeReminder {
   id: string;
@@ -65,6 +67,8 @@ export interface BubbleState {
   sizeDp: number;
   /** 0.4–1. */
   opacity: number;
+  /** Bubble texts in the app language (see the "native" section of the translation files). */
+  labels?: Record<string, string>;
 }
 
 export interface BubbleCount {

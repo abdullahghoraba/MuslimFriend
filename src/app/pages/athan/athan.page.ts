@@ -123,6 +123,12 @@ export class AthanPage implements OnDestroy {
   readonly after = [0, 10, 15, 20, 25, 30];
   readonly silentOptions = [10, 15, 20, 30, 45];
   readonly voiceOptions = [5, 10, 15, 20, 30];
+  readonly suhoorOptions = [20, 30, 45, 60, 90, 120];
+  readonly imsakOptions = [5, 10, 15, 20];
+
+  ramadan(patch: Partial<AthanSettings['ramadan']>): void {
+    this.update({ ramadan: { ...this.settings().ramadan, ...patch } });
+  }
   /** Duha begins once the sun has risen a spear's length, about 15-20 minutes after sunrise. */
   readonly duhaOptions = [15, 20, 30, 45, 60, 90, 120];
   readonly native = Capacitor.isNativePlatform();

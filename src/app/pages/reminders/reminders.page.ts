@@ -25,7 +25,7 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { METHOD_IDS, MethodId, PRAYER_NAMES, PrayerName, ReminderSettings } from '../../core/prayer/prayer-times';
+import { METHOD_IDS, MethodId, PRAYER_NAMES, PrayerName, ReminderSettings, nightTimes } from '../../core/prayer/prayer-times';
 import { PrayerService } from '../../core/prayer/prayer.service';
 import { LocationService } from '../../core/prayer/location.service';
 import { pickCity } from '../../shared/city-picker.component';
@@ -55,6 +55,8 @@ export class RemindersPage {
   readonly prayer = this.prayerService.prayer;
   readonly reminders = this.prayerService.reminders;
   readonly today = this.prayerService.today;
+  /** Tonight: from today's Maghrib to tomorrow's Fajr. */
+  readonly night = computed(() => nightTimes(this.prayer(), this.prayerService.now()));
   readonly methods = METHOD_IDS;
   readonly prayerNames = PRAYER_NAMES;
   readonly offsets = [0, 5, 10, 15, 20, 30, 45, 60, 90];

@@ -76,6 +76,7 @@ export class OverlayService {
       notificationText: this.translate.instant('overlay.notificationText'),
       actionPause: this.translate.instant('overlay.pauseHour'),
       actionStop: this.translate.instant('overlay.stop'),
+      labels: this.translate.instant('native'),
     };
   }
 

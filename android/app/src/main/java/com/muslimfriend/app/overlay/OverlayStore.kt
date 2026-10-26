@@ -32,6 +32,8 @@ data class OverlayConfig(
     val notificationText: String = "",
     val actionPause: String = "Pause 1h",
     val actionStop: String = "Stop",
+    /** Texts of the overlay card in the app language (see NativeLabels). */
+    val labels: Map<String, String> = emptyMap(),
 ) {
     fun toJson(): JSONObject = JSONObject()
         .put("enabled", enabled)
@@ -49,6 +51,7 @@ data class OverlayConfig(
         .put("notificationText", notificationText)
         .put("actionPause", actionPause)
         .put("actionStop", actionStop)
+        .put("labels", JSONObject(labels))
 
     companion object {
         fun fromJson(o: JSONObject?): OverlayConfig {
@@ -70,6 +73,7 @@ data class OverlayConfig(
                 notificationText = o.optString("notificationText", d.notificationText),
                 actionPause = o.optString("actionPause", d.actionPause),
                 actionStop = o.optString("actionStop", d.actionStop),
+                labels = NativeLabels.parse(o.optJSONObject("labels")),
             )
         }
     }
@@ -237,11 +241,14 @@ data class BubbleState(
     val opacity: Float = 1f,
     /** Large card instead of the round bubble (toggled on the bubble itself). */
     val expanded: Boolean = false,
+    /** Texts of the bubble in the app language (see NativeLabels). */
+    val labels: Map<String, String> = emptyMap(),
 ) {
     fun toJson(): JSONObject = JSONObject()
         .put("enabled", enabled).put("counterId", counterId).put("name", name).put("count", count)
         .put("target", target).put("x", x).put("y", y).put("language", language)
         .put("sizeDp", sizeDp).put("opacity", opacity.toDouble()).put("expanded", expanded)
+        .put("labels", JSONObject(labels))
 
     companion object {
         fun fromJson(o: JSONObject?): BubbleState {
@@ -258,6 +265,7 @@ data class BubbleState(
                 sizeDp = o.optInt("sizeDp", 64).coerceIn(44, 120),
                 opacity = o.optDouble("opacity", 1.0).toFloat().coerceIn(0.4f, 1f),
                 expanded = o.optBoolean("expanded", false),
+                labels = NativeLabels.parse(o.optJSONObject("labels")),
             )
         }
     }

@@ -83,7 +83,7 @@ class OverlayWindow(
             minHeight = dp(48)
             minWidth = dp(72)
             background = GradientDrawable().apply { cornerRadius = dp(24).toFloat(); setColor(accent) }
-            contentDescription = if (config.language == "ar") "زيادة العداد بواحد" else "Add one to the counter"
+            contentDescription = NativeLabels.get(config.labels, config.language, "addOne", "زيادة العداد بواحد", "Add one to the counter")
             setOnClickListener {
                 onCount(dhikr)
                 animate().scaleX(1.15f).scaleY(1.15f).setDuration(90).withEndAction {
@@ -99,7 +99,7 @@ class OverlayWindow(
             gravity = Gravity.CENTER
             minHeight = dp(48)
             minWidth = dp(48)
-            contentDescription = if (config.language == "ar") "إغلاق" else "Dismiss"
+            contentDescription = NativeLabels.get(config.labels, config.language, "dismiss", "إغلاق", "Dismiss")
             setOnClickListener { hide() }
         }
         val row = LinearLayout(context).apply {

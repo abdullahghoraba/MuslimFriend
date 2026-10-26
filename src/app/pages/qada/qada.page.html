@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/reminders" [text]="''" [attr.aria-label]="'common.back' | translate" />
+    </ion-buttons>
+    <ion-title>{{ 'qada.title' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <section class="total" aria-live="polite">
+    <strong>{{ number(qada.total()) }}</strong>
+    <span>{{ (qada.total() ? 'qada.left' : 'qada.none') | translate }}</span>
+  </section>
+  <p class="hint">{{ 'qada.hint' | translate }}</p>
+
+  <ion-list inset>
+    @for (p of prayers; track p) {
+      <ion-item>
+        <ion-label>{{ 'prayer.' + p | translate }}</ion-label>
+        <div slot="end" class="stepper">
+          <ion-button fill="clear" [disabled]="!qada.counts()[p]" (click)="change(p, -1)"
+                      [attr.aria-label]="('qada.prayedOne' | translate) + ' ' + ('prayer.' + p | translate)">
+            <ion-icon slot="icon-only" name="checkmark" aria-hidden="true" />
+          </ion-button>
+          <button type="button" class="value" (click)="edit(p)" [attr.aria-label]="('qada.editCount' | translate) + ' ' + ('prayer.' + p | translate) + ': ' + number(qada.counts()[p])">{{ number(qada.counts()[p]) }}</button>
+          <ion-button fill="clear" (click)="change(p, 1)" [attr.aria-label]="('qada.addOne' | translate) + ' ' + ('prayer.' + p | translate)">
+            <ion-icon slot="icon-only" name="add-outline" aria-hidden="true" />
+          </ion-button>
+        </div>
+      </ion-item>
+    }
+    <ion-item button (click)="addDays()">
+      <ion-icon slot="start" name="calendar-outline" aria-hidden="true" />
+      <ion-label>{{ 'qada.addDays' | translate }}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list inset>
+    <ion-list-header>{{ 'reminders.reminders' | translate }}</ion-list-header>
+    <ion-item>
+      <ion-toggle [checked]="reminder().enabled" (ionChange)="patchReminder({ enabled: $event.detail.checked })">
+        <ion-label class="ion-text-wrap">{{ 'qada.reminder' | translate }}<p>{{ 'qada.reminderHint' | translate }}</p></ion-label>
+      </ion-toggle>
+    </ion-item>
+    @if (reminder().enabled) {
+      <ion-item>
+        <ion-input type="time" [label]="'reminders.at' | translate" [value]="reminder().time"
+                   (ionChange)="patchReminder({ time: '' + $event.detail.value })" />
+      </ion-item>
+    }
+  </ion-list>
+  <p class="hint">{{ 'qada.privacy' | translate }}</p>
+</ion-content>

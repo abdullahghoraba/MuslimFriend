@@ -25,6 +25,8 @@ import { OverlayService } from '../../core/services/overlay.service';
 import { NowSuggestion, nowSuggestions, recentPrayer } from '../../core/prayer/time-windows';
 import { prayerTimesFor } from '../../core/prayer/prayer-times';
 import { QuranService } from '../../core/quran/quran.service';
+import { AthanService } from '../../core/prayer/athan.service';
+import { addDays, hijriOf } from '../../core/prayer/islamic-calendar';
 import { HijriDateComponent } from '../../shared/hijri-date.component';
 import { HomeCategoriesComponent } from '../../shared/home-categories.component';
 import { VerseOfDayComponent } from '../../shared/verse-of-day.component';
@@ -78,6 +80,23 @@ export class HomePage {
   readonly daily = signal<DailyStatus[]>([]);
   readonly position = signal<ReaderPosition | null>(null);
   readonly next = this.prayer.next;
+  private readonly athan = inject(AthanService);
+  /**
+   * In Ramadan: the day of the month, today's imsak (the user's minutes before Fajr) and iftar, and what comes next:
+   * iftar during the day, otherwise the next Fajr (after Maghrib the card already counts towards tomorrow's fast).
+   */
+  readonly ramadan = computed(() => {
+    const now = this.prayer.now();
+    const s = this.prayer.prayer();
+    const afterMaghrib = (this.prayer.today()?.times.maghrib.getTime() ?? Infinity) <= now.getTime();
+    const day = afterMaghrib ? addDays(now, 1) : now;
+    const hijri = hijriOf(day, s.hijriOffset ?? 0);
+    const times = prayerTimesFor(s, day)?.times;
+    if (hijri.month !== 9 || !times) return null;
+    const imsak = new Date(times.fajr.getTime() - this.athan.settings().ramadan.imsakMinutes * 60_000);
+    const fasting = !afterMaghrib && now >= times.fajr;
+    return { day: hijri.day, imsak, iftar: times.maghrib, untilIftar: fasting, target: fasting ? times.maghrib : times.fajr };
+  });
   /** For a while after a prayer time (default 40 min), the card shows the time since it, like Salatuk. */
   readonly recent = computed(() => {
     const now = this.prayer.now();

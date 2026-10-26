@@ -4,7 +4,8 @@ import { AthkarOverlay } from './athkar-overlay';
 export type AthanSound = 'none' | 'system' | 'tone' | 'athan' | 'voice' | `file:${string}`;
 export interface AthanEvent {
   id: string;
-  prayer: 'fajr' | 'sunrise' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';
+  /** 'night': the start of the night's last third. */
+  prayer: 'fajr' | 'sunrise' | 'dhuhr' | 'asr' | 'maghrib' | 'isha' | 'night';
   /** 'voice': the spoken reminder before the prayer. */
   kind: 'athan' | 'pre' | 'iqama' | 'voice';
   at: number;

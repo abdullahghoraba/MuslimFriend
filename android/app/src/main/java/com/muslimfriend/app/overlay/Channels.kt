@@ -15,6 +15,7 @@ object Channels {
     const val FRIDAY = "friday"
     const val PERIODIC = "periodic_athkar"
     const val QURAN = "quran_wird"
+    const val WORSHIP = "fasting_qada"
 
     fun ensure(context: Context) {
         val nm = context.getSystemService(NotificationManager::class.java)
@@ -29,6 +30,7 @@ object Channels {
             NotificationChannel(SLEEP, context.getString(R.string.channel_sleep), NotificationManager.IMPORTANCE_DEFAULT),
             NotificationChannel(FRIDAY, context.getString(R.string.channel_friday), NotificationManager.IMPORTANCE_DEFAULT),
             NotificationChannel(QURAN, context.getString(R.string.channel_quran), NotificationManager.IMPORTANCE_DEFAULT),
+            NotificationChannel(WORSHIP, context.getString(R.string.channel_worship), NotificationManager.IMPORTANCE_DEFAULT),
             NotificationChannel(PERIODIC, context.getString(R.string.channel_periodic), NotificationManager.IMPORTANCE_LOW).apply {
                 description = context.getString(R.string.channel_periodic_desc)
             },
@@ -41,7 +43,8 @@ object Channels {
         "morning", "evening" -> MORNING_EVENING
         "sleep" -> SLEEP
         "friday-kahf", "friday-salawat" -> FRIDAY
-        "wird" -> QURAN
+        "wird", "hifz" -> QURAN
+        "fasting", "qada" -> WORSHIP
         else -> PERIODIC
     }
 }

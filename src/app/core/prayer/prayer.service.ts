@@ -2,6 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { TranslateService } from '@ngx-translate/core';
 import { AthkarOverlay } from '../../native/athkar-overlay';
+import { QadaService } from './qada.service';
 import {
   DEFAULT_PRAYER_SETTINGS,
   DEFAULT_REMINDER_SETTINGS,
@@ -21,6 +22,7 @@ const PLAN_DAYS = 30;
 @Injectable({ providedIn: 'root' })
 export class PrayerService {
   private readonly translate = inject(TranslateService);
+  private readonly qada = inject(QadaService);
 
   private readonly prayerState = signal<PrayerSettings>(DEFAULT_PRAYER_SETTINGS);
   private readonly reminderState = signal<ReminderSettings>(DEFAULT_REMINDER_SETTINGS);
@@ -56,7 +58,8 @@ export class PrayerService {
 
   /** Recomputes the next 30 days of reminders (prayer times shift daily) and hands them to Android. */
   async reschedule(): Promise<number> {
-    const t = (k: string) => this.translate.instant(`reminders.notify.${k}`);
+    await this.qada.ready;
+    const t = (k: string, params?: Record<string, unknown>) => this.translate.instant(`reminders.notify.${k}`, params);
     const list = planReminders(this.prayerState(), this.reminderState(), {
       morningTitle: t('morningTitle'), morningBody: t('morningBody'),
       eveningTitle: t('eveningTitle'), eveningBody: t('eveningBody'),
@@ -65,6 +68,11 @@ export class PrayerService {
       salawatTitle: t('salawatTitle'), salawatBody: t('salawatBody'),
       wirdTitle: t('wirdTitle'), wirdBody: t('wirdBody'),
       hifzTitle: t('hifzTitle'), hifzBody: t('hifzBody'),
+      fasting: (id) => ({
+        title: this.translate.instant('calendar.fastTitle.' + id),
+        body: this.translate.instant('calendar.fastBody.' + id),
+      }),
+      qadaTitle: t('qadaTitle'), qadaBody: t('qadaBody', { count: this.qada.total() }), qadaLeft: this.qada.total(),
     }, new Date(), PLAN_DAYS);
     if (!list.length) {
       await AthkarOverlay.cancelReminders();

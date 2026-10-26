@@ -287,6 +287,52 @@
         <ion-button (click)="dndSettings()">{{ 'athan.dndSettings' | translate }}</ion-button>
       </aside>
     }
+    <ion-list>
+      <ion-list-header>{{ 'ramadan.title' | translate }}</ion-list-header>
+      <ion-item
+        ><ion-toggle [checked]="settings().ramadan.suhoor" (ionChange)="ramadan({ suhoor: $event.detail.checked })">{{
+          'ramadan.suhoor' | translate
+        }}</ion-toggle></ion-item
+      >
+      @if (settings().ramadan.suhoor) {
+        <ion-item
+          ><ion-select [label]="'ramadan.beforeFajr' | translate" [value]="settings().ramadan.suhoorMinutes" (ionChange)="ramadan({ suhoorMinutes: +$event.detail.value })">
+            @for (n of suhoorOptions; track n) {
+              <ion-select-option [value]="n">{{ minutes(n) }}</ion-select-option>
+            }
+          </ion-select></ion-item
+        >
+      }
+      <ion-item
+        ><ion-toggle [checked]="settings().ramadan.imsak" (ionChange)="ramadan({ imsak: $event.detail.checked })">{{
+          'ramadan.imsak' | translate
+        }}</ion-toggle></ion-item
+      >
+      @if (settings().ramadan.imsak) {
+        <ion-item
+          ><ion-select [label]="'ramadan.beforeFajr' | translate" [value]="settings().ramadan.imsakMinutes" (ionChange)="ramadan({ imsakMinutes: +$event.detail.value })">
+            @for (n of imsakOptions; track n) {
+              <ion-select-option [value]="n">{{ minutes(n) }}</ion-select-option>
+            }
+          </ion-select></ion-item
+        >
+      }
+      <ion-item
+        ><ion-toggle [checked]="settings().ramadan.iftar" (ionChange)="ramadan({ iftar: $event.detail.checked })">{{
+          'ramadan.iftar' | translate
+        }}</ion-toggle></ion-item
+      >
+    </ion-list>
+    <p class="note">{{ 'ramadan.help' | translate }}</p>
+    <ion-list>
+      <ion-list-header>{{ 'calendar.nightTitle' | translate }}</ion-list-header>
+      <ion-item
+        ><ion-toggle [checked]="settings().night.lastThird" (ionChange)="update({ night: { ...settings().night, lastThird: $event.detail.checked } })">{{
+          'calendar.lastThirdNotice' | translate
+        }}</ion-toggle></ion-item
+      >
+    </ion-list>
+    <p class="note">{{ 'calendar.lastThirdHelp' | translate }}</p>
     <ion-button fill="outline" expand="block" (click)="stop()"
       ><ion-icon name="stop" slot="start" aria-hidden="true" />{{
         'athan.stop' | translate

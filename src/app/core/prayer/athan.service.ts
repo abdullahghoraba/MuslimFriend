@@ -7,7 +7,8 @@ import { AthanEvent, AthanNative, AthanSound, AthanPluginMethods, AthanStopWay }
 import { PrayerService } from './prayer.service';
 import { intlLocale } from '../models';
 import { ATHAN_RECORDINGS, AthanRecording, DEFAULT_RECORDING } from './athan-sounds';
-import { PrayerSettings, prayerTimesFor } from './prayer-times';
+import { PrayerSettings, nightTimes, prayerTimesFor } from './prayer-times';
+import { hijriOf } from './islamic-calendar';
 
 export const ATHAN_PLUGIN = new InjectionToken<AthanPluginMethods>('ATHAN_PLUGIN', {
   providedIn: 'root',
@@ -39,6 +40,13 @@ export interface AthanSettings {
   stopOn: Record<AthanStopWay, boolean>;
   /** Spoken reminder («اقتربت صلاة العصر») some minutes before each prayer that isn't off. Off by default. */
   voiceReminder: { enabled: boolean; minutes: number };
+  /**
+   * Ramadan (by the Hijri date, with the user's adjustment): a suhoor reminder and the imsak notice some minutes before
+   * Fajr, and an iftar notice at Maghrib with its supplication. Works even when the athan itself is off.
+   */
+  ramadan: { suhoor: boolean; suhoorMinutes: number; imsak: boolean; imsakMinutes: number; iftar: boolean };
+  /** A notice when the last third of the night begins (between Maghrib and Fajr), the best time for qiyam. */
+  night: { lastThird: boolean };
   /** The Madinah athan was made the default once (never again, so a later choice of the user stays). */
   defaultRecordingSet: boolean;
 }
@@ -62,6 +70,8 @@ export function defaultAthanSettings(): AthanSettings {
     stopOn: { flip: true, shake: true, volume: true },
     defaultRecordingSet: false,
     voiceReminder: { enabled: false, minutes: 15 },
+    ramadan: { suhoor: false, suhoorMinutes: 45, imsak: false, imsakMinutes: 10, iftar: false },
+    night: { lastThird: false },
   };
 }
 type Text = (key: string, params?: Record<string, unknown>) => string;
@@ -72,7 +82,7 @@ export function buildAthanEvents(
   now = new Date(),
   days = 7,
 ): AthanEvent[] {
-  if (!settings.enabled || !prayer.location) return [];
+  if (!prayer.location) return [];
   const events: AthanEvent[] = [];
   for (let i = 0; i < days; i++) {
     const date = new Date(now);
@@ -85,7 +95,7 @@ export function buildAthanEvents(
       String(date.getDate()).padStart(2, '0');
     for (const name of ATHAN_PRAYERS) {
       const s = settings.perPrayer[name];
-      if (s.mode === 'off') continue;
+      if (!settings.enabled || s.mode === 'off') continue;
       const add = (kind: AthanEvent['kind'], minutes: number, sound: AthanSound) => {
         const at = times[name].getTime() + minutes * 60000;
         const params = {
@@ -137,6 +147,20 @@ export function buildAthanEvents(
         ...(kind === 'voice' ? { speech: title, speechLang: t('locale') } : {}),
       });
     };
+    const notice = (id: string, prayerName: AthanEvent['prayer'], at: number, name: string, params: Record<string, unknown> = {}) =>
+      events.push({ id: 'athan-' + id + '-' + key, prayer: prayerName, kind: 'pre', at, title: t(name + 'Title', params), body: t(name + 'Body', params), sound: 'system', volume: settings.volume });
+    const r = settings.ramadan;
+    if (hijriOf(date, prayer.hijriOffset ?? 0).month === 9) {
+      const count = (m: number) => new Intl.NumberFormat(intlLocale(t('locale'))).format(m);
+      if (r.suhoor && r.suhoorMinutes > 0) notice('suhoor', 'fajr', times.fajr.getTime() - r.suhoorMinutes * 60000, 'suhoor', { minutes: count(r.suhoorMinutes) });
+      if (r.imsak && r.imsakMinutes > 0) notice('imsak', 'fajr', times.fajr.getTime() - r.imsakMinutes * 60000, 'imsak', { minutes: count(r.imsakMinutes) });
+      if (r.iftar) notice('iftar', 'maghrib', times.maghrib.getTime(), 'iftar');
+    }
+    if (settings.night.lastThird) {
+      const night = nightTimes(prayer, date);
+      if (night) notice('lastThird', 'night', night.lastThird.getTime(), 'lastThird');
+    }
+    if (!settings.enabled) continue;
     if (settings.sunrise.notify) sunrise('athan', 0, 'sunrise', 'none');
     if (settings.sunrise.preMinutes > 0) sunrise('pre', -settings.sunrise.preMinutes, 'sunrisePre', 'system');
     if (settings.voiceReminder.enabled && settings.voiceReminder.minutes > 0)
@@ -192,6 +216,8 @@ export class AthanService {
           sunrise: { ...defaults.sunrise, ...saved.sunrise },
           stopOn: { ...defaults.stopOn, ...saved.stopOn },
           voiceReminder: { ...defaults.voiceReminder, ...saved.voiceReminder },
+          ramadan: { ...defaults.ramadan, ...saved.ramadan },
+          night: { ...defaults.night, ...saved.night },
           perPrayer: Object.fromEntries(
             ATHAN_PRAYERS.map((p) => [p, { ...defaults.perPrayer[p], ...saved.perPrayer?.[p] }]),
           ) as AthanSettings['perPrayer'],

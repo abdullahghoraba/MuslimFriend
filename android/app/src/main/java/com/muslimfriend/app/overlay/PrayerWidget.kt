@@ -1,5 +1,6 @@
 package com.muslimfriend.app.overlay
 
+import android.app.AlarmManager
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -41,8 +42,8 @@ class PrayerWidget : AppWidgetProvider() {
             views.setTextViewText(R.id.widget_app, p.getString("appName", c.getString(R.string.app_name)))
             val time = java.text.SimpleDateFormat(if (DateFormat.is24HourFormat(c)) "HH:mm" else "h:mm a", java.util.Locale.Builder().setLocale(java.util.Locale.getDefault()).setUnicodeLocaleKeyword("nu", "latn").build())
             views.setTextViewText(R.id.widget_next, next?.let { p.getString("nextLabel", c.getString(R.string.widget_next)) + " · " + it.first + " " + time.format(Date(it.second)) } ?: c.getString(R.string.widget_empty))
-            val mins = next?.let { ((it.second - now + 59_999) / 60_000) } ?: 0
-            views.setTextViewText(R.id.widget_countdown, if (next == null) "" else c.getString(R.string.widget_in, mins / 60, mins % 60))
+            // The live Chronometer below counts down; a fixed "in 1h 20m" text would go stale between updates.
+            views.setViewVisibility(R.id.widget_countdown, View.GONE)
             views.setViewVisibility(R.id.widget_clock, if (next != null && Build.VERSION.SDK_INT >= 24) View.VISIBLE else View.GONE)
             if (next != null && Build.VERSION.SDK_INT >= 24) {
                 views.setChronometer(R.id.widget_clock, SystemClock.elapsedRealtime() + next.second - now, null, true)
@@ -55,6 +56,18 @@ class PrayerWidget : AppWidgetProvider() {
             val open = PendingIntent.getActivity(c, 4104, Intent(c, MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             views.setOnClickPendingIntent(R.id.widget_root, open)
             manager.updateAppWidget(id, views)
+            next?.let { scheduleRefresh(c, it.second) }
+        }
+
+        /** Redraws the widget just after the next prayer time, so "next prayer" moves on at once rather than within 30 minutes. */
+        private fun scheduleRefresh(c: Context, at: Long) {
+            val ids = AppWidgetManager.getInstance(c).getAppWidgetIds(ComponentName(c, PrayerWidget::class.java))
+            if (ids.isEmpty()) return
+            val intent = Intent(c, PrayerWidget::class.java).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+            val pending = PendingIntent.getBroadcast(c, 4105, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            // Inexact but allowed in Doze: usually within a minute or two of the prayer time, without the exact-alarm permission.
+            c.getSystemService(AlarmManager::class.java).setAndAllowWhileIdle(AlarmManager.RTC, at + 5_000, pending)
         }
     }
 }

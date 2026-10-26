@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" [text]="''" [attr.aria-label]="'common.back' | translate" />
+    </ion-buttons>
+    <ion-title>{{ 'calendar.title' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <section class="today">
+    <span class="label">{{ 'hijri.today' | translate }}</span>
+    <strong>{{ todayHijri() }}</strong>
+    <div class="adjust">
+      <span id="offset-label">{{ 'calendar.offset' | translate }}</span>
+      <div class="stepper">
+        <ion-button fill="clear" size="small" [disabled]="offset() <= -2" (click)="setOffset(-1)" [attr.aria-label]="'calendar.offsetMinus' | translate">
+          <ion-icon slot="icon-only" name="remove-outline" aria-hidden="true" />
+        </ion-button>
+        <span class="value" aria-live="polite" aria-labelledby="offset-label">{{ offsetLabel() }}</span>
+        <ion-button fill="clear" size="small" [disabled]="offset() >= 2" (click)="setOffset(1)" [attr.aria-label]="'calendar.offsetPlus' | translate">
+          <ion-icon slot="icon-only" name="add-outline" aria-hidden="true" />
+        </ion-button>
+      </div>
+    </div>
+    <p>{{ 'calendar.offsetHint' | translate }}</p>
+  </section>
+
+  <ion-list inset>
+    <ion-list-header>{{ 'calendar.upcoming' | translate }}</ion-list-header>
+    @for (o of occasions(); track o.id + o.date.getTime()) {
+      <ion-item>
+        <ion-label class="ion-text-wrap">
+          <h2>{{ 'calendar.names.' + o.id | translate }}
+            @if (o.fast) { <span class="fast">{{ 'calendar.fastDay' | translate }}</span> }
+          </h2>
+          <p>{{ hijri(o) }} · {{ gregorian(o) }}</p>
+          <p class="about">{{ 'calendar.about.' + o.id | translate }}</p>
+        </ion-label>
+        <ion-note slot="end" class="days" [class.now]="days(o) === 0">{{
+          days(o) === 0 ? ('hijri.today' | translate) : days(o) === 1 ? ('hijri.tomorrow' | translate) : ('hijri.inDays' | translate: { count: days(o) })
+        }}</ion-note>
+      </ion-item>
+    }
+  </ion-list>
+  <p class="note">{{ 'calendar.note' | translate }}</p>
+</ion-content>

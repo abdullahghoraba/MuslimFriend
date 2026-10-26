@@ -26,8 +26,6 @@ import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import java.text.NumberFormat
-import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.min
@@ -163,7 +161,6 @@ class TasbihBubble(
     /** Small form: the round counter with three mini buttons on its edge. */
     @SuppressLint("ClickableViewAccessibility")
     private fun buildBubble(state: BubbleState): View {
-        val ar = state.language == "ar"
         val pad = dp(MINI_BUTTON_DP) / 2
         val frame = FrameLayout(context).apply { clipChildren = false; clipToPadding = false }
         val bubble = BubbleView(context).apply {
@@ -175,11 +172,11 @@ class TasbihBubble(
         bubbleView = bubble
 
         val mini = dp(MINI_BUTTON_DP)
-        frame.addView(miniButton("✕", if (ar) "إغلاق العداد العائم" else "Close floating counter") { onHide() },
+        frame.addView(miniButton("✕", NativeLabels.get(state.labels, state.language, "close", "إغلاق العداد العائم", "Close floating counter")) { onHide() },
             FrameLayout.LayoutParams(mini, mini, Gravity.TOP or Gravity.END))
-        frame.addView(miniButton("⤢", if (ar) "تكبير العداد" else "Expand counter") { setExpanded(true) },
+        frame.addView(miniButton("⤢", NativeLabels.get(state.labels, state.language, "expand", "تكبير العداد", "Expand counter")) { setExpanded(true) },
             FrameLayout.LayoutParams(mini, mini, Gravity.TOP or Gravity.START))
-        frame.addView(resetButton(compact = true, ar),
+        frame.addView(resetButton(compact = true),
             FrameLayout.LayoutParams(mini, mini, Gravity.BOTTOM or Gravity.START))
 
         dragAndTap(handle = bubble, onTap = { count() }, pressFeedback = bubble::pressed)
@@ -190,10 +187,9 @@ class TasbihBubble(
     /** Expanded form: a card with a large count and labelled buttons. */
     @SuppressLint("ClickableViewAccessibility")
     private fun buildCard(state: BubbleState): View {
-        val ar = state.language == "ar"
         val card = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            layoutDirection = if (ar) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
+            layoutDirection = if (NativeLabels.isRtl(state.language)) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
             background = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(GREEN, GREEN_DARK)).apply {
                 cornerRadius = dp(22).toFloat()
             }
@@ -208,7 +204,7 @@ class TasbihBubble(
             minimumHeight = dp(44)
         }
         val name = TextView(context).apply {
-            text = state.name.ifBlank { if (ar) "تسبيح" else "Tasbih" }
+            text = state.name.ifBlank { NativeLabels.get(state.labels, state.language, "tasbih", "تسبيح", "Tasbih") }
             setTextColor(WHITE)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
             typeface = Typeface.DEFAULT_BOLD
@@ -216,9 +212,9 @@ class TasbihBubble(
             ellipsize = TextUtils.TruncateAt.END
         }
         header.addView(name, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-        header.addView(iconButton("⤡", if (ar) "تصغير العداد" else "Minimise counter") { setExpanded(false) },
+        header.addView(iconButton("⤡", NativeLabels.get(state.labels, state.language, "minimise", "تصغير العداد", "Minimise counter")) { setExpanded(false) },
             LinearLayout.LayoutParams(dp(44), dp(44)))
-        header.addView(iconButton("✕", if (ar) "إغلاق العداد العائم" else "Close floating counter") { onHide() },
+        header.addView(iconButton("✕", NativeLabels.get(state.labels, state.language, "close", "إغلاق العداد العائم", "Close floating counter")) { onHide() },
             LinearLayout.LayoutParams(dp(44), dp(44)))
         card.addView(header)
 
@@ -259,8 +255,8 @@ class TasbihBubble(
             gravity = Gravity.CENTER_VERTICAL
             setPadding(0, dp(10), 0, 0)
         }
-        footer.addView(resetButton(compact = false, ar), LinearLayout.LayoutParams(0, dp(44), 1f).apply { marginEnd = dp(8) })
-        footer.addView(pillButton(if (ar) "فتح التطبيق" else "Open app") { onOpenApp() },
+        footer.addView(resetButton(compact = false), LinearLayout.LayoutParams(0, dp(44), 1f).apply { marginEnd = dp(8) })
+        footer.addView(pillButton(NativeLabels.get(state.labels, state.language, "openApp", "فتح التطبيق", "Open app")) { onOpenApp() },
             LinearLayout.LayoutParams(0, dp(44), 1f))
         card.addView(footer)
 
@@ -278,13 +274,12 @@ class TasbihBubble(
 
     private fun updateViews(state: BubbleState) {
         bubbleView?.update(state)
-        val fmt = NumberFormat.getIntegerInstance(if (state.language == "ar") Locale.forLanguageTag("ar-EG-u-nu-latn") else Locale.ENGLISH)
+        val fmt = NativeLabels.numbers(state.language)
         bigCount?.text = fmt.format(state.count)
-        bigTarget?.text = when {
-            state.target <= 0 -> ""
-            state.language == "ar" -> "الهدف ${fmt.format(state.target)} · الدورة ${fmt.format(state.count / state.target + 1)}"
-            else -> "Target ${state.target} · round ${state.count / state.target + 1}"
-        }
+        bigTarget?.text = if (state.target <= 0) "" else NativeLabels.fill(
+            NativeLabels.get(state.labels, state.language, "targetRound", "الهدف {{target}} · الدورة {{round}}", "Target {{target}} · round {{round}}"),
+            "target" to fmt.format(state.target), "round" to fmt.format(state.count / state.target + 1),
+        )
         progress?.set(cycleFraction(state))
         (bigCount?.parent as? View)?.contentDescription = bubbleView?.contentDescription ?: describe(state)
     }
@@ -321,9 +316,10 @@ class TasbihBubble(
     }
 
     /** Reset with confirmation: first tap arms it (label changes), second tap within 2 s resets. */
-    private fun resetButton(compact: Boolean, ar: Boolean): TextView {
-        val b = if (compact) miniButton("↺", if (ar) "تصفير العداد" else "Reset counter") { onResetTapped() }
-        else pillButton(if (ar) "↺ تصفير" else "↺ Reset") { onResetTapped() }
+    private fun resetButton(compact: Boolean): TextView {
+        val s = store.bubble
+        val b = if (compact) miniButton("↺", NativeLabels.get(s.labels, s.language, "resetCounter", "تصفير العداد", "Reset counter")) { onResetTapped() }
+        else pillButton("↺ " + NativeLabels.get(s.labels, s.language, "reset", "تصفير", "Reset")) { onResetTapped() }
         b.tag = compact
         resetButtons.add(b)
         return b
@@ -344,14 +340,14 @@ class TasbihBubble(
         resetArmed = armed
         handler.removeCallbacks(disarmReset)
         if (armed) handler.postDelayed(disarmReset, RESET_CONFIRM_MS)
-        val ar = store.bubble.language == "ar"
+        val s = store.bubble
         for (b in resetButtons) {
             val compact = b.tag == true
             b.text = when {
                 compact && armed -> "؟"
                 compact -> "↺"
-                armed -> if (ar) "اضغط للتأكيد" else "Tap to confirm"
-                else -> if (ar) "↺ تصفير" else "↺ Reset"
+                armed -> NativeLabels.get(s.labels, s.language, "confirm", "اضغط للتأكيد", "Tap to confirm")
+                else -> "↺ " + NativeLabels.get(s.labels, s.language, "reset", "تصفير", "Reset")
             }
             (b.background as? GradientDrawable)?.setColor(
                 if (armed) 0xEED0453B.toInt() else if (compact) INK else 0x33FFFFFF,
@@ -416,7 +412,7 @@ class TasbihBubble(
     /** A round ✕ target at the bottom centre while dragging; dropping on it turns the counter off. */
     private fun showRemoveTarget() {
         if (removeView != null) return
-        val ar = store.bubble.language == "ar"
+        val s = store.bubble
         val target = TextView(context).apply {
             text = "✕"
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f)
@@ -427,7 +423,7 @@ class TasbihBubble(
                 setColor(0xCC1C1F1E.toInt())
                 setStroke(dp(2), 0x66FFFFFF)
             }
-            contentDescription = if (ar) "اسحب هنا لإيقاف العداد العائم" else "Drag here to remove the floating counter"
+            contentDescription = NativeLabels.get(s.labels, s.language, "dragRemove", "اسحب هنا لإيقاف العداد العائم", "Drag here to remove the floating counter")
             alpha = 0f
         }
         val size = dp(REMOVE_SIZE_DP)
@@ -504,12 +500,7 @@ class TasbihBubble(
     }
 
     private fun describe(s: BubbleState): String {
-        val fmt = NumberFormat.getIntegerInstance(if (s.language == "ar") Locale.forLanguageTag("ar-EG-u-nu-latn") else Locale.ENGLISH)
-        return if (s.language == "ar") {
-            "${s.name.ifBlank { "تسبيح" }}: ${fmt.format(s.count)}" + (if (s.target > 0) " من ${fmt.format(s.target)}" else "") + ". اضغط للعد"
-        } else {
-            "${s.name.ifBlank { "Tasbih" }}: ${s.count}" + (if (s.target > 0) " of ${s.target}" else "") + ". Tap to count"
-        }
+        return describeState(s)
     }
 
     @Suppress("DEPRECATION")
@@ -575,13 +566,8 @@ class TasbihBubble(
 
         fun update(s: BubbleState) {
             state = s
-            val fmt = NumberFormat.getIntegerInstance(if (s.language == "ar") Locale.forLanguageTag("ar-EG-u-nu-latn") else Locale.ENGLISH)
-            label = fmt.format(s.count)
-            contentDescription = if (s.language == "ar") {
-                "${s.name.ifBlank { "تسبيح" }}: ${fmt.format(s.count)}" + (if (s.target > 0) " من ${fmt.format(s.target)}" else "") + ". اضغط للعد"
-            } else {
-                "${s.name.ifBlank { "Tasbih" }}: ${s.count}" + (if (s.target > 0) " of ${s.target}" else "") + ". Tap to count"
-            }
+            label = NativeLabels.numbers(s.language).format(s.count)
+            contentDescription = describeState(s)
             invalidate()
         }
 
@@ -618,4 +604,13 @@ class TasbihBubble(
             info.className = "android.widget.Button"
         }
     }
+}
+
+/** What TalkBack reads for the counter, e.g. "Tasbih: 12 of 33. Tap to count". */
+private fun describeState(s: BubbleState): String {
+    val fmt = NativeLabels.numbers(s.language)
+    val name = s.name.ifBlank { NativeLabels.get(s.labels, s.language, "tasbih", "تسبيح", "Tasbih") }
+    val count = if (s.target > 0) NativeLabels.fill(NativeLabels.get(s.labels, s.language, "countOf", "{{count}} من {{target}}", "{{count}} of {{target}}"),
+        "count" to fmt.format(s.count), "target" to fmt.format(s.target)) else fmt.format(s.count)
+    return "$name: $count. " + NativeLabels.get(s.labels, s.language, "tapToCount", "اضغط للعد", "Tap to count")
 }

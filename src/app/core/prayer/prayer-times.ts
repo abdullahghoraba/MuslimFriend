@@ -1,5 +1,6 @@
 import { CalculationMethod, CalculationParameters, Coordinates, HighLatitudeRule, Madhab, PrayerTimes } from 'adhan';
 import { NativeReminder } from '../../native/athkar-overlay';
+import { OccasionId, addDays, hijriOf, occasionsOn } from './islamic-calendar';
 
 type AdhanMethodId = keyof typeof CalculationMethod;
 
@@ -53,6 +54,8 @@ export interface PrayerSettings {
   madhab: 'shafi' | 'hanafi';
   /** Manual minute adjustments per prayer. */
   adjustments: Record<PrayerName, number>;
+  /** Days added to the Umm al-Qura Hijri date (-2…2) where the month starts on another day after moon sighting. */
+  hijriOffset: number;
 }
 
 export const DEFAULT_PRAYER_SETTINGS: PrayerSettings = {
@@ -60,6 +63,7 @@ export const DEFAULT_PRAYER_SETTINGS: PrayerSettings = {
   method: 'Egyptian',
   madhab: 'shafi',
   adjustments: { fajr: 0, sunrise: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 },
+  hijriOffset: 0,
 };
 
 export interface DayTimes {
@@ -103,6 +107,19 @@ export function nextPrayer(s: PrayerSettings, now = new Date()): { name: PrayerN
   return null;
 }
 
+/**
+ * The night that starts at Maghrib of [date]: its middle (the end of Isha's preferred time) and the start of its last
+ * third (the time for qiyam), both measured from Maghrib to the next Fajr.
+ */
+export function nightTimes(prayer: PrayerSettings, date: Date): { midnight: Date; lastThird: Date } | null {
+  const today = prayerTimesFor(prayer, date)?.times;
+  const tomorrow = prayerTimesFor(prayer, addDays(date, 1))?.times;
+  if (!today || !tomorrow) return null;
+  const start = today.maghrib.getTime();
+  const length = tomorrow.fajr.getTime() - start;
+  return { midnight: new Date(start + length / 2), lastThird: new Date(start + (2 * length) / 3) };
+}
+
 // ---- Reminder planning -------------------------------------------------------------------
 
 export interface ReminderSettings {
@@ -116,6 +133,13 @@ export interface ReminderSettings {
   /** Daily Quran reading (wird / khatmah) reminder. */
   wird: { enabled: boolean; time: string };
   hifz: { enabled: boolean; time: string };
+  /**
+   * The evening before a recommended fast (Arafah, Ashura, the white days, …) and before Ramadan; optionally before
+   * every Monday and Thursday too.
+   */
+  fasting: { enabled: boolean; time: string; mondayThursday: boolean };
+  /** A daily nudge to pray one of the missed (qada) prayers while any are left. */
+  qada: { enabled: boolean; time: string };
   /** When the Home page shows its "now" shortcut cards (no notification involved). */
   homeCards: HomeCardSettings;
 }
@@ -143,6 +167,8 @@ export const DEFAULT_REMINDER_SETTINGS: ReminderSettings = {
   fridaySalawat: { enabled: true, time: '16:00' },
   wird: { enabled: false, time: '20:00' },
   hifz: { enabled: false, time: '18:00' },
+  fasting: { enabled: false, time: '21:00', mondayThursday: false },
+  qada: { enabled: false, time: '21:30' },
   homeCards: DEFAULT_HOME_CARDS,
 };
 
@@ -154,6 +180,11 @@ export interface ReminderTexts {
   salawatTitle: string; salawatBody: string;
   wirdTitle?: string; wirdBody?: string;
   hifzTitle?: string; hifzBody?: string;
+  /** Title and body of the evening-before reminder of a fast ('ramadan', an occasion id, or 'mondayThursday'). */
+  fasting?: (id: OccasionId | 'mondayThursday') => { title: string; body: string };
+  qadaTitle?: string; qadaBody?: string;
+  /** Missed prayers still owed; the qada reminder is skipped at 0. */
+  qadaLeft?: number;
 }
 
 export function atTime(day: Date, hhmm: string): Date {
@@ -225,6 +256,21 @@ export function planReminders(
         at: atTime(day, r.hifz.time).getTime(),
         route: '/hifz',
       });
+    }
+    if (r.fasting?.enabled && texts.fasting) {
+      const tomorrow = addDays(day, 1);
+      const hijri = hijriOf(tomorrow, prayer.hijriOffset ?? 0);
+      const fast = occasionsOn(hijri).find((o) => o.fast || o.id === 'ramadan');
+      const weekday = tomorrow.getDay();
+      const id = fast?.id ?? (r.fasting.mondayThursday && hijri.month !== 9 && (weekday === 1 || weekday === 4) ? 'mondayThursday' : null);
+      // Fasting on the days of Tashreeq is forbidden, so no Monday/Thursday reminder for them.
+      if (id && !(id === 'mondayThursday' && occasionsOn(hijri).some((o) => o.id === 'tashreeq' || o.id === 'eidAdha' || o.id === 'eidFitr'))) {
+        const t = texts.fasting(id);
+        out.push({ id: `fast-${key}`, kind: 'fasting', title: t.title, body: t.body, at: atTime(day, r.fasting.time).getTime(), route: '/occasions' });
+      }
+    }
+    if (r.qada?.enabled && (texts.qadaLeft ?? 0) > 0) {
+      out.push({ id: `qada-${key}`, kind: 'qada', title: texts.qadaTitle ?? '', body: texts.qadaBody ?? '', at: atTime(day, r.qada.time).getTime(), route: '/qada' });
     }
     // Friday = 5 in JS (Sunday = 0).
     if (day.getDay() === 5) {

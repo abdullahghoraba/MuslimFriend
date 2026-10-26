@@ -232,6 +232,7 @@ class AthkarOverlayPlugin : Plugin() {
             language = call.getString("language", current.language) ?: current.language,
             sizeDp = (call.getInt("sizeDp") ?: current.sizeDp).coerceIn(44, 120),
             opacity = (call.getFloat("opacity") ?: current.opacity).coerceIn(0.4f, 1f),
+            labels = call.getObject("labels")?.let { NativeLabels.parse(it) } ?: current.labels,
         )
         store.bubble = next
         val started = if (enabled) OverlayController.start(context) else {

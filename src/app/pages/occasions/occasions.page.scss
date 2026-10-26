@@ -1,0 +1,13 @@
+.today { margin: 16px; padding: 16px; border-radius: 16px; background: var(--app-surface); border: 1px solid var(--app-border); text-align: center; }
+.today .label { display: block; color: var(--app-muted); font-size: .85rem; }
+.today strong { display: block; margin-block: 4px 12px; font-size: 1.35rem; color: var(--ion-color-primary); }
+.today p { margin: 8px 0 0; color: var(--app-muted); font-size: .85rem; line-height: 1.6; }
+.adjust { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.stepper { display: inline-flex; align-items: center; }
+.value { min-width: 2.5ch; text-align: center; font-weight: 700; }
+h2 { font-weight: 600; }
+.fast { display: inline-block; margin-inline-start: 6px; padding: 0 8px; border-radius: 999px; font-size: .75rem; background: color-mix(in srgb, var(--ion-color-primary) 14%, transparent); color: var(--ion-color-primary); }
+.about { font-size: .85rem; }
+.days { font-size: .85rem; white-space: nowrap; }
+.days.now { color: var(--ion-color-primary); font-weight: 700; }
+.note { margin: 8px 20px 24px; color: var(--app-muted); font-size: .85rem; line-height: 1.6; }

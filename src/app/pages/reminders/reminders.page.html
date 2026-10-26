@@ -51,6 +51,16 @@
           <ion-note slot="end" class="time">{{ time(t.times[p]) }}</ion-note>
         </ion-item>
       }
+      @if (night(); as n) {
+        <ion-item>
+          <ion-label>{{ 'calendar.midnight' | translate }}</ion-label>
+          <ion-note slot="end" class="time">{{ time(n.midnight) }}</ion-note>
+        </ion-item>
+        <ion-item>
+          <ion-label>{{ 'calendar.lastThird' | translate }}</ion-label>
+          <ion-note slot="end" class="time">{{ time(n.lastThird) }}</ion-note>
+        </ion-item>
+      }
     </ion-list>
   }
 
@@ -196,6 +206,34 @@
                    (ionChange)="patch('fridaySalawat', { time: '' + $event.detail.value })" />
       </ion-item>
     }
+  </ion-list>
+
+  <ion-list inset>
+    <ion-list-header>{{ 'calendar.fastingSection' | translate }}</ion-list-header>
+    <ion-item>
+      <ion-toggle [checked]="reminders().fasting.enabled" (ionChange)="patch('fasting', { enabled: $event.detail.checked })">
+        <ion-label class="ion-text-wrap">{{ 'calendar.fastingReminder' | translate }}<p>{{ 'calendar.fastingReminderHint' | translate }}</p></ion-label>
+      </ion-toggle>
+    </ion-item>
+    @if (reminders().fasting.enabled) {
+      <ion-item>
+        <ion-input type="time" [label]="'reminders.at' | translate" [value]="reminders().fasting.time"
+                   (ionChange)="patch('fasting', { time: '' + $event.detail.value })" />
+      </ion-item>
+      <ion-item>
+        <ion-toggle [checked]="reminders().fasting.mondayThursday" (ionChange)="patch('fasting', { mondayThursday: $event.detail.checked })">
+          {{ 'calendar.mondayThursday' | translate }}
+        </ion-toggle>
+      </ion-item>
+    }
+    <ion-item button detail routerLink="/occasions">
+      <ion-icon slot="start" name="calendar-outline" aria-hidden="true" />
+      <ion-label>{{ 'calendar.title' | translate }}</ion-label>
+    </ion-item>
+    <ion-item button detail routerLink="/qada">
+      <ion-icon slot="start" name="checkmark-done-outline" aria-hidden="true" />
+      <ion-label>{{ 'qada.title' | translate }}</ion-label>
+    </ion-item>
   </ion-list>
 
   <ion-list inset>

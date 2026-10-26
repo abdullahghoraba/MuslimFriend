@@ -9,6 +9,7 @@
     <string name="channel_sleep">أذكار النوم</string>
     <string name="channel_friday">تذكيرات الجمعة</string>
     <string name="channel_quran">الورد القرآني اليومي</string>
+    <string name="channel_worship">الصيام وقضاء الفوائت</string>
     <string name="channel_periodic">أذكار دورية</string>
     <string name="channel_periodic_desc">تُستخدم عندما يتعذّر عرض الأذكار فوق التطبيقات، فيظهر الذكر كإشعار بدلًا من ذلك.</string>
 

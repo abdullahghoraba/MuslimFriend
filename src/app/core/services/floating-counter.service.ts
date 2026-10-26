@@ -115,6 +115,7 @@ export class FloatingCounterService {
       language: this.settings.settings().language,
       sizeDp: this.state().sizeDp,
       opacity: this.state().opacity,
+      labels: this.translate.instant('native'),
     });
   }
 

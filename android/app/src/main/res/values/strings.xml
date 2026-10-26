@@ -11,6 +11,7 @@
     <string name="channel_sleep">Sleep athkar</string>
     <string name="channel_friday">Friday reminders</string>
     <string name="channel_quran">Daily Quran reading</string>
+    <string name="channel_worship">Fasting and missed prayers</string>
     <string name="channel_periodic">Periodic athkar</string>
     <string name="channel_periodic_desc">Used when the overlay cannot run: shows a dhikr as a notification instead.</string>
 

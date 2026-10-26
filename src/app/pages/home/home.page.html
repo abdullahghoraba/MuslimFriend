@@ -25,6 +25,17 @@
     <ion-ripple-effect />
   </a>
 
+  @if (ramadan(); as r) {
+    <section class="ramadan-card" [attr.aria-label]="'ramadan.day' | translate: { day: digits(r.day) }">
+      <span class="ramadan-day">{{ 'ramadan.day' | translate: { day: digits(r.day) } }}</span>
+      <div class="ramadan-times">
+        <span><small>{{ 'ramadan.imsakAt' | translate }}</small>{{ time(r.imsak) }}</span>
+        <span><small>{{ 'ramadan.iftarAt' | translate }}</small>{{ time(r.iftar) }}</span>
+      </div>
+      <span class="ramadan-next">{{ (r.untilIftar ? 'ramadan.untilIftar' : 'ramadan.untilFajr') | translate: { time: countdown(r.target) } }}</span>
+    </section>
+  }
+
   @for (s of suggestions(); track s.kind) {
     <button type="button" class="now-card ion-activatable" [class.kahf]="s.kind === 'kahf'" (click)="openSuggestion(s.kind)">
       <ion-icon [name]="s.icon" aria-hidden="true" class="now-icon" />
