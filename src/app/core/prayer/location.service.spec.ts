@@ -1,4 +1,4 @@
-import { City, citiesIn, countriesOf, distanceKm, nearestCity, searchCountries } from './location.service';
+import { City, citiesIn, countriesOf, countryName, distanceKm, nearestCity, searchCountries } from './location.service';
 
 const cities: City[] = [
   { id: 'cairo', ar: 'القاهرة', en: 'Cairo', country: 'EG', lat: 30.04, lng: 31.24, method: 'Egyptian' },
@@ -27,6 +27,12 @@ describe('country then city', () => {
     expect(countries.map((c) => c.code).sort()).toEqual(['EG', 'SA']);
     expect(searchCountries(countries, 'مصر').map((c) => c.code)).toEqual(['EG']);
     expect(searchCountries(countriesOf(cities, 'en'), 'sa').map((c) => c.code)).toEqual(['SA']);
+  });
+  it('names Palestine as Palestine in every language', () => {
+    expect(countryName('PS', 'ar')).toBe('فلسطين');
+    expect(countryName('PS', 'en')).toBe('Palestine');
+    expect(countryName('PS', 'tr')).toBe('Filistin');
+    expect(countryName('IL', 'fr')).toBe('Palestine');
   });
   it('lists the cities of one country, matching Arabic without hamza and English in any case', () => {
     expect(citiesIn(cities, 'SA', '').map((c) => c.id)).toEqual(['makkah']);

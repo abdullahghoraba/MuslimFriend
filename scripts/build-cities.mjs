@@ -4,6 +4,7 @@
 // their Arabic names and exact coordinates.
 // Usage: node scripts/build-cities.mjs <path to cities15000.txt>
 import { readFileSync, writeFileSync } from 'node:fs';
+import { palestine } from './palestine-cities.mjs';
 
 const [, , source] = process.argv;
 if (!source) throw new Error('usage: node scripts/build-cities.mjs <cities15000.txt>');
@@ -62,6 +63,6 @@ for (const c of curated) {
 
 // Biggest first, so a search lists the city people mean before smaller places of the same name.
 cities.sort((a, b) => b.population - a.population);
-const out = cities.map(({ population, ...c }) => c);
+const out = palestine(cities.map(({ population, ...c }) => c));
 writeFileSync('public/assets/data/cities.json', JSON.stringify(out));
 console.log(`${out.length} cities, ${out.filter((c) => /[ء-ي]/.test(c.ar)).length} with an Arabic name`);

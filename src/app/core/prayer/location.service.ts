@@ -32,8 +32,16 @@ export function nearestCity(cities: City[], lat: number, lng: number): { city: C
   return best;
 }
 
+/** Palestine in each app language (Intl calls it "Palestinian Territories"). */
+const PALESTINE: Record<string, string> = {
+  ar: 'فلسطين', en: 'Palestine', ur: 'فلسطین', fa: 'فلسطین', tr: 'Filistin', id: 'Palestina', ms: 'Palestin',
+  bn: 'ফিলিস্তিন', hi: 'फ़िलिस्तीन', fr: 'Palestine', es: 'Palestina', de: 'Palästina', ru: 'Палестина',
+  pt: 'Palestina', zh: '巴勒斯坦', sw: 'Palestina', ha: 'Falasdinu', uz: 'Falastin',
+};
+
 /** The country's name in the app language ("EG" → "مصر"), or the code when the phone doesn't know it. */
 export function countryName(code: string, lang: string): string {
+  if (code === 'PS' || code === 'IL') return PALESTINE[lang] ?? PALESTINE['en'];
   try {
     return new Intl.DisplayNames([lang], { type: 'region' }).of(code) ?? code;
   } catch {
