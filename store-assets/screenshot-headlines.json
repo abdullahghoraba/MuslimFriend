@@ -1,0 +1,152 @@
+{
+  "en": {
+    "mushaf": ["The Mushaf with recitation", "16 reciters, the recited verse highlighted"],
+    "hifz": ["Memorise with a daily plan", "Repeat each verse until it sticks, with spaced review"],
+    "tafsir": ["Every verse explained", "Tafsir and the meaning in your language, offline"],
+    "home": ["Your day with Allah's remembrance", "Next prayer, athkar and the verse of the day"],
+    "athkar": ["Athkar with their sources", "All on one page, with a counter for each"],
+    "prayer-times": ["Prayer times & athan", "For your location, anywhere in the world"],
+    "tafsir-library": ["Tafsir & translations", "Ibn Kathir, al-Tabari and 17 languages"],
+    "tasbih": ["Digital tasbih", "Targets and many counters, no ads"]
+  },
+  "fr": {
+    "mushaf": ["Le Mushaf récité", "16 récitateurs, le verset récité surligné"],
+    "hifz": ["Mémorisez avec un plan", "Répétez chaque verset, avec une révision espacée"],
+    "tafsir": ["Chaque verset expliqué", "Le tafsir et le sens en français, hors ligne"],
+    "home": ["Votre journée avec le dhikr", "Prochaine prière, adhkar et verset du jour"],
+    "athkar": ["Les adhkar et leurs sources", "Tout sur une page, avec un compteur pour chacun"],
+    "prayer-times": ["Horaires de prière et adhan", "Pour votre position, partout dans le monde"],
+    "tafsir-library": ["Tafsir et traductions", "Ibn Kathir, at-Tabari et 17 langues"],
+    "tasbih": ["Tasbih numérique", "Objectifs et compteurs multiples, sans publicité"]
+  },
+  "es": {
+    "mushaf": ["El Mushaf recitado", "16 recitadores, la aleya recitada resaltada"],
+    "hifz": ["Memoriza con un plan diario", "Repite cada aleya, con repaso espaciado"],
+    "tafsir": ["Cada aleya explicada", "Tafsir y el significado en español, sin conexión"],
+    "home": ["Tu día con el recuerdo de Allah", "Próxima oración, adhkar y aleya del día"],
+    "athkar": ["Adhkar con sus fuentes", "Todo en una página, con contador para cada uno"],
+    "prayer-times": ["Horarios de oración y adhan", "Para tu ubicación, en cualquier lugar del mundo"],
+    "tafsir-library": ["Tafsir y traducciones", "Ibn Kazir, at-Tabari y 17 idiomas"],
+    "tasbih": ["Tasbih digital", "Objetivos y varios contadores, sin anuncios"]
+  },
+  "de": {
+    "mushaf": ["Der Mushaf mit Rezitation", "16 Rezitatoren, der rezitierte Vers markiert"],
+    "hifz": ["Auswendiglernen mit Plan", "Jeden Vers wiederholen, mit verteilter Wiederholung"],
+    "tafsir": ["Jeder Vers erklärt", "Tafsir und die Bedeutung auf Deutsch, offline"],
+    "home": ["Dein Tag im Gedenken Allahs", "Nächstes Gebet, Adhkar und Vers des Tages"],
+    "athkar": ["Adhkar mit Quellen", "Alles auf einer Seite, mit Zähler für jedes"],
+    "prayer-times": ["Gebetszeiten und Adhan", "Für deinen Standort, überall auf der Welt"],
+    "tafsir-library": ["Tafsir und Übersetzungen", "Ibn Kathir, at-Tabari und 17 Sprachen"],
+    "tasbih": ["Digitale Tasbih", "Ziele und mehrere Zähler, ohne Werbung"]
+  },
+  "pt": {
+    "mushaf": ["O Mushaf recitado", "16 recitadores, o versículo recitado destacado"],
+    "hifz": ["Memorize com um plano diário", "Repita cada versículo, com revisão espaçada"],
+    "tafsir": ["Cada versículo explicado", "Tafsir e o significado em português, offline"],
+    "home": ["Seu dia com a lembrança de Allah", "Próxima oração, adhkar e versículo do dia"],
+    "athkar": ["Adhkar com suas fontes", "Tudo em uma página, com contador para cada um"],
+    "prayer-times": ["Horários de oração e adhan", "Para sua localização, em qualquer lugar do mundo"],
+    "tafsir-library": ["Tafsir e traduções", "Ibn Kathir, at-Tabari e 17 idiomas"],
+    "tasbih": ["Tasbih digital", "Metas e vários contadores, sem anúncios"]
+  },
+  "tr": {
+    "mushaf": ["Tilavetli Mushaf", "16 kâri, okunan ayet vurgulanır"],
+    "hifz": ["Günlük planla ezberleyin", "Her ayeti tekrarlayın, aralıklı tekrar ile"],
+    "tafsir": ["Her ayetin açıklaması", "Tefsir ve Türkçe meal, çevrimdışı"],
+    "home": ["Gününüz Allah'ın zikriyle", "Sonraki namaz, zikirler ve günün ayeti"],
+    "athkar": ["Kaynaklarıyla zikirler", "Hepsi tek sayfada, her biri için sayaç"],
+    "prayer-times": ["Namaz vakitleri ve ezan", "Dünyanın her yerinde konumunuza göre"],
+    "tafsir-library": ["Tefsir ve mealler", "İbn Kesir, Taberi ve 17 dil"],
+    "tasbih": ["Dijital tesbih", "Hedefler ve çoklu sayaç, reklamsız"]
+  },
+  "id": {
+    "mushaf": ["Mushaf dengan murotal", "16 qari, ayat yang dibaca disorot"],
+    "hifz": ["Hafalan dengan rencana harian", "Ulangi tiap ayat, dengan murajaah berjarak"],
+    "tafsir": ["Penjelasan setiap ayat", "Tafsir dan terjemahan Indonesia, luring"],
+    "home": ["Harimu bersama zikir", "Salat berikutnya, zikir dan ayat hari ini"],
+    "athkar": ["Zikir beserta sumbernya", "Semua dalam satu halaman, dengan penghitung"],
+    "prayer-times": ["Jadwal salat dan azan", "Untuk lokasimu, di mana saja di dunia"],
+    "tafsir-library": ["Tafsir dan terjemahan", "Ibnu Katsir, ath-Thabari dan 17 bahasa"],
+    "tasbih": ["Tasbih digital", "Target dan banyak penghitung, tanpa iklan"]
+  },
+  "ms": {
+    "mushaf": ["Mushaf dengan bacaan", "16 qari, ayat yang dibaca diserlahkan"],
+    "hifz": ["Hafaz dengan pelan harian", "Ulang setiap ayat, dengan ulang kaji berjarak"],
+    "tafsir": ["Penjelasan setiap ayat", "Tafsir dan terjemahan Melayu, luar talian"],
+    "home": ["Harimu bersama zikir", "Solat seterusnya, zikir dan ayat hari ini"],
+    "athkar": ["Zikir bersama sumbernya", "Semua dalam satu halaman, dengan pembilang"],
+    "prayer-times": ["Waktu solat dan azan", "Untuk lokasi anda, di mana-mana di dunia"],
+    "tafsir-library": ["Tafsir dan terjemahan", "Ibnu Kathir, at-Tabari dan 17 bahasa"],
+    "tasbih": ["Tasbih digital", "Sasaran dan banyak pembilang, tanpa iklan"]
+  },
+  "ru": {
+    "mushaf": ["Мусхаф с чтением", "16 чтецов, читаемый аят подсвечен"],
+    "hifz": ["Заучивайте по плану", "Повторяйте каждый аят, с интервальным повтором"],
+    "tafsir": ["Толкование каждого аята", "Тафсир и перевод смыслов на русском, офлайн"],
+    "home": ["Ваш день с поминанием Аллаха", "Следующий намаз, азкары и аят дня"],
+    "athkar": ["Азкары с источниками", "Всё на одной странице, со счётчиком"],
+    "prayer-times": ["Время намаза и азан", "Для вашего места, в любой точке мира"],
+    "tafsir-library": ["Тафсиры и переводы", "Ибн Касир, ат-Табари и 17 языков"],
+    "tasbih": ["Электронный тасбих", "Цели и несколько счётчиков, без рекламы"]
+  },
+  "ur": {
+    "mushaf": ["تلاوت کے ساتھ مصحف", "16 قاری، تلاوت ہونے والی آیت نمایاں"],
+    "hifz": ["روزانہ منصوبے سے حفظ", "ہر آیت دہرائیں، وقفے وقفے سے دہرائی کے ساتھ"],
+    "tafsir": ["ہر آیت کی تفسیر", "تفسیر اور اردو ترجمہ، آف لائن"],
+    "home": ["اللہ کے ذکر کے ساتھ آپ کا دن", "اگلی نماز، اذکار اور آج کی آیت"],
+    "athkar": ["حوالوں کے ساتھ اذکار", "سب ایک صفحے پر، ہر ذکر کا کاؤنٹر"],
+    "prayer-times": ["اوقاتِ نماز اور اذان", "دنیا میں کہیں بھی آپ کے مقام کے لیے"],
+    "tafsir-library": ["تفاسیر اور تراجم", "ابن کثیر، طبری اور 17 زبانیں"],
+    "tasbih": ["ڈیجیٹل تسبیح", "اہداف اور متعدد کاؤنٹر، بغیر اشتہار"]
+  },
+  "fa": {
+    "mushaf": ["مصحف با تلاوت", "16 قاری، آیهٔ در حال تلاوت برجسته"],
+    "hifz": ["حفظ با برنامهٔ روزانه", "تکرار هر آیه، همراه با مرور فاصله‌دار"],
+    "tafsir": ["تفسیر هر آیه", "تفسیر و ترجمهٔ فارسی، آفلاین"],
+    "home": ["روز شما با یاد خدا", "نماز بعدی، اذکار و آیهٔ روز"],
+    "athkar": ["اذکار با منابعشان", "همه در یک صفحه، با شمارنده برای هر ذکر"],
+    "prayer-times": ["اوقات نماز و اذان", "برای مکان شما، هر جای جهان"],
+    "tafsir-library": ["تفاسیر و ترجمه‌ها", "ابن کثیر، طبری و 17 زبان"],
+    "tasbih": ["تسبیح دیجیتال", "هدف‌ها و چند شمارنده، بدون تبلیغ"]
+  },
+  "bn": {
+    "mushaf": ["তিলাওয়াতসহ মুসহাফ", "16 জন ক্বারি, পঠিত আয়াত হাইলাইট"],
+    "hifz": ["দৈনিক পরিকল্পনায় হিফজ", "প্রতিটি আয়াত বারবার, ব্যবধানে পুনরাবৃত্তি"],
+    "tafsir": ["প্রতিটি আয়াতের ব্যাখ্যা", "তাফসির ও বাংলা অনুবাদ, অফলাইনে"],
+    "home": ["আল্লাহর জিকিরে আপনার দিন", "পরবর্তী নামাজ, জিকির ও আজকের আয়াত"],
+    "athkar": ["সূত্রসহ জিকির", "সব এক পৃষ্ঠায়, প্রতিটির কাউন্টারসহ"],
+    "prayer-times": ["নামাজের সময় ও আজান", "বিশ্বের যেকোনো স্থানে আপনার অবস্থানে"],
+    "tafsir-library": ["তাফসির ও অনুবাদ", "ইবনে কাসির, তাবারি ও 17টি ভাষা"],
+    "tasbih": ["ডিজিটাল তাসবিহ", "লক্ষ্য ও একাধিক কাউন্টার, বিজ্ঞাপন নেই"]
+  },
+  "hi": {
+    "mushaf": ["तिलावत के साथ मुसहफ़", "16 क़ारी, पढ़ी जा रही आयत हाइलाइट"],
+    "hifz": ["रोज़ाना योजना से हिफ़्ज़", "हर आयत दोहराएँ, अंतराल पर दोहराने के साथ"],
+    "tafsir": ["हर आयत की तफ़सीर", "तफ़सीर और हिंदी अनुवाद, ऑफ़लाइन"],
+    "home": ["अल्लाह के ज़िक्र के साथ आपका दिन", "अगली नमाज़, अज़कार और आज की आयत"],
+    "athkar": ["स्रोत सहित अज़कार", "सब एक पेज पर, हर ज़िक्र का काउंटर"],
+    "prayer-times": ["नमाज़ के समय और अज़ान", "दुनिया में कहीं भी आपके स्थान के लिए"],
+    "tafsir-library": ["तफ़सीरें और अनुवाद", "इब्न कसीर, तबरी और 17 भाषाएँ"],
+    "tasbih": ["डिजिटल तस्बीह", "लक्ष्य और कई काउंटर, बिना विज्ञापन"]
+  },
+  "zh": {
+    "mushaf": ["带诵读的《古兰经》", "16 位诵读者，高亮正在诵读的经文"],
+    "hifz": ["按每日计划背诵", "每节反复诵读，间隔复习"],
+    "tafsir": ["每节经文的解释", "经注与中文译文，可离线使用"],
+    "home": ["与记念相伴的每一天", "下次礼拜、记念与每日经文"],
+    "athkar": ["注明出处的记念", "全部在一页，每条都有计数器"],
+    "prayer-times": ["礼拜时间与宣礼", "全球任何地方，按你的位置计算"],
+    "tafsir-library": ["经注与译本", "伊本·凯西尔、泰伯里及 17 种语言"],
+    "tasbih": ["电子赞念器", "目标与多个计数器，无广告"]
+  },
+  "sw": {
+    "mushaf": ["Msahafu wenye kisomo", "Wasomaji 16, aya inayosomwa huangaziwa"],
+    "hifz": ["Hifadhi kwa mpango wa kila siku", "Rudia kila aya, kwa marudio ya vipindi"],
+    "tafsir": ["Maelezo ya kila aya", "Tafsiri na maana kwa Kiswahili, bila mtandao"],
+    "home": ["Siku yako na kumkumbuka Allah", "Swala inayofuata, adhkari na aya ya siku"],
+    "athkar": ["Adhkari pamoja na vyanzo", "Zote kwenye ukurasa mmoja, na kihesabu"],
+    "prayer-times": ["Nyakati za swala na adhana", "Kwa eneo lako, popote duniani"],
+    "tafsir-library": ["Tafsiri na tarjama", "Ibn Kathir, at-Tabari na lugha 17"],
+    "tasbih": ["Tasbihi ya kidijitali", "Malengo na vihesabu vingi, bila matangazo"]
+  }
+}

@@ -58,3 +58,6 @@ android/.kotlin/
 public/assets/personal-tafsir/
 release/
 bugs/
+
+# Per-language raw captures (regenerable)
+store-assets/screenshots/raw/*/

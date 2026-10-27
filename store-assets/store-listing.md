@@ -140,3 +140,5 @@ Phone screenshots, 1080×1920, Arabic listing — upload in this order from `sto
 8. `08-tasbih.png` — «السبحة الإلكترونية»
 
 The unframed app captures are in `store-assets/screenshots/raw/`.
+
+The other 15 listing languages have their own framed sets in `store-assets/screenshots/<Play code>/` (en-US, fr-FR, es-419, de-DE, pt-BR, tr-TR, id, ms, ru-RU, ur, fa, bn-BD, hi-IN, zh-CN, sw), same order and file names, with headlines from `store-assets/screenshot-headlines.json`. Each shows the app in that language, a local city for prayer times, and the reader's own Quran translation in the tafsir sheet.
