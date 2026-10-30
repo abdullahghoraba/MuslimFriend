@@ -1,0 +1,66 @@
+<ion-header [class]="'theme-' + theme()">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/quran" [text]="''" [attr.aria-label]="'common.back' | translate" />
+    </ion-buttons>
+    <ion-title>
+      <span class="h-title">{{ title() }}</span>
+      @if (info(); as e) { <span class="h-meta">{{ lang() === 'ar' ? e.qiraahAr : e.qiraahEn }}</span> }
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="nav.navigateForward('/mushaf-editions')" [attr.aria-label]="'editions.title' | translate">
+        <ion-icon slot="icon-only" name="layers-outline" aria-hidden="true" />
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  @if (suraOptions().length) {
+    <ion-toolbar class="sura-bar">
+      <ion-select interface="action-sheet" [label]="'editions.sura' | translate" [value]="pageSura()"
+                  (ionChange)="goToSura(+$event.detail.value)">
+        @for (s of suraOptions(); track s.index) {
+          <ion-select-option [value]="s.index">{{ s.index }}. {{ s.name }}</ion-select-option>
+        }
+      </ion-select>
+    </ion-toolbar>
+  }
+</ion-header>
+
+<ion-content [class]="'edition theme-' + theme()">
+  @if (failed()) {
+    <div class="state" role="alert">
+      <p>{{ (info()?.kind === 'images' ? 'editions.pageFailed' : 'editions.notDownloaded') | translate }}</p>
+      @if (info()?.kind === 'images') {
+        <ion-button fill="outline" (click)="retry()">{{ 'listen.retry' | translate }}</ion-button>
+      } @else {
+        <ion-button fill="outline" (click)="nav.navigateForward('/mushaf-editions')">{{ 'editions.title' | translate }}</ion-button>
+      }
+    </div>
+  } @else if (info()?.kind === 'images') {
+    <div class="image-page">
+      @if (imageLoading()) { <div class="state"><ion-spinner /></div> }
+      @if (imageSrc()) {
+        <img [src]="imageSrc()" [class.hidden]="imageLoading()" (load)="imageLoading.set(false)" (error)="imageFailed()"
+             [attr.alt]="title() + ' ' + page()" draggable="false" />
+      }
+    </div>
+  } @else if (riwaya()) {
+    <div class="text-page" lang="ar" dir="rtl" [style.font-family]="font() + ', AmiriQuran, serif'" [style.--quran-font-scale]="scale()">
+      @for (b of blocks(); track b.ayah[0] * 1000 + b.ayah[1]) {
+        @if (b.sura; as s) {
+          <div class="sura-frame" role="heading" aria-level="2">سورة {{ s.name }}</div>
+          @if (s.basmala) { <div class="basmala" aria-label="بسم الله الرحمن الرحيم">﷽</div> }
+        }
+        <span class="ayah">{{ b.ayah[2] }}</span>{{ ' ' }}
+      }
+    </div>
+  } @else {
+    <div class="state"><ion-spinner /></div>
+  }
+
+  <!-- Laid out like a printed mushaf in every language: the next page is on the left. -->
+  <div class="page-footer" dir="ltr">
+    <button type="button" class="turn" (click)="next()" [disabled]="page() >= pageCount()" [attr.aria-label]="'mushaf.nextPage' | translate">‹</button>
+    <span class="page-num">{{ page() }}</span>
+    <button type="button" class="turn" (click)="prev()" [disabled]="page() <= 1" [attr.aria-label]="'mushaf.prevPage' | translate">›</button>
+  </div>
+</ion-content>

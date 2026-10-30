@@ -87,4 +87,8 @@ export const MIGRATIONS: Migration[] = [
       `CREATE TABLE IF NOT EXISTS hifz_log (date TEXT, plan_id INTEGER, kind TEXT CHECK(kind IN ('new','review')), ayat INTEGER, PRIMARY KEY(date, plan_id, kind));`,
     ],
   },
+  // Saved hadith keep their text, so the list can be read and searched without downloading the book.
+  { version: 7, statements: [
+    `CREATE TABLE IF NOT EXISTS hadith_bookmark (collection TEXT NOT NULL, number TEXT NOT NULL, book INTEGER NOT NULL, note TEXT NOT NULL DEFAULT '', updated_at INTEGER NOT NULL, arabic TEXT NOT NULL DEFAULT '', translation TEXT NOT NULL DEFAULT '', source TEXT NOT NULL DEFAULT '', PRIMARY KEY(collection, number));`,
+  ] },
 ];

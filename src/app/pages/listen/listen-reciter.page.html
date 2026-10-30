@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/listen" [text]="''" [attr.aria-label]="'common.back' | translate" />
+    </ion-buttons>
+    <ion-title>{{ reciter() ? catalog.reciterName(reciter()!) : ('listen.title' | translate) }}</ion-title>
+    @if (reciter(); as r) {
+      <ion-buttons slot="end">
+        <ion-button (click)="player.toggleFavorite('reciters', r.id)" [attr.aria-pressed]="player.isFavorite('reciters', r.id)"
+                    [attr.aria-label]="'listen.favorite' | translate">
+          <ion-icon slot="icon-only" [name]="player.isFavorite('reciters', r.id) ? 'star' : 'star-outline'" aria-hidden="true" />
+        </ion-button>
+      </ion-buttons>
+    }
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (failed()) {
+    <p class="empty" role="alert">{{ 'listen.loadFailed' | translate }}</p>
+  } @else if (!reciter() || !quran.ready()) {
+    <div class="empty"><ion-spinner /></div>
+  } @else {
+    <main>
+      @let r = reciter()!;
+      @if (r.moshaf.length > 1) {
+        <ion-select class="card recording" interface="action-sheet" [label]="'listen.recording' | translate" [value]="moshaf()?.id"
+                    (ionChange)="setMoshaf(+$event.detail.value)">
+          @for (m of r.moshaf; track m.id) {
+            <ion-select-option [value]="m.id">{{ catalog.moshafName(m) }}</ion-select-option>
+          }
+        </ion-select>
+      } @else if (moshaf(); as m) {
+        <p class="recording-name">{{ catalog.moshafName(m) }}</p>
+      }
+      <div class="toolbar-row">
+        <ion-searchbar [value]="query()" (ionInput)="query.set($event.detail.value ?? '')"
+                       [placeholder]="'quran.filter' | translate" [attr.aria-label]="'quran.filter' | translate" />
+        <ion-button fill="outline" (click)="playAll()">
+          <ion-icon slot="start" name="play" aria-hidden="true" />{{ 'listen.playAll' | translate }}
+        </ion-button>
+      </div>
+
+      @for (s of suras(); track s.index) {
+        <div class="row card" [class.on]="isOn(s.index)">
+          <button type="button" class="open" (click)="play(s.index)"
+                  [attr.aria-label]="(isOn(s.index) && player.playing() ? 'listen.pause' : 'listen.play') | translate">
+            <span class="avatar play" aria-hidden="true">
+              @if (isOn(s.index) && player.loading()) {
+                <ion-spinner name="crescent" />
+              } @else if (isOn(s.index) && player.playing()) {
+                <ion-icon name="pause" />
+              } @else {
+                {{ s.index }}
+              }
+            </span>
+            <span class="body">
+              <strong lang="ar" dir="rtl" class="arabic">{{ s.name }}</strong>
+              @if (catalog.lang() !== 'ar') { <small>{{ s.tname }} · {{ s.ename }}</small> }
+            </span>
+          </button>
+          @if (player.canDownload) {
+            @if (player.download(); as d) {
+              @if (d.sura === s.index && d.moshaf === moshaf()?.id) {
+                <span class="fav progress" role="status">{{ (d.progress * 100).toFixed(0) }}%</span>
+              } @else if (player.isDownloaded(moshaf()!, s.index)) {
+                <button type="button" class="fav done" (click)="remove(s.index)" [attr.aria-label]="'listen.deleteDownload' | translate">
+                  <ion-icon name="checkmark-circle" aria-hidden="true" />
+                </button>
+              }
+            } @else if (player.isDownloaded(moshaf()!, s.index)) {
+              <button type="button" class="fav done" (click)="remove(s.index)" [attr.aria-label]="'listen.deleteDownload' | translate">
+                <ion-icon name="checkmark-circle" aria-hidden="true" />
+              </button>
+            } @else {
+              <button type="button" class="fav dl" (click)="download(s.index)" [attr.aria-label]="'listen.download' | translate">
+                <ion-icon name="cloud-download-outline" aria-hidden="true" />
+              </button>
+            }
+          }
+        </div>
+      } @empty {
+        <p class="empty">{{ 'listen.noResults' | translate }}</p>
+      }
+      <p class="source">{{ 'listen.source' | translate }}</p>
+    </main>
+  }
+</ion-content>
+
+@if (player.now()) {
+  <ion-footer>
+    <app-listen-player />
+  </ion-footer>
+}

@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/quran" [text]="''" [attr.aria-label]="'common.back' | translate" />
+    </ion-buttons>
+    <ion-title>{{ 'editions.title' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main>
+    <p class="intro">{{ 'editions.intro' | translate }}</p>
+
+    <h2 class="section">{{ 'editions.mushafs' | translate }}</h2>
+    @for (e of mushafs; track e.id) {
+      <ng-container *ngTemplateOutlet="card; context: { $implicit: e }" />
+    }
+
+    <h2 class="section">{{ 'editions.riwayat' | translate }}</h2>
+    <p class="intro">{{ 'editions.riwayatIntro' | translate }}</p>
+    @for (e of riwayat; track e.id) {
+      <ng-container *ngTemplateOutlet="card; context: { $implicit: e }" />
+    }
+
+    <button type="button" class="listen card" (click)="openListen()">
+      <ion-icon name="headset-outline" aria-hidden="true" />
+      <span><strong>{{ 'editions.tenQiraat' | translate }}</strong><small>{{ 'editions.tenQiraatHint' | translate }}</small></span>
+    </button>
+
+    <p class="credit">{{ 'editions.credit' | translate }}</p>
+  </main>
+
+  <ng-template #card let-e>
+    @let current = editions.current() === e.id;
+    @let ready = editions.isReady(e.id);
+    @let busy = editions.progress()?.id === e.id;
+    <section class="card edition" [class.current]="current">
+      <div class="head">
+        <div class="names">
+          <strong>{{ name(e) }}</strong>
+          <small>{{ qiraah(e) }}</small>
+        </div>
+        @if (current) {
+          <span class="badge"><ion-icon name="checkmark-circle" aria-hidden="true" /> {{ 'editions.inUse' | translate }}</span>
+        }
+      </div>
+      <p class="desc">{{ ('editions.desc.' + e.kind) | translate }}</p>
+      @if (busy) {
+        @let p = editions.progress()!;
+        <ion-progress-bar [type]="p.done < 0 ? 'indeterminate' : 'determinate'" [value]="p.done" />
+      }
+      <div class="actions">
+        @if (busy) {
+          <ion-button size="small" fill="clear" (click)="editions.cancelDownload()"><ion-spinner name="crescent" />{{ 'common.cancel' | translate }}</ion-button>
+        } @else {
+          @if (!current) {
+            <ion-button size="small" (click)="use(e)" [disabled]="!!editions.progress()">{{ (ready ? 'editions.use' : 'editions.downloadUse') | translate }}</ion-button>
+          }
+          @if (ready) {
+            <ion-button size="small" fill="outline" (click)="open(e)">{{ 'editions.open' | translate }}</ion-button>
+          }
+          @if (e.kind === 'images' && native && !editions.downloaded().has(e.id)) {
+            <ion-button size="small" fill="clear" (click)="download(e)" [disabled]="!!editions.progress()">
+              <ion-icon slot="start" name="cloud-download-outline" aria-hidden="true" />{{ 'editions.saveOffline' | translate: { mb: e.sizeMb } }}
+            </ion-button>
+          }
+          @if (e.kind !== 'hafs' && editions.downloaded().has(e.id)) {
+            <ion-button size="small" fill="clear" color="danger" (click)="remove(e)">
+              <ion-icon slot="icon-only" name="trash-outline" [attr.aria-label]="'editions.delete' | translate" />
+            </ion-button>
+          }
+        }
+        @if (!ready && e.kind !== 'images') { <small class="size">{{ 'editions.size' | translate: { mb: e.sizeMb } }}</small> }
+      </div>
+    </section>
+  </ng-template>
+</ion-content>

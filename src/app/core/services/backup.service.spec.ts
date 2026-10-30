@@ -87,6 +87,21 @@ describe('BackupService', () => {
     expect(await db.query('SELECT * FROM hifz_log')).toEqual([]);
   });
 
+  it('round trips hadith bookmarks and notes, validates before deletion, and accepts older backups', async () => {
+    await db.run('INSERT INTO hadith_bookmark VALUES (?, ?, ?, ?, ?, ?, ?, ?)', ['bukhari', '1.01', 1, 'ملاحظة عن النية', 123, 'إنما الأعمال بالنيات', 'Actions are by intentions', 'صحيح البخاري']);
+    const backup = await service.buildBackup();
+    expect(backup.data.hadithBookmarks).toHaveLength(1);
+    await db.run('DELETE FROM hadith_bookmark');
+    await service.restore(backup);
+    expect((await service.buildBackup()).data.hadithBookmarks).toEqual(backup.data.hadithBookmarks);
+    const bad = structuredClone(backup); bad.data.hadithBookmarks![0]['number'] = '../invalid';
+    await expect(service.restore(bad)).rejects.toBeInstanceOf(BackupError);
+    expect((await service.buildBackup()).data.hadithBookmarks).toEqual(backup.data.hadithBookmarks);
+    delete backup.data.hadithBookmarks;
+    await service.restore(backup);
+    expect((await service.buildBackup()).data.hadithBookmarks).toEqual([]);
+  });
+
   it('round trips overrides and accepts older backups without them', async () => {
     await db.run('UPDATE athkar SET repeat_override = 7 WHERE id = ?', ['builtin']);
     const backup = await service.buildBackup();

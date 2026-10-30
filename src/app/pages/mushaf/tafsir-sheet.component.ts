@@ -111,7 +111,12 @@ type Source = TafsirId | `r${number}`;
     .tafsir[dir='rtl'] { font-family: 'Amiri', serif; font-size: calc(1.2rem * var(--dhikr-font-scale, 1)); }
     .covered, .source { font-size: 0.8rem; color: var(--app-muted); }
     .offline { text-align: center; color: var(--app-muted); padding: 16px 0; }
-    .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+    /* Three columns whose labels wrap: with large text the arrows never ride over the share button. */
+    .nav { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 4px; margin-top: 8px; padding-bottom: var(--ion-safe-area-bottom, 0px); }
+    .nav ion-button { margin: 0; height: auto; min-height: 44px; white-space: normal; }
+    .nav ion-button::part(native) { white-space: normal; }
+    .nav ion-button:first-child { justify-self: start; }
+    .nav ion-button:last-child { justify-self: end; text-align: end; }
   `,
 })
 export class TafsirSheetComponent implements OnInit {

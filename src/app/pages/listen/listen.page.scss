@@ -1,0 +1,131 @@
+main {
+  max-width: 760px;
+  margin-inline: auto;
+  padding: 4px 12px calc(16px + var(--ion-safe-area-bottom, 0px));
+}
+
+ion-segment-button ion-icon { font-size: 1.2rem; }
+
+.empty { display: flex; justify-content: center; padding: 32px 16px; color: var(--app-muted); text-align: center; }
+
+.section {
+  margin: 16px 4px 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+}
+
+.card {
+  border: 1px solid var(--app-border);
+  border-radius: 14px;
+  background: var(--app-surface);
+}
+
+.continue {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 4px 0 8px;
+  padding: 12px 14px;
+  color: var(--ion-text-color);
+  font: inherit;
+  text-align: start;
+
+  ion-icon { font-size: 1.4rem; color: var(--ion-color-primary); }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+
+  &.on { border-color: var(--ion-color-primary); }
+}
+
+.open {
+  flex: 1;
+  min-width: 0;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--ion-text-color);
+  font: inherit;
+  text-align: start;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  strong { overflow-wrap: anywhere; }
+  small { color: var(--app-muted); font-size: 0.8rem; overflow-wrap: anywhere; }
+}
+
+.avatar {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--ion-color-primary) 14%, transparent);
+  color: var(--ion-color-primary);
+  font-weight: 700;
+
+  ion-icon { font-size: 1.2rem; }
+  ion-spinner { width: 20px; height: 20px; }
+}
+
+.fav {
+  flex: 0 0 48px;
+  min-height: 48px;
+  border: 0;
+  background: transparent;
+  color: var(--ion-color-warning-shade, #b8860b);
+  font-size: 1.3rem;
+}
+
+.source { margin: 16px 4px 0; font-size: 0.75rem; color: var(--app-muted); text-align: center; }
+
+// Reciter page
+.recording {
+  margin: 4px 0 8px;
+  padding-inline: 14px;
+  min-height: 52px;
+}
+
+.recording-name { margin: 8px 4px; color: var(--app-muted); font-size: 0.85rem; }
+
+.toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+
+  ion-searchbar { flex: 1 1 220px; padding-inline: 0; }
+  ion-button { flex: 0 0 auto; }
+}
+
+.arabic { font-family: 'Amiri', serif; font-size: 1.15rem; font-weight: 400; }
+
+.fav {
+  &.dl { color: var(--ion-color-primary); }
+  &.done { color: var(--ion-color-success); }
+  &.progress { display: grid; place-items: center; font-size: 0.8rem; color: var(--app-muted); }
+}
+
+.riwayah {
+  margin: 0 0 8px;
+  padding-inline: 14px;
+  min-height: 48px;
+
+  &.open { border-color: var(--ion-color-primary); }
+}
+
+.hint { margin: 0 4px 8px; color: var(--app-muted); font-size: 0.8rem; line-height: 1.5; }

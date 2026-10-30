@@ -1,0 +1,92 @@
+// Same paper / sepia / night colours as the Madinah mushaf.
+.theme-paper { --m-bg: #fbf7ec; --m-fg: #1c1f1e; --m-accent: #0f6b5c; --m-frame: #9a6b1f; --m-muted: #5b6360; }
+.theme-sepia { --m-bg: #f1e3c6; --m-fg: #2e2416; --m-accent: #6b4a12; --m-frame: #8a5a1c; --m-muted: #5c4a33; }
+.theme-night { --m-bg: #0f1412; --m-fg: #e6e2d6; --m-accent: #5cc2ae; --m-frame: #e0b66a; --m-muted: #a9b3af; }
+
+ion-header ion-toolbar {
+  --background: var(--m-bg);
+  --color: var(--m-fg);
+}
+
+ion-content.edition {
+  --background: var(--m-bg);
+  --color: var(--m-fg);
+}
+
+.h-title, .h-meta { display: block; white-space: normal; line-height: 1.25; }
+.h-title { font-size: 1rem; }
+.h-meta { font-size: 0.75rem; color: var(--m-muted); font-weight: 400; }
+
+.sura-bar ion-select { padding-inline: 12px; min-height: 44px; color: var(--m-fg); }
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 25vh 24px 24px;
+  text-align: center;
+  color: var(--m-muted);
+}
+
+// Page images: full width, kept to a book-like size on tablets. Night theme inverts the page.
+.image-page {
+  max-width: 760px;
+  margin-inline: auto;
+  padding: 4px;
+  touch-action: pan-y;
+
+  img { display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+  img.hidden { display: none; }
+}
+
+.theme-night .image-page img { filter: invert(0.92) hue-rotate(180deg); }
+.theme-sepia .image-page img { filter: sepia(0.25); }
+
+.text-page {
+  max-width: 860px;
+  margin-inline: auto;
+  padding: 12px 18px 4px;
+  color: var(--m-fg);
+  font-size: calc(1.6rem * var(--quran-font-scale, 1));
+  line-height: 2.2;
+  text-align: center;
+  touch-action: pan-y;
+}
+
+.sura-frame {
+  margin: 10px 0 6px;
+  padding: 6px 10px;
+  border: 3px double var(--m-frame);
+  border-radius: 12px;
+  color: var(--m-accent);
+  font-family: 'Amiri', serif;
+  font-size: 1.15rem;
+  line-height: 1.8;
+}
+
+// One wide calligraphic glyph (﷽): sized to the screen so it is never cut off.
+.basmala { font-family: 'Amiri', serif; font-size: min(2rem, 7vw); line-height: 1.8; color: var(--m-fg); overflow: hidden; }
+
+.page-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  // Clear of the phone's navigation buttons at the end of the page.
+  padding: 14px 0 calc(10px + var(--ion-safe-area-bottom, 0px));
+  color: var(--m-muted);
+
+  .page-num { font-family: 'Amiri', serif; font-size: 1.05rem; min-width: 3em; text-align: center; }
+
+  .turn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--m-muted);
+    background: transparent;
+    color: var(--m-fg);
+    font-size: 1.4rem;
+    &:disabled { opacity: 0.3; }
+  }
+}

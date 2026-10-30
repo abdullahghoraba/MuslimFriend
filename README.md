@@ -1,10 +1,11 @@
 # Muslim Friend · رفيق المسلم
 
-An ad-free, tracking-free, fully offline athkar app for Android, built with Ionic + Angular + Capacitor
+An ad-free, tracking-free athkar, Quran and hadith app for Android (offline first), built with Ionic + Angular + Capacitor
 and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
-Arabic (default, RTL) and English.
+18 languages (Arabic by default, right-to-left; English, Urdu, Persian, Turkish, Indonesian, Malay and more).
 
-- No ads, no analytics, no Firebase, no accounts. The merged manifest has **no INTERNET permission**.
+- No ads, no analytics, no Firebase, no accounts. The internet is used only to fetch public content (recitations,
+  radio, hadith, extra mushafs and tafsirs); nothing about the user is sent.
 - Every dhikr shows its source; Quran text is copied verbatim from Tanzil at build time.
 - Athkar shown over other apps, reminders tied to prayer times, reorderable lists, tasbih, local stats.
 
@@ -12,9 +13,19 @@ Arabic (default, RTL) and English.
 
 - **Quran:** 604-page Madani layout (Tanzil Uthmani text, Amiri Quran font), juz/hizb/rub', paper/sepia/night themes,
   tafsir per ayah (al-Muyassar, al-Jalalayn and Saheeh International bundled; 7 more downloadable for offline use),
-  16 reciters verse-by-verse (EveryAyah) with highlighting, repeat, range loop, speed and offline sura downloads,
+  43 reciters verse-by-verse (EveryAyah, searchable picker) with highlighting, repeat, range loop, speed and offline sura downloads,
   coloured bookmarks, starred ayat, colour highlights with topics, notes, khatmah plans with daily wird, search
   without diacritics, verse of the day, Qibla, Hijri date.
+- **Mushafs & qira'at:** choose the mushaf the Quran tab opens: Madinah (built in), colour-coded tajweed (the same
+  pages and Tanzil text, rules from quran.com's tajweed markup moved onto it letter by letter; words that do not line
+  up stay plain), the Egyptian Shamarly mushaf (522 page images from archive.org/details/shamerly, streamed or saved;
+  page map from the open-source Shamarly app, `node scripts/build-shamarly.mjs`), and seven riwayat with their own
+  text, font and pages from the King Fahd Complex (Warsh, Qalun, Shu'bah, ad-Duri, as-Susi, al-Bazzi, Qunbul;
+  github.com/thetruetruth/quran-data-kfgqpc). Shamarly page images have no stated licence: confirm before publishing.
+- **Listen:** 244 reciters with whole suras in every recorded riwayah (Hafs, Warsh, Qalun...) and 176 Quran radio
+  stations from mp3quran.net: search, filter by riwayah (18 riwayat of the ten qira'at), favourites, next sura plays on its own, repeat, sleep timer, lock-screen controls,
+  suras downloaded for offline listening. The catalogue ships in `public/assets/audio/catalog.json`
+  (`node scripts/fetch-audio-catalog.mjs` refreshes it); names in other languages are fetched weekly while the page is open.
 - **Athkar:** every category on one page with a counter per dhikr, sources and grades, add your own dhikr to any list,
   your own collections (e.g. Ruqyah) shown on Home, reorder anything, overlay over other apps, floating tasbih counter,
   tasbih with targets, reminders tied to prayer times, statistics, backup.
@@ -26,8 +37,29 @@ Quran font. `node scripts/build-quran.mjs` validates them (114 suras, 30 juz, 24
 `public/assets/quran/`. The basmala is displayed on its own line but the stored text is never altered
 (`src/app/core/quran/basmala.spec.ts` checks the split re-joins to the exact Tanzil text).
 
-Network use (the only one): recitation MP3s from everyayah.com and extra tafsirs from api.quran.com, both only on the
-user's request and cached on the device. Confirm the reciters' and tafsir publishers' terms before publishing.
+Network use: recitation MP3s from everyayah.com, whole suras and radio streams from mp3quran.net (https only;
+radiojar.com stations are left out because they redirect to plain http), extra tafsirs from api.quran.com, hadith
+from HadeethEnc, Dorar and jsDelivr (see Hadith). Everything is fetched over https and cached on the device; see
+`docs/privacy-policy.html`. Confirm the reciters' and tafsir publishers' terms before publishing.
+
+### Hadith
+
+- **Library:** `/hadith` has ten collections (al-Bukhari, Muslim, the four Sunan, al-Muwatta, al-Nawawi's 42 and 40
+  Qudsi built in); big books download on request in Arabic, English and the reader's language
+  ([fawazahmed0/hadith-api](https://github.com/fawazahmed0/hadith-api), Unlicense, copied to
+  `public/assets/licenses/hadith-api-Unlicense.txt`). `node scripts/build-hadith.mjs` builds the bundled ones from
+  `content/hadith-sources/` (`--check` for reproducibility), including the narrator and source line of each.
+- **Topics & explanations:** `/hadith/topics` reads the Encyclopedia of Translated Prophetic Hadiths
+  ([HadeethEnc.com](https://hadeethenc.com), online, all 18 app languages): topic tree, then each hadith with its grade,
+  source, explanation, lessons and word meanings.
+- **Hadith of the day** (Home, online, kept for the day): from HadeethEnc in the reader's language, else from
+  al-Bukhari / Muslim (`daily-online.ts`: a different one each day for decades, skipping chains without the
+  Prophet's words), else one of the 81 bundled ones offline.
+- **Who narrated it, is it sound, and why:** the sheet looks up the scholars' rulings on Dorar.net
+  (`dorar.service.ts`, native HTTP on Android because dorar.net sends no CORS header) and keeps them; a ruling is shown
+  only for a close text match. Badges never rate higher than the source says (`sourceGradeKind`, `gradeKind`).
+- **Search and saved hadith:** offline search in the available books plus an online search of every book through
+  Dorar; saved hadith keep their own text, grade and note (table `hadith_bookmark`, in backups) and can be searched.
 
 ## Stack (all versions pinned exactly)
 

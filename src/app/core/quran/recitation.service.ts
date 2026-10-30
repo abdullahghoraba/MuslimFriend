@@ -2,6 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { Preferences } from '@capacitor/preferences';
+import { AudioFocusService } from '../audio/audio-focus.service';
 import { AyahRef } from './quran-utils';
 import { QuranService } from './quran.service';
 
@@ -12,7 +13,7 @@ export interface Reciter {
   nameEn: string;
 }
 
-/** A curated set of well-known Hafs reciters on EveryAyah (verse-by-verse MP3s). */
+/** Hafs reciters on EveryAyah (verse-by-verse MP3s); every folder checked to serve 1:1, 2:255 and 114:6. */
 export const RECITERS: Reciter[] = [
   { id: 'Muhsin_Al_Qasim_192kbps', nameAr: 'عبد المحسن القاسم', nameEn: 'Abdulmohsen Al-Qasim' },
   { id: 'Abdul_Basit_Murattal_192kbps', nameAr: 'عبد الباسط عبد الصمد (مرتل)', nameEn: 'Abdul Basit (Murattal)' },
@@ -30,6 +31,33 @@ export const RECITERS: Reciter[] = [
   { id: 'Yasser_Ad-Dussary_128kbps', nameAr: 'ياسر الدوسري', nameEn: 'Yasser Ad-Dossary' },
   { id: 'Abu_Bakr_Ash-Shaatree_128kbps', nameAr: 'أبو بكر الشاطري', nameEn: 'Abu Bakr Ash-Shatri' },
   { id: 'Ghamadi_40kbps', nameAr: 'سعد الغامدي', nameEn: 'Saad Al-Ghamdi' },
+  { id: 'Alafasy_128kbps', nameAr: 'مشاري راشد العفاسي', nameEn: 'Mishary Rashid Alafasy' },
+  { id: 'Abdurrahmaan_As-Sudais_192kbps', nameAr: 'عبد الرحمن السديس', nameEn: 'Abdurrahman As-Sudais' },
+  { id: 'Hudhaify_128kbps', nameAr: 'علي الحذيفي', nameEn: 'Ali Al-Hudhaifi' },
+  { id: 'Salah_Al_Budair_128kbps', nameAr: 'صلاح البدير', nameEn: 'Salah Al-Budair' },
+  { id: 'Abdullaah_3awwaad_Al-Juhaynee_128kbps', nameAr: 'عبد الله عواد الجهني', nameEn: 'Abdullah Al-Juhani' },
+  { id: 'Khaalid_Abdullaah_al-Qahtaanee_192kbps', nameAr: 'خالد القحطاني', nameEn: 'Khalid Al-Qahtani' },
+  { id: 'Muhammad_Ayyoub_128kbps', nameAr: 'محمد أيوب', nameEn: 'Muhammad Ayyub' },
+  { id: 'Ali_Jaber_64kbps', nameAr: 'علي جابر', nameEn: 'Ali Jaber' },
+  { id: 'Abdullah_Basfar_192kbps', nameAr: 'عبد الله بصفر', nameEn: 'Abdullah Basfar' },
+  { id: 'Ahmed_ibn_Ali_al-Ajamy_128kbps_ketaballah.net', nameAr: 'أحمد بن علي العجمي', nameEn: 'Ahmed Al-Ajmi' },
+  { id: 'Hani_Rifai_192kbps', nameAr: 'هاني الرفاعي', nameEn: 'Hani Ar-Rifai' },
+  { id: 'Nasser_Alqatami_128kbps', nameAr: 'ناصر القطامي', nameEn: 'Nasser Al-Qatami' },
+  { id: 'Fares_Abbad_64kbps', nameAr: 'فارس عباد', nameEn: 'Fares Abbad' },
+  { id: 'Abdullah_Matroud_128kbps', nameAr: 'عبد الله المطرود', nameEn: 'Abdullah Al-Matrood' },
+  { id: 'Salaah_AbdulRahman_Bukhatir_128kbps', nameAr: 'صلاح بو خاطر', nameEn: 'Salah Bukhatir' },
+  { id: 'Akram_AlAlaqimy_128kbps', nameAr: 'أكرم العلاقمي', nameEn: 'Akram Al-Alaqimy' },
+  { id: 'Yaser_Salamah_128kbps', nameAr: 'ياسر سلامة', nameEn: 'Yaser Salamah' },
+  { id: 'khalefa_al_tunaiji_64kbps', nameAr: 'خليفة الطنيجي', nameEn: 'Khalifa At-Tunaiji' },
+  { id: 'Ali_Hajjaj_AlSuesy_128kbps', nameAr: 'علي حجاج السويسي', nameEn: 'Ali Hajjaj As-Suwaisi' },
+  { id: 'Sahl_Yassin_128kbps', nameAr: 'سهل ياسين', nameEn: 'Sahl Yassin' },
+  { id: 'Ahmed_Neana_128kbps', nameAr: 'أحمد نعينع', nameEn: 'Ahmed Neana' },
+  { id: 'Muhammad_AbdulKareem_128kbps', nameAr: 'محمد عبد الكريم', nameEn: 'Muhammad Abdulkareem' },
+  { id: 'Husary_128kbps_Mujawwad', nameAr: 'محمود خليل الحصري (مجود)', nameEn: 'Al-Husary (Mujawwad)' },
+  { id: 'Ayman_Sowaid_64kbps', nameAr: 'أيمن سويد', nameEn: 'Ayman Suwayd' },
+  { id: 'aziz_alili_128kbps', nameAr: 'عزيز عليلي', nameEn: 'Aziz Alili' },
+  { id: 'Karim_Mansoori_40kbps', nameAr: 'كريم منصوري', nameEn: 'Karim Mansoori' },
+  { id: 'Parhizgar_48kbps', nameAr: 'شهريار برهيزكار', nameEn: 'Shahriar Parhizgar' },
 ];
 
 const AUDIO_BASE = 'https://everyayah.com/data';
@@ -67,6 +95,7 @@ const fileName = (ref: AyahRef) => `${String(ref.sura).padStart(3, '0')}${String
 @Injectable({ providedIn: 'root' })
 export class RecitationService {
   private readonly quran = inject(QuranService);
+  private readonly focus = inject(AudioFocusService);
   private audio?: HTMLAudioElement;
   /** The next ayah, already buffering so it starts without a gap or a stall. */
   private upcoming?: { index: number; src: string; audio: HTMLAudioElement };
@@ -114,7 +143,14 @@ export class RecitationService {
     this.prefs.update((p) => ({ ...p, ...patch }));
     await Preferences.set({ key: PREFS_KEY, value: JSON.stringify(this.prefs()) });
     const cur = this.current();
-    if (patch.speed === undefined || !cur) return;
+    if (!cur) return;
+    // A new reciter takes over from the ayah being recited.
+    if (patch.reciterId !== undefined) {
+      this.decoded.clear();
+      void this.playIndex(this.quran.ayah(cur).index);
+      return;
+    }
+    if (patch.speed === undefined) return;
     // 1× plays gaplessly; other speeds need a media element (it keeps the reciter's pitch).
     if (this.audio && patch.speed !== 1) this.audio.playbackRate = patch.speed;
     else void this.playIndex(this.quran.ayah(cur).index);
@@ -182,6 +218,7 @@ export class RecitationService {
   }
 
   private playIndex(index: number): Promise<void> {
+    this.focus.claim('mushaf', () => this.stop());
     return this.prefs().speed === 1 && typeof AudioContext !== 'undefined' ? this.playGapless(index) : this.playElement(index);
   }
 

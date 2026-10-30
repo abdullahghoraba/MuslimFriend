@@ -38,12 +38,21 @@
             <ion-icon slot="icon-only" name="add-outline" aria-hidden="true" />
           </ion-button>
         </ion-range>
-        <ion-select [label]="'mushaf.reciter' | translate" interface="action-sheet" [value]="recitation.prefs().reciterId"
-                    (ionChange)="recitation.setPrefs({ reciterId: $event.detail.value })">
-          @for (r of reciters; track r.id) {
-            <ion-select-option [value]="r.id">{{ reciterName(r.id) }}</ion-select-option>
-          }
-        </ion-select>
+        <button type="button" class="reciter-pick" (click)="nav.navigateForward('/mushaf-editions')">
+          <span>{{ 'editions.mushaf' | translate }}</span>
+          <strong>{{ editionName() }}</strong>
+          <ion-icon name="chevron-down" aria-hidden="true" />
+        </button>
+        @if (tajweed()) {
+          <div class="tj-legend" lang="ar" dir="rtl">
+            @for (r of tajweedLegend; track r.rule) { <span [class]="'tj-' + r.rule">● {{ r.ar }}</span> }
+          </div>
+        }
+        <button type="button" class="reciter-pick" (click)="pickReciter()">
+          <span>{{ 'mushaf.reciter' | translate }}</span>
+          <strong>{{ reciterName(recitation.prefs().reciterId) }}</strong>
+          <ion-icon name="chevron-down" aria-hidden="true" />
+        </button>
         <div class="row-actions">
           <ion-button size="small" fill="outline" (click)="playPage()">
             <ion-icon slot="start" name="play" aria-hidden="true" />{{ 'mushaf.playPage' | translate }}
@@ -82,7 +91,7 @@
               <span class="sura-info">{{ (h.type === 'Meccan' ? 'quran.meccan' : 'quran.medinan') | translate }} · {{ 'mushaf.ayatCount' | translate: { n: lang() === 'ar' ? ayahNumber(h.ayas) : h.ayas } }}</span>
             </div>
             @if (b.basmala) {
-              <div class="basmala">{{ b.basmalaText }}</div>
+              <div class="basmala">@if (b.basmalaParts; as bp) {@for (p of bp; track $index) {<span [class]="p.rule ? 'tj-' + p.rule : null">{{ p.text }}</span>}} @else {<ng-container>{{ b.basmalaText }}</ng-container>}</div>
             }
           }
           <span class="ayah" role="button" tabindex="0" [attr.data-ayah]="b.ayah.sura + ':' + b.ayah.aya"
@@ -92,7 +101,7 @@
                 (click)="select(b.ayah, $event)" (keydown.enter)="select(b.ayah, $event)"
                 (pointerdown)="pressStart(b.ayah, $event)" (pointermove)="pressMove($event)"
                 (pointerup)="pressEnd()" (pointercancel)="pressEnd()" (contextmenu)="$event.preventDefault()"
-                [attr.aria-label]="quran.sura(b.ayah.sura).name + ' ' + b.ayah.aya">{{ b.text }}<span class="end">&nbsp;﴿{{ b.num }}﴾</span>@if (isStarred(b.ayah)) {<span class="mark star" aria-hidden="true">★</span>}@if (hasNote(b.ayah)) {<span class="mark note" aria-hidden="true">✎</span>}</span>
+                [attr.aria-label]="quran.sura(b.ayah.sura).name + ' ' + b.ayah.aya">@if (b.parts; as parts) {@for (p of parts; track $index) {<span [class]="p.rule ? 'tj-' + p.rule : null">{{ p.text }}</span>}} @else {<ng-container>{{ b.text }}</ng-container>}<span class="end">&nbsp;﴿{{ b.num }}﴾</span>@if (isStarred(b.ayah)) {<span class="mark star" aria-hidden="true">★</span>}@if (hasNote(b.ayah)) {<span class="mark note" aria-hidden="true">✎</span>}</span>
           {{ ' ' }}
         }
       </div>
@@ -149,7 +158,9 @@
       <div class="player" role="group" [attr.aria-label]="'mushaf.player' | translate">
         <div class="now">
           <strong>{{ quran.sura(cur.sura).name }} · {{ cur.aya }}</strong>
-          <small>{{ reciterName(recitation.prefs().reciterId) }}</small>
+          <button type="button" class="now-reciter" (click)="pickReciter()" [attr.aria-label]="'mushaf.changeReciter' | translate">
+            {{ reciterName(recitation.prefs().reciterId) }} <ion-icon name="chevron-down" aria-hidden="true" />
+          </button>
         </div>
         <ion-button fill="clear" (click)="recitation.previous()" [attr.aria-label]="'mushaf.prevAyah' | translate">
           <ion-icon slot="icon-only" [name]="lang() === 'ar' ? 'play-skip-forward' : 'play-skip-back'" aria-hidden="true" />

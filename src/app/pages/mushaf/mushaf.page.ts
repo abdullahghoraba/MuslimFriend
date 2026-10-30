@@ -37,6 +37,9 @@ import { HapticsService } from '../../core/services/haptics.service';
 import { SettingsService } from '../../core/services/settings.service';
 import { ShareService } from '../../core/services/share.service';
 import { TafsirSheetComponent } from './tafsir-sheet.component';
+import { ReciterPickerComponent } from './reciter-picker.component';
+import { EDITIONS, MushafEditionsService } from '../../core/quran/mushaf-editions.service';
+import { TajweedPart, alignTajweed } from '../../core/quran/tajweed';
 import { SelectTextsDirective } from '../../shared/select-texts.directive';
 
 type MushafTheme = 'paper' | 'sepia' | 'night';
@@ -50,6 +53,9 @@ interface PageBlock {
   ayah: Ayah;
   text: string;
   num: string;
+  /** Colour-tajweed runs of the text (and of the basmala) when the tajweed mushaf is chosen. */
+  parts?: TajweedPart[];
+  basmalaParts?: TajweedPart[];
 }
 
 const VIEW_PREFS = 'mushafView';
@@ -86,6 +92,7 @@ export class MushafPage {
   readonly marks = inject(MarksService);
   readonly recitation = inject(RecitationService);
   readonly hifz = inject(HifzService);
+  readonly editions = inject(MushafEditionsService);
   private readonly khatmah = inject(KhatmahService);
   private readonly settings = inject(SettingsService);
   private readonly haptics = inject(HapticsService);
@@ -96,13 +103,26 @@ export class MushafPage {
   private readonly sheets = inject(ActionSheetController);
   private readonly alerts = inject(AlertController);
   private readonly toasts = inject(ToastController);
-  private readonly nav = inject(NavController);
+  readonly nav = inject(NavController);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
-  readonly reciters = RECITERS;
   readonly colors = MARK_COLORS;
   readonly repeatOptions: RepeatMode[] = [1, 2, 3, 5, 7, 10, 15, 20, 0];
   readonly speeds = [0.75, 1, 1.25, 1.5];
+  /** The colour key of the tajweed mushaf (Dar al-Ma'rifah colours, as on quran.com). */
+  readonly tajweedLegend = [
+    { rule: 'madda_necessary', ar: 'مد لازم ٦' },
+    { rule: 'madda_obligatory', ar: 'مد واجب ٤–٥' },
+    { rule: 'madda_permissible', ar: 'مد جائز ٢–٤–٦' },
+    { rule: 'madda_normal', ar: 'مد طبيعي ٢' },
+    { rule: 'ghunnah', ar: 'غنة' },
+    { rule: 'ikhafa', ar: 'إخفاء' },
+    { rule: 'idgham_ghunnah', ar: 'إدغام بغنة' },
+    { rule: 'idgham_wo_ghunnah', ar: 'إدغام بلا غنة' },
+    { rule: 'iqlab', ar: 'إقلاب' },
+    { rule: 'qalaqah', ar: 'قلقلة' },
+    { rule: 'ham_wasl', ar: 'لا يُنطق' },
+  ];
 
   readonly page = signal(1);
   readonly selected = signal<AyahRef | null>(null);
@@ -111,12 +131,19 @@ export class MushafPage {
   readonly quranScale = signal(1);
   readonly slide = signal<'none' | 'next' | 'prev'>('none');
   readonly lang = computed(() => this.settings.settings().language);
+  /** quran.com tajweed markup per ayah, set while the colour-tajweed mushaf is the chosen one. */
+  readonly tajweed = signal<string[] | null>(null);
+  readonly editionName = computed(() => {
+    const e = EDITIONS.find((x) => x.id === this.editions.current()) ?? EDITIONS[0];
+    return this.lang() === 'ar' ? e.nameAr : e.nameEn;
+  });
 
   readonly blocks = computed<PageBlock[]>(() => {
     if (!this.quran.ready()) return [];
     return this.quran.pageAyahs(this.page()).map((ayah) => {
       const split = splitBasmala(ayah, ayah.text);
       const s = this.quran.sura(ayah.sura);
+      const tj = this.tajweed();
       return {
         suraHeader: ayah.aya === 1 ? { sura: s.index, name: s.name, ayas: s.ayas, type: s.type } : undefined,
         basmala: split.basmala,
@@ -124,6 +151,9 @@ export class MushafPage {
         ayah,
         text: split.text,
         num: String(ayah.aya),
+        // The text stays the Tanzil text; only the colours come from the tajweed markup.
+        parts: tj ? (alignTajweed(split.text, tj[ayah.index]) ?? undefined) : undefined,
+        basmalaParts: tj && split.basmala ? (alignTajweed(split.basmalaText, tj[0]) ?? undefined) : undefined,
       };
     });
   });
@@ -164,7 +194,8 @@ export class MushafPage {
   }
 
   async ionViewWillEnter(): Promise<void> {
-    await Promise.all([this.quran.load(), this.marks.load(), this.khatmah.load(), this.recitation.loadPrefs(), this.loadView(), this.hifz.load()]);
+    await Promise.all([this.quran.load(), this.marks.load(), this.khatmah.load(), this.recitation.loadPrefs(), this.loadView(), this.hifz.load(), this.editions.load()]);
+    this.tajweed.set(this.editions.current() === 'tajweed' ? await this.editions.tajweedText() : null);
     const p = clampPage(Number(this.pageParam()));
     this.goTo(p, 'none');
     const sura = Number(this.sura());
@@ -419,10 +450,24 @@ export class MushafPage {
     const modal = await this.modals.create({
       component: TafsirSheetComponent,
       componentProps: { ayahRef: ref },
-      breakpoints: [0, 0.5, 0.9],
+      // Up to 1: Ionic does not resize sheet content, so a lower top breakpoint leaves the prev / next ayah arrows
+      // at the end of a long tafsir below the screen edge, under the phone's navigation buttons.
+      breakpoints: [0, 0.5, 1],
       initialBreakpoint: 0.5,
     });
     await modal.present();
+  }
+
+  async pickReciter(): Promise<void> {
+    const modal = await this.modals.create({
+      component: ReciterPickerComponent,
+      componentProps: { current: this.recitation.prefs().reciterId, lang: this.lang() },
+      breakpoints: [0, 0.6, 1],
+      initialBreakpoint: 1,
+    });
+    await modal.present();
+    const { data } = await modal.onWillDismiss<string>();
+    if (data && data !== this.recitation.prefs().reciterId) await this.recitation.setPrefs({ reciterId: data });
   }
 
   async playFromSelected(): Promise<void> {

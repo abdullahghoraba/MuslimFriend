@@ -5,6 +5,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { QuranService } from '../../core/quran/quran.service';
 import { AyahRef, normalizeArabic, TOTAL_PAGES } from '../../core/quran/quran-utils';
 import { SettingsService } from '../../core/services/settings.service';
+import { EditionId, MushafEditionsService, edition } from '../../core/quran/mushaf-editions.service';
 
 @Component({ selector: 'app-quran-index', imports: [RouterLink, TranslatePipe, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonSpinner, IonSearchbar, IonSegment, IonSegmentButton, IonLabel, IonToggle], templateUrl: './quran-index.page.html', styleUrl: './quran-index.page.scss' })
 export class QuranIndexPage {
@@ -13,6 +14,7 @@ export class QuranIndexPage {
   private readonly router = inject(Router);
   private readonly alerts = inject(AlertController);
   private readonly translate = inject(TranslateService);
+  private readonly editions = inject(MushafEditionsService);
   readonly lang = computed(() => this.settings.settings().language);
   readonly segment = signal('suras');
   readonly filter = signal('');
@@ -20,7 +22,7 @@ export class QuranIndexPage {
   readonly expanded = signal<number | null>(null);
   readonly juz = Array.from({length: 30}, (_, i) => i + 1);
   readonly hizbs = Array.from({length: 60}, (_, i) => i + 1);
-  readonly actions = [{key:'search',icon:'search-outline',route:'/quran-search'}, {key:'marks',icon:'bookmark-outline',route:'/quran-marks'}, {key:'khatmah',icon:'flag-outline',route:'/khatmah'}, {key:'hifz',icon:'school-outline',route:'/hifz'}, {key:'qibla',icon:'compass-outline',route:'/qibla'}];
+  readonly actions = [{key:'search',icon:'search-outline',route:'/quran-search'}, {key:'marks',icon:'bookmark-outline',route:'/quran-marks'}, {key:'khatmah',icon:'flag-outline',route:'/khatmah'}, {key:'hifz',icon:'school-outline',route:'/hifz'}, {key:'editions',icon:'layers-outline',route:'/mushaf-editions'}, {key:'qibla',icon:'compass-outline',route:'/qibla'}];
   readonly suras = computed(() => {
     if (!this.quran.ready()) return [];
     const q = normalizeArabic(this.filter()).toLowerCase();
@@ -30,6 +32,7 @@ export class QuranIndexPage {
   private static resumed = false;
   ionViewWillEnter(): void {
     void this.quran.loadReadingPrefs();
+    void this.editions.load();
     this.quran.load().then(async () => {
       await this.quran.loadReadingPrefs();
       if (QuranIndexPage.resumed) return;
@@ -40,8 +43,20 @@ export class QuranIndexPage {
   openMark(): void { const m = this.quran.readingMark(); if (m) void this.router.navigate(['/mushaf', m.page], { queryParams: { sura: m.sura, aya: m.aya } }); }
   digits(n: number): string { return String(n); }
   words(ref: AyahRef): string { return this.quran.ayah(ref).text.split(/\s+/).slice(0,6).join(' ') + '…'; }
-  open(ref: AyahRef): void { void this.router.navigate(['/mushaf', this.quran.pageOf(ref)], {queryParams: ref}); }
-  continue(): void { const last=this.quran.lastRead(); void this.router.navigate(['/mushaf', last?.page ?? 1], {queryParams: last ? {sura:last.sura,aya:last.aya} : undefined}); }
+  /** Opens [ref] in the chosen mushaf: the Madinah reader (also for colour tajweed) or Shamarly / a riwaya. */
+  open(ref: AyahRef): void {
+    const e = this.otherEdition();
+    if (e) void this.router.navigate(['/mushaf-edition', e, 1], {queryParams: ref});
+    else void this.router.navigate(['/mushaf', this.quran.pageOf(ref)], {queryParams: ref});
+  }
+  private otherEdition(): EditionId | null {
+    const e = edition(this.editions.current());
+    return e && (e.kind === 'images' || e.kind === 'riwaya') && this.editions.isReady(e.id) ? e.id : null;
+  }
+  continue(): void {
+    const e = this.otherEdition();
+    if (e) { void this.editions.lastPage(e).then(p => this.router.navigate(['/mushaf-edition', e, p ?? 1])); return; }
+    const last=this.quran.lastRead(); void this.router.navigate(['/mushaf', last?.page ?? 1], {queryParams: last ? {sura:last.sura,aya:last.aya} : undefined}); }
   quarters(h: number): number[] { return [0,1,2,3].map(i => (h-1)*4+i+1); }
   async goToPage(): Promise<void> {
     const alert = await this.alerts.create({header:this.translate.instant('quran.goToPage'), message:this.translate.instant('quran.pageHint'), inputs:[{name:'target',type:'text',placeholder:'1–604 / 2:255',attributes:{'aria-label':this.translate.instant('quran.goToPage')}}], buttons:[{text:this.translate.instant('quran.cancel'),role:'cancel'},{text:this.translate.instant('quran.go'),handler:(data: {target:string}) => {

@@ -1,7 +1,7 @@
 # Play Console answers — Muslim Friend
 
 Copy these into **Play Console → Policy → App content**. Everything below matches the code as shipped:
-INTERNET is used only to fetch Quran recitation MP3s from everyayah.com on the user's request, no SDKs that send data,
+INTERNET is used only to fetch public content over HTTPS (recitations, radio, hadith, mushafs, tafsirs), no SDKs that send data,
 `allowBackup="false"`.
 
 ---
@@ -23,22 +23,29 @@ URL: `https://<your-github-user>.github.io/<repo>/privacy-policy.html`
 
 | Question | Answer |
 | --- | --- |
-| Does your app collect or share any of the required user data types? | **No** |
-| Is all of the user data collected by your app encrypted in transit? | Not applicable — no user data is collected. (If the form still requires it, answer **Yes**: the only network traffic is HTTPS downloads of recitation audio.) |
-| Do you provide a way for users to request that their data is deleted? | Not applicable — no data is collected. (Users can delete local data in-app: Settings → Reset all data.) |
+| Does your app collect or share any of the required user data types? | **Yes** — one type, below |
+| Is all of the user data collected by your app encrypted in transit? | **Yes** (all network traffic is HTTPS) |
+| Do you provide a way for users to request that their data is deleted? | **No** (the developer receives and keeps nothing; local data: Settings → Reset all data) |
 
-Why "no collection" is accurate (Google's definition: data transmitted off the device):
-- The only network use is **downloading public content on the user's request**: recitation MP3s (HTTPS GET to
-  everyayah.com) when the user plays or downloads a sura, and extra tafsir texts (HTTPS GET to api.quran.com) when the
-  user opens or downloads a tafsir that isn't bundled, or from the open tafsir dataset (cdn.jsdelivr.net / raw.githubusercontent.com, spa5k/tafsir_api) for the classical tafsirs, and athan recordings from upload.wikimedia.org when the user downloads one. No user data, identifiers or usage events are sent; the request contains only the file path. Google's
-  definition of "collected" covers data transmitted to the developer or a third party *about the user* — fetching public
-  content is not collection. (The audio host sees the device IP like any web request; this is disclosed in the privacy policy.)
-- Everything else (Quran text, tafsir, athkar, prayer times, Qibla) is bundled and works offline.
-- Approximate location (optional) is used **on-device only** to compute prayer times; it is never transmitted, which Google defines as not collected.
-- Backup export is a **user-initiated** share of a file the user chooses where to send; the app sends nothing itself.
+Data type to declare — **App activity → In-app search history**:
+- Collected: **Yes** · Shared: **No** (sent only when the user taps “Search all hadith books (online)”, directly to
+  dorar.net to get results — a user-initiated transfer the user expects).
+- Processed ephemerally: **No** (we cannot vouch for dorar.net's logs) · Required or optional: **Optional**.
+- Purpose: **App functionality**.
+
+Everything else is not collection (Google: data transmitted off the device *about the user*):
+- Fetching public content: recitation MP3s (everyayah.com, mp3quran.net), Quran radio streams (backup.qurango.net),
+  reciter names (mp3quran.net, weekly while the Listen page is open), hadith (hadeethenc.com for the topics and the
+  hadith of the day, cdn.jsdelivr.net for the hadith collections, dorar.net for a hadith's rulings — the request holds
+  the hadith text, not user data), tafsirs, translations and tajweed rules (api.quran.com, jsDelivr / GitHub), riwayat
+  mushafs (jsDelivr), Shamarly mushaf pages (archive.org) and athan recordings (Wikimedia Commons, archive.org). The
+  requests carry only the file or hadith asked for; servers see the IP like any web request (disclosed in the policy).
+- Searches in saved hadith and downloaded books, saved hadith, bookmarks and notes stay on the device.
+- Approximate location (optional) is used **on-device only** for prayer times; never transmitted.
+- Backup export is a **user-initiated** share of a file the user sends where they choose.
 - No analytics, crash reporting, ads or Firebase SDKs (verify: `cd android && gradlew.bat app:dependencies`).
 
-Resulting label: **"No data collected" · "No data shared with third parties"**.
+Resulting label: **“Data collected: App activity (in-app search history, optional)” · “No data shared with third parties”**.
 
 ## 5. Content rating (IARC questionnaire)
 
@@ -48,7 +55,7 @@ Resulting label: **"No data collected" · "No data shared with third parties"**.
 - Users can interact or exchange content: **No**.
 - Shares user location with other users: **No**.
 - Digital purchases: **No**.
-- Unrestricted internet access / web browser: **No** (the app only downloads recitation audio from one fixed host).
+- Unrestricted internet access / web browser: **No** (the app only fetches content from fixed hosts; it has no browser).
 
 Expected rating: **Everyone / PEGI 3 / 3+**.
 

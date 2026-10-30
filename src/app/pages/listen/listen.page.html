@@ -1,0 +1,122 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/quran" [text]="''" [attr.aria-label]="'common.back' | translate" />
+    </ion-buttons>
+    <ion-title>{{ 'listen.title' | translate }}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [value]="tab()" (ionChange)="setTab($event.detail.value)">
+      <ion-segment-button value="reciters">
+        <ion-icon name="headset-outline" aria-hidden="true" />
+        <ion-label>{{ 'listen.reciters' | translate }}</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="radio">
+        <ion-icon name="radio-outline" aria-hidden="true" />
+        <ion-label>{{ 'listen.radio' | translate }}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (failed()) {
+    <p class="empty" role="alert">{{ 'listen.loadFailed' | translate }}</p>
+  } @else if (!catalog.ready()) {
+    <div class="empty"><ion-spinner /></div>
+  } @else {
+    <main>
+      <ion-searchbar [value]="query()" (ionInput)="query.set($event.detail.value ?? '')"
+                     [placeholder]="'listen.search' | translate" [attr.aria-label]="'listen.search' | translate" />
+
+      @if (tab() === 'reciters') {
+        <ion-select class="riwayah card" [class.open]="showRiwayat()" interface="action-sheet" [label]="'listen.riwayah' | translate"
+                    [value]="rewaya()" (ionChange)="rewaya.set(+$event.detail.value)">
+          <ion-select-option [value]="0">{{ 'listen.allRiwayat' | translate }}</ion-select-option>
+          @for (rw of catalog.riwayat(); track rw.id) {
+            <ion-select-option [value]="rw.id">{{ catalog.riwayahName(rw) }}</ion-select-option>
+          }
+        </ion-select>
+        @if (showRiwayat()) { <p class="hint">{{ 'listen.tenQiraatHint' | translate }}</p> }
+        @if (lastReciter(); as last) {
+          @if (!query()) {
+            <button type="button" class="continue card" (click)="openReciter(last)">
+              <ion-icon name="play-forward-outline" aria-hidden="true" />
+              <span class="body"><small>{{ 'listen.continue' | translate }}</small><strong>{{ catalog.reciterName(last) }}</strong></span>
+            </button>
+          }
+        }
+        @let list = reciters();
+        @if (list.favorites.length) {
+          <h2 class="section">{{ 'listen.favorites' | translate }}</h2>
+          @for (r of list.favorites; track r.id) {
+            <ng-container *ngTemplateOutlet="reciterRow; context: { $implicit: r }" />
+          }
+          <h2 class="section">{{ 'listen.allReciters' | translate }}</h2>
+        }
+        @for (r of list.others; track r.id) {
+          <ng-container *ngTemplateOutlet="reciterRow; context: { $implicit: r }" />
+        } @empty {
+          @if (!list.favorites.length) { <p class="empty">{{ 'listen.noResults' | translate }}</p> }
+        }
+      } @else {
+        @let list = radios();
+        @if (list.favorites.length) {
+          <h2 class="section">{{ 'listen.favorites' | translate }}</h2>
+          @for (r of list.favorites; track r.id) {
+            <ng-container *ngTemplateOutlet="radioRow; context: { $implicit: r }" />
+          }
+          <h2 class="section">{{ 'listen.allStations' | translate }}</h2>
+        }
+        @for (r of list.others; track r.id) {
+          <ng-container *ngTemplateOutlet="radioRow; context: { $implicit: r }" />
+        } @empty {
+          @if (!list.favorites.length) { <p class="empty">{{ 'listen.noResults' | translate }}</p> }
+        }
+      }
+      <p class="source">{{ 'listen.source' | translate }}</p>
+    </main>
+  }
+
+  <ng-template #reciterRow let-r>
+    <div class="row card">
+      <button type="button" class="open" (click)="openReciter(r)">
+        <span class="avatar" aria-hidden="true">{{ catalog.reciterName(r).charAt(0) }}</span>
+        <span class="body">
+          <strong>{{ catalog.reciterName(r) }}</strong>
+          <small>{{ recordings(r) }}</small>
+        </span>
+      </button>
+      <button type="button" class="fav" (click)="player.toggleFavorite('reciters', r.id)"
+              [attr.aria-pressed]="player.isFavorite('reciters', r.id)" [attr.aria-label]="'listen.favorite' | translate">
+        <ion-icon [name]="player.isFavorite('reciters', r.id) ? 'star' : 'star-outline'" aria-hidden="true" />
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #radioRow let-r>
+    <div class="row card" [class.on]="isOn(r)">
+      <button type="button" class="open" (click)="playRadio(r)"
+              [attr.aria-label]="((isOn(r) && player.playing()) ? 'listen.pause' : 'listen.play') | translate">
+        <span class="avatar play" aria-hidden="true">
+          @if (isOn(r) && player.loading()) {
+            <ion-spinner name="crescent" />
+          } @else {
+            <ion-icon [name]="isOn(r) && player.playing() ? 'pause' : 'play'" />
+          }
+        </span>
+        <span class="body"><strong>{{ catalog.radioName(r) }}</strong></span>
+      </button>
+      <button type="button" class="fav" (click)="player.toggleFavorite('radios', r.id)"
+              [attr.aria-pressed]="player.isFavorite('radios', r.id)" [attr.aria-label]="'listen.favorite' | translate">
+        <ion-icon [name]="player.isFavorite('radios', r.id) ? 'star' : 'star-outline'" aria-hidden="true" />
+      </button>
+    </div>
+  </ng-template>
+</ion-content>
+
+@if (player.now()) {
+  <ion-footer>
+    <app-listen-player />
+  </ion-footer>
+}

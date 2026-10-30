@@ -16,6 +16,7 @@
           <button class="mark-clear" (click)="quran.setReadingMark(mark.page, null)" [attr.aria-label]="'quran.clearReadingMark' | translate">✕</button>
         </div>
       }
+      <button class="continue card listen" routerLink="/listen"><ion-icon name="headset-outline" aria-hidden="true" /><span><strong>{{ 'listen.title' | translate }}</strong><small>{{ 'listen.entryHint' | translate }}</small></span></button>
       <label class="resume"><ion-toggle [checked]="quran.autoResume()" (ionChange)="quran.setAutoResume($event.detail.checked)">{{ 'quran.autoResume' | translate }}</ion-toggle></label>
       <nav class="actions" [attr.aria-label]="'quran.actions' | translate">
         @for (a of actions; track a.key) { <ion-button fill="outline" [routerLink]="a.route"><ion-icon slot="start" [name]="a.icon" aria-hidden="true" />{{ ('quran.' + a.key) | translate }}</ion-button> }

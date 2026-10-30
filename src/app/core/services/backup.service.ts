@@ -34,6 +34,7 @@ export interface BackupFile {
     hifzPlans?: Row[];
     hifzAyahs?: Row[];
     hifzLogs?: Row[];
+    hadithBookmarks?: Row[];
   };
 }
 export class BackupError extends Error {
@@ -53,6 +54,16 @@ const date: Check = (v) => str(v) && /^\d{4}-\d{2}-\d{2}$/.test(v as string);
 const record = (v: unknown): v is Record<string, unknown> =>
   v !== null && typeof v === 'object' && !Array.isArray(v);
 const schemas: Record<keyof BackupFile['data'], Record<string, Check>> = {
+  hadithBookmarks: {
+    collection: (v) => str(v) && /^[a-z]+$/.test(v as string),
+    number: (v) => str(v) && /^\d+(\.\d+)?$/.test(v as string),
+    book: nonnegative,
+    note: (v) => str(v) && (v as string).length <= 4000,
+    updated_at: nonnegative,
+    arabic: (v) => str(v) && (v as string).length <= 20000,
+    translation: (v) => str(v) && (v as string).length <= 20000,
+    source: (v) => str(v) && (v as string).length <= 1000,
+  },
   userCategories: {
     id,
     name: id,
@@ -161,6 +172,7 @@ const schemas: Record<keyof BackupFile['data'], Record<string, Check>> = {
   quranReadingLog: { date, page: (v) => integer(v) && Number(v) >= 1 && Number(v) <= 604 },
 };
 const optionalTables = [
+  'hadithBookmarks',
   'userCategories',
   'homeHidden',
   'hiddenIds',
@@ -238,6 +250,7 @@ export class BackupService {
       settings: { ...this.settings.settings() },
       extraPreferences,
       data: {
+        hadithBookmarks: await this.db.query<Row>('SELECT * FROM hadith_bookmark ORDER BY collection, number'),
         userCategories: await this.db.query<Row>(
           'SELECT * FROM user_category ORDER BY sort_order, created_at, id',
         ),
@@ -279,6 +292,7 @@ export class BackupService {
       { sql: 'DELETE FROM athkar WHERE is_custom = 1' },
       { sql: 'UPDATE athkar SET hidden = 0, repeat_override = NULL WHERE is_custom = 0' },
       ...[
+        'hadith_bookmark',
         'hifz_ayah', 'hifz_log', 'hifz_plan',
         'user_category',
         'home_hidden',
@@ -293,6 +307,7 @@ export class BackupService {
       ].map((table) => ({ sql: 'DELETE FROM ' + table })),
     ];
     const tables = {
+      hadithBookmarks: 'hadith_bookmark',
       hifzPlans: 'hifz_plan', hifzAyahs: 'hifz_ayah', hifzLogs: 'hifz_log',
       userCategories: 'user_category',
       homeHidden: 'home_hidden',
@@ -380,6 +395,7 @@ export class BackupService {
   async resetAll(): Promise<void> {
     await this.db.batch(
       [
+        'hadith_bookmark',
         'hifz_ayah', 'hifz_log', 'hifz_plan',
         'user_category',
         'home_hidden',

@@ -30,6 +30,7 @@ import { addDays, hijriOf } from '../../core/prayer/islamic-calendar';
 import { HijriDateComponent } from '../../shared/hijri-date.component';
 import { HomeCategoriesComponent } from '../../shared/home-categories.component';
 import { VerseOfDayComponent } from '../../shared/verse-of-day.component';
+import { HadithOfDayComponent } from '../../shared/hadith-of-day.component';
 
 interface DailyStatus {
   categoryId: 'morning' | 'evening';
@@ -49,6 +50,7 @@ interface DailyStatus {
     IonContent,
     HijriDateComponent,
     VerseOfDayComponent,
+    HadithOfDayComponent,
     IonButton,
     IonIcon,
     IonList,

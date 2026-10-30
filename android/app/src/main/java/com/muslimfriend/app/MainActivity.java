@@ -13,5 +13,9 @@ public class MainActivity extends BridgeActivity {
         // Local plugins must be registered before the bridge is created.
         registerPlugin(AthkarOverlayPlugin.class);
         super.onCreate(savedInstanceState);
+        // The WebView scales all text with the phone's font size (up to 200%); beyond 140% the toolbars and players no
+        // longer fit and their arrows and buttons run into each other. Quran and athkar text have their own size (up to 2x).
+        float fontScale = getResources().getConfiguration().fontScale;
+        bridge.getWebView().getSettings().setTextZoom(Math.round(Math.min(fontScale, 1.4f) * 100));
     }
 }

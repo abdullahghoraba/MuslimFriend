@@ -19,8 +19,11 @@ ion-content.mushaf {
   --color: var(--m-fg);
 }
 
-.h-sura { display: block; font-size: 1rem; }
-.h-meta { display: block; font-size: 0.75rem; color: var(--m-muted); font-weight: 400; }
+// With the phone's largest font the title wraps instead of shrinking to one letter (see the toolbar rule in styles.scss).
+ion-title { padding-inline: 4px; }
+.h-sura, .h-meta { display: block; white-space: normal; line-height: 1.25; }
+.h-sura { font-size: 1rem; }
+.h-meta { font-size: 0.75rem; color: var(--m-muted); font-weight: 400; }
 
 .view-settings .settings-grid {
   display: grid;
@@ -35,7 +38,8 @@ ion-content.mushaf {
 .page-surface {
   position: relative;
   min-height: 100%;
-  padding: 12px 18px 8px;
+  // The last page-turn arrows must stay above the phone's navigation buttons (edge-to-edge since API 35).
+  padding: 12px 18px calc(8px + var(--ion-safe-area-bottom, 0px));
   touch-action: pan-y;
   animation-duration: 0.24s;
   animation-timing-function: ease-out;
@@ -186,7 +190,7 @@ ion-content.mushaf {
     display: flex;
     flex-direction: column;
     strong { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    small { font-size: 0.7rem; color: var(--m-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .now-reciter { align-self: flex-start; min-height: 32px; padding: 0; border: 0; background: none; color: var(--m-accent); font: inherit; font-size: 0.75rem; }
   }
 
   ion-button { --color: var(--m-fg); --padding-start: 6px; --padding-end: 6px; margin: 0; }
@@ -246,4 +250,21 @@ ion-content.mushaf {
 // Tablets: a book-like line length instead of lines across the whole screen.
 @media (min-width: 900px) {
   .page-surface { max-width: 860px; margin-inline: auto; }
+}
+
+// Opens the searchable reciter list.
+.reciter-pick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  border: 0;
+  border-bottom: 1px solid var(--m-muted);
+  background: none;
+  color: var(--m-fg);
+  font: inherit;
+  text-align: start;
+
+  span { color: var(--m-muted); font-size: 0.85rem; }
+  strong { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--m-accent); }
 }

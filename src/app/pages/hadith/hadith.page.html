@@ -1,0 +1,117 @@
+<ion-header><ion-toolbar>
+  <ion-buttons slot="start"><ion-back-button [defaultHref]="back()" [text]="'hadith.back' | translate" /></ion-buttons>
+  <ion-title>{{ (bookmarksMode ? 'hadith.bookmarks' : id() ? 'hadith.collections.' + id() : 'hadith.title') | translate }}</ion-title>
+</ion-toolbar></ion-header>
+<ion-content [scrollEvents]="book() !== null" (ionScrollEnd)="rememberVisible()">
+  <main>
+    @if (error()) { <div class="message" role="alert">{{ error() | translate }} <ion-button fill="clear" (click)="refresh()">{{ 'hadith.retry' | translate }}</ion-button></div> }
+    @if (notice()) { <p role="status">{{ notice() | translate }}</p> }
+    @if (library.progress(); as p) {
+      <section class="download-progress" aria-live="polite">
+        <p>{{ 'hadith.collections.' + p.id | translate }} · {{ (p.saving ? 'hadith.saving' : 'hadith.downloading') | translate }}</p>
+        <ion-progress-bar [type]="p.fraction === null ? 'indeterminate' : 'determinate'" [value]="p.saving ? 1 : (p.edition + (p.fraction || 0)) / p.total" [attr.aria-label]="'hadith.downloading' | translate" />
+        <p>{{ p.edition }} / {{ p.total }} · {{ (p.bytes / 1024).toFixed(0) }} KB</p>
+        <ion-button fill="clear" [disabled]="p.saving" (click)="library.cancelDownload()">{{ 'hadith.cancel' | translate }}</ion-button>
+      </section>
+    }
+    @if (loading()) { <div class="loading" role="status"><ion-spinner /><p>{{ 'hadith.loading' | translate }}</p></div> }
+    @else if (bookmarksMode) {
+      <ion-searchbar [value]="savedQuery()" [debounce]="200" (ionInput)="savedQuery.set($event.detail.value || '')"
+                     [placeholder]="'hadith.searchSaved' | translate" [attr.aria-label]="'hadith.searchSaved' | translate" />
+      <p class="muted">{{ 'hadith.bookmarkHelp' | translate }}</p>
+      @for (h of savedList(); track h.collection + ':' + h.number) {
+        <app-hadith-card [hadith]="h" [showRead]="library.available(h.collection) || h.collection === 'enc'" />
+      } @empty {
+        <p class="empty">{{ savedQuery() ? ('hadith.results' | translate: { count: 0 }) : ('hadith.noBookmarks' | translate) }}</p>
+      }
+    } @else if (!id()) {
+      <div class="quick-links">
+        @if (marks.lastRead(); as last) {
+          <a class="quick" [routerLink]="link(last)"><ion-icon name="book-outline" aria-hidden="true" /><span>{{ 'hadith.continue' | translate }}<small>{{ 'hadith.collections.' + last.collection | translate }} · {{ last.number }}</small></span></a>
+        }
+        <a class="quick topics" routerLink="/hadith/topics"><ion-icon name="layers-outline" aria-hidden="true" /><span>{{ 'hadith.topics' | translate }}<small>{{ 'hadith.topicsShort' | translate }}</small></span></a>
+        <a class="quick" routerLink="/hadith/bookmarks"><ion-icon name="bookmark-outline" aria-hidden="true" /><span>{{ 'hadith.bookmarks' | translate }}<small>{{ marks.bookmarks().length }}</small></span></a>
+      </div>
+      <ion-searchbar [value]="query()" [debounce]="300" (ionInput)="search($event.detail.value || '')" [placeholder]="'hadith.search' | translate" [attr.aria-label]="'hadith.search' | translate" />
+      <p class="muted">{{ 'hadith.searchHelp' | translate }}</p>
+      @if (query().trim().length >= 2) {
+        @if (searching()) { <p role="status">{{ 'hadith.searching' | translate }}</p> }
+        @else {
+          <p role="status">{{ 'hadith.results' | translate: { count: results().length } }}</p>
+          <ion-list>
+            @for (h of searchResults(); track h.collection + ':' + h.number) {
+              <ion-item button detail [routerLink]="link(h)"><ion-label class="result">
+                <h2>{{ 'hadith.collections.' + h.collection | translate }} · {{ 'hadith.book' | translate }} {{ h.book }} · {{ h.number }}</h2>
+                <p lang="ar" dir="rtl">{{ h.arabic.slice(0, 220) }}…</p>
+                @if (h.translation) { <p dir="auto">{{ h.translation.slice(0, 180) }}…</p> }
+              </ion-label></ion-item>
+            }
+          </ion-list>
+          @if (searchPages() > 1) { <nav class="pagination" [attr.aria-label]="'hadith.pages' | translate">
+            <ion-button fill="outline" [disabled]="searchPage() === 0" (click)="searchPage.set(searchPage() - 1)">{{ 'hadith.previous' | translate }}</ion-button>
+            <span>{{ searchPage() + 1 }} / {{ searchPages() }}</span>
+            <ion-button fill="outline" [disabled]="searchPage() + 1 >= searchPages()" (click)="searchPage.set(searchPage() + 1)">{{ 'hadith.next' | translate }}</ion-button>
+          </nav> }
+        }
+        <ion-button class="online-search" expand="block" fill="outline" [disabled]="onlineSearching()" (click)="searchOnline()">
+          <ion-icon slot="start" name="search-outline" aria-hidden="true" />{{ 'hadith.onlineSearch' | translate }}
+        </ion-button>
+        <p class="muted">{{ 'hadith.onlineSearchHelp' | translate }}</p>
+        @if (onlineSearching()) { <p role="status"><ion-spinner name="dots" /> {{ 'hadith.searching' | translate }}</p> }
+        @else if (onlineFailed()) { <p role="status">{{ 'hadith.onlineUnavailable' | translate }}</p> }
+        @else if (onlineResults(); as found) {
+          @for (h of found; track h.number) { <app-hadith-card [hadith]="h" /> }
+          @empty { <p role="status">{{ 'hadith.results' | translate: { count: 0 } }}</p> }
+        }
+      } @else {
+        <h1>{{ 'hadith.collectionsTitle' | translate }}</h1>
+        <div class="collections">
+          @for (c of library.collections(); track c.id) {
+            <section class="collection-card">
+              <a [routerLink]="['/hadith', c.id]"><span class="arabic-name" lang="ar" dir="rtl">{{ c.nameAr }}</span>
+                @if (lang() !== 'ar') { <h2>{{ 'hadith.collections.' + c.id | translate }}</h2> }
+                <span class="muted">{{ 'hadith.count' | translate: { count: c.count } }}</span>
+              </a>
+              <p class="availability"><ion-icon [name]="library.available(c.id) ? 'checkmark-circle' : 'cloud-download-outline'" aria-hidden="true" />{{ (c.bundled ? 'hadith.bundled' : library.available(c.id) ? 'hadith.downloaded' : 'hadith.notDownloaded') | translate }}</p>
+              @if (!c.bundled) {
+                <ion-button fill="clear" [disabled]="!!library.progress()" (click)="download(c.id)">{{ (library.available(c.id) ? 'hadith.addLanguage' : 'hadith.download') | translate }}</ion-button>
+                @if (library.available(c.id)) { <ion-button fill="clear" [disabled]="!!library.progress()" (click)="remove(c.id)" [attr.aria-label]="'hadith.deleteDownload' | translate"><ion-icon name="trash-outline" slot="icon-only" /></ion-button> }
+              }
+            </section>
+          }
+        </div>
+        <p class="muted">{{ 'hadith.downloadHelp' | translate }}</p>
+        <p class="muted">{{ 'hadith.dataCredit' | translate }} <a href="https://github.com/fawazahmed0/hadith-api" target="_blank" rel="noopener noreferrer">hadith-api · Unlicense</a></p>
+      }
+    } @else if (collection(); as c) {
+      @if (!library.available(c.id)) {
+        <section class="empty"><h1 lang="ar" dir="rtl">{{ c.nameAr }}</h1><p>{{ 'hadith.downloadToRead' | translate }}</p><p class="muted">{{ 'hadith.downloadHelp' | translate }}</p>
+          <ion-button [disabled]="!!library.progress()" (click)="download(c.id)">{{ 'hadith.download' | translate }}</ion-button>
+        </section>
+      } @else {
+        @if (missingLanguage()) { <p>{{ 'hadith.languageMissing' | translate }} <ion-button fill="clear" [disabled]="!!library.progress()" (click)="download(c.id)">{{ 'hadith.addLanguage' | translate }}</ion-button></p> }
+        @if (book() === null) {
+          <h1>{{ 'hadith.books' | translate }}</h1>
+          <p class="muted">{{ 'hadith.count' | translate: { count: c.count } }}</p>
+          <ion-list>
+            @for (section of sections(); track section.id) {
+              <ion-item button detail [routerLink]="['/hadith', c.id, section.id]"><ion-label>
+                <h2>{{ 'hadith.book' | translate }} {{ section.id }}</h2><p dir="auto">{{ section.name }}</p><p>{{ 'hadith.count' | translate: { count: section.count } }}</p>
+              </ion-label></ion-item>
+            }
+          </ion-list>
+        } @else {
+          <h1>{{ 'hadith.book' | translate }} {{ book() }}</h1>
+          @if (rows()[0]; as first) { <p class="muted" dir="auto">{{ first.bookName }}</p> }
+          <p class="muted">{{ 'hadith.numbering' | translate }}</p>
+          @for (h of visible(); track h.number) { <app-hadith-card [id]="'hadith-' + h.number" [hadith]="h" [focused]="h.number === number()" /> }
+          @if (pages() > 1) { <nav class="pagination" [attr.aria-label]="'hadith.pages' | translate">
+            <ion-button fill="outline" [disabled]="page() === 0" (click)="changePage(-1)">{{ 'hadith.previous' | translate }}</ion-button>
+            <span>{{ page() + 1 }} / {{ pages() }}</span>
+            <ion-button fill="outline" [disabled]="page() + 1 >= pages()" (click)="changePage(1)">{{ 'hadith.next' | translate }}</ion-button>
+          </nav> }
+        }
+      }
+    }
+  </main>
+</ion-content>
