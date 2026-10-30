@@ -3,6 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { Preferences } from '@capacitor/preferences';
 import { AudioFocusService } from '../audio/audio-focus.service';
+import { NativeAudio, QuranAudioItem, QuranAudioState } from '../../native/quran-audio';
 import { AyahRef } from './quran-utils';
 import { QuranService } from './quran.service';
 
@@ -91,6 +92,7 @@ const fileName = (ref: AyahRef) => `${String(ref.sura).padStart(3, '0')}${String
  * Verse-by-verse recitation. Audio streams from EveryAyah or plays from a sura the user downloaded
  * (stored in the app's private data folder, available offline). This is the only feature that uses
  * the network, and only when the user plays or downloads; nothing about the user is sent.
+ * On Android the native player recites the whole range as a queue, so it goes on with the screen off.
  */
 @Injectable({ providedIn: 'root' })
 export class RecitationService {
@@ -123,6 +125,14 @@ export class RecitationService {
   /** Sura download progress: { sura, done, total } while downloading. */
   readonly download = signal<{ reciterId: string; sura: number; done: number; total: number } | null>(null);
   private cancelDownload = false;
+  private readonly native = inject(NativeAudio).enabled;
+  private readonly nativePlayer = inject(NativeAudio).player;
+  /** The ayah just asked for: older native states still on their way are ignored until it plays. */
+  private pendingGroup?: string;
+
+  constructor() {
+    if (this.native) void this.nativePlayer.addListener('state', (s) => this.onNative(s));
+  }
 
   async loadPrefs(): Promise<void> {
     if (this.prefsLoaded) return;
@@ -150,6 +160,12 @@ export class RecitationService {
       void this.playIndex(this.quran.ayah(cur).index);
       return;
     }
+    if (this.native) {
+      if (patch.speed !== undefined) void this.nativePlayer.setSpeed({ speed: patch.speed });
+      // The queue holds each ayah as many times as it repeats: rebuild it from the ayah being recited.
+      if (patch.repeatEach !== undefined) void this.playIndex(this.quran.ayah(cur).index);
+      return;
+    }
     if (patch.speed === undefined) return;
     // 1× plays gaplessly; other speeds need a media element (it keeps the reciter's pitch).
     if (this.audio && patch.speed !== 1) this.audio.playbackRate = patch.speed;
@@ -167,8 +183,20 @@ export class RecitationService {
     await this.playIndex(start);
   }
 
+  /** Repeat the whole range when it ends. */
+  setLoop(on: boolean): void {
+    this.loopRange.set(on);
+    if (this.native && this.current() && this.prefs().repeatEach !== 0) void this.nativePlayer.setRepeat({ repeat: on ? 'all' : 'off' });
+  }
+
   toggle(): void {
     if (!this.current()) return;
+    if (this.native) {
+      if (!this.playing()) this.focus.claim('mushaf', () => this.stop());
+      this.playing.set(!this.playing());
+      void this.nativePlayer.toggle();
+      return;
+    }
     if (this.gapless && this.ctx) {
       const resume = this.ctx.state !== 'running';
       void (resume ? this.ctx.resume() : this.ctx.suspend());
@@ -187,6 +215,10 @@ export class RecitationService {
 
   stop(): void {
     this.token++;
+    if (this.native) {
+      if (this.current()) void this.nativePlayer.stop();
+      this.pendingGroup = undefined;
+    }
     this.stopSources();
     release(this.audio);
     release(this.upcoming?.audio);
@@ -219,7 +251,93 @@ export class RecitationService {
 
   private playIndex(index: number): Promise<void> {
     this.focus.claim('mushaf', () => this.stop());
+    if (this.native) return this.playNative(index);
     return this.prefs().speed === 1 && typeof AudioContext !== 'undefined' ? this.playGapless(index) : this.playElement(index);
+  }
+
+  // ---- Native player (Android) -------------------------------------------------------------
+  // The whole range goes to the native queue (each ayah as many times as it repeats); it plays on with the screen
+  // off and reports which ayah is sounding so the page can follow it.
+
+  private async playNative(index: number): Promise<void> {
+    const token = ++this.token;
+    const ref = this.quran.ayahAt(index);
+    this.current.set({ sura: ref.sura, aya: ref.aya });
+    this.error.set(null);
+    this.loading.set(true);
+    const items = await this.nativeItems();
+    if (token !== this.token) return;
+    const each = this.prefs().repeatEach;
+    this.pendingGroup = String(index);
+    try {
+      await this.nativePlayer.play({
+        session: 'mushaf',
+        items,
+        index: (index - this.rangeStart) * (each === 0 ? 1 : each),
+        repeat: each === 0 ? 'one' : this.loopRange() ? 'all' : 'off',
+        speed: this.prefs().speed,
+        live: false,
+      });
+    } catch {
+      if (token !== this.token) return;
+      this.loading.set(false);
+      this.error.set('network');
+    }
+  }
+
+  /** The range as queue items: downloaded ayat from the phone, the others streamed. */
+  private async nativeItems(): Promise<QuranAudioItem[]> {
+    const reciter = this.reciter();
+    const dir = `audio/${reciter.id}`;
+    let saved = new Set<string>();
+    let base = '';
+    try {
+      const { files } = await Filesystem.readdir({ path: dir, directory: Directory.Data });
+      saved = new Set(files.map((f) => f.name));
+      base = (await Filesystem.getUri({ path: dir, directory: Directory.Data })).uri;
+    } catch {
+      /* nothing downloaded */
+    }
+    const each = this.prefs().repeatEach === 0 ? 1 : this.prefs().repeatEach;
+    const items: QuranAudioItem[] = [];
+    for (let i = this.rangeStart; i <= this.rangeEnd; i++) {
+      const ref = this.quran.ayahAt(i);
+      const name = fileName(ref);
+      const item = {
+        url: saved.has(name) ? `${base}/${name}` : `${AUDIO_BASE}/${reciter.id}/${name}`,
+        title: `${this.quran.sura(ref.sura).name} ${ref.aya}`,
+        artist: reciter.nameAr,
+        album: 'رفيق المسلم',
+        group: String(i),
+      };
+      for (let r = 0; r < each; r++) items.push(item);
+    }
+    return items;
+  }
+
+  private onNative(s: QuranAudioState): void {
+    if (!this.current() || s.session === 'listen') return;
+    if (s.index < 0) {
+      // Stopped from the notification.
+      this.pendingGroup = undefined;
+      this.loading.set(false);
+      this.finish();
+      return;
+    }
+    if (this.pendingGroup !== undefined) {
+      if (s.group !== this.pendingGroup) return;
+      this.pendingGroup = undefined;
+    }
+    if (s.ended) {
+      this.stop();
+      return;
+    }
+    this.playing.set(s.playing);
+    this.loading.set(s.buffering);
+    this.error.set(s.error ? 'network' : null);
+    const ref = this.quran.ayahAt(Number(s.group));
+    const cur = this.current();
+    if (cur?.sura !== ref.sura || cur.aya !== ref.aya) this.current.set({ sura: ref.sura, aya: ref.aya });
   }
 
   // ---- Gapless engine (1×) ----------------------------------------------------------------

@@ -92,16 +92,21 @@ Expected rating: **Everyone / PEGI 3 / 3+**.
 
 ---
 
-## 12b. Foreground service declaration — `mediaPlayback` (athan)
+## 12b. Foreground service declaration — `mediaPlayback` (athan and Quran recitation)
 
-**Type:** `mediaPlayback` (service `AthanService`).
-**Describe the feature:** At each prayer time the user enabled, the app plays the athan sound the user chose (a muezzin
-recording downloaded in the app, their own audio file, a built-in tone or the system alarm sound) for up to a few minutes, with a notification that has a Stop
-button. The service starts from the user's exact alarm and stops when the sound ends or the user taps Stop.
+**Type:** `mediaPlayback` (services `AthanService` and `PlaybackService`).
+**Describe the feature:** (1) Athan: at each prayer time the user enabled, the app plays the athan sound the user chose
+(a muezzin recording downloaded in the app, their own audio file, a built-in tone or the system alarm sound) for up to a
+few minutes, with a notification that has a Stop button. The service starts from the user's exact alarm and stops when
+the sound ends or the user taps Stop. (2) Quran recitation: when the user presses play on a sura, a Quran radio station
+or the verse-by-verse recitation in the mushaf, the audio keeps playing with the screen off or in another app, with a
+media notification and lock-screen controls (play/pause, next, previous). It runs only while the user's playback is
+playing and stops when the user pauses and dismisses it, taps stop, or the optional sleep timer ends.
 **Why a foreground service:** audio must keep playing while the screen is off or another app is open; only a
 foreground service with type mediaPlayback can do that reliably.
 **Demo video:** open Athan settings → enable → set Fajr to "Athan" → tap ▶ preview (sound + notification with Stop) →
-tap Stop.
+tap Stop. Then open Listen → pick a reciter → play a sura → lock the phone: the recitation continues and the lock screen
+shows its controls → pause from the lock screen.
 
 ## 12. Foreground service declaration (Android 14+)
 

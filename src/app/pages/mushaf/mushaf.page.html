@@ -187,7 +187,7 @@
             <ion-select-option [value]="s">{{ s }}×</ion-select-option>
           }
         </ion-select>
-        <ion-button fill="clear" (click)="recitation.loopRange.set(!recitation.loopRange())" [attr.aria-pressed]="recitation.loopRange()"
+        <ion-button fill="clear" (click)="recitation.setLoop(!recitation.loopRange())" [attr.aria-pressed]="recitation.loopRange()"
                     [attr.aria-label]="'mushaf.loop' | translate" [class.active]="recitation.loopRange()">
           <ion-icon slot="icon-only" name="repeat-outline" aria-hidden="true" />
         </ion-button>

@@ -67,6 +67,16 @@
         <service android:name=".overlay.AthanService" android:exported="false" android:foregroundServiceType="mediaPlayback" />
         <receiver android:name=".overlay.AthanReceiver" android:exported="false" />
         <receiver android:name=".overlay.AthanRestoreReceiver" android:exported="false" />
+        <!-- Quran recitation and radio: keeps playing with the screen off, controls on the lock screen and in the notification.
+             Exported so the system media controls, headphones and Bluetooth can reach the session. -->
+        <service
+            android:name=".audio.PlaybackService"
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+        </service>
         <receiver android:name=".overlay.PrayerWidget" android:exported="true" android:label="@string/widget_description">
             <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/prayer_widget_info" />
@@ -91,6 +101,8 @@
     <!-- Used only to stream or download Quran recitation audio when the user asks for it.
          Everything else works offline, and no user data is ever sent. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Keeps a recitation or radio stream playing with the screen off. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- Added by the SQLite plugin for its optional biometric DB lock, which this app does not use. -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" tools:node="remove" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" tools:node="remove" />

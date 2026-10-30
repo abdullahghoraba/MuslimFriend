@@ -72,6 +72,9 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0"
     // Google's fused location (GPS + Wi-Fi + cell): finds the phone indoors where the plain LocationManager often can't.
     implementation "com.google.android.gms:play-services-location:21.3.0"
+    // Native Quran player: background playback, lock-screen and notification controls
+    implementation "androidx.media3:media3-exoplayer:1.9.2"
+    implementation "androidx.media3:media3-session:1.9.2"
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.json:json:20250517"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"

@@ -54,7 +54,7 @@ import { QuranService } from '../../core/quran/quran.service';
             <ion-button fill="clear" (click)="player.step(1)" [disabled]="!player.hasStep(1)" [attr.aria-label]="'listen.nextSura' | translate">
               <ion-icon slot="icon-only" [name]="rtl() ? 'play-skip-back' : 'play-skip-forward'" aria-hidden="true" />
             </ion-button>
-            <ion-button fill="clear" (click)="player.repeatSura.set(!player.repeatSura())" [class.active]="player.repeatSura()"
+            <ion-button fill="clear" (click)="player.setRepeatSura(!player.repeatSura())" [class.active]="player.repeatSura()"
                         [attr.aria-pressed]="player.repeatSura()" [attr.aria-label]="'listen.repeatSura' | translate">
               <ion-icon slot="icon-only" name="repeat-outline" aria-hidden="true" />
             </ion-button>

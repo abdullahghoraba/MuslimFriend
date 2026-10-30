@@ -23,7 +23,9 @@ and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
   text, font and pages from the King Fahd Complex (Warsh, Qalun, Shu'bah, ad-Duri, as-Susi, al-Bazzi, Qunbul;
   github.com/thetruetruth/quran-data-kfgqpc). Shamarly page images have no stated licence: confirm before publishing.
 - **Listen:** 244 reciters with whole suras in every recorded riwayah (Hafs, Warsh, Qalun...) and 176 Quran radio
-  stations from mp3quran.net: search, filter by riwayah (18 riwayat of the ten qira'at), favourites, next sura plays on its own, repeat, sleep timer, lock-screen controls,
+  stations from mp3quran.net: search, filter by riwayah (18 riwayat of the ten qira'at), favourites, next sura plays on its own, repeat, sleep timer,
+  playback in the background with the screen off (native Media3 player: notification, lock screen, headphone and
+  Bluetooth controls; the mushaf's verse-by-verse recitation too),
   suras downloaded for offline listening. The catalogue ships in `public/assets/audio/catalog.json`
   (`node scripts/fetch-audio-catalog.mjs` refreshes it); names in other languages are fetched weekly while the page is open.
 - **Athkar:** every category on one page with a counter per dhikr, sources and grades, add your own dhikr to any list,
@@ -157,7 +159,7 @@ languages have different keys).
 src/app/core/db/            SQLite connection + append-only migrations
 src/app/core/services/      athkar repository, progress, tasbih, overlay, backup, stats, settings, lifecycle
 src/app/core/prayer/        adhan wrapper, next prayer, 30-day reminder planner (pure, unit-tested)
-src/app/native/             TypeScript API of the AthkarOverlay plugin (+ browser stand-in)
+src/app/native/             TypeScript API of the AthkarOverlay and QuranAudio plugins (+ browser stand-in)
 src/app/pages/              home, category (all athkar on one page with counters), tasbih, my-athkar,
                             overlay, reminders, stats, onboarding, settings, privacy
 android/app/src/main/java/com/muslimfriend/app/overlay/
@@ -168,6 +170,10 @@ android/app/src/main/java/com/muslimfriend/app/overlay/
   ReminderScheduler.kt      next reminder as an inexact alarm (setAndAllowWhileIdle); re-sent on each app start
   Receivers.kt              boot / package-replaced restore, reminder + fallback receivers
   OverlayStore.kt           native storage so the service works without the WebView
+android/app/src/main/java/com/muslimfriend/app/audio/
+  AudioEngine.kt            Media3 ExoPlayer: queue, repeats, speed, stream retries, radio reconnect, sleep timer
+  PlaybackService.kt        MediaSessionService (mediaPlayback): notification, lock screen, headphones, Bluetooth
+  QuranAudioPlugin.kt       Capacitor bridge used by Listen and the mushaf on Android (the web build plays in the page)
 ```
 
 ### Android platform rules this follows (checked against developer.android.com, Oct 2026)

@@ -5,6 +5,7 @@ import { Preferences } from '@capacitor/preferences';
 import { AudioCatalogService, FullReciter, Moshaf, Radio } from './audio-catalog.service';
 import { AudioFocusService } from './audio-focus.service';
 import { QuranService } from '../quran/quran.service';
+import { NativeAudio, QuranAudioItem, QuranAudioState } from '../../native/quran-audio';
 
 export type NowPlaying =
   | { kind: 'sura'; reciter: FullReciter; moshaf: Moshaf; sura: number }
@@ -23,6 +24,7 @@ const folder = (m: Moshaf) => `listen/${m.id}`;
 /**
  * Plays whole suras by any reciter of the catalogue (next sura follows on its own) and live Quran radios.
  * Streams over https only when the user presses play; suras the user downloaded play offline.
+ * On Android the native player plays the whole recording as a queue, so it goes on with the screen off.
  */
 @Injectable({ providedIn: 'root' })
 export class AudioPlayerService {
@@ -49,6 +51,14 @@ export class AudioPlayerService {
   readonly downloaded = signal<Record<number, number[]>>({});
   readonly canDownload = Capacitor.isNativePlatform();
   private loaded = false;
+  private readonly native = inject(NativeAudio).enabled;
+  private readonly nativePlayer = inject(NativeAudio).player;
+  /** The item just asked for: older native states still on their way are ignored until it plays. */
+  private pendingGroup?: string;
+
+  constructor() {
+    if (this.native) void this.nativePlayer.addListener('state', (s) => this.onNative(s));
+  }
 
   async init(): Promise<void> {
     if (this.loaded) return;
@@ -73,16 +83,32 @@ export class AudioPlayerService {
 
   async playSura(reciter: FullReciter, moshaf: Moshaf, sura: number): Promise<void> {
     this.now.set({ kind: 'sura', reciter, moshaf, sura });
-    void Preferences.set({ key: LAST_KEY, value: JSON.stringify({ reciter: reciter.id, moshaf: moshaf.id, sura }) });
-    await this.start(await this.suraSource(moshaf, sura));
+    this.saveLast(reciter, moshaf, sura);
+    if (this.native) {
+      const items = await this.suraItems(reciter, moshaf);
+      await this.startNative(items, Math.max(0, items.findIndex((i) => i.group === String(sura))), false);
+    } else {
+      await this.start(await this.suraSource(moshaf, sura));
+    }
   }
 
   async playRadio(radio: Radio): Promise<void> {
     this.now.set({ kind: 'radio', radio });
-    await this.start(radio.url);
+    if (this.native) {
+      const item = { url: radio.url, title: this.catalog.radioName(radio), album: 'رفيق المسلم', group: 'radio:' + radio.id };
+      await this.startNative([item], 0, true);
+    } else {
+      await this.start(radio.url);
+    }
   }
 
   toggle(): void {
+    if (this.native) {
+      if (!this.now()) return;
+      if (!this.playing()) this.focus.claim('listen', () => this.stop());
+      void this.nativePlayer.toggle();
+      return;
+    }
     const audio = this.audio;
     if (!audio) return;
     if (audio.paused) {
@@ -99,15 +125,26 @@ export class AudioPlayerService {
   }
 
   stop(): void {
+    if (this.native) {
+      if (this.now()) void this.nativePlayer.stop();
+      this.reset();
+      return;
+    }
     this.token++;
     this.release();
+    this.reset();
+    this.setSleep(0);
+    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'none';
+  }
+
+  private reset(): void {
+    this.pendingGroup = undefined;
     this.now.set(null);
     this.playing.set(false);
     this.loading.set(false);
     this.position.set(0);
     this.duration.set(0);
-    this.setSleep(0);
-    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'none';
+    this.sleepAt.set(null);
   }
 
   /** Next (+1) or previous (-1) sura of the same recording. */
@@ -116,7 +153,16 @@ export class AudioPlayerService {
     if (now?.kind !== 'sura') return;
     const list = this.catalog.suras(now.moshaf);
     const i = list.indexOf(now.sura) + delta;
-    if (i >= 0 && i < list.length) void this.playSura(now.reciter, now.moshaf, list[i]);
+    if (i < 0 || i >= list.length) return;
+    if (this.native) {
+      // The queue already holds the whole recording.
+      this.now.set({ ...now, sura: list[i] });
+      this.pendingGroup = String(list[i]);
+      this.saveLast(now.reciter, now.moshaf, list[i]);
+      void (delta > 0 ? this.nativePlayer.next() : this.nativePlayer.previous());
+    } else {
+      void this.playSura(now.reciter, now.moshaf, list[i]);
+    }
   }
 
   hasStep(delta: 1 | -1): boolean {
@@ -128,11 +174,24 @@ export class AudioPlayerService {
   }
 
   seek(seconds: number): void {
-    if (this.audio && Number.isFinite(seconds)) this.audio.currentTime = seconds;
+    if (!Number.isFinite(seconds)) return;
+    if (this.native) void this.nativePlayer.seek({ position: seconds });
+    else if (this.audio) this.audio.currentTime = seconds;
+  }
+
+  setRepeatSura(on: boolean): void {
+    this.repeatSura.set(on);
+    if (this.native && this.now()?.kind === 'sura') void this.nativePlayer.setRepeat({ repeat: on ? 'one' : 'off' });
   }
 
   /** Stops playback after [minutes] (0 cancels). */
   setSleep(minutes: number): void {
+    if (this.native) {
+      // Natively, so it stops on time even with the screen off.
+      this.sleepAt.set(minutes > 0 ? Date.now() + minutes * 60_000 : null);
+      void this.nativePlayer.setSleep({ minutes });
+      return;
+    }
     clearTimeout(this.sleepTimer);
     this.sleepTimer = undefined;
     this.sleepAt.set(minutes > 0 ? Date.now() + minutes * 60_000 : null);
@@ -197,6 +256,71 @@ export class AudioPlayerService {
   }
 
   // ---- Playback --------------------------------------------------------------------------------
+
+  private saveLast(reciter: FullReciter, moshaf: Moshaf, sura: number): void {
+    void Preferences.set({ key: LAST_KEY, value: JSON.stringify({ reciter: reciter.id, moshaf: moshaf.id, sura }) });
+  }
+
+  /** Every sura of the recording, downloaded ones from the phone. */
+  private async suraItems(reciter: FullReciter, m: Moshaf): Promise<QuranAudioItem[]> {
+    await this.refreshDownloaded(m);
+    await this.quran.load().catch(() => {});
+    const saved = new Set(this.downloaded()[m.id] ?? []);
+    const dir = saved.size ? (await Filesystem.getUri({ path: folder(m), directory: Directory.Data })).uri : '';
+    const artist = this.catalog.reciterName(reciter);
+    const album = this.catalog.moshafName(m);
+    return this.catalog.suras(m).map((sura) => ({
+      url: saved.has(sura) ? `${dir}/${suraFile(sura)}` : m.server + suraFile(sura),
+      title: this.quran.ready() ? this.quran.sura(sura).name : String(sura),
+      artist,
+      album,
+      group: String(sura),
+    }));
+  }
+
+  private async startNative(items: QuranAudioItem[], index: number, live: boolean): Promise<void> {
+    this.focus.claim('listen', () => this.stop());
+    this.error.set(false);
+    this.loading.set(true);
+    this.playing.set(false);
+    this.position.set(0);
+    this.duration.set(0);
+    this.pendingGroup = items[index].group;
+    try {
+      await this.nativePlayer.play({ session: 'listen', items, index, repeat: !live && this.repeatSura() ? 'one' : 'off', speed: 1, live });
+    } catch {
+      this.fail();
+    }
+  }
+
+  /** The native player's state: it moves on to the next sura by itself, stops from the notification or the sleep timer. */
+  private onNative(s: QuranAudioState): void {
+    const now = this.now();
+    if (!now || s.session === 'mushaf') return;
+    if (s.index < 0) {
+      this.reset();
+      return;
+    }
+    if (this.pendingGroup !== undefined) {
+      if (s.group !== this.pendingGroup) return;
+      this.pendingGroup = undefined;
+    }
+    if (s.ended) {
+      this.stop();
+      return;
+    }
+    this.playing.set(s.playing);
+    this.loading.set(s.buffering);
+    this.error.set(s.error);
+    this.position.set(s.position);
+    this.duration.set(s.duration);
+    this.sleepAt.set(s.sleepAt || null);
+    const sura = Number(s.group);
+    if (now.kind === 'sura' && sura && sura !== now.sura) {
+      this.now.set({ ...now, sura });
+      this.saveLast(now.reciter, now.moshaf, sura);
+    }
+  }
 
   private async suraSource(m: Moshaf, sura: number): Promise<string> {
     if (this.canDownload) {
