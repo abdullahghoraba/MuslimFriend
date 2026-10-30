@@ -385,6 +385,7 @@
     "fajr": "Subuh",
     "sunrise": "Terbit",
     "dhuhr": "Zuhur",
+    "jumuah": "Jumat",
     "asr": "Asar",
     "maghrib": "Magrib",
     "isha": "Isya",
@@ -776,6 +777,7 @@
     "prayers": {
       "fajr": "Subuh",
       "dhuhr": "Zuhur",
+      "jumuah": "Jumat",
       "asr": "Asar",
       "maghrib": "Magrib",
       "isha": "Isya"

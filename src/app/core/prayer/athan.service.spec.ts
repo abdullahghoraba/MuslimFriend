@@ -70,6 +70,15 @@ describe('athan event planning', () => {
     expect(events.map((e) => e.at)).toEqual(events.map((e) => e.at).sort((a, b) => a - b));
     expect(events[0].at).toBe(prayerTimesFor(cairo, now)!.times.fajr.getTime());
   });
+  it('names Dhuhr on Friday the Friday prayer (Jumu\'ah)', () => {
+    const s = defaultAthanSettings();
+    s.enabled = true;
+    const named = (key: string, p?: Record<string, unknown>) => (key === 'locale' ? 'en' : key + (p?.['prayer'] ? ' ' + p['prayer'] : ''));
+    const dhuhr = buildAthanEvents(cairo, s, named, now).filter((e) => e.prayer === 'dhuhr');
+    const titles = dhuhr.map((e) => [new Date(e.at).getDay(), e.title]);
+    expect(titles.filter(([day]) => day === 5)).toEqual([[5, 'athanTitle prayers.jumuah']]);
+    expect(titles.filter(([day]) => day !== 5).every(([, title]) => title === 'athanTitle prayers.dhuhr')).toBe(true);
+  });
   it('uses exact pre/iqama offsets and system sounds', () => {
     const s = defaultAthanSettings();
     s.enabled = true;

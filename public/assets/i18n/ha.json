@@ -385,6 +385,7 @@
     "fajr": "Asuba",
     "sunrise": "Fitowar rana",
     "dhuhr": "Azahar",
+    "jumuah": "Juma'a",
     "asr": "La'asar",
     "maghrib": "Magariba",
     "isha": "Isha",
@@ -776,6 +777,7 @@
     "prayers": {
       "fajr": "Asuba",
       "dhuhr": "Azahar",
+      "jumuah": "Juma'a",
       "asr": "La'asar",
       "maghrib": "Magariba",
       "isha": "Isha"

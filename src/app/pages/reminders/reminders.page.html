@@ -47,7 +47,7 @@
       <ion-list-header>{{ 'reminders.todayTimes' | translate }}</ion-list-header>
       @for (p of prayerNames; track p) {
         <ion-item>
-          <ion-label>{{ 'prayer.' + p | translate }}</ion-label>
+          <ion-label>{{ 'prayer.' + prayerKey(p, t.times[p]) | translate }}</ion-label>
           <ion-note slot="end" class="time">{{ time(t.times[p]) }}</ion-note>
         </ion-item>
       }

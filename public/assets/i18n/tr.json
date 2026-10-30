@@ -385,6 +385,7 @@
     "fajr": "Sabah",
     "sunrise": "Güneş",
     "dhuhr": "Öğle",
+    "jumuah": "Cuma",
     "asr": "İkindi",
     "maghrib": "Akşam",
     "isha": "Yatsı",
@@ -776,6 +777,7 @@
     "prayers": {
       "fajr": "Sabah",
       "dhuhr": "Öğle",
+      "jumuah": "Cuma",
       "asr": "İkindi",
       "maghrib": "Akşam",
       "isha": "Yatsı"

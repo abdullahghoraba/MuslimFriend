@@ -385,6 +385,7 @@
     "fajr": "Alfajiri",
     "sunrise": "Macheo",
     "dhuhr": "Adhuhuri",
+    "jumuah": "Ijumaa",
     "asr": "Alasiri",
     "maghrib": "Magharibi",
     "isha": "Isha",
@@ -776,6 +777,7 @@
     "prayers": {
       "fajr": "Alfajiri",
       "dhuhr": "Adhuhuri",
+      "jumuah": "Ijumaa",
       "asr": "Alasiri",
       "maghrib": "Magharibi",
       "isha": "Isha"

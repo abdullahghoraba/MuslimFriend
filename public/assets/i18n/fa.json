@@ -385,6 +385,7 @@
     "fajr": "صبح",
     "sunrise": "طلوع آفتاب",
     "dhuhr": "ظهر",
+    "jumuah": "جمعه",
     "asr": "عصر",
     "maghrib": "مغرب",
     "isha": "عشا",
@@ -776,6 +777,7 @@
     "prayers": {
       "fajr": "صبح",
       "dhuhr": "ظهر",
+      "jumuah": "جمعه",
       "asr": "عصر",
       "maghrib": "مغرب",
       "isha": "عشا"

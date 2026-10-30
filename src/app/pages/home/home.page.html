@@ -8,14 +8,14 @@
   <app-hijri-date />
   <a class="prayer-card ion-activatable" routerLink="/reminders">
     @if (recent(); as r) {
-      <span class="prayer-label">{{ 'home.sinceAthan' | translate: { prayer: ('prayer.' + r.name | translate) } }}</span>
+      <span class="prayer-label">{{ 'home.sinceAthan' | translate: { prayer: ('prayer.' + prayerKey(r.name, r.at) | translate) } }}</span>
       <span class="prayer-name">{{ minutesLabel(r.elapsedMin) }}</span>
       @if (next(); as n) {
-        <span class="prayer-time">{{ (n.name === 'sunrise' ? 'prayer.nextTime' : 'prayer.next') | translate }}: {{ 'prayer.' + n.name | translate }} · {{ time(n.at) }} · {{ 'prayer.in' | translate: { time: countdown(n.at) } }}</span>
+        <span class="prayer-time">{{ (n.name === 'sunrise' ? 'prayer.nextTime' : 'prayer.next') | translate }}: {{ 'prayer.' + prayerKey(n.name, n.at) | translate }} · {{ time(n.at) }} · {{ 'prayer.in' | translate: { time: countdown(n.at) } }}</span>
       }
     } @else if (next(); as n) {
       <span class="prayer-label">{{ (n.name === 'sunrise' ? 'prayer.nextTime' : 'prayer.next') | translate }}</span>
-      <span class="prayer-name">{{ 'prayer.' + n.name | translate }}</span>
+      <span class="prayer-name">{{ 'prayer.' + prayerKey(n.name, n.at) | translate }}</span>
       <span class="prayer-time"
         >{{ time(n.at) }} · {{ 'prayer.in' | translate: { time: countdown(n.at) } }}</span
       >

@@ -93,6 +93,11 @@ export function prayerTimesFor(s: PrayerSettings, date: Date): DayTimes | null {
   };
 }
 
+/** The translation key of [name] at [at]: Dhuhr on a Friday is the Friday prayer (Jumu'ah). */
+export function prayerKey(name: string, at: Date | number): string {
+  return name === 'dhuhr' && new Date(at).getDay() === 5 ? 'jumuah' : name;
+}
+
 /** The next prayer time after [now] (sunrise included, as it ends Fajr), looking into tomorrow if needed. */
 export function nextPrayer(s: PrayerSettings, now = new Date()): { name: PrayerName; at: Date } | null {
   for (let d = 0; d < 2; d++) {

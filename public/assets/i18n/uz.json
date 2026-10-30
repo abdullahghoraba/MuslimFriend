@@ -385,6 +385,7 @@
     "fajr": "Bomdod",
     "sunrise": "Quyosh chiqishi",
     "dhuhr": "Peshin",
+    "jumuah": "Juma",
     "asr": "Asr",
     "maghrib": "Shom",
     "isha": "Xufton",
@@ -776,6 +777,7 @@
     "prayers": {
       "fajr": "Bomdod",
       "dhuhr": "Peshin",
+      "jumuah": "Juma",
       "asr": "Asr",
       "maghrib": "Shom",
       "isha": "Xufton"

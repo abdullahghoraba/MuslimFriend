@@ -23,7 +23,7 @@ import { SettingsService } from '../../core/services/settings.service';
 import { PrayerService } from '../../core/prayer/prayer.service';
 import { OverlayService } from '../../core/services/overlay.service';
 import { NowSuggestion, nowSuggestions, recentPrayer } from '../../core/prayer/time-windows';
-import { prayerTimesFor } from '../../core/prayer/prayer-times';
+import { prayerKey, prayerTimesFor } from '../../core/prayer/prayer-times';
 import { QuranService } from '../../core/quran/quran.service';
 import { AthanService } from '../../core/prayer/athan.service';
 import { addDays, hijriOf } from '../../core/prayer/islamic-calendar';
@@ -82,6 +82,7 @@ export class HomePage {
   readonly daily = signal<DailyStatus[]>([]);
   readonly position = signal<ReaderPosition | null>(null);
   readonly next = this.prayer.next;
+  readonly prayerKey = prayerKey;
   private readonly athan = inject(AthanService);
   /**
    * In Ramadan: the day of the month, today's imsak (the user's minutes before Fajr) and iftar, and what comes next:

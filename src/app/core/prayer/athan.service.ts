@@ -7,7 +7,7 @@ import { AthanEvent, AthanNative, AthanSound, AthanPluginMethods, AthanStopWay }
 import { PrayerService } from './prayer.service';
 import { intlLocale } from '../models';
 import { ATHAN_RECORDINGS, AthanRecording, DEFAULT_RECORDING } from './athan-sounds';
-import { PrayerSettings, nightTimes, prayerTimesFor } from './prayer-times';
+import { PrayerSettings, nightTimes, prayerKey, prayerTimesFor } from './prayer-times';
 import { hijriOf } from './islamic-calendar';
 
 export const ATHAN_PLUGIN = new InjectionToken<AthanPluginMethods>('ATHAN_PLUGIN', {
@@ -99,7 +99,7 @@ export function buildAthanEvents(
       const add = (kind: AthanEvent['kind'], minutes: number, sound: AthanSound) => {
         const at = times[name].getTime() + minutes * 60000;
         const params = {
-          prayer: t('prayers.' + name),
+          prayer: t('prayers.' + prayerKey(name, date)),
           minutes: new Intl.NumberFormat(intlLocale(t('locale'))).format(
             Math.abs(minutes),
           ),
@@ -258,7 +258,7 @@ export class AthanService {
       const day = prayerTimesFor(this.prayer.prayer(), date);
       if (day)
         for (const p of ATHAN_PRAYERS)
-          prayers.push({ name: t('prayers.' + p), at: day.times[p].getTime() });
+          prayers.push({ name: t('prayers.' + prayerKey(p, date)), at: day.times[p].getTime() });
     }
     await this.native.setWidgetData({ prayers, nextLabel: t('nextPrayer'), appName: t('appName') });
     const events = buildAthanEvents(this.prayer.prayer(), this.state(), t, now);

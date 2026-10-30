@@ -385,6 +385,7 @@
     "fajr": "晨礼",
     "sunrise": "日出",
     "dhuhr": "晌礼",
+    "jumuah": "聚礼",
     "asr": "晡礼",
     "maghrib": "昏礼",
     "isha": "宵礼",
@@ -776,6 +777,7 @@
     "prayers": {
       "fajr": "晨礼",
       "dhuhr": "晌礼",
+      "jumuah": "聚礼",
       "asr": "晡礼",
       "maghrib": "昏礼",
       "isha": "宵礼"

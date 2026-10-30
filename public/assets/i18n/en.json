@@ -385,6 +385,7 @@
     "fajr": "Fajr",
     "sunrise": "Sunrise",
     "dhuhr": "Dhuhr",
+    "jumuah": "Jumu'ah",
     "asr": "Asr",
     "maghrib": "Maghrib",
     "isha": "Isha",
@@ -776,6 +777,7 @@
     "prayers": {
       "fajr": "Fajr",
       "dhuhr": "Dhuhr",
+      "jumuah": "Jumu'ah",
       "asr": "Asr",
       "maghrib": "Maghrib",
       "isha": "Isha"
