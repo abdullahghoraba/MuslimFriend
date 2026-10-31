@@ -17,13 +17,14 @@
           <circle class="track" cx="50" cy="50" r="46" />
           <circle class="progress" cx="50" cy="50" r="46" [attr.stroke-dasharray]="circumference" [attr.stroke-dashoffset]="offset()" />
         </svg>
-        <button class="count" type="button" (click)="increment()" [attr.aria-label]="(counter.target ? 'tasbih.countButton' : 'tasbih.countButtonOpen') | translate: { count: counter.count, target: counter.target }">
-          <span class="number">{{ counter.count }}</span>
+        <button class="count" type="button" (click)="increment()" [attr.aria-label]="(counter.target ? 'tasbih.countButton' : 'tasbih.countButtonOpen') | translate: { count: roundCount(counter.count, counter.target), target: counter.target }">
+          <span class="number">{{ roundCount(counter.count, counter.target) }}</span>
           @if (counter.target) { <span class="target" dir="ltr">/ {{ counter.target }}</span> }
+          @if (roundNumber(counter.count, counter.target) > 1) { <span class="round">{{ 'tasbih.round' | translate: { round: roundNumber(counter.count, counter.target) } }}</span> }
           <span class="hint">{{ 'tasbih.tapToCount' | translate }}</span>
         </button>
       </div>
-      <span class="visually-hidden" aria-live="polite" aria-atomic="true">{{ 'tasbih.countButtonOpen' | translate: { count: counter.count } }}</span>
+      <span class="visually-hidden" aria-live="polite" aria-atomic="true">{{ 'tasbih.countButtonOpen' | translate: { count: roundCount(counter.count, counter.target) } }}</span>
       <section [attr.aria-label]="'tasbih.target' | translate">
         <h2>{{ 'tasbih.target' | translate }}</h2>
         <ion-segment #targets [value]="targetChoice()" (ionChange)="$event.detail.value !== 'custom' && chooseTarget($event.detail.value)">
@@ -73,7 +74,7 @@
           <div class="bubble-preview" aria-hidden="true">
             <span [style.width.px]="floating.floating().sizeDp" [style.height.px]="floating.floating().sizeDp"
                   [style.opacity]="floating.floating().opacity"
-                  [style.font-size.px]="floating.floating().sizeDp * 0.31">{{ active()?.count ?? 0 }}</span>
+                  [style.font-size.px]="floating.floating().sizeDp * 0.31">{{ roundCount(active()?.count ?? 0, active()?.target ?? 0) }}</span>
           </div>
           <ion-item lines="none">
             <ion-range [label]="'tasbih.floating.opacity' | translate" labelPlacement="stacked"

@@ -114,6 +114,7 @@
     "todayTotal": "Bugun jami: {{count}}",
     "allTime": "Hisoblagich jami",
     "completed": "Maqsadga erishildi",
+    "round": "{{round}}-davra",
     "reset": "Hisoblagichni nolga tushirish",
     "resetConfirm": "Bu hisoblagich nolga tushirilsinmi?",
     "rename": "Nomini o'zgartirish",

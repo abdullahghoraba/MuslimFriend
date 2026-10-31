@@ -7,6 +7,16 @@ export function isTargetHit(count: number, target: number): boolean {
   return count > 0 && target > 0 && count % target === 0;
 }
 
+/** The count shown for the current round: it reaches the target (33 / 33), then the next tap starts again at 1. */
+export function roundCount(count: number, target: number): number {
+  return target > 0 && count > 0 ? ((count - 1) % target) + 1 : count;
+}
+
+/** Which round of the target the count is in (1 until the target has been completed once). */
+export function roundNumber(count: number, target: number): number {
+  return target > 0 && count > 0 ? Math.floor((count - 1) / target) + 1 : 1;
+}
+
 @Injectable({ providedIn: 'root' })
 export class TasbihService {
   private db: SqlDb = inject(DatabaseService);

@@ -114,6 +114,7 @@
     "todayTotal": "आज का कुल: {{count}}",
     "allTime": "काउंटर का कुल",
     "completed": "लक्ष्य पूरा हुआ",
+    "round": "चक्र {{round}}",
     "reset": "काउंटर शून्य करें",
     "resetConfirm": "यह काउंटर शून्य कर दें?",
     "rename": "नाम बदलें",

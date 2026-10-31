@@ -114,6 +114,7 @@
     "todayTotal": "Heute gesamt: {{count}}",
     "allTime": "Zähler gesamt",
     "completed": "Ziel erreicht",
+    "round": "Runde {{round}}",
     "reset": "Zähler zurücksetzen",
     "resetConfirm": "Diesen Zähler auf null setzen?",
     "rename": "Umbenennen",

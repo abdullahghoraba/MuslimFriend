@@ -114,6 +114,7 @@
     "todayTotal": "今日合计：{{count}}",
     "allTime": "计数器合计",
     "completed": "已达到目标",
+    "round": "第 {{round}} 轮",
     "reset": "清零计数器",
     "resetConfirm": "将此计数器清零？",
     "rename": "重命名",

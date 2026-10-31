@@ -114,6 +114,7 @@
     "todayTotal": "Total de hoje: {{count}}",
     "allTime": "Total do contador",
     "completed": "Meta alcançada",
+    "round": "Volta {{round}}",
     "reset": "Zerar contador",
     "resetConfirm": "Zerar este contador?",
     "rename": "Renomear",

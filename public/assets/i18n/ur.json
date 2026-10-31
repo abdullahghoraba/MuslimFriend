@@ -114,6 +114,7 @@
     "todayTotal": "آج کا کل: {{count}}",
     "allTime": "کاؤنٹر کا کل",
     "completed": "ہدف پورا ہو گیا",
+    "round": "دور {{round}}",
     "reset": "کاؤنٹر صفر کریں",
     "resetConfirm": "یہ کاؤنٹر صفر کر دیں؟",
     "rename": "نام بدلیں",

@@ -32,6 +32,21 @@ test('first launch can skip setup and shows morning and evening cards', async ({
   await expect(page.locator('.daily-card').filter({ hasText: ar.home.evening })).toBeVisible();
 });
 
+test('the setup screen keeps each language button in place when the language flips the page direction', async ({ page }) => {
+  await page.goto('/');
+  await expect(page).toHaveURL(/\/onboarding$/);
+  const button = (code: string) => page.locator(`.languages button[lang="${code}"]`);
+  const columns = () => Promise.all(['ar', 'en', 'ur', 'fa', 'tr'].map(async (code) => (await button(code).boundingBox())!.x));
+  await expect(button('en')).toBeEnabled();
+  const arabic = await columns();
+  await page.screenshot({ path: 'test-results/onboarding-ar.png' });
+  await button('en').click();
+  await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+  await expect(button('ar')).toBeEnabled();
+  await page.screenshot({ path: 'test-results/onboarding-en.png' });
+  expect(await columns()).toEqual(arabic);
+});
+
 test('language changes survive reloads with the matching document direction', async ({ page }) => {
   await onboard(page);
   await open(page, '/settings');

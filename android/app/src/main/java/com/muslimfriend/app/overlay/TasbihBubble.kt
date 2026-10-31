@@ -275,10 +275,10 @@ class TasbihBubble(
     private fun updateViews(state: BubbleState) {
         bubbleView?.update(state)
         val fmt = NativeLabels.numbers(state.language)
-        bigCount?.text = fmt.format(state.count)
+        bigCount?.text = fmt.format(roundCount(state))
         bigTarget?.text = if (state.target <= 0) "" else NativeLabels.fill(
             NativeLabels.get(state.labels, state.language, "targetRound", "الهدف {{target}} · الدورة {{round}}", "Target {{target}} · round {{round}}"),
-            "target" to fmt.format(state.target), "round" to fmt.format(state.count / state.target + 1),
+            "target" to fmt.format(state.target), "round" to fmt.format(roundNumber(state)),
         )
         progress?.set(cycleFraction(state))
         (bigCount?.parent as? View)?.contentDescription = bubbleView?.contentDescription ?: describe(state)
@@ -566,7 +566,7 @@ class TasbihBubble(
 
         fun update(s: BubbleState) {
             state = s
-            label = NativeLabels.numbers(s.language).format(s.count)
+            label = NativeLabels.numbers(s.language).format(roundCount(s))
             contentDescription = describeState(s)
             invalidate()
         }
@@ -611,6 +611,12 @@ private fun describeState(s: BubbleState): String {
     val fmt = NativeLabels.numbers(s.language)
     val name = s.name.ifBlank { NativeLabels.get(s.labels, s.language, "tasbih", "تسبيح", "Tasbih") }
     val count = if (s.target > 0) NativeLabels.fill(NativeLabels.get(s.labels, s.language, "countOf", "{{count}} من {{target}}", "{{count}} of {{target}}"),
-        "count" to fmt.format(s.count), "target" to fmt.format(s.target)) else fmt.format(s.count)
+        "count" to fmt.format(roundCount(s)), "target" to fmt.format(s.target)) else fmt.format(s.count)
     return "$name: $count. " + NativeLabels.get(s.labels, s.language, "tapToCount", "اضغط للعد", "Tap to count")
 }
+
+/** The count shown for the current round: it reaches the target (33 / 33), then the next tap starts again at 1. */
+internal fun roundCount(s: BubbleState): Int = if (s.target > 0 && s.count > 0) (s.count - 1) % s.target + 1 else s.count
+
+/** Which round of the target the count is in (1 until the target has been completed once). */
+internal fun roundNumber(s: BubbleState): Int = if (s.target > 0 && s.count > 0) (s.count - 1) / s.target + 1 else 1

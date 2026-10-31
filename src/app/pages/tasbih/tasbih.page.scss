@@ -11,7 +11,8 @@ circle { fill: none; stroke-width: 3; }
 .count:focus-visible { outline: 3px solid var(--ion-color-primary); outline-offset: 3px; }
 .count:active { background: var(--app-border); }
 .number { font-size: clamp(2.5rem, 12vw, 4rem); font-weight: 700; line-height: 1.2; }
-.target, .hint { color: var(--app-muted); }
+.target, .hint, .round { color: var(--app-muted); }
+.round { font-size: .9rem; }
 .hint { margin-block-start: .75rem; font-size: .9rem; }
 h2 { font-size: 1rem; font-weight: 500; }
 ion-segment-button { min-inline-size: 0; --padding-start: .3rem; --padding-end: .3rem; }

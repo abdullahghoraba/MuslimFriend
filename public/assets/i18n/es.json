@@ -114,6 +114,7 @@
     "todayTotal": "Total de hoy: {{count}}",
     "allTime": "Total del contador",
     "completed": "Objetivo alcanzado",
+    "round": "Vuelta {{round}}",
     "reset": "Reiniciar contador",
     "resetConfirm": "¿Poner este contador a cero?",
     "rename": "Renombrar",

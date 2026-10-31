@@ -105,3 +105,14 @@ describe('TasbihService', () => {
     for (const target of [-1, 1.5, 100001, NaN]) expect(() => service.setTarget(1, target)).toThrow(RangeError);
   });
 });
+
+describe('tasbih rounds', () => {
+  it('counts up to the target, then starts again at 1 in the next round', async () => {
+    const { roundCount, roundNumber } = await import('./tasbih.service');
+    expect([1, 32, 33, 34, 66, 67].map((c) => roundCount(c, 33))).toEqual([1, 32, 33, 1, 33, 1]);
+    expect([0, 33, 34, 66, 67].map((c) => roundNumber(c, 33))).toEqual([1, 1, 2, 2, 3]);
+    expect([100, 101].map((c) => roundCount(c, 100))).toEqual([100, 1]);
+    expect(roundCount(150, 0)).toBe(150);
+    expect(roundCount(0, 33)).toBe(0);
+  });
+});

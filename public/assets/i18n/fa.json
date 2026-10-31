@@ -114,6 +114,7 @@
     "todayTotal": "مجموع امروز: {{count}}",
     "allTime": "مجموع شمارنده",
     "completed": "به هدف رسیدید",
+    "round": "دور {{round}}",
     "reset": "صفر کردن شمارنده",
     "resetConfirm": "این شمارنده صفر شود؟",
     "rename": "تغییر نام",

@@ -114,6 +114,7 @@
     "todayTotal": "Jumlah hari ini: {{count}}",
     "allTime": "Jumlah pembilang",
     "completed": "Sasaran tercapai",
+    "round": "Pusingan {{round}}",
     "reset": "Set semula pembilang",
     "resetConfirm": "Set semula pembilang ini kepada sifar?",
     "rename": "Namakan semula",

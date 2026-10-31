@@ -5,6 +5,7 @@ import {
   IonBackButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonLabel, IonSearchbar, IonSegment,
   IonSegmentButton, IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToolbar,
 } from '@ionic/angular';
+import { SelectTextsDirective } from '../../shared/select-texts.directive';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AudioCatalogService, FullReciter, Radio } from '../../core/audio/audio-catalog.service';
 import { AudioPlayerService } from '../../core/audio/audio-player.service';
@@ -15,7 +16,7 @@ import { ListenPlayerComponent } from './listen-player.component';
   selector: 'app-listen',
   imports: [
     NgTemplateOutlet, TranslatePipe, ListenPlayerComponent, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonContent, IonFooter,
-    IonSegment, IonSegmentButton, IonLabel, IonSearchbar, IonIcon, IonSpinner, IonSelect, IonSelectOption,
+    IonSegment, IonSegmentButton, IonLabel, IonSearchbar, IonIcon, IonSpinner, IonSelect, SelectTextsDirective, IonSelectOption,
   ],
   templateUrl: './listen.page.html',
   styleUrl: './listen.page.scss',

@@ -114,6 +114,7 @@
     "todayTotal": "Total hari ini: {{count}}",
     "allTime": "Total penghitung",
     "completed": "Target tercapai",
+    "round": "Putaran {{round}}",
     "reset": "Atur ulang penghitung",
     "resetConfirm": "Kembalikan penghitung ini ke nol?",
     "rename": "Ganti nama",

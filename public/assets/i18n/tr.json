@@ -114,6 +114,7 @@
     "todayTotal": "Bugünün toplamı: {{count}}",
     "allTime": "Sayaç toplamı",
     "completed": "Hedefe ulaşıldı",
+    "round": "{{round}}. tur",
     "reset": "Sayacı sıfırla",
     "resetConfirm": "Bu sayaç sıfırlansın mı?",
     "rename": "Yeniden adlandır",

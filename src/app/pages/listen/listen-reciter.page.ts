@@ -3,6 +3,7 @@ import {
   AlertController, IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonSearchbar,
   IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToolbar, ToastController,
 } from '@ionic/angular';
+import { SelectTextsDirective } from '../../shared/select-texts.directive';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AudioCatalogService, Moshaf } from '../../core/audio/audio-catalog.service';
 import { AudioPlayerService } from '../../core/audio/audio-player.service';
@@ -15,7 +16,7 @@ import { ListenPlayerComponent } from './listen-player.component';
   selector: 'app-listen-reciter',
   imports: [
     TranslatePipe, ListenPlayerComponent, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonButton, IonContent,
-    IonFooter, IonIcon, IonSearchbar, IonSelect, IonSelectOption, IonSpinner,
+    IonFooter, IonIcon, IonSearchbar, IonSelect, SelectTextsDirective, IonSelectOption, IonSpinner,
   ],
   templateUrl: './listen-reciter.page.html',
   styleUrl: './listen.page.scss',

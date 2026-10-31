@@ -3,7 +3,7 @@ import { LifecycleService } from '../../core/services/lifecycle.service';
 import { AlertController, ToastController, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonSegment, IonSegmentButton, IonLabel, IonItem, IonRange } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { KeepAwake } from '@capacitor-community/keep-awake';
-import { TasbihService } from '../../core/services/tasbih.service';
+import { TasbihService, roundCount, roundNumber } from '../../core/services/tasbih.service';
 import { TasbihCounter } from '../../core/models';
 import { HapticsService } from '../../core/services/haptics.service';
 import { FloatingCounterService } from '../../core/services/floating-counter.service';
@@ -29,6 +29,8 @@ export class TasbihPage implements OnDestroy {
     return target === 33 || target === 100 || target === 0 ? String(target) : 'custom';
   });
   readonly circumference = 2 * Math.PI * 46;
+  readonly roundCount = roundCount;
+  readonly roundNumber = roundNumber;
   readonly offset = computed(() => {
     const counter = this.active();
     if (!counter?.target) return this.circumference;

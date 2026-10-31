@@ -114,6 +114,7 @@
     "todayTotal": "Jimillar yau: {{count}}",
     "allTime": "Jimillar ma'auni",
     "completed": "An kai manufa",
+    "round": "Zagaye na {{round}}",
     "reset": "Mayar da ma'auni sifili",
     "resetConfirm": "A mayar da wannan ma'auni sifili?",
     "rename": "Sake suna",

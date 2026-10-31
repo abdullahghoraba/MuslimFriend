@@ -114,6 +114,7 @@
     "todayTotal": "Today's total: {{count}}",
     "allTime": "Counter total",
     "completed": "Target reached",
+    "round": "Round {{round}}",
     "reset": "Reset counter",
     "resetConfirm": "Reset this counter to zero?",
     "rename": "Rename",

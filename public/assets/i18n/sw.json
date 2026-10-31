@@ -114,6 +114,7 @@
     "todayTotal": "Jumla ya leo: {{count}}",
     "allTime": "Jumla ya kihesabu",
     "completed": "Lengo limefikiwa",
+    "round": "Mzunguko {{round}}",
     "reset": "Weka kihesabu sifuri",
     "resetConfirm": "Weka kihesabu hiki sifuri?",
     "rename": "Badilisha jina",

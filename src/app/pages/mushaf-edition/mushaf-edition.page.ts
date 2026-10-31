@@ -5,6 +5,7 @@ import {
   IonToolbar, NavController, createGesture,
 } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
+import { SelectTextsDirective } from '../../shared/select-texts.directive';
 import { TranslatePipe } from '@ngx-translate/core';
 import {
   Edition, EditionId, MushafEditionsService, RiwayaAyah, RiwayaMushaf, ShamarlyMap, edition,
@@ -25,7 +26,7 @@ interface Block {
  */
 @Component({
   selector: 'app-mushaf-edition',
-  imports: [TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonContent, IonSpinner, IonSelect, IonSelectOption],
+  imports: [TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonContent, IonSpinner, IonSelect, SelectTextsDirective, IonSelectOption],
   templateUrl: './mushaf-edition.page.html',
   styleUrl: './mushaf-edition.page.scss',
 })

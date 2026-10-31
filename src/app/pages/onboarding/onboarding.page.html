@@ -6,7 +6,8 @@
     <h1 #heading tabindex="-1">{{ ('onboarding.step' + step()) | translate }}</h1>
     @if (step() === 1) {
       <p>{{ 'onboarding.promise' | translate }}</p>
-      <div class="languages" role="group" [attr.aria-label]="'onboarding.language' | translate">
+      <!-- Always laid out right to left: the buttons stay in place when the chosen language flips the page direction. -->
+      <div class="languages" dir="rtl" role="group" [attr.aria-label]="'onboarding.language' | translate">
         @for (l of languages; track l.code) {
           <button [attr.lang]="l.code" [attr.dir]="l.rtl ? 'rtl' : 'ltr'" [attr.aria-pressed]="settings.settings().language === l.code" [disabled]="busy() || !ready()" (click)="language(l.code)">{{ l.name }}</button>
         }
