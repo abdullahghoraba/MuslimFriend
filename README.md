@@ -13,6 +13,8 @@ and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
 
 - **Quran:** 604-page Madani layout (Tanzil Uthmani text, Amiri Quran font), juz/hizb/rub', paper/sepia/night themes,
   tafsir per ayah (al-Muyassar, al-Jalalayn and Saheeh International bundled; 7 more downloadable for offline use),
+  word by word per ayah (each word's meaning in English, Urdu, Indonesian, Bengali, Turkish, Persian or Hindi, its
+  transliteration and recitation, from quran.com; a sura opened once stays on the phone),
   43 reciters verse-by-verse (EveryAyah, searchable picker) with highlighting, repeat, range loop, speed and offline sura downloads,
   coloured bookmarks, starred ayat, colour highlights with topics, notes, khatmah plans with daily wird, search
   without diacritics, verse of the day, Qibla, Hijri date.

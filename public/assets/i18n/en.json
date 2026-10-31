@@ -585,7 +585,8 @@
     "ayatCount": "{{n}} ayat",
     "reciterHint": "{{n}} reciters, ayah by ayah, with the recited ayah highlighted",
     "moreReciters": "More reciters (whole surahs) and radio",
-    "changeReciter": "Change reciter"
+    "changeReciter": "Change reciter",
+    "wordByWord": "Word by word"
   },
   "quran": {
     "title": "Quran",
@@ -1264,5 +1265,13 @@
     "wordMeanings": "Word meanings",
     "more": "Load more",
     "encCredit": "Source: Encyclopedia of Translated Prophetic Hadiths, HadeethEnc.com"
+  },
+  "wbw": {
+    "meaningsIn": "Meanings in",
+    "englishFallback": "Word meanings aren't available in your language yet, so they are in English. You can pick another language above.",
+    "offline": "Could not load the word meanings. Check the internet connection; once a sura is opened it stays saved for offline reading.",
+    "retry": "Try again",
+    "tapToHear": "Tap a word to hear it.",
+    "source": "Word meanings and recitation: quran.com"
   }
 }

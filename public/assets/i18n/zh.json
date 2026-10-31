@@ -585,7 +585,8 @@
     "ayatCount": "{{n}} 节",
     "reciterHint": "{{n}} 位诵读者，逐节播放并高亮正在诵读的经文",
     "moreReciters": "更多诵读者（完整章节）和电台",
-    "changeReciter": "更换诵读者"
+    "changeReciter": "更换诵读者",
+    "wordByWord": "逐词"
   },
   "quran": {
     "title": "古兰经",
@@ -1264,5 +1265,13 @@
     "wordMeanings": "词语释义",
     "more": "加载更多",
     "encCredit": "来源：圣训译解百科 HadeethEnc.com"
+  },
+  "wbw": {
+    "meaningsIn": "释义语言",
+    "englishFallback": "暂无您所用语言的逐词释义，现以英文显示。可在上方选择其他语言。",
+    "offline": "无法加载逐词释义。请检查网络连接；章节打开一次后会保存，可离线阅读。",
+    "retry": "重试",
+    "tapToHear": "点按单词即可收听读音。",
+    "source": "逐词释义与读音：quran.com"
   }
 }

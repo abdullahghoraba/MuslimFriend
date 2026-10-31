@@ -585,7 +585,8 @@
     "ayatCount": "{{n}} versets",
     "reciterHint": "{{n}} récitateurs, verset par verset, le verset récité en surbrillance",
     "moreReciters": "Plus de récitateurs (sourates complètes) et radio",
-    "changeReciter": "Changer de récitateur"
+    "changeReciter": "Changer de récitateur",
+    "wordByWord": "Mot à mot"
   },
   "quran": {
     "title": "Coran",
@@ -1264,5 +1265,13 @@
     "wordMeanings": "Sens des mots",
     "more": "Plus",
     "encCredit": "Source : Encyclopédie des hadiths prophétiques traduits, HadeethEnc.com"
+  },
+  "wbw": {
+    "meaningsIn": "Sens en",
+    "englishFallback": "Le sens des mots n'existe pas encore dans votre langue ; il s'affiche en anglais. Vous pouvez choisir une autre langue ci-dessus.",
+    "offline": "Impossible de charger le sens des mots. Vérifiez la connexion ; une sourate ouverte une fois reste enregistrée pour la lecture hors ligne.",
+    "retry": "Réessayer",
+    "tapToHear": "Touchez un mot pour l'écouter.",
+    "source": "Sens et récitation des mots : quran.com"
   }
 }

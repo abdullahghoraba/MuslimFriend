@@ -136,6 +136,7 @@
       }
       <div class="ayah-actions" role="toolbar" [attr.aria-label]="'mushaf.ayahActions' | translate">
         <button type="button" (click)="openTafsir()"><ion-icon name="book-outline" aria-hidden="true" /><span>{{ 'mushaf.tafsir' | translate }}</span></button>
+        <button type="button" (click)="openWords()"><ion-icon name="language-outline" aria-hidden="true" /><span>{{ 'mushaf.wordByWord' | translate }}</span></button>
         <button type="button" (click)="playFromSelected()"><ion-icon name="play" aria-hidden="true" /><span>{{ 'mushaf.listen' | translate }}</span></button>
         <button type="button" (click)="repeatSelected()"><ion-icon name="repeat-outline" aria-hidden="true" /><span>{{ 'mushaf.repeatAction' | translate }}</span></button>
         <button type="button" (click)="bookmark()"><ion-icon name="bookmark-outline" aria-hidden="true" /><span>{{ 'mushaf.bookmark' | translate }}</span></button>

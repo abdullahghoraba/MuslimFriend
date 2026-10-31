@@ -585,7 +585,8 @@
     "ayatCount": "{{n}} versículos",
     "reciterHint": "{{n}} recitadores, versículo por versículo, com o versículo recitado destacado",
     "moreReciters": "Mais recitadores (suratas completas) e rádio",
-    "changeReciter": "Trocar recitador"
+    "changeReciter": "Trocar recitador",
+    "wordByWord": "Palavra por palavra"
   },
   "quran": {
     "title": "Alcorão",
@@ -1264,5 +1265,13 @@
     "wordMeanings": "Significado das palavras",
     "more": "Carregar mais",
     "encCredit": "Fonte: Enciclopédia de hadiths proféticos traduzidos, HadeethEnc.com"
+  },
+  "wbw": {
+    "meaningsIn": "Significados em",
+    "englishFallback": "Os significados das palavras ainda não existem no seu idioma, por isso aparecem em inglês. Você pode escolher outro idioma acima.",
+    "offline": "Não foi possível carregar os significados. Verifique a conexão; uma surata aberta uma vez fica salva para leitura offline.",
+    "retry": "Tentar de novo",
+    "tapToHear": "Toque numa palavra para ouvi-la.",
+    "source": "Significados e recitação das palavras: quran.com"
   }
 }

@@ -585,7 +585,8 @@
     "ayatCount": "{{n}} oyat",
     "reciterHint": "{{n}} qori, oyatma-oyat, o'qilayotgan oyat ajratiladi",
     "moreReciters": "Ko'proq qorilar (to'liq suralar) va radio",
-    "changeReciter": "Qorini almashtirish"
+    "changeReciter": "Qorini almashtirish",
+    "wordByWord": "So'zma-so'z"
   },
   "quran": {
     "title": "Qur'on",
@@ -1264,5 +1265,13 @@
     "wordMeanings": "So'zlar ma'nosi",
     "more": "Yana",
     "encCredit": "Manba: Tarjima qilingan nabaviy hadislar ensiklopediyasi, HadeethEnc.com"
+  },
+  "wbw": {
+    "meaningsIn": "Ma'nolar tili",
+    "englishFallback": "So'z ma'nolari hali sizning tilingizda yo'q, shuning uchun inglizcha ko'rsatiladi. Yuqoridan boshqa tilni tanlashingiz mumkin.",
+    "offline": "So'z ma'nolarini yuklab bo'lmadi. Internetni tekshiring; bir marta ochilgan sura oflayn o'qish uchun saqlanadi.",
+    "retry": "Qayta urinish",
+    "tapToHear": "Talaffuzini eshitish uchun so'zni bosing.",
+    "source": "So'z ma'nolari va talaffuzi: quran.com"
   }
 }

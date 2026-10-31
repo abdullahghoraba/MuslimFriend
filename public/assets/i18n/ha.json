@@ -585,7 +585,8 @@
     "ayatCount": "Ayoyi {{n}}",
     "reciterHint": "Makaranta {{n}}, aya bayan aya, ana haskaka ayar da ake karantawa",
     "moreReciters": "Ƙarin makaranta (cikakkun surori) da rediyo",
-    "changeReciter": "Canza makaranci"
+    "changeReciter": "Canza makaranci",
+    "wordByWord": "Kalma bayan kalma"
   },
   "quran": {
     "title": "Alƙur'ani",
@@ -1264,5 +1265,13 @@
     "wordMeanings": "Ma'anonin kalmomi",
     "more": "Ƙari",
     "encCredit": "Tushe: Kundin Hadisan Annabi da aka Fassara, HadeethEnc.com"
+  },
+  "wbw": {
+    "meaningsIn": "Ma'anoni da harshe",
+    "englishFallback": "Babu ma'anonin kalmomi da harshenka tukuna, don haka ana nuna su da Turanci. Kana iya zaɓar wani harshe a sama.",
+    "offline": "Ba a iya loda ma'anonin kalmomi ba. Duba haɗin intanet; sura da aka buɗe sau ɗaya tana ajiye don karatu ba tare da intanet ba.",
+    "retry": "Sake gwadawa",
+    "tapToHear": "Danna kalma don jin karatunta.",
+    "source": "Ma'anoni da karatun kalmomi: quran.com"
   }
 }

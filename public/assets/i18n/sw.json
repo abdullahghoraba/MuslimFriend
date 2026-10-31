@@ -585,7 +585,8 @@
     "ayatCount": "Aya {{n}}",
     "reciterHint": "Wasomaji {{n}}, aya kwa aya, aya inayosomwa ikiangaziwa",
     "moreReciters": "Wasomaji zaidi (sura kamili) na redio",
-    "changeReciter": "Badilisha msomaji"
+    "changeReciter": "Badilisha msomaji",
+    "wordByWord": "Neno kwa neno"
   },
   "quran": {
     "title": "Kurani",
@@ -1264,5 +1265,13 @@
     "wordMeanings": "Maana ya maneno",
     "more": "Pakia zaidi",
     "encCredit": "Chanzo: Ensaiklopidia ya Hadithi za Mtume Zilizotafsiriwa, HadeethEnc.com"
+  },
+  "wbw": {
+    "meaningsIn": "Maana kwa lugha",
+    "englishFallback": "Maana za maneno bado hazipo kwa lugha yako, kwa hiyo zinaonyeshwa kwa Kiingereza. Unaweza kuchagua lugha nyingine hapo juu.",
+    "offline": "Imeshindwa kupakia maana za maneno. Kagua muunganisho wa intaneti; sura ikifunguliwa mara moja huhifadhiwa kwa kusoma bila mtandao.",
+    "retry": "Jaribu tena",
+    "tapToHear": "Gusa neno ili kulisikia.",
+    "source": "Maana na usomaji wa maneno: quran.com"
   }
 }

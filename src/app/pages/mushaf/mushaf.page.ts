@@ -37,6 +37,7 @@ import { HapticsService } from '../../core/services/haptics.service';
 import { SettingsService } from '../../core/services/settings.service';
 import { ShareService } from '../../core/services/share.service';
 import { TafsirSheetComponent } from './tafsir-sheet.component';
+import { WordByWordSheetComponent } from './word-by-word-sheet.component';
 import { ReciterPickerComponent } from './reciter-picker.component';
 import { EDITIONS, MushafEditionsService } from '../../core/quran/mushaf-editions.service';
 import { TajweedPart, alignTajweed } from '../../core/quran/tajweed';
@@ -452,6 +453,19 @@ export class MushafPage {
       componentProps: { ayahRef: ref },
       // Up to 1: Ionic does not resize sheet content, so a lower top breakpoint leaves the prev / next ayah arrows
       // at the end of a long tafsir below the screen edge, under the phone's navigation buttons.
+      breakpoints: [0, 0.5, 1],
+      initialBreakpoint: 0.5,
+    });
+    await modal.present();
+  }
+
+  /** The words of the selected ayah with their meanings. */
+  async openWords(): Promise<void> {
+    const ref = this.selected();
+    if (!ref) return;
+    const modal = await this.modals.create({
+      component: WordByWordSheetComponent,
+      componentProps: { ayahRef: ref },
       breakpoints: [0, 0.5, 1],
       initialBreakpoint: 0.5,
     });

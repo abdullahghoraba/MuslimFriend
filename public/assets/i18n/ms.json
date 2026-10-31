@@ -585,7 +585,8 @@
     "ayatCount": "{{n}} ayat",
     "reciterHint": "{{n}} qari, ayat demi ayat, ayat yang dibaca diserlahkan",
     "moreReciters": "Lebih ramai qari (surah penuh) dan radio",
-    "changeReciter": "Tukar qari"
+    "changeReciter": "Tukar qari",
+    "wordByWord": "Perkataan demi perkataan"
   },
   "quran": {
     "title": "Al-Quran",
@@ -1264,5 +1265,13 @@
     "wordMeanings": "Makna perkataan",
     "more": "Muat lagi",
     "encCredit": "Sumber: Ensiklopedia Hadis Nabi Terjemahan, HadeethEnc.com"
+  },
+  "wbw": {
+    "meaningsIn": "Makna dalam",
+    "englishFallback": "Makna perkataan belum tersedia dalam bahasa anda, jadi dipaparkan dalam bahasa Inggeris. Anda boleh memilih bahasa lain di atas.",
+    "offline": "Makna perkataan tidak dapat dimuatkan. Semak sambungan internet; selepas dibuka sekali, surah disimpan untuk bacaan luar talian.",
+    "retry": "Cuba lagi",
+    "tapToHear": "Ketik perkataan untuk mendengarnya.",
+    "source": "Makna dan bacaan perkataan: quran.com"
   }
 }

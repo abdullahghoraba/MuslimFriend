@@ -585,7 +585,8 @@
     "ayatCount": "{{n}} aleyas",
     "reciterHint": "{{n}} recitadores, aleya por aleya, con la aleya recitada resaltada",
     "moreReciters": "Más recitadores (suras completas) y radio",
-    "changeReciter": "Cambiar recitador"
+    "changeReciter": "Cambiar recitador",
+    "wordByWord": "Palabra por palabra"
   },
   "quran": {
     "title": "Corán",
@@ -1264,5 +1265,13 @@
     "wordMeanings": "Significado de las palabras",
     "more": "Cargar más",
     "encCredit": "Fuente: Enciclopedia de hadices proféticos traducidos, HadeethEnc.com"
+  },
+  "wbw": {
+    "meaningsIn": "Significados en",
+    "englishFallback": "Los significados de las palabras aún no están en tu idioma, así que aparecen en inglés. Puedes elegir otro idioma arriba.",
+    "offline": "No se pudieron cargar los significados. Revisa la conexión; una sura abierta una vez queda guardada para leer sin conexión.",
+    "retry": "Reintentar",
+    "tapToHear": "Toca una palabra para escucharla.",
+    "source": "Significados y recitación de palabras: quran.com"
   }
 }

@@ -585,7 +585,8 @@
     "ayatCount": "{{n}} ayet",
     "reciterHint": "{{n}} kâri, ayet ayet, okunan ayet vurgulanır",
     "moreReciters": "Daha fazla kâri (tam sureler) ve radyo",
-    "changeReciter": "Kâriyi değiştir"
+    "changeReciter": "Kâriyi değiştir",
+    "wordByWord": "Kelime kelime"
   },
   "quran": {
     "title": "Kuran",
@@ -1264,5 +1265,13 @@
     "wordMeanings": "Kelime anlamları",
     "more": "Daha fazla",
     "encCredit": "Kaynak: Tercüme Edilmiş Nebevî Hadis Ansiklopedisi, HadeethEnc.com"
+  },
+  "wbw": {
+    "meaningsIn": "Anlamların dili",
+    "englishFallback": "Kelime anlamları henüz dilinizde yok, bu yüzden İngilizce gösteriliyor. Yukarıdan başka bir dil seçebilirsiniz.",
+    "offline": "Kelime anlamları yüklenemedi. İnternet bağlantısını kontrol edin; bir sure bir kez açıldıktan sonra çevrimdışı okumak için saklanır.",
+    "retry": "Tekrar dene",
+    "tapToHear": "Okunuşunu duymak için bir kelimeye dokunun.",
+    "source": "Kelime anlamları ve okunuşu: quran.com"
   }
 }

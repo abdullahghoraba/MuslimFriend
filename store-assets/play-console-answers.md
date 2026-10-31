@@ -37,7 +37,8 @@ Everything else is not collection (Google: data transmitted off the device *abou
 - Fetching public content: recitation MP3s (everyayah.com, mp3quran.net), Quran radio streams (backup.qurango.net),
   reciter names (mp3quran.net, weekly while the Listen page is open), hadith (hadeethenc.com for the topics and the
   hadith of the day, cdn.jsdelivr.net for the hadith collections, dorar.net for a hadith's rulings — the request holds
-  the hadith text, not user data), tafsirs, translations and tajweed rules (api.quran.com, jsDelivr / GitHub), riwayat
+  the hadith text, not user data), tafsirs, translations, tajweed rules and word-by-word meanings (api.quran.com, jsDelivr /
+  GitHub), word recitations (audio.qurancdn.com), riwayat
   mushafs (jsDelivr), Shamarly mushaf pages (archive.org) and athan recordings (Wikimedia Commons, archive.org). The
   requests carry only the file or hadith asked for; servers see the IP like any web request (disclosed in the policy).
 - Searches in saved hadith and downloaded books, saved hadith, bookmarks and notes stay on the device.

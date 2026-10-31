@@ -585,7 +585,8 @@
     "ayatCount": "{{n}} ayat",
     "reciterHint": "{{n}} qari, ayat demi ayat, ayat yang dibaca disorot",
     "moreReciters": "Qari lainnya (surah lengkap) dan radio",
-    "changeReciter": "Ganti qari"
+    "changeReciter": "Ganti qari",
+    "wordByWord": "Kata per kata"
   },
   "quran": {
     "title": "Al-Qur'an",
@@ -1264,5 +1265,13 @@
     "wordMeanings": "Makna kata",
     "more": "Muat lagi",
     "encCredit": "Sumber: Ensiklopedia Hadis Nabi Terjemahan, HadeethEnc.com"
+  },
+  "wbw": {
+    "meaningsIn": "Arti dalam",
+    "englishFallback": "Arti kata belum tersedia dalam bahasamu, jadi ditampilkan dalam bahasa Inggris. Kamu bisa memilih bahasa lain di atas.",
+    "offline": "Arti kata tidak dapat dimuat. Periksa koneksi internet; setelah sekali dibuka, surah tersimpan untuk dibaca offline.",
+    "retry": "Coba lagi",
+    "tapToHear": "Ketuk sebuah kata untuk mendengarnya.",
+    "source": "Arti dan bacaan kata: quran.com"
   }
 }

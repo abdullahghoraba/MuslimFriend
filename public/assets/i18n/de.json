@@ -585,7 +585,8 @@
     "ayatCount": "{{n}} Verse",
     "reciterHint": "{{n}} Rezitatoren, Vers für Vers, der rezitierte Vers hervorgehoben",
     "moreReciters": "Mehr Rezitatoren (ganze Suren) und Radio",
-    "changeReciter": "Rezitator wechseln"
+    "changeReciter": "Rezitator wechseln",
+    "wordByWord": "Wort für Wort"
   },
   "quran": {
     "title": "Koran",
@@ -1264,5 +1265,13 @@
     "wordMeanings": "Wortbedeutungen",
     "more": "Mehr laden",
     "encCredit": "Quelle: Enzyklopädie übersetzter prophetischer Hadithe, HadeethEnc.com"
+  },
+  "wbw": {
+    "meaningsIn": "Bedeutungen auf",
+    "englishFallback": "Wortbedeutungen gibt es noch nicht in deiner Sprache, daher auf Englisch. Oben kannst du eine andere Sprache wählen.",
+    "offline": "Die Wortbedeutungen konnten nicht geladen werden. Prüfe die Internetverbindung; eine einmal geöffnete Sure bleibt offline gespeichert.",
+    "retry": "Erneut versuchen",
+    "tapToHear": "Tippe auf ein Wort, um es zu hören.",
+    "source": "Wortbedeutungen und Rezitation: quran.com"
   }
 }
