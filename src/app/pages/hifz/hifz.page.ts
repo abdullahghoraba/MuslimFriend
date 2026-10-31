@@ -140,6 +140,16 @@ export class HifzPage {
         queryParams: { sura: r.sura, aya: r.aya, hifz: p.id, ...(repeat ? { repeat: 1 } : {}) },
       });
   }
+  /** Tests memorisation of [refs] (today's portion or the ayat due), from the first one's sura. */
+  test(refs: AyahRef[]): void {
+    const first = refs[0];
+    if (!first) {
+      void this.router.navigate(['/hifz/test']);
+      return;
+    }
+    const inSura = refs.filter((r) => r.sura === first.sura).map((r) => r.aya);
+    void this.router.navigate(['/hifz/test'], { queryParams: { sura: first.sura, from: Math.min(...inSura), to: Math.max(...inSura) } });
+  }
   memorize(p: HifzPlan): Promise<void> {
     return this.run(() =>
       this.service.markRange(p.id, this.service.today(p.id).newPortion, 'memorized'),

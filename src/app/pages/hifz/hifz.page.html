@@ -11,6 +11,7 @@
     }
     @if (ready()) {
       <ion-button (click)="open()" [disabled]="busy()">{{ 'hifz.create' | translate }}</ion-button>
+      <ion-button fill="outline" (click)="test([])">{{ 'recall.title' | translate }}</ion-button>
       @if (!service.list().length) {
         <section>
           <h2>{{ 'hifz.emptyTitle' | translate }}</h2>
@@ -62,6 +63,12 @@
               (click)="memorize(p)"
               >{{ 'hifz.memorized' | translate }}</ion-button
             >
+            <ion-button
+              fill="outline"
+              [disabled]="!service.today(p.id).newPortion.length"
+              (click)="test(service.today(p.id).newPortion)"
+              >{{ 'recall.test' | translate }}</ion-button
+            >
             @if (p.followUp) {
               <h3>{{ 'hifz.due' | translate }}</h3>
               <ul>
@@ -80,6 +87,12 @@
                 [disabled]="busy() || !service.today(p.id).due.length"
                 (click)="review(p, 'hard')"
                 >{{ 'hifz.hard' | translate }}</ion-button
+              >
+              <ion-button
+                fill="outline"
+                [disabled]="!service.today(p.id).due.length"
+                (click)="test(service.today(p.id).due)"
+                >{{ 'recall.test' | translate }}</ion-button
               >
             }
             <ion-button fill="clear" [disabled]="busy()" (click)="open(p)">{{

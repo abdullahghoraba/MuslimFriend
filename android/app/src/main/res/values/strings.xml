@@ -26,4 +26,9 @@
     <string name="widget_next">Next prayer</string>
     <string name="widget_empty">Open the app to load prayer times</string>
     <string name="widget_in">in %1$dh %2$dm</string>
+    <string name="widget_verse">Verse of the day</string>
+    <string name="widget_hadith">Hadith of the day</string>
+    <string name="widget_verse_description">Verse of the day</string>
+    <string name="widget_hadith_description">Hadith of the day</string>
+    <string name="widget_daily_empty">Open the app once to load the text of the day</string>
 </resources>

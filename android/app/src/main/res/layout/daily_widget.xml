@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/daily_root" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="12dp" android:background="@drawable/prayer_widget_background" android:layoutDirection="locale">
+    <TextView android:id="@+id/daily_title" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/widget_verse" android:textColor="#FFFFFF" android:textSize="12sp" android:textStyle="bold" />
+    <TextView android:id="@+id/daily_text" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="4dp" android:text="@string/widget_daily_empty" android:textColor="#FFFFFF" android:textSize="17sp" android:lineSpacingMultiplier="1.25" android:textDirection="rtl" android:gravity="center_vertical|start" android:ellipsize="end" android:maxLines="8" />
+    <TextView android:id="@+id/daily_ref" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textColor="#DDFFFFFF" android:textSize="11sp" android:maxLines="2" android:ellipsize="end" />
+</LinearLayout>

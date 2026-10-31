@@ -14,8 +14,8 @@ android {
         applicationId "com.abdullahghoraba.muslimfriend"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 11
-        versionName "1.0.9"
+        versionCode 12
+        versionName "1.0.10"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // ARM phones only: x86 Android phones are no longer sold, and the two x86 copies of the SQLite library
         // (2.2 MB) kept the bundle over the size the release upload accepts.

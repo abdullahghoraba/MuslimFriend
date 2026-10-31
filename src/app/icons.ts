@@ -71,11 +71,21 @@ import {
   trashOutline,
   trophyOutline,
   volumeHighOutline,
+  closeCircleOutline,
+  calculatorOutline,
+  sparklesOutline,
+  imageOutline,
+  ribbonOutline,
 } from 'ionicons/icons';
 
 /** Icons are registered explicitly so the bundle only contains what the app uses. */
 export function registerIcons(): void {
   addIcons({
+    'close-circle-outline': closeCircleOutline,
+    'calculator-outline': calculatorOutline,
+    'sparkles-outline': sparklesOutline,
+    'image-outline': imageOutline,
+    'ribbon-outline': ribbonOutline,
     'add-outline': addOutline,
     'airplane-outline': airplaneOutline,
     'alarm-outline': alarmOutline,

@@ -652,9 +652,34 @@ export class MushafPage {
     }
   }
 
+  /** Shares the selected ayah(s) as a picture or as text. */
   async shareAyah(): Promise<void> {
+    const r = this.range();
     const text = this.selectedText();
-    if (text) await this.share.shareText(this.translate.instant('app.name'), text);
+    if (!r || !text) return;
+    const t = (key: string) => this.translate.instant(key);
+    const sheet = await this.sheets.create({
+      header: t('common.share'),
+      buttons: [
+        { text: t('share.asImage'), icon: 'image-outline', data: 'image' },
+        { text: t('share.asText'), icon: 'document-text-outline', data: 'text' },
+        { text: t('common.cancel'), role: 'cancel' },
+      ],
+    });
+    await sheet.present();
+    const { data } = await sheet.onDidDismiss();
+    if (data === 'text') {
+      await this.share.shareText(t('app.name'), text);
+    } else if (data === 'image') {
+      const where = r.to > r.from ? `${r.from}–${r.to}` : String(r.from);
+      await this.share.sharePassage({
+        title: t('app.name'),
+        arabic: this.selectedRefs().map((ref) => `${splitBasmala(ref, this.quran.ayah(ref).text).text} ﴿${ref.aya}﴾`).join(' '),
+        source: `${this.quran.sura(r.sura).name} · ${where}`,
+        brand: t('app.name'),
+        quran: true,
+      }).catch(() => void this.toast('reader.shareFailed'));
+    }
   }
 
   /** The selected ayah(s) with their numbers, then the reference, e.g. "[البقرة: 255–257]". */

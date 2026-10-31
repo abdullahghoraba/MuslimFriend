@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AlertController, IonBadge, IonButton, IonIcon, ModalController } from '@ionic/angular';
+import { ActionSheetController, AlertController, IonBadge, IonButton, IonIcon, ModalController } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Hadith, gradeColor, gradeKind, hadithLink, sourceGradeKind } from '../../core/hadith/hadith.models';
 import { HadithBookmarksService } from '../../core/hadith/hadith-bookmarks.service';
@@ -62,6 +62,7 @@ export class HadithCardComponent {
   private readonly shares = inject(ShareService);
   private readonly modals = inject(ModalController);
   private readonly alerts = inject(AlertController);
+  private readonly sheets = inject(ActionSheetController);
   private readonly translate = inject(TranslateService);
   readonly lang = computed(() => this.settings.settings().language);
   readonly saved = computed(() => this.marks.saved(this.hadith()));
@@ -87,7 +88,32 @@ export class HadithCardComponent {
     try { await work(); this.status.set(success); } catch { this.status.set('hadith.actionFailed'); } finally { this.busy.set(false); }
   }
   copy(): Promise<void> { return this.action(() => navigator.clipboard.writeText(this.text()), 'hadith.copied'); }
-  share(): Promise<void> { return this.action(() => this.shares.shareText(this.reference(), this.text())); }
+  /** Shares the hadith as a picture (Arabic, translation, source, grade) or as text. */
+  async share(): Promise<void> {
+    const t = (key: string) => this.translate.instant(key);
+    const sheet = await this.sheets.create({
+      header: t('common.share'),
+      buttons: [
+        { text: t('share.asImage'), icon: 'image-outline', data: 'image' },
+        { text: t('share.asText'), icon: 'document-text-outline', data: 'text' },
+        { text: t('common.cancel'), role: 'cancel' },
+      ],
+    });
+    await sheet.present();
+    const { data } = await sheet.onDidDismiss();
+    const h = this.hadith();
+    if (data === 'text') await this.action(() => this.shares.shareText(this.reference(), this.text()));
+    else if (data === 'image') {
+      await this.action(() => this.shares.sharePassage({
+        title: this.reference(),
+        arabic: h.arabic,
+        translation: this.lang() === 'ar' ? '' : h.translation,
+        translationLang: h.translationLang,
+        source: [this.reference(), ...h.grades.slice(0, 1).map((g) => `${g.grade} — ${g.name}`)].join('\n'),
+        brand: t('app.name'),
+      }));
+    }
+  }
   toggleBookmark(): Promise<void> {
     return this.action(() => this.saved() ? this.marks.remove(this.hadith()) : this.marks.save(this.hadith()));
   }

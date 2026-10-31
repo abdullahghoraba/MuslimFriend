@@ -53,6 +53,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/quran-marks/quran-marks.page').then((m) => m.QuranMarksPage),
   },
   {
+    path: 'hifz/test',
+    loadComponent: () => import('./pages/hifz/hifz-test.page').then((m) => m.HifzTestPage),
+  },
+  {
     path: 'hifz',
     loadComponent: () => import('./pages/hifz/hifz.page').then((m) => m.HifzPage),
   },
@@ -74,6 +78,8 @@ export const routes: Routes = [
   },
   { path: 'athkar-settings', loadComponent: () => import('./pages/athkar-settings/athkar-settings.page').then((m) => m.AthkarSettingsPage) },
   { path: 'occasions', loadComponent: () => import('./pages/occasions/occasions.page').then((m) => m.OccasionsPage) },
+  { path: 'names', loadComponent: () => import('./pages/names/names.page').then((m) => m.NamesPage) },
+  { path: 'zakat', loadComponent: () => import('./pages/zakat/zakat.page').then((m) => m.ZakatPage) },
   { path: 'qada', loadComponent: () => import('./pages/qada/qada.page').then((m) => m.QadaPage) },
   { path: 'athan', loadComponent: () => import('./pages/athan/athan.page').then(m => m.AthanPage) },
   // Listen to the Quran: full-sura reciters and live radios (mp3quran.net).
@@ -85,6 +91,7 @@ export const routes: Routes = [
   { path: 'hadith', loadComponent: () => import('./pages/hadith/hadith.page').then((m) => m.HadithPage) },
   { path: 'hadith/bookmarks', data: { bookmarks: true }, loadComponent: () => import('./pages/hadith/hadith.page').then((m) => m.HadithPage) },
   // Topics and explanations (HadeethEnc.com), before the collection routes that would take 'topics' for a book.
+  { path: 'hadith/memorize', loadComponent: () => import('./pages/hadith/hadith-memorize.page').then((m) => m.HadithMemorizePage) },
   { path: 'hadith/topics', loadComponent: () => import('./pages/hadith/hadith-topics.page').then((m) => m.HadithTopicsPage) },
   { path: 'hadith/topics/:category', loadComponent: () => import('./pages/hadith/hadith-topics.page').then((m) => m.HadithTopicsPage) },
   { path: 'hadith/enc/:id', loadComponent: () => import('./pages/hadith/hadith-enc.page').then((m) => m.HadithEncPage) },

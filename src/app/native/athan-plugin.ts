@@ -21,6 +21,12 @@ export interface AthanEvent {
   /** Language of [speech] for text-to-speech, e.g. 'ur'. */
   speechLang?: string;
 }
+/** What a daily widget shows; [route] is the in-app page a tap opens. */
+export interface DailyWidgetText {
+  text: string;
+  ref: string;
+  route: string;
+}
 export type AthanStopWay = 'flip' | 'shake' | 'volume';
 export interface AthanPluginMethods {
   canScheduleExactAlarms(): Promise<{ granted: boolean }>;
@@ -31,6 +37,12 @@ export interface AthanPluginMethods {
   stopAthan(): Promise<void>;
   hasDndAccess(): Promise<{ granted: boolean }>;
   openDndAccessSettings(): Promise<void>;
+  /** A week of verses and hadith for the home-screen widgets, one per day (date: YYYY-MM-DD). */
+  setDailyWidgets(options: {
+    days: { date: string; verse: DailyWidgetText; hadith: DailyWidgetText }[];
+    titles: { verse: string; hadith: string };
+    appName: string;
+  }): Promise<void>;
   setWidgetData(options: {
     prayers: { name: string; at: number }[];
     nextLabel: string;

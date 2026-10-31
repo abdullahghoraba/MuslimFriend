@@ -34,6 +34,16 @@ and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
 - **Athkar:** every category on one page with a counter per dhikr, sources and grades, add your own dhikr to any list,
   your own collections (e.g. Ruqyah) shown on Home, reorder anything, overlay over other apps, floating tasbih counter,
   tasbih with targets, reminders tied to prayer times, statistics, backup.
+- **Hifz test** (`/hifz/test`, and Test buttons on each plan's portion and due review): the ayat are hidden and revealed
+  word by word (or with first-letter hints, or a whole ayah at a time) as you recite; mark the words you got wrong, then
+  retest only the ayat with mistakes (`recall-test.ts`, shared with the hadith memoriser).
+- **99 Names of Allah** (`/names`): the commonly known list from at-Tirmidhi with transliteration, English and short
+  Arabic meanings, a name of the day and search; the page notes that the enumeration itself is a narrator's addition.
+- **Zakat calculator** (`/zakat`): cash, gold by karat, silver, trade goods, receivables minus debts; silver or gold
+  nisab with prices typed by the reader; notes on the hawl and women's jewellery. Nothing leaves the phone.
+- **Share as a picture:** athkar, ayat (mushaf) and hadith, drawn on the device (`ShareService.sharePassage`).
+- **Widgets:** prayer times, verse of the day and hadith of the day; the app sends a week ahead, so the daily widgets
+  change at midnight without the app (`DailyWidget.kt`).
 
 ### Quran data pipeline
 
@@ -60,6 +70,8 @@ from HadeethEnc, Dorar and jsDelivr (see Hadith). Everything is fetched over htt
 - **Hadith of the day** (Home, online, kept for the day): from HadeethEnc in the reader's language, else from
   al-Bukhari / Muslim (`daily-online.ts`: a different one each day for decades, skipping chains without the
   Prophet's words), else one of the 81 bundled ones offline.
+- **Memorise the 40 Nawawi** (`/hadith/memorize`): learn, test yourself with hidden words, and review on spaced days
+  (1, 3, 7, 14, 30, 60); kept in preferences, so it is part of the backup.
 - **Who narrated it, is it sound, and why:** the sheet looks up the scholars' rulings on Dorar.net
   (`dorar.service.ts`, native HTTP on Android because dorar.net sends no CORS header) and keeps them; a ruling is shown
   only for a close text match. Badges never rate higher than the source says (`sourceGradeKind`, `gradeKind`).

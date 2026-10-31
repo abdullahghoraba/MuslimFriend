@@ -30,6 +30,7 @@
           <a class="quick" [routerLink]="link(last)"><ion-icon name="book-outline" aria-hidden="true" /><span>{{ 'hadith.continue' | translate }}<small>{{ 'hadith.collections.' + last.collection | translate }} · {{ last.number }}</small></span></a>
         }
         <a class="quick topics" routerLink="/hadith/topics"><ion-icon name="layers-outline" aria-hidden="true" /><span>{{ 'hadith.topics' | translate }}<small>{{ 'hadith.topicsShort' | translate }}</small></span></a>
+        <a class="quick" routerLink="/hadith/memorize"><ion-icon name="ribbon-outline" aria-hidden="true" /><span>{{ 'memo.title' | translate }}<small>{{ 'memo.short' | translate }}</small></span></a>
         <a class="quick" routerLink="/hadith/bookmarks"><ion-icon name="bookmark-outline" aria-hidden="true" /><span>{{ 'hadith.bookmarks' | translate }}<small>{{ marks.bookmarks().length }}</small></span></a>
       </div>
       <ion-searchbar [value]="query()" [debounce]="300" (ionInput)="search($event.detail.value || '')" [placeholder]="'hadith.search' | translate" [attr.aria-label]="'hadith.search' | translate" />

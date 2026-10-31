@@ -24,4 +24,9 @@
     <string name="widget_next">الصلاة القادمة</string>
     <string name="widget_empty">افتح التطبيق لتحميل مواقيت الصلاة</string>
     <string name="widget_in">خلال %1$d س %2$d د</string>
+    <string name="widget_verse">آية اليوم</string>
+    <string name="widget_hadith">حديث اليوم</string>
+    <string name="widget_verse_description">آية اليوم</string>
+    <string name="widget_hadith_description">حديث اليوم</string>
+    <string name="widget_daily_empty">افتح التطبيق مرة لتحميل نص اليوم</string>
 </resources>

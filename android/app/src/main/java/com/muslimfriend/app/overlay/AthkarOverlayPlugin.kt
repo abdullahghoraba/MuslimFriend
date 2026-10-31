@@ -107,6 +107,15 @@ class AthkarOverlayPlugin : Plugin() {
         catch (e: Exception) { call.reject("Unable to open settings: " + e.message) }
     }
     @PluginMethod
+    fun setDailyWidgets(call: PluginCall) {
+        val days = call.getArray("days") ?: return call.reject("days is required")
+        val titles = call.getObject("titles") ?: JSObject()
+        try {
+            DailyWidget.setData(context, days, titles, call.getString("appName") ?: "")
+            call.resolve()
+        } catch (e: Exception) { call.reject("Invalid widget data: " + e.message) }
+    }
+    @PluginMethod
     fun setWidgetData(call: PluginCall) {
         val prayers = call.getArray("prayers") ?: return call.reject("prayers is required")
         val label = call.getString("nextLabel") ?: return call.reject("nextLabel is required")

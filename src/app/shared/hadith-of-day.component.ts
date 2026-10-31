@@ -1,9 +1,10 @@
-import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, signal, untracked } from '@angular/core';
 import { HadithLibraryService } from '../core/hadith/hadith-library.service';
 import { HadeethEncService, encHadith } from '../core/hadith/hadeethenc.service';
 import { HadithBookmarksService } from '../core/hadith/hadith-bookmarks.service';
 import { Hadith, hadithText } from '../core/hadith/hadith.models';
 import { SettingsService } from '../core/services/settings.service';
+import { DailyWidgetService } from '../core/services/daily-widget.service';
 import { HadithCardComponent } from '../pages/hadith/hadith-card.component';
 
 @Component({
@@ -48,6 +49,12 @@ export class HadithOfDayComponent {
         .then((hadith) => {
           if (hadith && date === this.today()) this.online.set({ day: date.toDateString(), lang, hadith });
         });
+    });
+    // The home-screen widgets show the same hadith today, and the coming days' verses and hadith.
+    const widgets = inject(DailyWidgetService);
+    effect(() => {
+      const h = this.hadith();
+      untracked(() => void widgets.publish(h));
     });
     const update = () => {
       const now = new Date(); this.today.set(now);
