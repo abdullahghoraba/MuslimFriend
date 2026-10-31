@@ -1108,7 +1108,21 @@
     "source": "Rezitationen und Radio von mp3quran.net",
     "riwayah": "Überlieferung",
     "allRiwayat": "Alle Überlieferungen",
-    "tenQiraatHint": "Wähle eine Überlieferung, um die Rezitatoren zu sehen, die sie aufgenommen haben."
+    "tenQiraatHint": "Wähle eine Überlieferung, um die Rezitatoren zu sehen, die sie aufgenommen haben.",
+    "downloadAll": "Alle herunterladen",
+    "downloadAllTitle": "Die ganze Aufnahme herunterladen?",
+    "downloadAllText": "{{count}} Suren, etwa {{size}}. Am besten über WLAN; lass die App bis zum Ende geöffnet.",
+    "downloadAllTextNoSize": "{{count}} Suren. Am besten über WLAN; lass die App bis zum Ende geöffnet.",
+    "downloadingAll": "Lade {{done}} von {{total}}",
+    "stopDownloads": "Stopp",
+    "downloadBusy": "Eine andere Aufnahme wird gerade geladen.",
+    "downloadedCount": "{{count}} von {{total}} Suren auf diesem Telefon",
+    "checkingSize": "Größe wird ermittelt…",
+    "allDownloaded": "Alle Suren heruntergeladen",
+    "someFailed": "{{count}} Suren konnten nicht geladen werden. Tippe auf Alle herunterladen, um es erneut zu versuchen.",
+    "downloadsStopped": "Download gestoppt. Prüfe Verbindung und freien Speicher und versuche es erneut.",
+    "deleteAll": "Downloads löschen",
+    "deleteAllText": "Die {{count}} heruntergeladenen Suren dieser Aufnahme vom Telefon löschen?"
   },
   "editions": {
     "title": "Mushafs und Lesarten",

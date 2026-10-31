@@ -1108,7 +1108,21 @@
     "source": "Bacaan dan radio daripada mp3quran.net",
     "riwayah": "Riwayat",
     "allRiwayat": "Semua riwayat",
-    "tenQiraatHint": "Pilih riwayat untuk menyenaraikan qari yang merakamnya."
+    "tenQiraatHint": "Pilih riwayat untuk menyenaraikan qari yang merakamnya.",
+    "downloadAll": "Muat turun semua",
+    "downloadAllTitle": "Muat turun keseluruhan rakaman?",
+    "downloadAllText": "{{count}} surah, kira-kira {{size}}. Gunakan Wi-Fi jika boleh, dan biarkan aplikasi terbuka hingga selesai.",
+    "downloadAllTextNoSize": "{{count}} surah. Gunakan Wi-Fi jika boleh, dan biarkan aplikasi terbuka hingga selesai.",
+    "downloadingAll": "Memuat turun {{done}} daripada {{total}}",
+    "stopDownloads": "Henti",
+    "downloadBusy": "Rakaman lain sedang dimuat turun.",
+    "downloadedCount": "{{count}} daripada {{total}} surah ada pada telefon ini",
+    "checkingSize": "Menyemak saiz…",
+    "allDownloaded": "Semua surah telah dimuat turun",
+    "someFailed": "{{count}} surah gagal dimuat turun. Ketik Muat turun semua untuk cuba lagi.",
+    "downloadsStopped": "Muat turun terhenti. Semak sambungan dan ruang kosong, kemudian cuba lagi.",
+    "deleteAll": "Padam muat turun",
+    "deleteAllText": "Padam {{count}} surah yang dimuat turun daripada rakaman ini dari telefon?"
   },
   "editions": {
     "title": "Mushaf & Qiraat",

@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import {
-  AlertController, IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonSearchbar,
+  AlertController, IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonProgressBar, IonSearchbar,
   IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToolbar, ToastController,
 } from '@ionic/angular';
 import { SelectTextsDirective } from '../../shared/select-texts.directive';
@@ -9,6 +9,7 @@ import { AudioCatalogService, Moshaf } from '../../core/audio/audio-catalog.serv
 import { AudioPlayerService } from '../../core/audio/audio-player.service';
 import { QuranService } from '../../core/quran/quran.service';
 import { normalizeArabic } from '../../core/quran/quran-utils';
+import { intlLocale } from '../../core/models';
 import { ListenPlayerComponent } from './listen-player.component';
 
 /** One reciter: choose the recording (riwayah), then play or download any sura. */
@@ -16,7 +17,7 @@ import { ListenPlayerComponent } from './listen-player.component';
   selector: 'app-listen-reciter',
   imports: [
     TranslatePipe, ListenPlayerComponent, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonButton, IonContent,
-    IonFooter, IonIcon, IonSearchbar, IonSelect, SelectTextsDirective, IonSelectOption, IonSpinner,
+    IonFooter, IonIcon, IonProgressBar, IonSearchbar, IonSelect, SelectTextsDirective, IonSelectOption, IonSpinner,
   ],
   templateUrl: './listen-reciter.page.html',
   styleUrl: './listen.page.scss',
@@ -36,12 +37,18 @@ export class ListenReciterPage {
 
   readonly failed = signal(false);
   readonly query = signal('');
+  /** Asking the server for the sizes before a whole-recording download. */
+  readonly checking = signal(false);
   private readonly moshafId = signal<number | null>(null);
 
   readonly reciter = computed(() => (this.catalog.ready() ? this.catalog.reciter(Number(this.id())) : undefined));
   readonly moshaf = computed<Moshaf | undefined>(() => {
     const r = this.reciter();
     return r?.moshaf.find((m) => m.id === this.moshafId()) ?? r?.moshaf[0];
+  });
+  readonly savedCount = computed(() => {
+    const m = this.moshaf();
+    return m ? (this.player.downloaded()[m.id]?.length ?? 0) : 0;
   });
   readonly suras = computed(() => {
     const m = this.moshaf();
@@ -108,6 +115,62 @@ export class ListenReciterPage {
       position: 'top',
     });
     await toast.present();
+  }
+
+  /** Checks what is missing and its size, asks, then downloads the whole recording one sura after another. */
+  async downloadAll(): Promise<void> {
+    const m = this.moshaf();
+    if (!m || this.checking()) return;
+    this.checking.set(true);
+    const { suras, bytes } = await this.player.missing(m).finally(() => this.checking.set(false));
+    if (!suras.length) return;
+    const t = (key: string, params?: object) => this.translate.instant(key, params);
+    const count = this.number(suras.length);
+    const alert = await this.alerts.create({
+      header: t('listen.downloadAllTitle'),
+      message: bytes ? t('listen.downloadAllText', { count, size: this.size(bytes) }) : t('listen.downloadAllTextNoSize', { count }),
+      buttons: [
+        { text: t('common.cancel'), role: 'cancel' },
+        { text: t('listen.download'), role: 'confirm' },
+      ],
+    });
+    await alert.present();
+    if ((await alert.onDidDismiss()).role !== 'confirm') return;
+    const result = await this.player.downloadAll(m, suras);
+    const message =
+      result.stopped === 'failing' ? 'listen.downloadsStopped'
+      : result.stopped ? null
+      : result.failed ? 'listen.someFailed'
+      : 'listen.allDownloaded';
+    if (!message) return;
+    const toast = await this.toasts.create({ message: t(message, { count: this.number(result.failed) }), duration: 3500, position: 'top' });
+    await toast.present();
+  }
+
+  async deleteAll(): Promise<void> {
+    const m = this.moshaf();
+    if (!m) return;
+    const alert = await this.alerts.create({
+      header: this.translate.instant('listen.deleteAll'),
+      message: this.translate.instant('listen.deleteAllText', { count: this.number(this.savedCount()) }),
+      buttons: [
+        { text: this.translate.instant('common.cancel'), role: 'cancel' },
+        { text: this.translate.instant('common.delete'), role: 'destructive', handler: () => void this.player.deleteAll(m) },
+      ],
+    });
+    await alert.present();
+  }
+
+  private number(n: number): string {
+    return new Intl.NumberFormat(intlLocale(this.catalog.lang())).format(n);
+  }
+
+  /** 340 MB, 1.2 GB. */
+  private size(bytes: number): string {
+    const gb = bytes >= 1e9;
+    return new Intl.NumberFormat(intlLocale(this.catalog.lang()), {
+      style: 'unit', unit: gb ? 'gigabyte' : 'megabyte', maximumFractionDigits: gb ? 1 : 0,
+    }).format(gb ? bytes / 1e9 : Math.max(1, bytes / 1e6));
   }
 
   async remove(sura: number): Promise<void> {

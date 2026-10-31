@@ -39,7 +39,7 @@ describe('bundled audio catalogue', () => {
     const csp = readFileSync('src/index.html', 'utf8');
     expect(csp).toContain('https://*.mp3quran.net');
     expect(csp).toContain('https://backup.qurango.net');
-    expect(csp).toContain('https://www.mp3quran.net');
+    expect(csp.match(/connect-src[^;]*/)?.[0]).toContain('https://*.mp3quran.net');
     expect(csp).toContain('https://dorar.net');
   });
 });

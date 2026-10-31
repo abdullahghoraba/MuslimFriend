@@ -33,6 +33,36 @@
       } @else if (moshaf(); as m) {
         <p class="recording-name">{{ catalog.moshafName(m) }}</p>
       }
+      @if (player.canDownload && moshaf(); as m) {
+        <section class="card downloads" [attr.aria-label]="'listen.downloadAll' | translate">
+          @if (player.queue(); as q) {
+            @if (q.moshaf === m.id) {
+              <p role="status">{{ 'listen.downloadingAll' | translate: { done: q.done, total: q.total } }}</p>
+              <ion-progress-bar [value]="q.total ? (q.done + (player.download()?.progress ?? 0)) / q.total : 0" />
+              <ion-button fill="clear" size="small" (click)="player.cancelDownloadAll()">
+                <ion-icon slot="start" name="close-outline" aria-hidden="true" />{{ 'listen.stopDownloads' | translate }}
+              </ion-button>
+            } @else {
+              <p>{{ 'listen.downloadBusy' | translate }}</p>
+            }
+          } @else {
+            <p>{{ 'listen.downloadedCount' | translate: { count: savedCount(), total: catalog.suras(m).length } }}</p>
+            <div class="download-actions">
+              @if (savedCount() < catalog.suras(m).length) {
+                <ion-button fill="outline" size="small" [disabled]="checking() || !!player.download()" (click)="downloadAll()">
+                  @if (checking()) { <ion-spinner slot="start" name="crescent" /> } @else { <ion-icon slot="start" name="cloud-download-outline" aria-hidden="true" /> }
+                  {{ (checking() ? 'listen.checkingSize' : 'listen.downloadAll') | translate }}
+                </ion-button>
+              }
+              @if (savedCount() > 0) {
+                <ion-button fill="clear" size="small" color="danger" (click)="deleteAll()">
+                  <ion-icon slot="start" name="trash-outline" aria-hidden="true" />{{ 'listen.deleteAll' | translate }}
+                </ion-button>
+              }
+            </div>
+          }
+        </section>
+      }
       <div class="toolbar-row">
         <ion-searchbar [value]="query()" (ionInput)="query.set($event.detail.value ?? '')"
                        [placeholder]="'quran.filter' | translate" [attr.aria-label]="'quran.filter' | translate" />

@@ -102,6 +102,16 @@ ion-segment-button ion-icon { font-size: 1.2rem; }
 
 .recording-name { margin: 8px 4px; color: var(--app-muted); font-size: 0.85rem; }
 
+.downloads {
+  margin: 0 0 8px;
+  padding: 10px 14px 4px;
+
+  p { margin: 0 0 6px; color: var(--app-muted); font-size: 0.9rem; }
+  ion-progress-bar { margin-block: 4px; }
+}
+
+.download-actions { display: flex; flex-wrap: wrap; gap: 4px; }
+
 .toolbar-row {
   display: flex;
   flex-wrap: wrap;

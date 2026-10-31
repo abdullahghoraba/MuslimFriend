@@ -26,7 +26,8 @@ and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
   stations from mp3quran.net: search, filter by riwayah (18 riwayat of the ten qira'at), favourites, next sura plays on its own, repeat, sleep timer,
   playback in the background with the screen off (native Media3 player: notification, lock screen, headphone and
   Bluetooth controls; the mushaf's verse-by-verse recitation too),
-  suras downloaded for offline listening. The catalogue ships in `public/assets/audio/catalog.json`
+  suras downloaded for offline listening, one by one or the whole recording in one tap (size shown first, a queue that
+  retries, stops after 3 failures in a row, can be cancelled or deleted at once). The catalogue ships in `public/assets/audio/catalog.json`
   (`node scripts/fetch-audio-catalog.mjs` refreshes it); names in other languages are fetched weekly while the page is open.
 - **Athkar:** every category on one page with a counter per dhikr, sources and grades, add your own dhikr to any list,
   your own collections (e.g. Ruqyah) shown on Home, reorder anything, overlay over other apps, floating tasbih counter,

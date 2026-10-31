@@ -11,6 +11,13 @@ export type NowPlaying =
   | { kind: 'sura'; reciter: FullReciter; moshaf: Moshaf; sura: number }
   | { kind: 'radio'; radio: Radio };
 
+/** How a whole-recording download ended: null when every sura was tried. */
+export interface DownloadAllResult {
+  downloaded: number;
+  failed: number;
+  stopped: 'cancelled' | 'failing' | 'busy' | null;
+}
+
 interface Favorites {
   reciters: number[];
   radios: number[];
@@ -49,6 +56,9 @@ export class AudioPlayerService {
   readonly download = signal<{ moshaf: number; sura: number; progress: number } | null>(null);
   /** Downloaded suras by moshaf id. */
   readonly downloaded = signal<Record<number, number[]>>({});
+  /** Whole-recording download in progress: moshaf id, suras done of total, failures so far. */
+  readonly queue = signal<{ moshaf: number; done: number; total: number; failed: number } | null>(null);
+  private stopQueue = false;
   readonly canDownload = Capacitor.isNativePlatform();
   private loaded = false;
   private readonly native = inject(NativeAudio).enabled;
@@ -228,7 +238,65 @@ export class AudioPlayerService {
   }
 
   async downloadSura(m: Moshaf, sura: number): Promise<boolean> {
-    if (!this.canDownload || this.download()) return false;
+    if (!this.canDownload || this.download() || this.queue()) return false;
+    return this.fetchSura(m, sura);
+  }
+
+  /** The suras of [m] not on the phone yet, and their total size in bytes (0 when the server would not say). */
+  async missing(m: Moshaf): Promise<{ suras: number[]; bytes: number }> {
+    await this.refreshDownloaded(m);
+    const suras = this.catalog.suras(m).filter((s) => !this.isDownloaded(m, s));
+    const sizes: number[] = [];
+    // Only the headers: a few requests at a time.
+    for (let i = 0; i < suras.length; i += 8) {
+      sizes.push(...(await Promise.all(suras.slice(i, i + 8).map((s) =>
+        fetch(m.server + suraFile(s), { method: 'HEAD' }).then((r) => Number(r.headers.get('content-length')) || 0, () => 0)))));
+    }
+    return { suras, bytes: sizes.reduce((a, b) => a + b, 0) };
+  }
+
+  /**
+   * Downloads every sura of [m] not on the phone yet, one after another, each retried once. Stops after the
+   * current sura when cancelled, or after 3 failures in a row (offline, or the phone is full).
+   */
+  async downloadAll(m: Moshaf, suras?: number[]): Promise<DownloadAllResult> {
+    if (!this.canDownload || this.download() || this.queue()) return { downloaded: 0, failed: 0, stopped: 'busy' };
+    const todo = suras ?? (await this.missing(m)).suras;
+    this.stopQueue = false;
+    let downloaded = 0, failed = 0, inARow = 0;
+    this.queue.set({ moshaf: m.id, done: 0, total: todo.length, failed: 0 });
+    try {
+      for (const [i, sura] of todo.entries()) {
+        if (this.stopQueue) return { downloaded, failed, stopped: 'cancelled' };
+        const ok = (await this.fetchSura(m, sura)) || (!this.stopQueue && (await this.fetchSura(m, sura)));
+        if (ok) {
+          downloaded++;
+          inARow = 0;
+        } else {
+          failed++;
+          if (++inARow >= 3) return { downloaded, failed, stopped: 'failing' };
+        }
+        this.queue.set({ moshaf: m.id, done: i + 1, total: todo.length, failed });
+      }
+      return { downloaded, failed, stopped: null };
+    } finally {
+      this.queue.set(null);
+      await this.refreshDownloaded(m);
+    }
+  }
+
+  /** Stops the whole-recording download once the sura being saved is done. */
+  cancelDownloadAll(): void {
+    this.stopQueue = true;
+  }
+
+  /** Removes every downloaded sura of [m]. */
+  async deleteAll(m: Moshaf): Promise<void> {
+    await Filesystem.rmdir({ path: folder(m), directory: Directory.Data, recursive: true }).catch(() => {});
+    await this.refreshDownloaded(m);
+  }
+
+  private async fetchSura(m: Moshaf, sura: number): Promise<boolean> {
     this.download.set({ moshaf: m.id, sura, progress: 0 });
     const url = m.server + suraFile(sura);
     const partial = `${folder(m)}/${suraFile(sura)}.part`;
@@ -239,7 +307,7 @@ export class AudioPlayerService {
       await Filesystem.downloadFile({ url, path: partial, directory: Directory.Data, recursive: true, progress: true });
       // Renamed only once complete, so a cut-off download is never played as a whole sura.
       await Filesystem.rename({ from: partial, to: `${folder(m)}/${suraFile(sura)}`, directory: Directory.Data });
-      await this.refreshDownloaded(m);
+      this.downloaded.update((d) => ({ ...d, [m.id]: [...new Set([...(d[m.id] ?? []), sura])] }));
       return true;
     } catch {
       await Filesystem.deleteFile({ path: partial, directory: Directory.Data }).catch(() => {});

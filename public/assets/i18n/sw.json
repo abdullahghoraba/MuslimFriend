@@ -1108,7 +1108,21 @@
     "source": "Visomo na redio kutoka mp3quran.net",
     "riwayah": "Riwaya",
     "allRiwayat": "Riwaya zote",
-    "tenQiraatHint": "Chagua riwaya ili kuona wasomaji walioirekodi."
+    "tenQiraatHint": "Chagua riwaya ili kuona wasomaji walioirekodi.",
+    "downloadAll": "Pakua zote",
+    "downloadAllTitle": "Pakua kisomo chote?",
+    "downloadAllText": "Sura {{count}}, takriban {{size}}. Wi-Fi ni bora, na acha programu wazi hadi imalizike.",
+    "downloadAllTextNoSize": "Sura {{count}}. Wi-Fi ni bora, na acha programu wazi hadi imalizike.",
+    "downloadingAll": "Inapakua {{done}} kati ya {{total}}",
+    "stopDownloads": "Simamisha",
+    "downloadBusy": "Kisomo kingine kinapakuliwa.",
+    "downloadedCount": "Sura {{count}} kati ya {{total}} ziko kwenye simu hii",
+    "checkingSize": "Inakagua ukubwa…",
+    "allDownloaded": "Sura zote zimepakuliwa",
+    "someFailed": "Sura {{count}} hazikuweza kupakuliwa. Gusa Pakua zote kujaribu tena.",
+    "downloadsStopped": "Upakuaji umesimama. Kagua muunganisho na nafasi iliyo wazi, kisha ujaribu tena.",
+    "deleteAll": "Futa vilivyopakuliwa",
+    "deleteAllText": "Futa sura {{count}} zilizopakuliwa za kisomo hiki kutoka kwenye simu?"
   },
   "editions": {
     "title": "Misahafu na Qiraa",

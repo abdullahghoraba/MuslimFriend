@@ -1108,7 +1108,21 @@
     "source": "诵读和电台来自 mp3quran.net",
     "riwayah": "传述",
     "allRiwayat": "全部传述",
-    "tenQiraatHint": "选择一种传述，列出录制它的诵读者。"
+    "tenQiraatHint": "选择一种传述，列出录制它的诵读者。",
+    "downloadAll": "全部下载",
+    "downloadAllTitle": "下载整套诵读？",
+    "downloadAllText": "共 {{count}} 章，约 {{size}}。建议使用 Wi-Fi，下载完成前请保持应用打开。",
+    "downloadAllTextNoSize": "共 {{count}} 章。建议使用 Wi-Fi，下载完成前请保持应用打开。",
+    "downloadingAll": "正在下载 {{done}}/{{total}}",
+    "stopDownloads": "停止",
+    "downloadBusy": "另一套诵读正在下载。",
+    "downloadedCount": "本机已有 {{count}}/{{total}} 章",
+    "checkingSize": "正在计算大小…",
+    "allDownloaded": "所有章节已下载",
+    "someFailed": "有 {{count}} 章未能下载。点按“全部下载”重试。",
+    "downloadsStopped": "下载已停止。请检查网络和剩余空间后重试。",
+    "deleteAll": "删除下载",
+    "deleteAllText": "从手机删除这套诵读已下载的 {{count}} 章？"
   },
   "editions": {
     "title": "经本与诵读法",

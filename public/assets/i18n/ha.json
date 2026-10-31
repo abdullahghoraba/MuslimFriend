@@ -1108,7 +1108,21 @@
     "source": "Karatuttuka da rediyo daga mp3quran.net",
     "riwayah": "Riwaya",
     "allRiwayat": "Duk riwayoyi",
-    "tenQiraatHint": "Zaɓi riwaya don ganin makarantan da suka naɗa ta."
+    "tenQiraatHint": "Zaɓi riwaya don ganin makarantan da suka naɗa ta.",
+    "downloadAll": "Sauke duka",
+    "downloadAllTitle": "A sauke karatun gaba ɗaya?",
+    "downloadAllText": "Surori {{count}}, kusan {{size}}. Wi-Fi ya fi kyau, kuma ka bar manhajar a buɗe har ta gama.",
+    "downloadAllTextNoSize": "Surori {{count}}. Wi-Fi ya fi kyau, kuma ka bar manhajar a buɗe har ta gama.",
+    "downloadingAll": "Ana saukewa {{done}} cikin {{total}}",
+    "stopDownloads": "Tsaya",
+    "downloadBusy": "Ana saukar wani karatun yanzu.",
+    "downloadedCount": "Surori {{count}} cikin {{total}} suna wannan wayar",
+    "checkingSize": "Ana duba girma…",
+    "allDownloaded": "An sauke dukan surori",
+    "someFailed": "Ba a iya sauke surori {{count}} ba. Danna Sauke duka don sake gwadawa.",
+    "downloadsStopped": "Saukewa ta tsaya. Duba haɗin intanet da sararin ajiya, sannan a sake gwadawa.",
+    "deleteAll": "Goge abubuwan da aka sauke",
+    "deleteAllText": "A goge surori {{count}} da aka sauke na wannan karatun daga wayar?"
   },
   "editions": {
     "title": "Mushafai da Kira'o'i",

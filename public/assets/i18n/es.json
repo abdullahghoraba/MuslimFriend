@@ -1108,7 +1108,21 @@
     "source": "Recitaciones y radio de mp3quran.net",
     "riwayah": "Transmisión",
     "allRiwayat": "Todas las transmisiones",
-    "tenQiraatHint": "Elige una transmisión para ver los recitadores que la grabaron."
+    "tenQiraatHint": "Elige una transmisión para ver los recitadores que la grabaron.",
+    "downloadAll": "Descargar todo",
+    "downloadAllTitle": "¿Descargar toda la grabación?",
+    "downloadAllText": "{{count}} suras, unos {{size}}. Mejor con Wi-Fi; mantén la app abierta hasta que termine.",
+    "downloadAllTextNoSize": "{{count}} suras. Mejor con Wi-Fi; mantén la app abierta hasta que termine.",
+    "downloadingAll": "Descargando {{done}} de {{total}}",
+    "stopDownloads": "Detener",
+    "downloadBusy": "Se está descargando otra grabación.",
+    "downloadedCount": "{{count}} de {{total}} suras en este teléfono",
+    "checkingSize": "Calculando el tamaño…",
+    "allDownloaded": "Todas las suras descargadas",
+    "someFailed": "No se pudieron descargar {{count}} suras. Toca Descargar todo para reintentar.",
+    "downloadsStopped": "Descarga detenida. Revisa la conexión y el espacio libre e inténtalo de nuevo.",
+    "deleteAll": "Borrar descargas",
+    "deleteAllText": "¿Borrar del teléfono las {{count}} suras descargadas de esta grabación?"
   },
   "editions": {
     "title": "Mushafs y lecturas",

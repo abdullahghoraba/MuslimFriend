@@ -1108,7 +1108,21 @@
     "source": "Qiroatlar va radio mp3quran.net dan",
     "riwayah": "Rivoyat",
     "allRiwayat": "Barcha rivoyatlar",
-    "tenQiraatHint": "Uni yozib olgan qorilarni ko'rish uchun rivoyatni tanlang."
+    "tenQiraatHint": "Uni yozib olgan qorilarni ko'rish uchun rivoyatni tanlang.",
+    "downloadAll": "Hammasini yuklab olish",
+    "downloadAllTitle": "Butun qiroat yuklab olinsinmi?",
+    "downloadAllText": "{{count}} ta sura, taxminan {{size}}. Wi-Fi ma'qul; tugaguncha ilovani ochiq qoldiring.",
+    "downloadAllTextNoSize": "{{count}} ta sura. Wi-Fi ma'qul; tugaguncha ilovani ochiq qoldiring.",
+    "downloadingAll": "Yuklanmoqda: {{done}} / {{total}}",
+    "stopDownloads": "To'xtatish",
+    "downloadBusy": "Boshqa qiroat yuklanmoqda.",
+    "downloadedCount": "Bu telefonda {{total}} tadan {{count}} ta sura bor",
+    "checkingSize": "Hajm aniqlanmoqda…",
+    "allDownloaded": "Barcha suralar yuklab olindi",
+    "someFailed": "{{count}} ta sura yuklanmadi. Qayta urinish uchun «Hammasini yuklab olish»ni bosing.",
+    "downloadsStopped": "Yuklash to'xtadi. Internet va bo'sh joyni tekshirib, qayta urinib ko'ring.",
+    "deleteAll": "Yuklanganlarni o'chirish",
+    "deleteAllText": "Ushbu qiroatning yuklangan {{count}} ta surasi telefondan o'chirilsinmi?"
   },
   "editions": {
     "title": "Mushaflar va qiroatlar",

@@ -29,15 +29,38 @@ const native = vi.hoisted(() => {
     },
   };
 });
+/** The app's data folder: downloaded suras, and how many more times each sura's download fails. */
+const disk = vi.hoisted(() => ({ files: new Set<string>(), failures: new Map<number, number>(), onDownload: (_sura: number) => {} }));
 vi.mock('@capacitor/filesystem', () => ({
   Directory: { Data: 'DATA' },
   Filesystem: {
     readdir: vi.fn(async ({ path }: { path: string }) => {
-      if (path === 'listen/7') return { files: [{ name: '002.mp3' }] };
       if (path.startsWith('audio/')) return { files: [{ name: '002002.mp3' }] };
-      throw new Error('none');
+      const files = [...disk.files].filter((f) => f.startsWith(path + '/')).map((f) => ({ name: f.slice(path.length + 1) }));
+      if (!files.length) throw new Error('none');
+      return { files };
     }),
     getUri: vi.fn(async ({ path }: { path: string }) => ({ uri: 'file:///data/' + path })),
+    addListener: vi.fn(async () => ({ remove: async () => {} })),
+    downloadFile: vi.fn(async ({ url, path }: { url: string; path: string }) => {
+      const sura = Number(/(\d{3})\.mp3$/.exec(url)![1]);
+      disk.onDownload(sura);
+      const left = disk.failures.get(sura) ?? 0;
+      if (left > 0) {
+        disk.failures.set(sura, left - 1);
+        throw new Error('connection reset');
+      }
+      disk.files.add(path);
+      return { path };
+    }),
+    rename: vi.fn(async ({ from, to }: { from: string; to: string }) => {
+      disk.files.delete(from);
+      disk.files.add(to);
+    }),
+    deleteFile: vi.fn(async ({ path }: { path: string }) => void disk.files.delete(path)),
+    rmdir: vi.fn(async ({ path }: { path: string }) => {
+      for (const f of [...disk.files]) if (f.startsWith(path + '/')) disk.files.delete(f);
+    }),
   },
 }));
 vi.mock('@capacitor/preferences', () => ({
@@ -68,6 +91,9 @@ describe('native Quran player (Android)', () => {
   beforeEach(() => {
     native.listeners.length = 0;
     nativePlatform = vi.spyOn(Capacitor, 'isNativePlatform').mockReturnValue(true);
+    disk.files = new Set(['listen/7/002.mp3']);
+    disk.failures.clear();
+    disk.onDownload = () => {};
     Object.values(native.plugin).forEach((f) => f.mockClear());
     TestBed.configureTestingModule({
       providers: [
@@ -124,5 +150,60 @@ describe('native Quran player (Android)', () => {
     expect(native.plugin.setRepeat).toHaveBeenCalledWith({ repeat: 'all' });
     emit({ session: 'mushaf', index: -1 });
     expect(recitation.current()).toBeNull();
+  });
+});
+
+describe('downloading a whole recording', () => {
+  let nativePlatform: { mockRestore(): void };
+  afterEach(() => {
+    nativePlatform.mockRestore();
+    vi.unstubAllGlobals();
+  });
+  beforeEach(() => {
+    nativePlatform = vi.spyOn(Capacitor, 'isNativePlatform').mockReturnValue(true);
+    disk.files = new Set(['listen/7/002.mp3']);
+    disk.failures.clear();
+    disk.onDownload = () => {};
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(null, { headers: { 'content-length': '1000000' } })));
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: QuranService, useValue: quran },
+        { provide: AudioCatalogService, useValue: catalog },
+        { provide: NativeAudio, useValue: { enabled: true, player: native.plugin } },
+      ],
+    });
+  });
+
+  it('finds the suras not on the phone and their total size', async () => {
+    const player = TestBed.inject(AudioPlayerService);
+    expect(await player.missing(moshaf)).toEqual({ suras: [1, 3], bytes: 2_000_000 });
+  });
+
+  it('downloads them one after another, retrying a dropped one once', async () => {
+    const player = TestBed.inject(AudioPlayerService);
+    disk.failures.set(3, 1);
+    const seen: (number | undefined)[] = [];
+    disk.onDownload = () => seen.push(player.queue()?.done);
+    expect(await player.downloadAll(moshaf)).toEqual({ downloaded: 2, failed: 0, stopped: null });
+    expect(seen).toEqual([0, 1, 1]);
+    expect(player.queue()).toBeNull();
+    expect([1, 2, 3].every((s) => player.isDownloaded(moshaf, s))).toBe(true);
+    expect([...disk.files].some((f) => f.endsWith('.part'))).toBe(false);
+  });
+
+  it('gives up after three suras fail in a row (offline or the phone is full)', async () => {
+    const player = TestBed.inject(AudioPlayerService);
+    for (const s of [4, 5, 6, 7]) disk.failures.set(s, 9);
+    expect(await player.downloadAll(moshaf, [4, 5, 6, 7])).toEqual({ downloaded: 0, failed: 3, stopped: 'failing' });
+  });
+
+  it('stops after the sura being saved when cancelled, and can delete everything', async () => {
+    const player = TestBed.inject(AudioPlayerService);
+    disk.onDownload = () => player.cancelDownloadAll();
+    expect(await player.downloadAll(moshaf)).toEqual({ downloaded: 1, failed: 0, stopped: 'cancelled' });
+    expect(player.isDownloaded(moshaf, 1)).toBe(true);
+    expect(player.isDownloaded(moshaf, 3)).toBe(false);
+    await player.deleteAll(moshaf);
+    expect(player.downloaded()[moshaf.id]).toEqual([]);
   });
 });

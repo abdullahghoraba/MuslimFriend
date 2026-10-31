@@ -1108,7 +1108,21 @@
     "source": "Recitations and radio from mp3quran.net",
     "riwayah": "Riwayah",
     "allRiwayat": "All riwayat",
-    "tenQiraatHint": "Choose a riwayah to list the reciters who recorded it."
+    "tenQiraatHint": "Choose a riwayah to list the reciters who recorded it.",
+    "downloadAll": "Download all",
+    "downloadAllTitle": "Download the whole recording?",
+    "downloadAllText": "{{count}} suras, about {{size}}. Wi-Fi is best, and keep the app open until it finishes.",
+    "downloadAllTextNoSize": "{{count}} suras. Wi-Fi is best, and keep the app open until it finishes.",
+    "downloadingAll": "Downloading {{done}} of {{total}}",
+    "stopDownloads": "Stop",
+    "downloadBusy": "Another recording is downloading.",
+    "downloadedCount": "{{count}} of {{total}} suras on this phone",
+    "checkingSize": "Checking size…",
+    "allDownloaded": "All suras downloaded",
+    "someFailed": "{{count}} suras could not be downloaded. Tap Download all to try again.",
+    "downloadsStopped": "Downloading stopped. Check the connection and free space, then try again.",
+    "deleteAll": "Delete downloads",
+    "deleteAllText": "Remove the {{count}} downloaded suras of this recording from the phone?"
   },
   "editions": {
     "title": "Mushafs & Qira'at",

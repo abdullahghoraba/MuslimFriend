@@ -1108,7 +1108,21 @@
     "source": "Tilavetler ve radyo: mp3quran.net",
     "riwayah": "Rivayet",
     "allRiwayat": "Tüm rivayetler",
-    "tenQiraatHint": "Kaydeden kârileri listelemek için bir rivayet seçin."
+    "tenQiraatHint": "Kaydeden kârileri listelemek için bir rivayet seçin.",
+    "downloadAll": "Tümünü indir",
+    "downloadAllTitle": "Kaydın tamamı indirilsin mi?",
+    "downloadAllText": "{{count}} sure, yaklaşık {{size}}. Wi-Fi tercih edin ve bitene kadar uygulamayı açık tutun.",
+    "downloadAllTextNoSize": "{{count}} sure. Wi-Fi tercih edin ve bitene kadar uygulamayı açık tutun.",
+    "downloadingAll": "İndiriliyor: {{done}} / {{total}}",
+    "stopDownloads": "Durdur",
+    "downloadBusy": "Başka bir kayıt indiriliyor.",
+    "downloadedCount": "Bu telefonda {{total}} sureden {{count}} tanesi var",
+    "checkingSize": "Boyut hesaplanıyor…",
+    "allDownloaded": "Tüm sureler indirildi",
+    "someFailed": "{{count}} sure indirilemedi. Yeniden denemek için Tümünü indir'e dokunun.",
+    "downloadsStopped": "İndirme durdu. Bağlantıyı ve boş alanı kontrol edip yeniden deneyin.",
+    "deleteAll": "İndirilenleri sil",
+    "deleteAllText": "Bu kaydın indirilen {{count}} suresi telefondan silinsin mi?"
   },
   "editions": {
     "title": "Mushaflar ve Kıraatler",

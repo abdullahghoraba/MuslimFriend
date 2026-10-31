@@ -1108,7 +1108,21 @@
     "source": "तिलावतें और रेडियो mp3quran.net से",
     "riwayah": "रिवायत",
     "allRiwayat": "सभी रिवायतें",
-    "tenQiraatHint": "रिवायत चुनें ताकि उसे रिकॉर्ड करने वाले क़ारी दिखें।"
+    "tenQiraatHint": "रिवायत चुनें ताकि उसे रिकॉर्ड करने वाले क़ारी दिखें।",
+    "downloadAll": "सब डाउनलोड करें",
+    "downloadAllTitle": "पूरी तिलावत डाउनलोड करें?",
+    "downloadAllText": "{{count}} सूरतें, लगभग {{size}}। Wi-Fi बेहतर है, और पूरा होने तक ऐप खुला रखें।",
+    "downloadAllTextNoSize": "{{count}} सूरतें। Wi-Fi बेहतर है, और पूरा होने तक ऐप खुला रखें।",
+    "downloadingAll": "डाउनलोड हो रहा है: {{total}} में से {{done}}",
+    "stopDownloads": "रोकें",
+    "downloadBusy": "एक और तिलावत डाउनलोड हो रही है।",
+    "downloadedCount": "इस फ़ोन पर {{total}} में से {{count}} सूरतें",
+    "checkingSize": "आकार देखा जा रहा है…",
+    "allDownloaded": "सभी सूरतें डाउनलोड हो गईं",
+    "someFailed": "{{count}} सूरतें डाउनलोड नहीं हो सकीं। दोबारा कोशिश के लिए «सब डाउनलोड करें» दबाएँ।",
+    "downloadsStopped": "डाउनलोड रुक गया। कनेक्शन और खाली जगह जाँचें, फिर दोबारा कोशिश करें।",
+    "deleteAll": "डाउनलोड हटाएँ",
+    "deleteAllText": "इस तिलावत की डाउनलोड की गई {{count}} सूरतें फ़ोन से हटाएँ?"
   },
   "editions": {
     "title": "मुसहफ़ और क़िराअत",
