@@ -206,19 +206,18 @@ ion-toolbar ion-buttons ion-button.in-toolbar.in-buttons.button-has-icon-only {
 }
 
 // Colour-tajweed mushaf: the Dar al-Ma'rifah colours used by quran.com, lightened on the night theme.
-.tj-ham_wasl, .tj-laam_shamsiyah, .tj-slnt, .tj-idgham_mutajanisayn, .tj-idgham_mutaqaribayn { --tj: #9a9a9a; }
-.tj-madda_normal { --tj: #537fff; }
-.tj-madda_permissible { --tj: #4050ff; }
-.tj-madda_obligatory { --tj: #2144c1; }
-.tj-madda_necessary { --tj: #000ebc; }
-.tj-qalaqah { --tj: #dd0008; }
-.tj-ikhafa_shafawi { --tj: #d500b7; }
-.tj-ikhafa { --tj: #9400a8; }
-.tj-idgham_shafawi { --tj: #58b800; }
-.tj-iqlab { --tj: #26bffd; }
-.tj-idgham_ghunnah { --tj: #169777; }
-.tj-idgham_wo_ghunnah { --tj: #169200; }
-.tj-ghunnah { --tj: #ff7e1e; }
+// The colours of the familiar tajweed mushaf (Dar al-Ma'rifa): madd in reds, ghunnah family in greens, qalqalah blue,
+// letters not pronounced grey.
+.tj-ham_wasl, .tj-laam_shamsiyah, .tj-slnt, .tj-idgham_wo_ghunnah, .tj-idgham_mutajanisayn, .tj-idgham_mutaqaribayn { --tj: #9a9a9a; }
+.tj-madda_necessary { --tj: #9b0016; }
+.tj-madda_obligatory { --tj: #e0001b; }
+.tj-madda_permissible { --tj: #ef7a00; }
+.tj-madda_normal { --tj: #b8860b; }
+.tj-ghunnah { --tj: #13a10e; }
+.tj-ikhafa, .tj-ikhafa_shafawi { --tj: #2e9e2a; }
+.tj-idgham_ghunnah, .tj-idgham_shafawi { --tj: #4a9e3a; }
+.tj-iqlab { --tj: #0f9a7a; }
+.tj-qalaqah { --tj: #1878d6; }
 [class^='tj-'] { color: var(--tj); }
 .theme-night [class^='tj-'] { color: color-mix(in srgb, var(--tj) 55%, #fff); }
 .tj-legend {
