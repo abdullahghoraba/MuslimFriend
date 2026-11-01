@@ -7,7 +7,8 @@
     "tasbih": "Tasbih",
     "myAthkar": "Mis adhkar",
     "settings": "Ajustes",
-    "quran": "Corán"
+    "quran": "Corán",
+    "more": "Más"
   },
   "common": {
     "save": "Guardar",
@@ -1149,9 +1150,10 @@
     "desc": {
       "hafs": "El mushaf de Medina incluido, 604 páginas, con todas las funciones: tafsir, recitación, marcadores y notas.",
       "tajweed": "Las páginas del mushaf de Medina con las reglas del tajwid en color (madd, gunna, ijfa, idgam, iqlab, qalqala); todas las funciones siguen activas.",
-      "images": "El mushaf egipcio Shamarly (522 páginas) tal como se imprimió. Las páginas se cargan de internet, o guárdalas todas sin conexión.",
+      "images": "El mushaf egipcio Shamarly: el texto en sus 522 páginas, cada aleya aparte y a cualquier tamaño. El botón de imagen muestra la página escaneada (en línea).",
       "riwaya": "Lee el Corán en esta transmisión, con su propia grafía y numeración de páginas."
-    }
+    },
+    "scanned": "Página escaneada"
   },
   "hadith": {
     "title": "Hadices",
@@ -1333,7 +1335,6 @@
   },
   "zakat": {
     "title": "Calculadora de zakat",
-    "needPrice": "Escribe el precio de hoy del metal del nisab para ver el resultado.",
     "due": "Zakat a pagar",
     "ofTotal": "2,5 % de {{total}}",
     "notDue": "No debes zakat",
@@ -1343,22 +1344,48 @@
     "goldNisab": "Oro ({{g}} g)",
     "nisabHelp": "El nisab de la plata es menor: más personas pagan y los pobres se benefician más; muchos sabios lo prefieren y otros usan el oro.",
     "currency": "Moneda",
-    "currencyHint": "p. ej. EUR",
-    "prices": "Precios de hoy",
-    "goldPrice": "Precio de 1 g de oro de 24 quilates",
-    "silverPrice": "Precio de 1 g de plata",
-    "wealth": "Lo que posees",
-    "cash": "Efectivo y ahorros bancarios",
-    "gold": "Oro (gramos)",
+    "gold": "Oro de {{k}} quilates, 1 g",
     "karat": "Quilates del oro",
-    "silver": "Plata (gramos)",
-    "trade": "Mercancía para la venta (valor de venta)",
-    "receivables": "Deudas a tu favor que esperas cobrar",
-    "debtsTitle": "Deudas",
-    "debts": "Deudas que debes pagar ya",
+    "silver": "Plata, 1 g",
     "noteHawl": "La zakat se debe cuando tus bienes se mantienen en el nisab o por encima durante un año lunar (hégira) completo.",
     "noteJewellery": "Las joyas de oro y plata que usan las mujeres: hay diferencia de opinión. Los hanafíes exigen zakat, la mayoría no. Inclúyelas si sigues la primera opinión.",
     "noteScholar": "Es una guía para casos comunes; para un negocio, acciones o deudas complejas, consulta a un sabio. Nada de lo que escribes sale de tu teléfono.",
-    "clear": "Borrar las cantidades"
+    "clear": "Quitar todos los bienes",
+    "properties": "Tus bienes",
+    "add": "Añadir un bien",
+    "labelPlaceholder": "Nombre (opcional)",
+    "amount": "Cantidad",
+    "grams": "Gramos",
+    "remove": "Quitar",
+    "empty": "Añade lo que posees (dinero, oro, plata, mercancía…) y tus deudas; la zakat se calcula al instante.",
+    "unknownCurrency": "No hay tipo de cambio para esta moneda",
+    "pricesTitle": "País y precios de hoy",
+    "country": "País",
+    "pricesOf": "Precios del {{date}}.",
+    "offline": "Sin conexión: precios del {{date}}.",
+    "priceNote": "Precio del mercado mundial en tu moneda; un joyero puede añadir la hechura.",
+    "refresh": "Actualizar precios",
+    "noPrices": "Conéctate a internet una vez para obtener los precios del oro y la plata de hoy.",
+    "myPrices": "Usar mis propios precios",
+    "myGold": "Mi precio por 1 g de oro de 24 quilates",
+    "mySilver": "Mi precio por 1 g de plata",
+    "kinds": {
+      "cash": "Efectivo",
+      "bank": "Cuenta bancaria",
+      "gold": "Oro",
+      "silver": "Plata",
+      "trade": "Mercancía",
+      "receivable": "Lo que me deben",
+      "stocks": "Acciones y fondos",
+      "other": "Otros bienes",
+      "debt": "Una deuda mía"
+    }
+  },
+  "more": {
+    "title": "Más",
+    "hadith": "Hadiz",
+    "quran": "Corán",
+    "athkar": "Recuerdos",
+    "tools": "Herramientas"
   }
 }

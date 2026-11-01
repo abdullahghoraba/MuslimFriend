@@ -7,7 +7,8 @@
     "tasbih": "Tasbih",
     "myAthkar": "Mes adhkar",
     "settings": "Réglages",
-    "quran": "Coran"
+    "quran": "Coran",
+    "more": "Plus"
   },
   "common": {
     "save": "Enregistrer",
@@ -1149,9 +1150,10 @@
     "desc": {
       "hafs": "Le mushaf de Médine intégré, 604 pages, avec toutes les fonctions : tafsir, récitation, signets et notes.",
       "tajweed": "Les pages du mushaf de Médine avec les règles du tajwid en couleur (madd, ghunna, ikhfa, idgham, iqlab, qalqala) ; toutes les fonctions restent disponibles.",
-      "images": "Le mushaf égyptien Shamarly (522 pages) tel qu'imprimé. Les pages se chargent depuis Internet, ou enregistrez-les toutes hors ligne.",
+      "images": "Le mushaf égyptien Shamarly : le texte sur ses 522 pages, chaque verset à part, à toute taille. Le bouton image montre la page scannée (en ligne).",
       "riwaya": "Lisez le Coran dans cette transmission, avec sa graphie et sa pagination propres."
-    }
+    },
+    "scanned": "Page scannée"
   },
   "hadith": {
     "title": "Hadiths",
@@ -1333,7 +1335,6 @@
   },
   "zakat": {
     "title": "Calcul de la zakat",
-    "needPrice": "Saisissez le prix du jour du métal du nisab pour voir le résultat.",
     "due": "Zakat due",
     "ofTotal": "2,5 % de {{total}}",
     "notDue": "Pas de zakat due",
@@ -1343,22 +1344,48 @@
     "goldNisab": "Or ({{g}} g)",
     "nisabHelp": "Le nisab de l'argent est plus bas : plus de gens paient et les pauvres en profitent davantage ; beaucoup de savants le privilégient, d'autres retiennent l'or.",
     "currency": "Devise",
-    "currencyHint": "ex. EUR",
-    "prices": "Prix du jour",
-    "goldPrice": "Prix d'1 g d'or 24 carats",
-    "silverPrice": "Prix d'1 g d'argent",
-    "wealth": "Ce que vous possédez",
-    "cash": "Liquidités et épargne bancaire",
-    "gold": "Or (grammes)",
+    "gold": "Or {{k}} carats, 1 g",
     "karat": "Carats de l'or",
-    "silver": "Argent (grammes)",
-    "trade": "Marchandises (valeur de vente)",
-    "receivables": "Créances que vous espérez récupérer",
-    "debtsTitle": "Dettes",
-    "debts": "Dettes à payer maintenant",
+    "silver": "Argent, 1 g",
     "noteHawl": "La zakat est due quand vos biens restent au niveau du nisab ou au-dessus pendant une année lunaire (hégirienne) complète.",
     "noteJewellery": "Les bijoux en or et en argent portés par les femmes : les savants divergent. Les hanafites imposent la zakat, la majorité non. Incluez-les si vous suivez le premier avis.",
     "noteScholar": "Ceci est un guide pour les cas courants ; pour une entreprise, des actions ou des dettes complexes, demandez à un savant. Rien de ce que vous saisissez ne quitte votre téléphone.",
-    "clear": "Effacer les montants"
+    "clear": "Supprimer tous les biens",
+    "properties": "Vos biens",
+    "add": "Ajouter un bien",
+    "labelPlaceholder": "Nom (facultatif)",
+    "amount": "Montant",
+    "grams": "Grammes",
+    "remove": "Supprimer",
+    "empty": "Ajoutez ce que vous possédez (argent, or, argent métal, marchandises…) et vos dettes ; la zakat est calculée aussitôt.",
+    "unknownCurrency": "Pas de taux pour cette devise",
+    "pricesTitle": "Pays et prix du jour",
+    "country": "Pays",
+    "pricesOf": "Prix du {{date}}.",
+    "offline": "Hors ligne : prix du {{date}}.",
+    "priceNote": "Prix du marché mondial dans votre devise ; un bijoutier peut ajouter la façon.",
+    "refresh": "Mettre à jour les prix",
+    "noPrices": "Connectez-vous une fois à Internet pour obtenir les prix de l'or et de l'argent du jour.",
+    "myPrices": "Utiliser mes propres prix",
+    "myGold": "Mon prix pour 1 g d'or 24 carats",
+    "mySilver": "Mon prix pour 1 g d'argent",
+    "kinds": {
+      "cash": "Espèces",
+      "bank": "Compte bancaire",
+      "gold": "Or",
+      "silver": "Argent",
+      "trade": "Marchandises",
+      "receivable": "Créances",
+      "stocks": "Actions et fonds",
+      "other": "Autres biens",
+      "debt": "Une dette que je dois"
+    }
+  },
+  "more": {
+    "title": "Plus",
+    "hadith": "Hadith",
+    "quran": "Coran",
+    "athkar": "Invocations",
+    "tools": "Outils"
   }
 }

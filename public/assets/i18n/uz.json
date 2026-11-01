@@ -7,7 +7,8 @@
     "tasbih": "Tasbeh",
     "myAthkar": "Zikrlarim",
     "settings": "Sozlamalar",
-    "quran": "Qur'on"
+    "quran": "Qur'on",
+    "more": "Yana"
   },
   "common": {
     "save": "Saqlash",
@@ -1149,9 +1150,10 @@
     "desc": {
       "hafs": "Ilovadagi Madina mushafi, 604 sahifa, barcha imkoniyatlar bilan: tafsir, qiroat, xatcho'plar va eslatmalar.",
       "tajweed": "Tajvid qoidalari rangli Madina mushafi sahifalari (mad, g'unna, ixfo, idg'om, iqlob, qalqala); barcha imkoniyatlar ishlaydi.",
-      "images": "Misr Shamarliy mushafi (522 sahifa) bosma ko'rinishida. Sahifalar internetdan yuklanadi yoki hammasini oflayn saqlang.",
+      "images": "Misrning Shamarliy mushafi: matn uning 522 sahifasida, har bir oyat alohida va istalgan o'lchamda. Rasm tugmasi skanerlangan sahifani ko'rsatadi (onlayn).",
       "riwaya": "Qur'onni shu rivoyatda, o'z imlosi va sahifa raqamlari bilan o'qing."
-    }
+    },
+    "scanned": "Skanerlangan sahifa"
   },
   "hadith": {
     "title": "Hadislar",
@@ -1333,7 +1335,6 @@
   },
   "zakat": {
     "title": "Zakot kalkulyatori",
-    "needPrice": "Natijani ko'rish uchun nisob metallining bugungi narxini kiriting.",
     "due": "To'lanadigan zakot",
     "ofTotal": "{{total}} ning 2,5 foizi",
     "notDue": "Zakot vojib emas",
@@ -1343,22 +1344,48 @@
     "goldNisab": "Oltin ({{g}} g)",
     "nisabHelp": "Kumush nisobi pastroq, shuning uchun ko'proq odam zakot beradi va kambag'allar ko'proq foyda ko'radi; ko'p olimlar uni afzal biladi, ba'zilari oltinni oladi.",
     "currency": "Valyuta",
-    "currencyHint": "masalan UZS",
-    "prices": "Bugungi narxlar",
-    "goldPrice": "24 karatli 1 g oltin narxi",
-    "silverPrice": "1 g kumush narxi",
-    "wealth": "Mulkingiz",
-    "cash": "Naqd pul va bankdagi jamg'arma",
-    "gold": "Oltin (gramm)",
+    "gold": "{{k}} karatli oltin, 1 g",
     "karat": "Oltin karati",
-    "silver": "Kumush (gramm)",
-    "trade": "Savdo mollari (sotish narxi)",
-    "receivables": "Qaytishini kutayotgan qarzlaringiz",
-    "debtsTitle": "Qarzlar",
-    "debts": "Hozir to'lanishi kerak bo'lgan qarzlar",
+    "silver": "Kumush, 1 g",
     "noteHawl": "Mol to'liq bir qamariy (hijriy) yil davomida nisob yoki undan ko'p bo'lsa, zakot vojib bo'ladi.",
     "noteJewellery": "Ayollar taqadigan oltin va kumush zeb-ziynat haqida ixtilof bor: hanafiylar zakotni vojib deydi, ko'pchilik demaydi. Birinchi fikrga ergashsangiz, qo'shing.",
     "noteScholar": "Bu oddiy holatlar uchun yo'riqnoma; tijorat, aksiyalar yoki murakkab qarzlar bo'yicha olimdan so'rang. Kiritganlaringiz telefoningizdan chiqmaydi.",
-    "clear": "Summalarni tozalash"
+    "clear": "Barcha mulkni o'chirish",
+    "properties": "Mulkingiz",
+    "add": "Mulk qo'shish",
+    "labelPlaceholder": "Nomi (ixtiyoriy)",
+    "amount": "Miqdor",
+    "grams": "Gramm",
+    "remove": "O'chirish",
+    "empty": "Mulkingizni (pul, oltin, kumush, mollar…) va qarzlaringizni qo'shing; zakot darhol hisoblanadi.",
+    "unknownCurrency": "Bu valyuta uchun kurs yo'q",
+    "pricesTitle": "Mamlakat va bugungi narxlar",
+    "country": "Mamlakat",
+    "pricesOf": "{{date}} narxlari.",
+    "offline": "Oflayn: {{date}} narxlari.",
+    "priceNote": "Jahon bozori narxi sizning valyutangizda; zargar ish haqini qo'shishi mumkin.",
+    "refresh": "Narxlarni yangilash",
+    "noPrices": "Bugungi oltin va kumush narxlarini olish uchun bir marta internetga ulaning.",
+    "myPrices": "O'z narxlarimdan foydalanish",
+    "myGold": "24 karatli 1 g oltin uchun narxim",
+    "mySilver": "1 g kumush uchun narxim",
+    "kinds": {
+      "cash": "Naqd pul",
+      "bank": "Bank hisobi",
+      "gold": "Oltin",
+      "silver": "Kumush",
+      "trade": "Savdo mollari",
+      "receivable": "Mening haqqim (qarzga berganim)",
+      "stocks": "Aksiya va fondlar",
+      "other": "Boshqa mol",
+      "debt": "Mening qarzim"
+    }
+  },
+  "more": {
+    "title": "Yana",
+    "hadith": "Hadis",
+    "quran": "Qur'on",
+    "athkar": "Zikrlar",
+    "tools": "Vositalar"
   }
 }

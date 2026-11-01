@@ -1,0 +1,22 @@
+.result { margin: 12px 16px; padding: 18px; border-radius: 18px; background: var(--app-surface); border: 1px solid var(--app-border); display: grid; gap: 4px; justify-items: center; text-align: center; }
+.result p { margin: 0; color: var(--app-muted); }
+.result .label, .result .sub { color: var(--app-muted); font-size: 0.9rem; }
+.result .amount { font-size: 2rem; color: var(--ion-color-primary); }
+
+.assets { padding-bottom: 8px; }
+.asset { margin: 0 12px 10px; padding: 8px 10px; border: 1px solid var(--app-border); border-radius: 14px; background: var(--app-surface); }
+.asset.debt { border-style: dashed; }
+.asset-head { display: flex; align-items: center; gap: 8px; }
+.asset-head ion-icon { color: var(--ion-color-primary); }
+.asset-head strong { flex: 1; font-size: 0.95rem; }
+.asset-head .value { font-weight: 600; white-space: nowrap; }
+.asset.debt .value { color: var(--ion-color-danger); }
+.asset-head .warn { color: var(--ion-color-warning-shade); font-weight: 400; font-size: 0.8rem; }
+.asset-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+.asset-fields .name { grid-column: 1 / -1; }
+.add { margin: 4px 12px; }
+
+.price-row { display: flex; justify-content: space-between; gap: 12px; margin: 2px 0; color: var(--ion-text-color) !important; }
+.help { white-space: normal; font-size: 0.8rem; line-height: 1.5; padding-block: 6px; }
+ion-segment { width: 100%; }
+.notes { padding: 0 20px calc(16px + var(--ion-safe-area-bottom, 0px)); color: var(--app-muted); font-size: 0.85rem; line-height: 1.6; }

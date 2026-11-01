@@ -7,7 +7,8 @@
     "tasbih": "Tasbihi",
     "myAthkar": "Adhkari zangu",
     "settings": "Mipangilio",
-    "quran": "Kurani"
+    "quran": "Kurani",
+    "more": "Zaidi"
   },
   "common": {
     "save": "Hifadhi",
@@ -1149,9 +1150,10 @@
     "desc": {
       "hafs": "Msahafu wa Madina uliojengwa ndani, kurasa 604, na vipengele vyote: tafsiri, kisomo, alama na maelezo.",
       "tajweed": "Kurasa za Msahafu wa Madina zenye hukumu za tajwidi kwa rangi (madd, ghunna, ikhfa, idgham, iqlab, qalqala); vipengele vyote vinaendelea kufanya kazi.",
-      "images": "Msahafu wa Shamarly wa Misri (kurasa 522) kama ulivyochapishwa. Kurasa hupakiwa kutoka mtandaoni, au zihifadhi zote kwa nje ya mtandao.",
+      "images": "Msahafu wa Shamarly wa Misri: maandishi kwenye kurasa zake 522, kila aya peke yake na kwa ukubwa wowote. Kitufe cha picha kinaonyesha ukurasa uliochanganuliwa (mtandaoni).",
       "riwaya": "Soma Qur'ani kwa riwaya hii, kwa hati na nambari zake za kurasa."
-    }
+    },
+    "scanned": "Ukurasa uliochanganuliwa"
   },
   "hadith": {
     "title": "Hadithi",
@@ -1333,7 +1335,6 @@
   },
   "zakat": {
     "title": "Kikokotoo cha zaka",
-    "needPrice": "Weka bei ya leo ya madini ya nisabu ili kuona matokeo.",
     "due": "Zaka inayodaiwa",
     "ofTotal": "2.5% ya {{total}}",
     "notDue": "Hakuna zaka inayodaiwa",
@@ -1343,22 +1344,48 @@
     "goldNisab": "Dhahabu ({{g}} g)",
     "nisabHelp": "Nisabu ya fedha ni ndogo zaidi, hivyo watu wengi zaidi hutoa zaka na maskini hunufaika zaidi; wanazuoni wengi wanaipendelea, wengine hutumia dhahabu.",
     "currency": "Sarafu",
-    "currencyHint": "mf. TZS",
-    "prices": "Bei za leo",
-    "goldPrice": "Bei ya gramu 1 ya dhahabu ya karati 24",
-    "silverPrice": "Bei ya gramu 1 ya fedha",
-    "wealth": "Ulicho nacho",
-    "cash": "Pesa taslimu na akiba benki",
-    "gold": "Dhahabu (gramu)",
+    "gold": "Dhahabu karati {{k}}, gramu 1",
     "karat": "Karati za dhahabu",
-    "silver": "Fedha (gramu)",
-    "trade": "Bidhaa za biashara (bei ya kuuza)",
-    "receivables": "Madeni unayodai na unatarajia kulipwa",
-    "debtsTitle": "Madeni",
-    "debts": "Madeni ya kulipa sasa",
+    "silver": "Fedha, gramu 1",
     "noteHawl": "Zaka inawajibika mali ikibaki kwenye nisabu au zaidi kwa mwaka mzima wa kiislamu (hijria).",
     "noteJewellery": "Mapambo ya dhahabu na fedha yanayovaliwa na wanawake yana tofauti ya rai: Hanafi wanawajibisha zaka, wengi hawawajibishi. Yaweke ukifuata rai ya kwanza.",
     "noteScholar": "Huu ni mwongozo kwa hali za kawaida; kwa biashara, hisa au madeni magumu muulize mwanazuoni. Hakuna unachoweka kinachotoka kwenye simu yako.",
-    "clear": "Futa kiasi"
+    "clear": "Ondoa mali zote",
+    "properties": "Mali yako",
+    "add": "Ongeza mali",
+    "labelPlaceholder": "Jina (si lazima)",
+    "amount": "Kiasi",
+    "grams": "Gramu",
+    "remove": "Ondoa",
+    "empty": "Ongeza ulicho nacho (pesa, dhahabu, fedha, bidhaa…) na madeni yako; zaka huhesabiwa papo hapo.",
+    "unknownCurrency": "Hakuna kiwango cha sarafu hii",
+    "pricesTitle": "Nchi na bei za leo",
+    "country": "Nchi",
+    "pricesOf": "Bei za {{date}}.",
+    "offline": "Bila mtandao: bei za {{date}}.",
+    "priceNote": "Bei ya soko la dunia kwa sarafu yako; sonara anaweza kuongeza gharama ya ufundi.",
+    "refresh": "Sasisha bei",
+    "noPrices": "Unganisha intaneti mara moja kupata bei za leo za dhahabu na fedha.",
+    "myPrices": "Tumia bei zangu",
+    "myGold": "Bei yangu ya gramu 1 ya dhahabu karati 24",
+    "mySilver": "Bei yangu ya gramu 1 ya fedha",
+    "kinds": {
+      "cash": "Pesa taslimu",
+      "bank": "Akaunti ya benki",
+      "gold": "Dhahabu",
+      "silver": "Fedha",
+      "trade": "Bidhaa za biashara",
+      "receivable": "Ninazodai",
+      "stocks": "Hisa na mifuko",
+      "other": "Mali nyingine",
+      "debt": "Deni langu"
+    }
+  },
+  "more": {
+    "title": "Zaidi",
+    "hadith": "Hadithi",
+    "quran": "Qur'ani",
+    "athkar": "Adhkari",
+    "tools": "Zana"
   }
 }

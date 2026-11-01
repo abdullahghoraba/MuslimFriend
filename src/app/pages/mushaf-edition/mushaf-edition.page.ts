@@ -11,7 +11,7 @@ import {
   Edition, EditionId, MushafEditionsService, RiwayaAyah, RiwayaMushaf, ShamarlyMap, edition,
 } from '../../core/quran/mushaf-editions.service';
 import { QuranService } from '../../core/quran/quran.service';
-import { normalizeArabic } from '../../core/quran/quran-utils';
+import { normalizeArabic, splitBasmala } from '../../core/quran/quran-utils';
 import { SettingsService } from '../../core/services/settings.service';
 
 interface Block {
@@ -54,6 +54,8 @@ export class MushafEditionPage {
   readonly lang = computed(() => this.settings.settings().language);
   readonly theme = signal<'paper' | 'sepia' | 'night'>('paper');
   readonly scale = signal(1);
+  /** Shamarly: the scanned page image instead of the text laid out on its pages. */
+  readonly scanned = signal(false);
 
   readonly pageCount = computed(() => this.map()?.pages ?? this.riwaya()?.pages.length ?? 604);
   readonly title = computed(() => {
@@ -98,8 +100,13 @@ export class MushafEditionPage {
     }
     try {
       await Promise.all([this.editions.load(), this.quran.load(), this.loadTheme()]);
-      if (e.kind === 'images') this.map.set(await this.editions.shamarlyMap());
-      else {
+      if (e.kind === 'images') {
+        // The Hafs text on the Shamarly mushaf's own pages: each ayah separate, any text size, nothing to download.
+        const map = await this.editions.shamarlyMap();
+        this.map.set(map);
+        this.riwaya.set(this.shamarlyText(map));
+        this.font.set('AmiriQuran');
+      } else {
         const [m, family] = await Promise.all([this.editions.riwaya(e.id), this.editions.font(e.id)]);
         this.riwaya.set(m);
         this.font.set(family);
@@ -137,10 +144,50 @@ export class MushafEditionPage {
     this.location.replaceState(`/mushaf-edition/${e.id}/${p}`);
     void this.host.nativeElement.querySelector('ion-content')?.scrollToTop(0);
     void this.editions.saveLastPage(e.id as EditionId, p);
-    if (e.kind === 'images') {
-      this.imageLoading.set(true);
-      this.imageSrc.set(await this.editions.shamarlySrc(p));
+    if (e.kind === 'images' && this.scanned()) await this.loadImage(p);
+  }
+
+  /** Shows the scanned Shamarly page (streamed from archive.org, or saved on the phone), or the text again. */
+  async toggleScanned(): Promise<void> {
+    this.scanned.update((v) => !v);
+    this.failed.set(false);
+    if (this.scanned()) await this.loadImage(this.page());
+  }
+
+  private async loadImage(p: number): Promise<void> {
+    this.imageLoading.set(true);
+    this.imageSrc.set(await this.editions.shamarlySrc(p));
+  }
+
+  /** Larger or smaller text; shared with the mushaf's own size setting. */
+  async stepScale(delta: number): Promise<void> {
+    const next = Math.round(Math.min(2, Math.max(0.8, this.scale() + delta)) * 100) / 100;
+    this.scale.set(next);
+    const { value } = await Preferences.get({ key: 'mushafView' });
+    let view: Record<string, unknown> = {};
+    try {
+      view = value ? JSON.parse(value) : {};
+    } catch {
+      /* replace */
     }
+    await Preferences.set({ key: 'mushafView', value: JSON.stringify({ ...view, scale: next }) });
+  }
+
+  /** Pages of the Shamarly mushaf filled with the Tanzil (Hafs) text: page p holds the ayat that start on it. */
+  private shamarlyText(map: ShamarlyMap): RiwayaMushaf {
+    const starts = map.first.map((f) => (f ? this.quran.ayah({ sura: f[0], aya: f[1] }).index : -1));
+    const digits = new Intl.NumberFormat('ar-EG');
+    const pages: RiwayaAyah[][] = starts.map((start, i) => {
+      if (start < 0) return [];
+      const nextStart = starts.slice(i + 1).find((x) => x >= 0) ?? 6236;
+      const out: RiwayaAyah[] = [];
+      for (let g = start; g < nextStart; g++) {
+        const a = this.quran.ayahAt(g);
+        out.push([a.sura, a.aya, `${splitBasmala(a, a.text).text} ﴿${digits.format(a.aya)}﴾`]);
+      }
+      return out;
+    });
+    return { pages, suraNames: this.quran.suras.map((x) => x.name) };
   }
 
   next(): Promise<void> {

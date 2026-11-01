@@ -20,9 +20,9 @@ import { TranslatePipe } from '@ngx-translate/core';
           <ion-icon name="ellipse-outline" aria-hidden="true" />
           <ion-label>{{ 'tabs.tasbih' | translate }}</ion-label>
         </ion-tab-button>
-        <ion-tab-button tab="my-athkar">
-          <ion-icon name="create-outline" aria-hidden="true" />
-          <ion-label>{{ 'tabs.myAthkar' | translate }}</ion-label>
+        <ion-tab-button tab="more">
+          <ion-icon name="grid-outline" aria-hidden="true" />
+          <ion-label>{{ 'tabs.more' | translate }}</ion-label>
         </ion-tab-button>
         <ion-tab-button tab="settings">
           <ion-icon name="settings-outline" aria-hidden="true" />

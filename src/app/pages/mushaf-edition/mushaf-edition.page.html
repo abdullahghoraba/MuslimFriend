@@ -8,6 +8,11 @@
       @if (info(); as e) { <span class="h-meta">{{ lang() === 'ar' ? e.qiraahAr : e.qiraahEn }}</span> }
     </ion-title>
     <ion-buttons slot="end">
+      @if (info()?.kind === 'images') {
+        <ion-button (click)="toggleScanned()" [attr.aria-pressed]="scanned()" [attr.aria-label]="'editions.scanned' | translate">
+          <ion-icon slot="icon-only" [name]="scanned() ? 'text-outline' : 'image-outline'" aria-hidden="true" />
+        </ion-button>
+      }
       <ion-button (click)="nav.navigateForward('/mushaf-editions')" [attr.aria-label]="'editions.title' | translate">
         <ion-icon slot="icon-only" name="layers-outline" aria-hidden="true" />
       </ion-button>
@@ -28,14 +33,14 @@
 <ion-content [class]="'edition theme-' + theme()">
   @if (failed()) {
     <div class="state" role="alert">
-      <p>{{ (info()?.kind === 'images' ? 'editions.pageFailed' : 'editions.notDownloaded') | translate }}</p>
-      @if (info()?.kind === 'images') {
+      <p>{{ (scanned() ? 'editions.pageFailed' : 'editions.notDownloaded') | translate }}</p>
+      @if (scanned()) {
         <ion-button fill="outline" (click)="retry()">{{ 'listen.retry' | translate }}</ion-button>
       } @else {
         <ion-button fill="outline" (click)="nav.navigateForward('/mushaf-editions')">{{ 'editions.title' | translate }}</ion-button>
       }
     </div>
-  } @else if (info()?.kind === 'images') {
+  } @else if (info()?.kind === 'images' && scanned()) {
     <div class="image-page">
       @if (imageLoading()) { <div class="state"><ion-spinner /></div> }
       @if (imageSrc()) {
@@ -61,6 +66,12 @@
   <div class="page-footer" dir="ltr">
     <button type="button" class="turn" (click)="next()" [disabled]="page() >= pageCount()" [attr.aria-label]="'mushaf.nextPage' | translate">‹</button>
     <span class="page-num">{{ page() }}</span>
+    @if (!scanned()) {
+      <span class="size" dir="ltr">
+        <button type="button" class="turn small" (click)="stepScale(-0.1)" [attr.aria-label]="'common.smaller' | translate">A−</button>
+        <button type="button" class="turn small" (click)="stepScale(0.1)" [attr.aria-label]="'common.larger' | translate">A+</button>
+      </span>
+    }
     <button type="button" class="turn" (click)="prev()" [disabled]="page() <= 1" [attr.aria-label]="'mushaf.prevPage' | translate">›</button>
   </div>
 </ion-content>

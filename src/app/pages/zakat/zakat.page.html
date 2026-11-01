@@ -1,0 +1,132 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/more" [text]="''" [attr.aria-label]="'common.back' | translate" /></ion-buttons>
+    <ion-title>{{ 'zakat.title' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @let s = state();
+  <!-- Result -->
+  <section class="result" role="status" aria-live="polite">
+    @if (!prices()) {
+      @if (metals.loading()) { <ion-spinner name="crescent" /> }
+      <p>{{ 'zakat.noPrices' | translate }}</p>
+    } @else if (!s.assets.length) {
+      <p>{{ 'zakat.empty' | translate }}</p>
+    } @else if (result(); as r) {
+      @if (r.due) {
+        <span class="label">{{ 'zakat.due' | translate }}</span>
+        <strong class="amount">{{ money(r.amount) }}</strong>
+        <span class="sub">{{ 'zakat.ofTotal' | translate: { total: money(r.total) } }}</span>
+      } @else {
+        <strong>{{ 'zakat.notDue' | translate }}</strong>
+        <span class="sub">{{ 'zakat.belowNisab' | translate: { total: money(r.total), nisab: money(r.nisabValue) } }}</span>
+      }
+    }
+  </section>
+
+  <!-- Your properties -->
+  <ion-list inset class="assets">
+    <ion-list-header>{{ 'zakat.properties' | translate }}</ion-list-header>
+    @for (a of s.assets; track a.id) {
+      <div class="asset" [class.debt]="a.kind === 'debt'">
+        <div class="asset-head">
+          <ion-icon [name]="icon(a.kind)" aria-hidden="true" />
+          <strong>{{ ('zakat.kinds.' + a.kind) | translate }}</strong>
+          @if (lineValue(a.id); as v) { <span class="value">{{ money(v) }}</span> }
+          @else if (lineValue(a.id) === null) { <span class="value warn">{{ 'zakat.unknownCurrency' | translate }}</span> }
+          <ion-button fill="clear" size="small" color="medium" (click)="remove(a.id)" [attr.aria-label]="'zakat.remove' | translate">
+            <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true" />
+          </ion-button>
+        </div>
+        <div class="asset-fields">
+          <ion-input class="name" [value]="a.label" [placeholder]="'zakat.labelPlaceholder' | translate" [attr.aria-label]="'zakat.labelPlaceholder' | translate"
+                     (ionInput)="edit(a.id, { label: $event.detail.value ?? '' })" />
+          <ion-input type="number" inputmode="decimal" min="0" [value]="a.amount || null"
+                     [label]="(isMetal(a) ? 'zakat.grams' : 'zakat.amount') | translate" labelPlacement="stacked"
+                     (ionInput)="setAmount(a.id, $event.detail.value)" />
+          @if (a.kind === 'gold') {
+            <ion-select [label]="'zakat.karat' | translate" labelPlacement="stacked" interface="popover" [value]="a.karat ?? 21" (ionChange)="setKarat(a.id, $event.detail.value)">
+              @for (k of karats; track k) { <ion-select-option [value]="k">{{ number(k) }}</ion-select-option> }
+            </ion-select>
+          } @else if (!isMetal(a)) {
+            <ion-select [label]="'zakat.currency' | translate" labelPlacement="stacked" interface="action-sheet" [value]="a.currency || s.currency"
+                        (ionChange)="edit(a.id, { currency: $event.detail.value })">
+              @for (c of currencies(); track c) { <ion-select-option [value]="c">{{ c.toUpperCase() }}</ion-select-option> }
+            </ion-select>
+          }
+        </div>
+      </div>
+    }
+    <ion-button expand="block" fill="outline" class="add" (click)="add()">
+      <ion-icon slot="start" name="add-outline" aria-hidden="true" />{{ 'zakat.add' | translate }}
+    </ion-button>
+    @if (s.assets.length) {
+      <ion-button expand="block" fill="clear" color="medium" size="small" (click)="clearAll()">{{ 'zakat.clear' | translate }}</ion-button>
+    }
+  </ion-list>
+
+  <!-- Country, currency, prices -->
+  <ion-list inset>
+    <ion-list-header>{{ 'zakat.pricesTitle' | translate }}</ion-list-header>
+    <ion-item>
+      <ion-select [label]="'zakat.country' | translate" interface="alert" [value]="s.country" (ionChange)="setCountry($event.detail.value)">
+        @for (c of countries(); track c.code) { <ion-select-option [value]="c.code">{{ c.name }}</ion-select-option> }
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-select [label]="'zakat.currency' | translate" interface="action-sheet" [value]="s.currency" (ionChange)="setCurrency($event.detail.value)">
+        @for (c of currencies(); track c) { <ion-select-option [value]="c">{{ c.toUpperCase() }}</ion-select-option> }
+      </ion-select>
+    </ion-item>
+    @if (prices(); as p) {
+      <ion-item>
+        <ion-label>
+          <p class="price-row"><span>{{ 'zakat.gold' | translate: { k: number(24) } }}</span><strong>{{ goldPrice(24) }}</strong></p>
+          <p class="price-row"><span>{{ 'zakat.gold' | translate: { k: number(21) } }}</span><strong>{{ goldPrice(21) }}</strong></p>
+          <p class="price-row"><span>{{ 'zakat.gold' | translate: { k: number(18) } }}</span><strong>{{ goldPrice(18) }}</strong></p>
+          <p class="price-row"><span>{{ 'zakat.silver' | translate }}</span><strong>{{ money(p.silverGram) }}</strong></p>
+        </ion-label>
+      </ion-item>
+    }
+    @if (metals.quotes(); as q) {
+      <ion-item lines="none">
+        <ion-note class="help">
+          {{ (metals.failed() ? 'zakat.offline' : 'zakat.pricesOf') | translate: { date: dateLabel(q.date) } }}
+          {{ 'zakat.priceNote' | translate }}
+        </ion-note>
+        <ion-button slot="end" fill="clear" size="small" [disabled]="metals.loading()" (click)="metals.load(true)" [attr.aria-label]="'zakat.refresh' | translate">
+          @if (metals.loading()) { <ion-spinner name="crescent" /> } @else { <ion-icon slot="icon-only" name="refresh-outline" aria-hidden="true" /> }
+        </ion-button>
+      </ion-item>
+    }
+    <ion-item>
+      <ion-toggle [checked]="s.own.on" (ionChange)="setOwn({ on: $event.detail.checked })">{{ 'zakat.myPrices' | translate }}</ion-toggle>
+    </ion-item>
+    @if (s.own.on) {
+      <ion-item><ion-input type="number" inputmode="decimal" min="0" [label]="'zakat.myGold' | translate" labelPlacement="stacked"
+                           [value]="s.own.gold || null" (ionInput)="setOwnPrice('gold', $event.detail.value)" /></ion-item>
+      <ion-item><ion-input type="number" inputmode="decimal" min="0" [label]="'zakat.mySilver' | translate" labelPlacement="stacked"
+                           [value]="s.own.silver || null" (ionInput)="setOwnPrice('silver', $event.detail.value)" /></ion-item>
+    }
+  </ion-list>
+
+  <!-- Nisab -->
+  <ion-list inset>
+    <ion-list-header>{{ 'zakat.nisab' | translate }}</ion-list-header>
+    <ion-item>
+      <ion-segment [value]="s.nisab" (ionChange)="setNisab($event.detail.value)">
+        <ion-segment-button value="silver"><ion-label>{{ 'zakat.silverNisab' | translate: { g: number(silverGrams) } }}</ion-label></ion-segment-button>
+        <ion-segment-button value="gold"><ion-label>{{ 'zakat.goldNisab' | translate: { g: number(goldGrams) } }}</ion-label></ion-segment-button>
+      </ion-segment>
+    </ion-item>
+    <ion-item lines="none"><ion-note class="help">{{ 'zakat.nisabHelp' | translate }}</ion-note></ion-item>
+  </ion-list>
+
+  <section class="notes">
+    <p>{{ 'zakat.noteHawl' | translate }}</p>
+    <p>{{ 'zakat.noteJewellery' | translate }}</p>
+    <p>{{ 'zakat.noteScholar' | translate }}</p>
+  </section>
+</ion-content>

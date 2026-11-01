@@ -20,8 +20,9 @@ and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
   without diacritics, verse of the day, Qibla, Hijri date.
 - **Mushafs & qira'at:** choose the mushaf the Quran tab opens: Madinah (built in), colour-coded tajweed (the same
   pages and Tanzil text, rules from quran.com's tajweed markup moved onto it letter by letter; words that do not line
-  up stay plain), the Egyptian Shamarly mushaf (522 page images from archive.org/details/shamerly, streamed or saved;
-  page map from the open-source Shamarly app, `node scripts/build-shamarly.mjs`), and seven riwayat with their own
+  up stay plain), the Egyptian Shamarly mushaf (the Tanzil text on its 522 pages, each ayah separate and resizable;
+  page map from the open-source Shamarly app, `node scripts/build-shamarly.mjs`; the scanned page from
+  archive.org/details/shamerly on request), and seven riwayat with their own
   text, font and pages from the King Fahd Complex (Warsh, Qalun, Shu'bah, ad-Duri, as-Susi, al-Bazzi, Qunbul;
   github.com/thetruetruth/quran-data-kfgqpc). Shamarly page images have no stated licence: confirm before publishing.
 - **Listen:** 244 reciters with whole suras in every recorded riwayah (Hafs, Warsh, Qalun...) and 176 Quran radio
@@ -39,8 +40,12 @@ and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
   retest only the ayat with mistakes (`recall-test.ts`, shared with the hadith memoriser).
 - **99 Names of Allah** (`/names`): the commonly known list from at-Tirmidhi with transliteration, English and short
   Arabic meanings, a name of the day and search; the page notes that the enumeration itself is a narrator's addition.
-- **Zakat calculator** (`/zakat`): cash, gold by karat, silver, trade goods, receivables minus debts; silver or gold
-  nisab with prices typed by the reader; notes on the hawl and women's jewellery. Nothing leaves the phone.
+- **More tab** (`/more`): hadith, Quran tools, athkar and tools in one place (the tab bar is Home, Quran, Tasbih, More,
+  Settings); new features are added there. Home keeps the daily cards and one hadith of the day.
+- **Zakat calculator** (`/zakat`): the reader lists their properties (cash and bank money in any currency, gold by
+  karat, silver, trade goods, money owed to them, shares, other) and debts; the country comes from the prayer location,
+  today's gold and silver prices in its currency from the open exchange-rate dataset (fawazahmed0/exchange-api on
+  jsDelivr, kept for offline use), or the reader's own jeweller prices; silver or gold nisab; zakat worked out at once.
 - **Share as a picture:** athkar, ayat (mushaf) and hadith, drawn on the device (`ShareService.sharePassage`).
 - **Widgets:** prayer times, verse of the day and hadith of the day; the app sends a week ahead, so the daily widgets
   change at midnight without the app (`DailyWidget.kt`).

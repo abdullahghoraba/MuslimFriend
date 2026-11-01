@@ -90,3 +90,6 @@ ion-content.edition {
     &:disabled { opacity: 0.3; }
   }
 }
+
+.page-footer .size { display: flex; gap: 8px; }
+.page-footer .turn.small { font-size: 0.9rem; font-weight: 600; }

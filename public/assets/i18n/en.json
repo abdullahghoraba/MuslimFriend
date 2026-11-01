@@ -7,7 +7,8 @@
     "tasbih": "Tasbih",
     "myAthkar": "My Athkar",
     "settings": "Settings",
-    "quran": "Quran"
+    "quran": "Quran",
+    "more": "More"
   },
   "common": {
     "save": "Save",
@@ -1149,9 +1150,10 @@
     "desc": {
       "hafs": "The built-in Madinah mushaf, 604 pages, with every feature: tafsir, recitation, bookmarks and notes.",
       "tajweed": "The Madinah pages with the tajweed rules in colour (madd, ghunnah, ikhfa, idgham, iqlab, qalqalah); every feature still works.",
-      "images": "The Egyptian Shamarly mushaf (522 pages) as printed. Pages load from the internet, or save them all for offline reading.",
+      "images": "The Egyptian Shamarly mushaf: the text on its 522 pages, each ayah separate, at any size. The picture button shows the scanned page (online).",
       "riwaya": "Read the Quran in this riwayah, with its own spelling and page numbers."
-    }
+    },
+    "scanned": "Scanned page"
   },
   "hadith": {
     "title": "Hadith",
@@ -1333,7 +1335,6 @@
   },
   "zakat": {
     "title": "Zakat calculator",
-    "needPrice": "Enter today's price of the metal you use for the nisab to see the result.",
     "due": "Zakat due",
     "ofTotal": "2.5% of {{total}}",
     "notDue": "No zakat due",
@@ -1343,22 +1344,48 @@
     "goldNisab": "Gold ({{g}} g)",
     "nisabHelp": "The silver nisab is lower, so more people pay and the poor benefit more; many scholars recommend it. Others use gold.",
     "currency": "Currency",
-    "currencyHint": "e.g. EGP",
-    "prices": "Today's prices",
-    "goldPrice": "Price of 1 g of 24 karat gold",
-    "silverPrice": "Price of 1 g of silver",
-    "wealth": "What you own",
-    "cash": "Cash and bank savings",
-    "gold": "Gold (grams)",
+    "gold": "Gold {{k}}K, 1 g",
     "karat": "Gold karat",
-    "silver": "Silver (grams)",
-    "trade": "Goods for trade (selling value)",
-    "receivables": "Money owed to you that you expect back",
-    "debtsTitle": "Debts",
-    "debts": "Debts you must pay now",
+    "silver": "Silver, 1 g",
     "noteHawl": "Zakat is due when your wealth has stayed at or above the nisab for a full lunar (Hijri) year.",
     "noteJewellery": "Gold and silver jewellery worn by women: scholars differ. The Hanafis require zakat on it; the majority do not. Include it if you follow that view.",
     "noteScholar": "This is a guide for common cases. For a business, shares or complex debts, ask a scholar. Nothing you enter leaves your phone.",
-    "clear": "Clear the amounts"
+    "clear": "Remove all properties",
+    "properties": "Your properties",
+    "add": "Add a property",
+    "labelPlaceholder": "Name (optional)",
+    "amount": "Amount",
+    "grams": "Grams",
+    "remove": "Remove",
+    "empty": "Add what you own (money, gold, silver, goods…) and your debts; the zakat is worked out at once.",
+    "unknownCurrency": "No rate for this currency",
+    "pricesTitle": "Country and today's prices",
+    "country": "Country",
+    "pricesOf": "Prices of {{date}}.",
+    "offline": "Offline: prices of {{date}}.",
+    "priceNote": "World market price in your currency; a jeweller may add the cost of workmanship.",
+    "refresh": "Update prices",
+    "noPrices": "Connect to the internet once to get today's gold and silver prices.",
+    "myPrices": "Use my own prices",
+    "myGold": "My price for 1 g of 24K gold",
+    "mySilver": "My price for 1 g of silver",
+    "kinds": {
+      "cash": "Cash",
+      "bank": "Bank account",
+      "gold": "Gold",
+      "silver": "Silver",
+      "trade": "Goods for trade",
+      "receivable": "Money owed to me",
+      "stocks": "Shares and funds",
+      "other": "Other wealth",
+      "debt": "A debt I owe"
+    }
+  },
+  "more": {
+    "title": "More",
+    "hadith": "Hadith",
+    "quran": "Quran",
+    "athkar": "Athkar",
+    "tools": "Tools"
   }
 }

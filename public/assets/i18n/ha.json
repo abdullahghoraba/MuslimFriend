@@ -7,7 +7,8 @@
     "tasbih": "Tasbihi",
     "myAthkar": "Zikirina",
     "settings": "Saituna",
-    "quran": "Alƙur'ani"
+    "quran": "Alƙur'ani",
+    "more": "Ƙari"
   },
   "common": {
     "save": "Ajiye",
@@ -1149,9 +1150,10 @@
     "desc": {
       "hafs": "Mushafin Madina da ke cikin manhaja, shafuka 604, tare da dukkan siffofi: tafsiri, karatu, alamomi da bayanai.",
       "tajweed": "Shafukan Mushafin Madina tare da ƙa'idodin tajwidi a launi (madd, ghunna, ikhfa, idgham, iqlab, qalqala); dukkan siffofi suna aiki.",
-      "images": "Mushafin Shamarly na Masar (shafuka 522) kamar yadda aka buga. Ana loda shafuka daga intanet, ko ka ajiye su duka.",
+      "images": "Mus'hafin Shamarly na Masar: rubutun a shafukansa 522, kowace aya daban kuma da kowane girma. Maɓallin hoto yana nuna shafin da aka ɗauka hoto (ta intanet).",
       "riwaya": "Karanta Alƙur'ani da wannan riwaya, da rubutunta da lambobin shafukanta."
-    }
+    },
+    "scanned": "Shafin da aka ɗauka hoto"
   },
   "hadith": {
     "title": "Hadisai",
@@ -1333,7 +1335,6 @@
   },
   "zakat": {
     "title": "Lissafin zakka",
-    "needPrice": "Shigar da farashin yau na ƙarfen nisabi don ganin sakamako.",
     "due": "Zakkar da ta wajaba",
     "ofTotal": "2.5% na {{total}}",
     "notDue": "Babu zakka da ta wajaba",
@@ -1343,22 +1344,48 @@
     "goldNisab": "Zinariya ({{g}} g)",
     "nisabHelp": "Nisabin azurfa ya fi ƙanƙanta, don haka mutane da yawa suna fitar da zakka kuma talakawa suna ƙara amfana; malamai da yawa sun fifita shi, wasu suna amfani da zinariya.",
     "currency": "Kuɗi",
-    "currencyHint": "misali NGN",
-    "prices": "Farashin yau",
-    "goldPrice": "Farashin gram 1 na zinariya karat 24",
-    "silverPrice": "Farashin gram 1 na azurfa",
-    "wealth": "Abin da ka mallaka",
-    "cash": "Kuɗi a hannu da ajiyar banki",
-    "gold": "Zinariya (gram)",
+    "gold": "Zinariya karat {{k}}, gram 1",
     "karat": "Karat ɗin zinariya",
-    "silver": "Azurfa (gram)",
-    "trade": "Kayan kasuwanci (farashin sayarwa)",
-    "receivables": "Bashin da ake binka kuma kake sa ran a biya",
-    "debtsTitle": "Basussuka",
-    "debts": "Basussukan da za ka biya yanzu",
+    "silver": "Azurfa, gram 1",
     "noteHawl": "Zakka tana wajaba idan dukiya ta kai nisabi ko fiye har shekara guda ta wata (hijira) cikakkiya.",
     "noteJewellery": "Kayan ado na zinariya da azurfa da mata ke sakawa akwai saɓani: Hanafiyya suna wajabta zakka, mafi yawa ba sa wajabtawa. Saka su idan kana bin ra'ayin farko.",
     "noteScholar": "Wannan jagora ce ga yanayi na yau da kullum; game da kasuwanci, hannun jari ko basussuka masu sarƙaƙiya, tambayi malami. Babu abin da ka shigar da ke fita daga wayarka.",
-    "clear": "Share adadi"
+    "clear": "Cire duk dukiya",
+    "properties": "Dukiyarka",
+    "add": "Ƙara dukiya",
+    "labelPlaceholder": "Suna (ba dole ba)",
+    "amount": "Adadi",
+    "grams": "Gram",
+    "remove": "Cire",
+    "empty": "Ƙara abin da ka mallaka (kuɗi, zinariya, azurfa, kaya…) da basussukanka; za a lissafa zakka nan take.",
+    "unknownCurrency": "Babu farashin canjin wannan kuɗin",
+    "pricesTitle": "Ƙasa da farashin yau",
+    "country": "Ƙasa",
+    "pricesOf": "Farashin {{date}}.",
+    "offline": "Ba intanet: farashin {{date}}.",
+    "priceNote": "Farashin kasuwar duniya a kuɗinka; maƙeri na iya ƙara kuɗin aiki.",
+    "refresh": "Sabunta farashi",
+    "noPrices": "Haɗa da intanet sau ɗaya don samun farashin zinariya da azurfa na yau.",
+    "myPrices": "Yi amfani da farashina",
+    "myGold": "Farashina na gram 1 na zinariya karat 24",
+    "mySilver": "Farashina na gram 1 na azurfa",
+    "kinds": {
+      "cash": "Kuɗi a hannu",
+      "bank": "Asusun banki",
+      "gold": "Zinariya",
+      "silver": "Azurfa",
+      "trade": "Kayan kasuwanci",
+      "receivable": "Bashin da ake bina",
+      "stocks": "Hannun jari da asusu",
+      "other": "Wata dukiya",
+      "debt": "Bashin da ke kaina"
+    }
+  },
+  "more": {
+    "title": "Ƙari",
+    "hadith": "Hadisi",
+    "quran": "Alƙur'ani",
+    "athkar": "Azkar",
+    "tools": "Kayan aiki"
   }
 }

@@ -15,6 +15,7 @@ export const routes: Routes = [
       { path: 'quran', loadComponent: () => import('./pages/quran/quran-index.page').then((m) => m.QuranIndexPage) },
       { path: 'tasbih', loadComponent: () => import('./pages/tasbih/tasbih.page').then((m) => m.TasbihPage) },
       { path: 'my-athkar', loadComponent: () => import('./pages/my-athkar/my-athkar.page').then((m) => m.MyAthkarPage) },
+      { path: 'more', loadComponent: () => import('./pages/more/more.page').then((m) => m.MorePage) },
       { path: 'settings', loadComponent: () => import('./pages/settings/settings.page').then((m) => m.SettingsPage) },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],

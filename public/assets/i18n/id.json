@@ -7,7 +7,8 @@
     "tasbih": "Tasbih",
     "myAthkar": "Zikirku",
     "settings": "Pengaturan",
-    "quran": "Al-Qur'an"
+    "quran": "Al-Qur'an",
+    "more": "Lainnya"
   },
   "common": {
     "save": "Simpan",
@@ -1149,9 +1150,10 @@
     "desc": {
       "hafs": "Mushaf Madinah bawaan, 604 halaman, dengan semua fitur: tafsir, tilawah, penanda, dan catatan.",
       "tajweed": "Halaman Mushaf Madinah dengan hukum tajwid berwarna (mad, ghunnah, ikhfa, idgham, iqlab, qalqalah); semua fitur tetap berfungsi.",
-      "images": "Mushaf Syamarli Mesir (522 halaman) sesuai cetakan. Halaman dimuat dari internet, atau simpan semuanya untuk offline.",
+      "images": "Mushaf Syamarli Mesir: teks di 522 halamannya, setiap ayat terpisah dan dengan ukuran apa pun. Tombol gambar menampilkan halaman pindaian (online).",
       "riwaya": "Baca Al-Qur'an dengan riwayat ini, dengan rasm dan nomor halamannya sendiri."
-    }
+    },
+    "scanned": "Halaman pindaian"
   },
   "hadith": {
     "title": "Hadis",
@@ -1333,7 +1335,6 @@
   },
   "zakat": {
     "title": "Kalkulator zakat",
-    "needPrice": "Masukkan harga hari ini untuk logam nisab yang dipakai agar hasilnya terlihat.",
     "due": "Zakat wajib",
     "ofTotal": "2,5% dari {{total}}",
     "notDue": "Tidak wajib zakat",
@@ -1343,22 +1344,48 @@
     "goldNisab": "Emas ({{g}} g)",
     "nisabHelp": "Nisab perak lebih rendah sehingga lebih banyak orang berzakat dan fakir lebih terbantu; banyak ulama menguatkannya, sebagian memakai emas.",
     "currency": "Mata uang",
-    "currencyHint": "mis. IDR",
-    "prices": "Harga hari ini",
-    "goldPrice": "Harga 1 g emas 24 karat",
-    "silverPrice": "Harga 1 g perak",
-    "wealth": "Yang kamu miliki",
-    "cash": "Uang tunai dan tabungan bank",
-    "gold": "Emas (gram)",
+    "gold": "Emas {{k}}K, 1 g",
     "karat": "Karat emas",
-    "silver": "Perak (gram)",
-    "trade": "Barang dagangan (nilai jual)",
-    "receivables": "Piutang yang diharapkan kembali",
-    "debtsTitle": "Utang",
-    "debts": "Utang yang harus dibayar sekarang",
+    "silver": "Perak, 1 g",
     "noteHawl": "Zakat wajib bila harta mencapai nisab selama satu tahun hijriah penuh.",
     "noteJewellery": "Perhiasan emas dan perak yang dipakai wanita diperselisihkan: mazhab Hanafi mewajibkan zakatnya, mayoritas tidak. Masukkan bila kamu mengikuti pendapat pertama.",
     "noteScholar": "Ini panduan untuk kasus umum; untuk usaha, saham, atau utang yang rumit, tanyakan kepada ulama. Tidak ada yang kamu isi keluar dari ponselmu.",
-    "clear": "Hapus jumlah"
+    "clear": "Hapus semua harta",
+    "properties": "Hartamu",
+    "add": "Tambah harta",
+    "labelPlaceholder": "Nama (opsional)",
+    "amount": "Jumlah",
+    "grams": "Gram",
+    "remove": "Hapus",
+    "empty": "Masukkan yang kamu miliki (uang, emas, perak, barang…) dan utangmu; zakat langsung dihitung.",
+    "unknownCurrency": "Tidak ada kurs untuk mata uang ini",
+    "pricesTitle": "Negara dan harga hari ini",
+    "country": "Negara",
+    "pricesOf": "Harga tanggal {{date}}.",
+    "offline": "Offline: harga tanggal {{date}}.",
+    "priceNote": "Harga pasar dunia dalam mata uangmu; toko emas bisa menambah ongkos pembuatan.",
+    "refresh": "Perbarui harga",
+    "noPrices": "Sambungkan ke internet sekali untuk mendapatkan harga emas dan perak hari ini.",
+    "myPrices": "Pakai harga saya sendiri",
+    "myGold": "Harga saya untuk 1 g emas 24K",
+    "mySilver": "Harga saya untuk 1 g perak",
+    "kinds": {
+      "cash": "Uang tunai",
+      "bank": "Rekening bank",
+      "gold": "Emas",
+      "silver": "Perak",
+      "trade": "Barang dagangan",
+      "receivable": "Piutang saya",
+      "stocks": "Saham dan reksa dana",
+      "other": "Harta lain",
+      "debt": "Utang saya"
+    }
+  },
+  "more": {
+    "title": "Lainnya",
+    "hadith": "Hadis",
+    "quran": "Al-Qur'an",
+    "athkar": "Zikir",
+    "tools": "Alat"
   }
 }

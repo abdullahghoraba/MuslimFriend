@@ -76,11 +76,33 @@ import {
   sparklesOutline,
   imageOutline,
   ribbonOutline,
+  gridOutline,
+  statsChartOutline,
+  libraryOutline,
+  albumsOutline,
+  cashOutline,
+  diamondOutline,
+  cubeOutline,
+  arrowDownCircleOutline,
+  trendingUpOutline,
+  walletOutline,
+  arrowUpCircleOutline,
 } from 'ionicons/icons';
 
 /** Icons are registered explicitly so the bundle only contains what the app uses. */
 export function registerIcons(): void {
   addIcons({
+    'arrow-up-circle-outline': arrowUpCircleOutline,
+    'wallet-outline': walletOutline,
+    'trending-up-outline': trendingUpOutline,
+    'arrow-down-circle-outline': arrowDownCircleOutline,
+    'cube-outline': cubeOutline,
+    'diamond-outline': diamondOutline,
+    'cash-outline': cashOutline,
+    'albums-outline': albumsOutline,
+    'library-outline': libraryOutline,
+    'stats-chart-outline': statsChartOutline,
+    'grid-outline': gridOutline,
     'close-circle-outline': closeCircleOutline,
     'calculator-outline': calculatorOutline,
     'sparkles-outline': sparklesOutline,

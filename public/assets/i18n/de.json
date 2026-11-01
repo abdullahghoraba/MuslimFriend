@@ -7,7 +7,8 @@
     "tasbih": "Tasbih",
     "myAthkar": "Meine Adhkar",
     "settings": "Einstellungen",
-    "quran": "Koran"
+    "quran": "Koran",
+    "more": "Mehr"
   },
   "common": {
     "save": "Speichern",
@@ -1149,9 +1150,10 @@
     "desc": {
       "hafs": "Der eingebaute Medina-Mushaf, 604 Seiten, mit allen Funktionen: Tafsir, Rezitation, Lesezeichen und Notizen.",
       "tajweed": "Die Seiten des Medina-Mushafs mit farbigen Tadschwid-Regeln (Madd, Ghunna, Ichfa, Idgham, Iqlab, Qalqala); alle Funktionen bleiben erhalten.",
-      "images": "Der ägyptische Schamarli-Mushaf (522 Seiten) wie gedruckt. Die Seiten werden aus dem Internet geladen oder alle für offline gespeichert.",
+      "images": "Der ägyptische Shamarly-Mushaf: der Text auf seinen 522 Seiten, jeder Vers einzeln und in jeder Größe. Die Bild-Taste zeigt die gescannte Seite (online).",
       "riwaya": "Lies den Koran in dieser Überlieferung, mit eigener Schreibweise und Seitenzählung."
-    }
+    },
+    "scanned": "Gescannte Seite"
   },
   "hadith": {
     "title": "Hadithe",
@@ -1333,7 +1335,6 @@
   },
   "zakat": {
     "title": "Zakat-Rechner",
-    "needPrice": "Gib den heutigen Preis des Nisab-Metalls ein, um das Ergebnis zu sehen.",
     "due": "Fällige Zakat",
     "ofTotal": "2,5 % von {{total}}",
     "notDue": "Keine Zakat fällig",
@@ -1343,22 +1344,48 @@
     "goldNisab": "Gold ({{g}} g)",
     "nisabHelp": "Der Silber-Nisab ist niedriger: mehr Menschen zahlen und die Armen profitieren mehr; viele Gelehrte bevorzugen ihn, andere nehmen Gold.",
     "currency": "Währung",
-    "currencyHint": "z. B. EUR",
-    "prices": "Heutige Preise",
-    "goldPrice": "Preis für 1 g Gold (24 Karat)",
-    "silverPrice": "Preis für 1 g Silber",
-    "wealth": "Dein Besitz",
-    "cash": "Bargeld und Bankguthaben",
-    "gold": "Gold (Gramm)",
+    "gold": "Gold {{k}} Karat, 1 g",
     "karat": "Goldkarat",
-    "silver": "Silber (Gramm)",
-    "trade": "Handelswaren (Verkaufswert)",
-    "receivables": "Forderungen, die du zurückerwartest",
-    "debtsTitle": "Schulden",
-    "debts": "Sofort fällige Schulden",
+    "silver": "Silber, 1 g",
     "noteHawl": "Zakat ist fällig, wenn dein Vermögen ein volles Mondjahr (Hidschra-Jahr) lang den Nisab erreicht oder übersteigt.",
     "noteJewellery": "Von Frauen getragener Gold- und Silberschmuck ist umstritten: Die Hanafiten verlangen Zakat, die Mehrheit nicht. Trage ihn ein, wenn du der ersten Meinung folgst.",
     "noteScholar": "Dies ist eine Hilfe für übliche Fälle; bei Unternehmen, Aktien oder komplizierten Schulden frage einen Gelehrten. Nichts von deinen Eingaben verlässt dein Telefon.",
-    "clear": "Beträge löschen"
+    "clear": "Allen Besitz entfernen",
+    "properties": "Dein Besitz",
+    "add": "Besitz hinzufügen",
+    "labelPlaceholder": "Name (optional)",
+    "amount": "Betrag",
+    "grams": "Gramm",
+    "remove": "Entfernen",
+    "empty": "Trage ein, was du besitzt (Geld, Gold, Silber, Waren…), und deine Schulden; die Zakat wird sofort berechnet.",
+    "unknownCurrency": "Kein Kurs für diese Währung",
+    "pricesTitle": "Land und heutige Preise",
+    "country": "Land",
+    "pricesOf": "Preise vom {{date}}.",
+    "offline": "Offline: Preise vom {{date}}.",
+    "priceNote": "Weltmarktpreis in deiner Währung; ein Juwelier kann Arbeitslohn aufschlagen.",
+    "refresh": "Preise aktualisieren",
+    "noPrices": "Verbinde dich einmal mit dem Internet, um die heutigen Gold- und Silberpreise zu laden.",
+    "myPrices": "Eigene Preise verwenden",
+    "myGold": "Mein Preis für 1 g Gold (24 Karat)",
+    "mySilver": "Mein Preis für 1 g Silber",
+    "kinds": {
+      "cash": "Bargeld",
+      "bank": "Bankkonto",
+      "gold": "Gold",
+      "silver": "Silber",
+      "trade": "Handelswaren",
+      "receivable": "Forderungen",
+      "stocks": "Aktien und Fonds",
+      "other": "Sonstiges Vermögen",
+      "debt": "Eine Schuld von mir"
+    }
+  },
+  "more": {
+    "title": "Mehr",
+    "hadith": "Hadith",
+    "quran": "Koran",
+    "athkar": "Gedenken",
+    "tools": "Werkzeuge"
   }
 }

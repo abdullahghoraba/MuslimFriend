@@ -7,7 +7,8 @@
     "tasbih": "Tesbih",
     "myAthkar": "Zikirlerim",
     "settings": "Ayarlar",
-    "quran": "Kuran"
+    "quran": "Kuran",
+    "more": "Daha fazla"
   },
   "common": {
     "save": "Kaydet",
@@ -1149,9 +1150,10 @@
     "desc": {
       "hafs": "Uygulamadaki Medine mushafı, 604 sayfa, tüm özellikleriyle: tefsir, tilavet, işaretler ve notlar.",
       "tajweed": "Tecvid kuralları renkli Medine sayfaları (med, gunne, ihfâ, idğam, iklâb, kalkale); tüm özellikler çalışır.",
-      "images": "Mısır Şemerli mushafı (522 sayfa) basıldığı gibi. Sayfalar internetten yüklenir ya da hepsini çevrimdışı için kaydedin.",
+      "images": "Mısır Şemerli mushafı: metin 522 sayfasında, her ayet ayrı ve istediğin boyutta. Resim düğmesi taranmış sayfayı gösterir (çevrimiçi).",
       "riwaya": "Kur'an'ı bu rivayetle, kendi imlası ve sayfa numaralarıyla okuyun."
-    }
+    },
+    "scanned": "Taranmış sayfa"
   },
   "hadith": {
     "title": "Hadis",
@@ -1333,7 +1335,6 @@
   },
   "zakat": {
     "title": "Zekât hesaplayıcı",
-    "needPrice": "Sonucu görmek için nisap metalinin bugünkü fiyatını girin.",
     "due": "Ödenecek zekât",
     "ofTotal": "{{total}} tutarının %2,5'i",
     "notDue": "Zekât gerekmez",
@@ -1343,22 +1344,48 @@
     "goldNisab": "Altın ({{g}} g)",
     "nisabHelp": "Gümüş nisabı daha düşüktür; daha çok kişi zekât verir ve fakirler daha çok yararlanır. Birçok âlim bunu tercih eder, bazıları altını esas alır.",
     "currency": "Para birimi",
-    "currencyHint": "ör. TRY",
-    "prices": "Bugünkü fiyatlar",
-    "goldPrice": "24 ayar altının 1 gram fiyatı",
-    "silverPrice": "1 gram gümüşün fiyatı",
-    "wealth": "Sahip oldukların",
-    "cash": "Nakit ve banka birikimi",
-    "gold": "Altın (gram)",
+    "gold": "{{k}} ayar altın, 1 g",
     "karat": "Altın ayarı",
-    "silver": "Gümüş (gram)",
-    "trade": "Ticari mallar (satış değeri)",
-    "receivables": "Geri alacağını umduğun alacaklar",
-    "debtsTitle": "Borçlar",
-    "debts": "Hemen ödenecek borçlar",
+    "silver": "Gümüş, 1 g",
     "noteHawl": "Zekât, mal tam bir kamerî (hicrî) yıl nisap veya üzerinde kaldığında farz olur.",
     "noteJewellery": "Kadınların kullandığı altın ve gümüş takılar tartışmalıdır: Hanefîler zekât gerektiğini, çoğunluk gerekmediğini söyler. İlk görüşü benimsiyorsan ekle.",
     "noteScholar": "Bu, yaygın durumlar için bir rehberdir; şirket, hisse veya karmaşık borçlarda bir âlime danış. Girdiklerin telefonundan çıkmaz.",
-    "clear": "Tutarları temizle"
+    "clear": "Tüm malları sil",
+    "properties": "Malların",
+    "add": "Mal ekle",
+    "labelPlaceholder": "Ad (isteğe bağlı)",
+    "amount": "Tutar",
+    "grams": "Gram",
+    "remove": "Sil",
+    "empty": "Sahip olduklarını (para, altın, gümüş, mal…) ve borçlarını ekle; zekât hemen hesaplanır.",
+    "unknownCurrency": "Bu para birimi için kur yok",
+    "pricesTitle": "Ülke ve bugünkü fiyatlar",
+    "country": "Ülke",
+    "pricesOf": "{{date}} fiyatları.",
+    "offline": "Çevrimdışı: {{date}} fiyatları.",
+    "priceNote": "Dünya piyasa fiyatı senin para biriminde; kuyumcu işçilik ekleyebilir.",
+    "refresh": "Fiyatları güncelle",
+    "noPrices": "Bugünkü altın ve gümüş fiyatlarını almak için bir kez internete bağlan.",
+    "myPrices": "Kendi fiyatlarımı kullan",
+    "myGold": "1 g 24 ayar altın için fiyatım",
+    "mySilver": "1 g gümüş için fiyatım",
+    "kinds": {
+      "cash": "Nakit",
+      "bank": "Banka hesabı",
+      "gold": "Altın",
+      "silver": "Gümüş",
+      "trade": "Ticari mallar",
+      "receivable": "Alacaklarım",
+      "stocks": "Hisse ve fonlar",
+      "other": "Diğer mal",
+      "debt": "Borcum"
+    }
+  },
+  "more": {
+    "title": "Daha fazla",
+    "hadith": "Hadis",
+    "quran": "Kur'an",
+    "athkar": "Zikirler",
+    "tools": "Araçlar"
   }
 }

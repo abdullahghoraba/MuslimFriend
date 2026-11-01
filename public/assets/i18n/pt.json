@@ -7,7 +7,8 @@
     "tasbih": "Tasbih",
     "myAthkar": "Meus adhkar",
     "settings": "Ajustes",
-    "quran": "Alcorão"
+    "quran": "Alcorão",
+    "more": "Mais"
   },
   "common": {
     "save": "Salvar",
@@ -1149,9 +1150,10 @@
     "desc": {
       "hafs": "O mushaf de Medina incluído, 604 páginas, com todos os recursos: tafsir, recitação, marcadores e notas.",
       "tajweed": "As páginas do mushaf de Medina com as regras do tajwid em cores (madd, ghunna, ikhfa, idgham, iqlab, qalqala); todos os recursos continuam funcionando.",
-      "images": "O mushaf egípcio Shamarly (522 páginas) como impresso. As páginas carregam da internet, ou salve todas para offline.",
+      "images": "O mushaf egípcio Shamarly: o texto em suas 522 páginas, cada versículo separado e em qualquer tamanho. O botão de imagem mostra a página digitalizada (online).",
       "riwaya": "Leia o Alcorão nesta transmissão, com sua grafia e numeração de páginas próprias."
-    }
+    },
+    "scanned": "Página digitalizada"
   },
   "hadith": {
     "title": "Hadiths",
@@ -1333,7 +1335,6 @@
   },
   "zakat": {
     "title": "Calculadora de zakat",
-    "needPrice": "Digite o preço de hoje do metal do nisab para ver o resultado.",
     "due": "Zakat devido",
     "ofTotal": "2,5% de {{total}}",
     "notDue": "Não há zakat devido",
@@ -1343,22 +1344,48 @@
     "goldNisab": "Ouro ({{g}} g)",
     "nisabHelp": "O nisab da prata é menor: mais pessoas pagam e os pobres se beneficiam mais; muitos sábios o preferem, outros usam o ouro.",
     "currency": "Moeda",
-    "currencyHint": "ex.: BRL",
-    "prices": "Preços de hoje",
-    "goldPrice": "Preço de 1 g de ouro 24 quilates",
-    "silverPrice": "Preço de 1 g de prata",
-    "wealth": "O que você possui",
-    "cash": "Dinheiro e poupança no banco",
-    "gold": "Ouro (gramas)",
+    "gold": "Ouro {{k}} quilates, 1 g",
     "karat": "Quilates do ouro",
-    "silver": "Prata (gramas)",
-    "trade": "Mercadorias para venda (valor de venda)",
-    "receivables": "Valores que lhe devem e que espera receber",
-    "debtsTitle": "Dívidas",
-    "debts": "Dívidas a pagar agora",
+    "silver": "Prata, 1 g",
     "noteHawl": "O zakat é devido quando seus bens permanecem no nisab ou acima durante um ano lunar (hégira) completo.",
     "noteJewellery": "Joias de ouro e prata usadas por mulheres: há divergência. Os hanafitas exigem zakat, a maioria não. Inclua-as se seguir a primeira opinião.",
     "noteScholar": "É um guia para casos comuns; para negócios, ações ou dívidas complexas, consulte um sábio. Nada do que você digita sai do telefone.",
-    "clear": "Limpar os valores"
+    "clear": "Remover todos os bens",
+    "properties": "Seus bens",
+    "add": "Adicionar um bem",
+    "labelPlaceholder": "Nome (opcional)",
+    "amount": "Valor",
+    "grams": "Gramas",
+    "remove": "Remover",
+    "empty": "Adicione o que você possui (dinheiro, ouro, prata, mercadorias…) e suas dívidas; o zakat é calculado na hora.",
+    "unknownCurrency": "Sem cotação para esta moeda",
+    "pricesTitle": "País e preços de hoje",
+    "country": "País",
+    "pricesOf": "Preços de {{date}}.",
+    "offline": "Offline: preços de {{date}}.",
+    "priceNote": "Preço do mercado mundial na sua moeda; um joalheiro pode cobrar o feitio.",
+    "refresh": "Atualizar preços",
+    "noPrices": "Conecte-se à internet uma vez para obter os preços do ouro e da prata de hoje.",
+    "myPrices": "Usar meus próprios preços",
+    "myGold": "Meu preço por 1 g de ouro 24 quilates",
+    "mySilver": "Meu preço por 1 g de prata",
+    "kinds": {
+      "cash": "Dinheiro",
+      "bank": "Conta bancária",
+      "gold": "Ouro",
+      "silver": "Prata",
+      "trade": "Mercadorias",
+      "receivable": "Valores a receber",
+      "stocks": "Ações e fundos",
+      "other": "Outros bens",
+      "debt": "Uma dívida minha"
+    }
+  },
+  "more": {
+    "title": "Mais",
+    "hadith": "Hadith",
+    "quran": "Alcorão",
+    "athkar": "Lembranças",
+    "tools": "Ferramentas"
   }
 }
