@@ -1153,7 +1153,9 @@
       "images": "Der ägyptische Shamarly-Mushaf: der Text auf seinen 522 Seiten, jeder Vers einzeln und in jeder Größe. Die Bild-Taste zeigt die gescannte Seite (online).",
       "riwaya": "Lies den Koran in dieser Überlieferung, mit eigener Schreibweise und Seitenzählung."
     },
-    "scanned": "Gescannte Seite"
+    "scanned": "Gescannte Seite",
+    "openInMushaf": "Im Medina-Mushaf öffnen",
+    "ayatOnPage": "Verse auf dieser Seite"
   },
   "hadith": {
     "title": "Hadithe",

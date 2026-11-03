@@ -10,7 +10,8 @@ import { AyahRef } from './quran-utils';
  * Mushaf editions:
  * - madinah: the built-in Madani mushaf (Tanzil text, 604 pages);
  * - tajweed: the same pages and text with the tajweed rules coloured (rules from quran.com's tajweed markup);
- * - shamarly: the Egyptian Shamarly mushaf, page images (archive.org/details/shamerly), 522 pages;
+ * - shamarly: the Egyptian Shamarly mushaf, page images (archive.org/details/shamerly), 522 pages, each ayah tappable
+ *   (areas from scripts/shamarly-ayat);
  * - the riwayat of the King Fahd Complex (qurancomplex.gov.sa), text and font, each with its own pages.
  */
 export type EditionId = 'madinah' | 'tajweed' | 'shamarly' | 'warsh' | 'qaloon' | 'shouba' | 'doori' | 'soosi' | 'bazzi' | 'qumbul';
@@ -33,6 +34,9 @@ export interface Edition {
 const KFGQPC = 'https://cdn.jsdelivr.net/gh/thetruetruth/quran-data-kfgqpc@main';
 const TAJWEED_URL = 'https://api.quran.com/api/v4/quran/verses/uthmani_tajweed';
 const SHAMARLY_IMG = 'https://archive.org/download/shamerly';
+/** archive.org's own servers for the item: asking once skips the slow redirect on every page. */
+const SHAMARLY_META = 'https://archive.org/metadata/shamerly';
+const SHAMARLY_SERVER_KEY = 'shamarlyServer';
 const DIR = 'editions';
 const EDITION_KEY = 'mushafEdition';
 const PAGE_KEY = 'mushafEditionPage.';
@@ -69,6 +73,24 @@ export interface ShamarlyMap {
   rub: number[];
 }
 
+/** One ayah's place on a Shamarly page: sura, ayah, then rects [x0, y0, x1, y1, ...] in permille of the page. */
+export type ShamarlyArea = [number, number, number[]];
+
+/** The ayah at point (x, y) (permille of the page), or the nearest one on its line; null off the text. */
+export function shamarlyAyahAt(areas: ShamarlyArea[], x: number, y: number): AyahRef | null {
+  let near: { ref: AyahRef; d: number } | null = null;
+  for (const [sura, aya, r] of areas) {
+    for (let i = 0; i < r.length; i += 4) {
+      const [x0, y0, x1, y1] = [r[i], r[i + 1], r[i + 2], r[i + 3]];
+      if (y < y0 || y > y1) continue;
+      if (x >= x0 && x <= x1) return { sura, aya };
+      const d = x < x0 ? x0 - x : x - x1;
+      if (d < 40 && (!near || d < near.d)) near = { ref: { sura, aya }, d };
+    }
+  }
+  return near?.ref ?? null;
+}
+
 /** "85-86" (an ayah running over two pages) -> 85. */
 const firstPage = (page: unknown): number => parseInt(String(page), 10);
 
@@ -102,6 +124,8 @@ export class MushafEditionsService {
   private readonly riwayat = new Map<EditionId, Promise<RiwayaMushaf>>();
   private readonly fonts = new Set<EditionId>();
   private shamarly?: Promise<ShamarlyMap>;
+  private shamarlyAreas?: Promise<ShamarlyArea[][]>;
+  private shamarlyBase?: Promise<string>;
   /** Shamarly pages saved on the device. */
   private shamarlyPages = new Set<number>();
 
@@ -173,14 +197,22 @@ export class MushafEditionsService {
       } else if (e.kind === 'images') {
         if (!Capacitor.isNativePlatform()) return false;
         const map = await this.shamarlyMap();
-        for (let p = 1; p <= map.pages; p++) {
-          if (this.cancel) return false;
-          if (!this.shamarlyPages.has(p)) {
-            await Filesystem.downloadFile({ url: shamarlyUrl(p), path: `${DIR}/shamarly/${pad(p)}.png`, directory: Directory.Data, recursive: true });
+        const base = await this.shamarlyServer();
+        const todo = Array.from({ length: map.pages }, (_, i) => i + 1).filter((p) => !this.shamarlyPages.has(p));
+        let next = 0;
+        // A few pages at a time: archive.org answers each request slowly but serves several at once.
+        const worker = async (): Promise<void> => {
+          while (next < todo.length && !this.cancel) {
+            const p = todo[next++];
+            const path = `${DIR}/shamarly/${pad(p)}.png`;
+            await Filesystem.downloadFile({ url: `${base}/${pad(p)}.png`, path, directory: Directory.Data, recursive: true })
+              .catch(() => Filesystem.downloadFile({ url: shamarlyUrl(p), path, directory: Directory.Data, recursive: true }));
             this.shamarlyPages.add(p);
+            this.progress.set({ id, done: this.shamarlyPages.size / map.pages });
           }
-          this.progress.set({ id, done: p / map.pages });
-        }
+        };
+        await Promise.all([worker(), worker(), worker(), worker()]);
+        if (this.cancel || this.shamarlyPages.size < map.pages) return false;
       }
       this.downloaded.update((s) => new Set(s).add(id));
       return true;
@@ -274,14 +306,59 @@ export class MushafEditionsService {
     return found;
   }
 
-  /** Image of Shamarly page [p]: the saved copy, or archive.org. */
-  async shamarlySrc(p: number): Promise<string> {
+  /** Where each ayah sits on each page (index = page - 1). */
+  shamarlyAyat(): Promise<ShamarlyArea[][]> {
+    this.shamarlyAreas ??= firstValueFrom(this.http.get<{ pages: ShamarlyArea[][] }>('assets/quran/shamarly-ayat.json')).then((d) => d.pages);
+    this.shamarlyAreas.catch(() => (this.shamarlyAreas = undefined));
+    return this.shamarlyAreas;
+  }
+
+  /** Image of Shamarly page [p]: the saved copy, or archive.org (its storage server directly when known). */
+  async shamarlySrc(p: number, viaRedirect = false): Promise<string> {
     await this.load();
     if (this.shamarlyPages.has(p) && Capacitor.isNativePlatform()) {
       const { uri } = await Filesystem.getUri({ path: `${DIR}/shamarly/${pad(p)}.png`, directory: Directory.Data });
       return Capacitor.convertFileSrc(uri);
     }
-    return shamarlyUrl(p);
+    const base = viaRedirect ? SHAMARLY_IMG : await this.shamarlyServer();
+    return `${base}/${pad(p)}.png`;
+  }
+
+  /** Starts loading page [p] so turning to it is instant (nothing for saved pages). */
+  async prefetchShamarly(p: number): Promise<void> {
+    if (p < 1 || p > 522 || this.shamarlyPages.has(p)) return;
+    const img = new Image();
+    img.src = await this.shamarlySrc(p);
+  }
+
+  /** https://<server>/<dir> of the archive.org item, remembered for a week; the redirecting URL if unknown. */
+  private shamarlyServer(): Promise<string> {
+    this.shamarlyBase ??= (async () => {
+      const { value } = await Preferences.get({ key: SHAMARLY_SERVER_KEY });
+      try {
+        const saved = value ? (JSON.parse(value) as { base: string; at: number }) : null;
+        if (saved && Date.now() - saved.at < 7 * 864e5) return saved.base;
+      } catch {
+        /* ask again */
+      }
+      try {
+        const get = (k: string) => firstValueFrom(this.http.get<{ result: string }>(`${SHAMARLY_META}/${k}`)).then((r) => r.result);
+        const [server, dir] = await Promise.all([get('d1'), get('dir')]);
+        if (!/^[\w.-]+\.archive\.org$/.test(server) || !dir.startsWith('/')) return SHAMARLY_IMG;
+        const base = `https://${server}${dir}`;
+        await Preferences.set({ key: SHAMARLY_SERVER_KEY, value: JSON.stringify({ base, at: Date.now() }) });
+        return base;
+      } catch {
+        return SHAMARLY_IMG;
+      }
+    })();
+    return this.shamarlyBase;
+  }
+
+  /** The storage server failed: forget it and use the redirecting URL until it is asked again. */
+  async forgetShamarlyServer(): Promise<void> {
+    this.shamarlyBase = Promise.resolve(SHAMARLY_IMG);
+    await Preferences.remove({ key: SHAMARLY_SERVER_KEY });
   }
 
   /** Page in edition [id] for [ref] (sura/ayah by Hafs numbering; close enough for the riwayat). */

@@ -20,9 +20,10 @@ and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
   without diacritics, verse of the day, Qibla, Hijri date.
 - **Mushafs & qira'at:** choose the mushaf the Quran tab opens: Madinah (built in), colour-coded tajweed (the same
   pages and Tanzil text, rules from quran.com's tajweed markup moved onto it letter by letter; words that do not line
-  up stay plain), the Egyptian Shamarly mushaf (the Tanzil text on its 522 pages, each ayah separate and resizable;
-  page map from the open-source Shamarly app, `node scripts/build-shamarly.mjs`; the scanned page from
-  archive.org/details/shamerly on request), and seven riwayat with their own
+  up stay plain), the Egyptian Shamarly mushaf (its scanned 522 pages from archive.org/details/shamerly, each ayah
+  tappable for tafsir, word meanings, recitation, copy and share; page map from the open-source Shamarly app,
+  `node scripts/build-shamarly.mjs`; ayah areas found on the scans by `scripts/shamarly-ayat` (Python + OpenCV) and
+  checked against that map; the Tanzil text on the same pages on request), and seven riwayat with their own
   text, font and pages from the King Fahd Complex (Warsh, Qalun, Shu'bah, ad-Duri, as-Susi, al-Bazzi, Qunbul;
   github.com/thetruetruth/quran-data-kfgqpc). Shamarly page images have no stated licence: confirm before publishing.
 - **Listen:** 244 reciters with whole suras in every recorded riwayah (Hafs, Warsh, Qalun...) and 176 Quran radio

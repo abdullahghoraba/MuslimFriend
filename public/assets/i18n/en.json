@@ -1153,7 +1153,9 @@
       "images": "The Egyptian Shamarly mushaf: the text on its 522 pages, each ayah separate, at any size. The picture button shows the scanned page (online).",
       "riwaya": "Read the Quran in this riwayah, with its own spelling and page numbers."
     },
-    "scanned": "Scanned page"
+    "scanned": "Scanned page",
+    "openInMushaf": "Open in Madinah mushaf",
+    "ayatOnPage": "Ayat on this page"
   },
   "hadith": {
     "title": "Hadith",

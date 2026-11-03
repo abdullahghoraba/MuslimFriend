@@ -1153,7 +1153,9 @@
       "images": "Mushaf Syamarli Mesir: teks di 522 halamannya, setiap ayat terpisah dan dengan ukuran apa pun. Tombol gambar menampilkan halaman pindaian (online).",
       "riwaya": "Baca Al-Qur'an dengan riwayat ini, dengan rasm dan nomor halamannya sendiri."
     },
-    "scanned": "Halaman pindaian"
+    "scanned": "Halaman pindaian",
+    "openInMushaf": "Buka di mushaf Madinah",
+    "ayatOnPage": "Ayat di halaman ini"
   },
   "hadith": {
     "title": "Hadis",

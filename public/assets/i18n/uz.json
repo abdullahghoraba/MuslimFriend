@@ -1153,7 +1153,9 @@
       "images": "Misrning Shamarliy mushafi: matn uning 522 sahifasida, har bir oyat alohida va istalgan o'lchamda. Rasm tugmasi skanerlangan sahifani ko'rsatadi (onlayn).",
       "riwaya": "Qur'onni shu rivoyatda, o'z imlosi va sahifa raqamlari bilan o'qing."
     },
-    "scanned": "Skanerlangan sahifa"
+    "scanned": "Skanerlangan sahifa",
+    "openInMushaf": "Madina mushafida ochish",
+    "ayatOnPage": "Shu sahifadagi oyatlar"
   },
   "hadith": {
     "title": "Hadislar",

@@ -1153,7 +1153,9 @@
       "images": "Le mushaf égyptien Shamarly : le texte sur ses 522 pages, chaque verset à part, à toute taille. Le bouton image montre la page scannée (en ligne).",
       "riwaya": "Lisez le Coran dans cette transmission, avec sa graphie et sa pagination propres."
     },
-    "scanned": "Page scannée"
+    "scanned": "Page scannée",
+    "openInMushaf": "Ouvrir dans le mushaf de Médine",
+    "ayatOnPage": "Versets de cette page"
   },
   "hadith": {
     "title": "Hadiths",

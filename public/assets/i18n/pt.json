@@ -1153,7 +1153,9 @@
       "images": "O mushaf egípcio Shamarly: o texto em suas 522 páginas, cada versículo separado e em qualquer tamanho. O botão de imagem mostra a página digitalizada (online).",
       "riwaya": "Leia o Alcorão nesta transmissão, com sua grafia e numeração de páginas próprias."
     },
-    "scanned": "Página digitalizada"
+    "scanned": "Página digitalizada",
+    "openInMushaf": "Abrir no mushaf de Medina",
+    "ayatOnPage": "Versículos desta página"
   },
   "hadith": {
     "title": "Hadiths",

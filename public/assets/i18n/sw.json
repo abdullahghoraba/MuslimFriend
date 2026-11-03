@@ -1153,7 +1153,9 @@
       "images": "Msahafu wa Shamarly wa Misri: maandishi kwenye kurasa zake 522, kila aya peke yake na kwa ukubwa wowote. Kitufe cha picha kinaonyesha ukurasa uliochanganuliwa (mtandaoni).",
       "riwaya": "Soma Qur'ani kwa riwaya hii, kwa hati na nambari zake za kurasa."
     },
-    "scanned": "Ukurasa uliochanganuliwa"
+    "scanned": "Ukurasa uliochanganuliwa",
+    "openInMushaf": "Fungua katika Msahafu wa Madina",
+    "ayatOnPage": "Aya za ukurasa huu"
   },
   "hadith": {
     "title": "Hadithi",

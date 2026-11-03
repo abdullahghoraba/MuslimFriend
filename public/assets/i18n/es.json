@@ -1153,7 +1153,9 @@
       "images": "El mushaf egipcio Shamarly: el texto en sus 522 páginas, cada aleya aparte y a cualquier tamaño. El botón de imagen muestra la página escaneada (en línea).",
       "riwaya": "Lee el Corán en esta transmisión, con su propia grafía y numeración de páginas."
     },
-    "scanned": "Página escaneada"
+    "scanned": "Página escaneada",
+    "openInMushaf": "Abrir en el mushaf de Medina",
+    "ayatOnPage": "Aleyas de esta página"
   },
   "hadith": {
     "title": "Hadices",

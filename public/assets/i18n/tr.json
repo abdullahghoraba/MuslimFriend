@@ -1153,7 +1153,9 @@
       "images": "Mısır Şemerli mushafı: metin 522 sayfasında, her ayet ayrı ve istediğin boyutta. Resim düğmesi taranmış sayfayı gösterir (çevrimiçi).",
       "riwaya": "Kur'an'ı bu rivayetle, kendi imlası ve sayfa numaralarıyla okuyun."
     },
-    "scanned": "Taranmış sayfa"
+    "scanned": "Taranmış sayfa",
+    "openInMushaf": "Medine mushafında aç",
+    "ayatOnPage": "Bu sayfadaki ayetler"
   },
   "hadith": {
     "title": "Hadis",

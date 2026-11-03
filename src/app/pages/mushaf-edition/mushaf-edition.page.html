@@ -44,8 +44,21 @@
     <div class="image-page">
       @if (imageLoading()) { <div class="state"><ion-spinner /></div> }
       @if (imageSrc()) {
-        <img [src]="imageSrc()" [class.hidden]="imageLoading()" (load)="imageLoading.set(false)" (error)="imageFailed()"
-             [attr.alt]="title() + ' ' + page()" draggable="false" />
+        <!-- Tap an ayah to select it; the list of ayat below the page does the same for screen readers. -->
+        <div class="scan" [class.hidden]="imageLoading()" (click)="tapPage($event)">
+          <img [src]="imageSrc()" (load)="imageLoaded()" (error)="imageFailed()" [attr.alt]="title() + ' ' + page()" draggable="false" />
+          @for (m of marks(); track $index) {
+            <span class="mark" [class.reciting]="!selected()" [style.left.%]="m.left" [style.top.%]="m.top"
+                  [style.width.%]="m.width" [style.height.%]="m.height" aria-hidden="true"></span>
+          }
+        </div>
+        @if (!imageLoading() && areas()?.[page() - 1]; as list) {
+          <ul class="visually-hidden" [attr.aria-label]="'editions.ayatOnPage' | translate">
+            @for (a of list; track $index) {
+              <li><button type="button" (click)="selected.set({ sura: a[0], aya: a[1] })">{{ a[0] }}:{{ a[1] }}</button></li>
+            }
+          </ul>
+        }
       }
     </div>
   } @else if (riwaya()) {
@@ -55,7 +68,8 @@
           <div class="sura-frame" role="heading" aria-level="2">سورة {{ s.name }}</div>
           @if (s.basmala) { <div class="basmala" aria-label="بسم الله الرحمن الرحيم">﷽</div> }
         }
-        <span class="ayah">{{ b.ayah[2] }}</span>{{ ' ' }}
+        <span class="ayah" role="button" tabindex="0" [class.selected]="isSelected(b.ayah)"
+              (click)="tapAyah(b.ayah)" (keydown.enter)="tapAyah(b.ayah)">{{ b.ayah[2] }}</span>{{ ' ' }}
       }
     </div>
   } @else {
@@ -75,3 +89,29 @@
     <button type="button" class="turn" (click)="prev()" [disabled]="page() <= 1" [attr.aria-label]="'mushaf.prevPage' | translate">›</button>
   </div>
 </ion-content>
+
+@if (selected(); as sel) {
+  <ion-footer [class]="'theme-' + theme()">
+    <div class="ayah-bar">
+      <span class="ayah-name">{{ selectedLabel() }}</span>
+      <button type="button" class="close" (click)="selected.set(null)" [attr.aria-label]="'common.close' | translate">✕</button>
+    </div>
+    <div class="ayah-actions" role="toolbar" [attr.aria-label]="'mushaf.ayahActions' | translate">
+      @if (hafsNumbering()) {
+        <button type="button" (click)="openTafsir()"><ion-icon name="book-outline" aria-hidden="true" /><span>{{ 'mushaf.tafsir' | translate }}</span></button>
+        <button type="button" (click)="openWords()"><ion-icon name="language-outline" aria-hidden="true" /><span>{{ 'mushaf.wordByWord' | translate }}</span></button>
+        <button type="button" (click)="play()"><ion-icon name="play" aria-hidden="true" /><span>{{ 'mushaf.listen' | translate }}</span></button>
+        <button type="button" (click)="openInMushaf()"><ion-icon name="bookmark-outline" aria-hidden="true" /><span>{{ 'editions.openInMushaf' | translate }}</span></button>
+      }
+      <button type="button" (click)="copy()"><ion-icon name="copy-outline" aria-hidden="true" /><span>{{ 'mushaf.copy' | translate }}</span></button>
+      <button type="button" (click)="shareAyah()"><ion-icon name="share-social-outline" aria-hidden="true" /><span>{{ 'common.share' | translate }}</span></button>
+    </div>
+  </ion-footer>
+} @else if (recitation.current() && hafsNumbering()) {
+  <ion-footer [class]="'theme-' + theme()">
+    <div class="ayah-bar">
+      <span class="ayah-name">{{ recitation.reciter().nameAr }}</span>
+      <button type="button" class="close" (click)="recitation.stop()" [attr.aria-label]="'mushaf.stop' | translate">■</button>
+    </div>
+  </ion-footer>
+}
