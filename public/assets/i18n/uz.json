@@ -631,7 +631,14 @@
     "clearReadingMark": "O'qish belgisini olib tashlash",
     "autoResume": "Qur'onni oxirgi o'qigan sahifamda ochish",
     "hifz": "Yodlash",
-    "editions": "Mushaflar"
+    "editions": "Mushaflar",
+    "searchAllHint": "Oyatlar, suralar, qorilar yoki sahifani qidirish",
+    "searchAllExamples": "Sinab ko'ring: الرحمن, صبر, sura nomi, Minshaviy kabi qori, sahifa raqami yoki 2:255 kabi havola.",
+    "surahs": "Suralar",
+    "reciters": "Qorilar",
+    "ayat": "oyat",
+    "anyOrder": "Bu so'zlarning hammasi bor oyatlar",
+    "ayatResults": "Oyatlar"
   },
   "qibla": {
     "title": "Qibla",
@@ -1124,7 +1131,16 @@
     "someFailed": "{{count}} ta sura yuklanmadi. Qayta urinish uchun «Hammasini yuklab olish»ni bosing.",
     "downloadsStopped": "Yuklash to'xtadi. Internet va bo'sh joyni tekshirib, qayta urinib ko'ring.",
     "deleteAll": "Yuklanganlarni o'chirish",
-    "deleteAllText": "Ushbu qiroatning yuklangan {{count}} ta surasi telefondan o'chirilsinmi?"
+    "deleteAllText": "Ushbu qiroatning yuklangan {{count}} ta surasi telefondan o'chirilsinmi?",
+    "searchReciters": "Qori yoki yozuvni qidirish (masalan, Minshaviy mujavvad)",
+    "style": "Tilovat uslubi",
+    "allStyles": "Barcha uslublar",
+    "styles": {
+      "murattal": "Murattal",
+      "mujawwad": "Mujavvad",
+      "muallim": "Ta'limiy (muallim)"
+    },
+    "resultCount": "{{n}} qori"
   },
   "editions": {
     "title": "Mushaflar va qiroatlar",

@@ -27,7 +27,8 @@
   } @else {
     <main>
       <ion-searchbar [value]="query()" (ionInput)="query.set($event.detail.value ?? '')"
-                     [placeholder]="'listen.search' | translate" [attr.aria-label]="'listen.search' | translate" />
+                     [placeholder]="(tab() === 'reciters' ? 'listen.searchReciters' : 'listen.search') | translate"
+                     [attr.aria-label]="(tab() === 'reciters' ? 'listen.searchReciters' : 'listen.search') | translate" />
 
       @if (tab() === 'reciters') {
         <ion-select class="riwayah card" [class.open]="showRiwayat()" interface="action-sheet" [label]="'listen.riwayah' | translate"
@@ -37,7 +38,17 @@
             <ion-select-option [value]="rw.id">{{ catalog.riwayahName(rw) }}</ion-select-option>
           }
         </ion-select>
+        <ion-select class="riwayah card" interface="action-sheet" [label]="'listen.style' | translate"
+                    [value]="style() ?? ''" (ionChange)="setStyle($event.detail.value)">
+          <ion-select-option value="">{{ 'listen.allStyles' | translate }}</ion-select-option>
+          @for (st of styles; track st) {
+            <ion-select-option [value]="st">{{ 'listen.styles.' + st | translate }}</ion-select-option>
+          }
+        </ion-select>
         @if (showRiwayat()) { <p class="hint">{{ 'listen.tenQiraatHint' | translate }}</p> }
+        @if (filtering()) {
+          <p class="hint" role="status">{{ 'listen.resultCount' | translate: { n: reciters().favorites.length + reciters().others.length } }}</p>
+        }
         @if (lastReciter(); as last) {
           @if (!query()) {
             <button type="button" class="continue card" (click)="openReciter(last)">

@@ -3,7 +3,7 @@ import { RouterLink, Router } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonSpinner, IonSearchbar, IonSegment, IonSegmentButton, IonLabel, IonToggle, AlertController } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { QuranService } from '../../core/quran/quran.service';
-import { AyahRef, normalizeArabic, TOTAL_PAGES } from '../../core/quran/quran-utils';
+import { AyahRef, TOTAL_PAGES } from '../../core/quran/quran-utils';
 import { SettingsService } from '../../core/services/settings.service';
 import { EditionId, MushafEditionsService, edition } from '../../core/quran/mushaf-editions.service';
 
@@ -25,8 +25,7 @@ export class QuranIndexPage {
   readonly actions = [{key:'search',icon:'search-outline',route:'/quran-search'}, {key:'marks',icon:'bookmark-outline',route:'/quran-marks'}, {key:'khatmah',icon:'flag-outline',route:'/khatmah'}, {key:'hifz',icon:'school-outline',route:'/hifz'}, {key:'editions',icon:'layers-outline',route:'/mushaf-editions'}, {key:'qibla',icon:'compass-outline',route:'/qibla'}];
   readonly suras = computed(() => {
     if (!this.quran.ready()) return [];
-    const q = normalizeArabic(this.filter()).toLowerCase();
-    return this.quran.suras.filter(s => normalizeArabic(s.name).includes(q) || (s.tname+' '+s.ename).toLowerCase().includes(q));
+    return this.quran.searchSuras(this.filter());
   });
   /** Opening the Quran tab the first time after the app starts jumps to the last page read. */
   private static resumed = false;

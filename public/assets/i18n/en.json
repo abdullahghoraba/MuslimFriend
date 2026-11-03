@@ -631,7 +631,14 @@
     "clearReadingMark": "Remove reading mark",
     "autoResume": "Open the Quran at the last page I read",
     "hifz": "Hifz",
-    "editions": "Mushafs"
+    "editions": "Mushafs",
+    "searchAllHint": "Search ayat, surahs, reciters or a page",
+    "searchAllExamples": "Try الرحمن, صبر, a surah name, a reciter such as Minshawi, a page number, or a reference such as 2:255.",
+    "surahs": "Surahs",
+    "reciters": "Reciters",
+    "ayat": "ayat",
+    "anyOrder": "Ayat with all these words",
+    "ayatResults": "Ayat"
   },
   "qibla": {
     "title": "Qibla",
@@ -1124,7 +1131,16 @@
     "someFailed": "{{count}} suras could not be downloaded. Tap Download all to try again.",
     "downloadsStopped": "Downloading stopped. Check the connection and free space, then try again.",
     "deleteAll": "Delete downloads",
-    "deleteAllText": "Remove the {{count}} downloaded suras of this recording from the phone?"
+    "deleteAllText": "Remove the {{count}} downloaded suras of this recording from the phone?",
+    "searchReciters": "Search a reciter or recording (e.g. Minshawi mujawwad)",
+    "style": "Style",
+    "allStyles": "All styles",
+    "styles": {
+      "murattal": "Murattal",
+      "mujawwad": "Mujawwad",
+      "muallim": "Teaching (mu'allim)"
+    },
+    "resultCount": "{{n}} reciters"
   },
   "editions": {
     "title": "Mushafs & Qira'at",

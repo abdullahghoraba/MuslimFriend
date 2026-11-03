@@ -631,7 +631,14 @@
     "clearReadingMark": "Cire alamar karatu",
     "autoResume": "Buɗe Alƙur'ani a shafin da na karanta na ƙarshe",
     "hifz": "Haddar",
-    "editions": "Mushafai"
+    "editions": "Mushafai",
+    "searchAllHint": "Nemi ayoyi, surori, masu karatu ko shafi",
+    "searchAllExamples": "Gwada الرحمن, صبر, sunan sura, mai karatu kamar Minshawi, lambar shafi, ko kamar 2:255.",
+    "surahs": "Surori",
+    "reciters": "Masu karatu",
+    "ayat": "ayoyi",
+    "anyOrder": "Ayoyin da ke da duk waɗannan kalmomi",
+    "ayatResults": "Ayoyi"
   },
   "qibla": {
     "title": "Alƙibla",
@@ -1124,7 +1131,16 @@
     "someFailed": "Ba a iya sauke surori {{count}} ba. Danna Sauke duka don sake gwadawa.",
     "downloadsStopped": "Saukewa ta tsaya. Duba haɗin intanet da sararin ajiya, sannan a sake gwadawa.",
     "deleteAll": "Goge abubuwan da aka sauke",
-    "deleteAllText": "A goge surori {{count}} da aka sauke na wannan karatun daga wayar?"
+    "deleteAllText": "A goge surori {{count}} da aka sauke na wannan karatun daga wayar?",
+    "searchReciters": "Nemi mai karatu ko rikodi (misali Minshawi mujawwad)",
+    "style": "Salon karatu",
+    "allStyles": "Duk salo",
+    "styles": {
+      "murattal": "Murattal",
+      "mujawwad": "Mujawwad",
+      "muallim": "Na koyarwa (mu'allim)"
+    },
+    "resultCount": "Masu karatu {{n}}"
   },
   "editions": {
     "title": "Mushafai da Kira'o'i",

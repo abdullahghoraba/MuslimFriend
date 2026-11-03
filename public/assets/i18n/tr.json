@@ -631,7 +631,14 @@
     "clearReadingMark": "Okuma işaretini kaldır",
     "autoResume": "Kuran'ı son okuduğum sayfada aç",
     "hifz": "Hıfz",
-    "editions": "Mushaflar"
+    "editions": "Mushaflar",
+    "searchAllHint": "Ayet, sure, kâri veya sayfa ara",
+    "searchAllExamples": "Deneyin: الرحمن, صبر, bir sure adı, Minşavi gibi bir kâri, sayfa numarası veya 2:255 gibi bir referans.",
+    "surahs": "Sureler",
+    "reciters": "Kâriler",
+    "ayat": "ayet",
+    "anyOrder": "Bu kelimelerin hepsini içeren ayetler",
+    "ayatResults": "Ayetler"
   },
   "qibla": {
     "title": "Kıble",
@@ -1124,7 +1131,16 @@
     "someFailed": "{{count}} sure indirilemedi. Yeniden denemek için Tümünü indir'e dokunun.",
     "downloadsStopped": "İndirme durdu. Bağlantıyı ve boş alanı kontrol edip yeniden deneyin.",
     "deleteAll": "İndirilenleri sil",
-    "deleteAllText": "Bu kaydın indirilen {{count}} suresi telefondan silinsin mi?"
+    "deleteAllText": "Bu kaydın indirilen {{count}} suresi telefondan silinsin mi?",
+    "searchReciters": "Kâri veya kayıt ara (ör. Minşavi mücevved)",
+    "style": "Okuyuş tarzı",
+    "allStyles": "Tüm tarzlar",
+    "styles": {
+      "murattal": "Murattal",
+      "mujawwad": "Mücevved",
+      "muallim": "Talim (muallim)"
+    },
+    "resultCount": "{{n}} kâri"
   },
   "editions": {
     "title": "Mushaflar ve Kıraatler",

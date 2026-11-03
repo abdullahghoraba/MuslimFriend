@@ -118,6 +118,17 @@ export function normalizeArabic(s: string): string {
     .trim();
 }
 
+/**
+ * Search key for Quran text: the Uthmani spelling and everyday spelling give the same key, so "الصلاة" finds
+ * "ٱلصَّلَوٰةِ", "كتاب" finds "ٱلْكِتَـٰبُ" and "الرحمن" finds "ٱلرَّحْمَـٰنِ". A و written for an alif (و with a
+ * dagger alif and no vowel of its own) reads as ا; then every alif, written or not, is left out (so "الصبر" still
+ * finds "بِٱلصَّبْرِ").
+ * Every character of [s] maps to at most one character of the key, so prefix lengths can map matches back.
+ */
+export function quranSearchKey(s: string): string {
+  return normalizeArabic(s.replace(/و(?=ٰ)/g, 'ا')).replace(/ا/g, '');
+}
+
 /** Deterministic "verse of the day": same verse all day, changes daily, avoids very long verses. */
 export function verseOfDayIndex(date: Date, texts: string[]): number {
   const day = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86_400_000);

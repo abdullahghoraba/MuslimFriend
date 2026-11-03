@@ -631,7 +631,14 @@
     "clearReadingMark": "Lesemarke entfernen",
     "autoResume": "Den Koran auf der zuletzt gelesenen Seite öffnen",
     "hifz": "Hifz",
-    "editions": "Mushafs"
+    "editions": "Mushafs",
+    "searchAllHint": "Verse, Suren, Rezitatoren oder eine Seite suchen",
+    "searchAllExamples": "Versuchen Sie الرحمن, صبر, einen Surennamen, einen Rezitator wie Minshawi, eine Seitenzahl oder eine Angabe wie 2:255.",
+    "surahs": "Suren",
+    "reciters": "Rezitatoren",
+    "ayat": "Verse",
+    "anyOrder": "Verse mit all diesen Wörtern",
+    "ayatResults": "Verse"
   },
   "qibla": {
     "title": "Qibla",
@@ -1124,7 +1131,16 @@
     "someFailed": "{{count}} Suren konnten nicht geladen werden. Tippe auf Alle herunterladen, um es erneut zu versuchen.",
     "downloadsStopped": "Download gestoppt. Prüfe Verbindung und freien Speicher und versuche es erneut.",
     "deleteAll": "Downloads löschen",
-    "deleteAllText": "Die {{count}} heruntergeladenen Suren dieser Aufnahme vom Telefon löschen?"
+    "deleteAllText": "Die {{count}} heruntergeladenen Suren dieser Aufnahme vom Telefon löschen?",
+    "searchReciters": "Rezitator oder Aufnahme suchen (z. B. Minshawi Mujawwad)",
+    "style": "Stil",
+    "allStyles": "Alle Stile",
+    "styles": {
+      "murattal": "Murattal",
+      "mujawwad": "Mujawwad",
+      "muallim": "Lehraufnahme (Mu'allim)"
+    },
+    "resultCount": "{{n}} Rezitatoren"
   },
   "editions": {
     "title": "Mushafs und Lesarten",

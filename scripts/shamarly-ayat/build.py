@@ -1,6 +1,7 @@
 """Turn the detected ayah markers into tap areas per ayah, checked against the page map.
 
-Usage: py -I scripts/shamarly-ayat/build.py detected.json public/assets/quran/meta.json public/assets/quran/shamarly.json \n         shamerly.db public/assets/quran/shamarly-ayat.json   (shamerly.db: github.com/Mr-DDDAlKilanny/Shamarly)
+Usage: py -I scripts/shamarly-ayat/build.py detected.json public/assets/quran/meta.json public/assets/quran/shamarly.json
+         shamerly.db public/assets/quran/shamarly-ayat.json   (shamerly.db: github.com/Mr-DDDAlKilanny/Shamarly)
 The markers come from detect.py; the Shamarly app's database is only used to check them (and to fill the few the
 image search misses where a marker touches a word on both sides).
 Output: {"v":1,"pages":[[[sura, aya, [x0,y0,x1,y1, ...]], ...] per page]}, coordinates in permille of the page

@@ -631,7 +631,14 @@
     "clearReadingMark": "Hapus tanda baca",
     "autoResume": "Buka Al-Qur'an di halaman terakhir yang saya baca",
     "hifz": "Hafalan",
-    "editions": "Mushaf"
+    "editions": "Mushaf",
+    "searchAllHint": "Cari ayat, surah, qari, atau halaman",
+    "searchAllExamples": "Coba الرحمن, صبر, nama surah, qari seperti Minshawi, nomor halaman, atau rujukan seperti 2:255.",
+    "surahs": "Surah",
+    "reciters": "Qari",
+    "ayat": "ayat",
+    "anyOrder": "Ayat yang memuat semua kata ini",
+    "ayatResults": "Ayat"
   },
   "qibla": {
     "title": "Kiblat",
@@ -1124,7 +1131,16 @@
     "someFailed": "{{count}} surah gagal diunduh. Ketuk Unduh semua untuk mencoba lagi.",
     "downloadsStopped": "Unduhan berhenti. Periksa koneksi dan ruang kosong, lalu coba lagi.",
     "deleteAll": "Hapus unduhan",
-    "deleteAllText": "Hapus {{count}} surah unduhan dari rekaman ini dari ponsel?"
+    "deleteAllText": "Hapus {{count}} surah unduhan dari rekaman ini dari ponsel?",
+    "searchReciters": "Cari qari atau rekaman (mis. Minshawi mujawwad)",
+    "style": "Gaya",
+    "allStyles": "Semua gaya",
+    "styles": {
+      "murattal": "Murattal",
+      "mujawwad": "Mujawwad",
+      "muallim": "Pengajaran (mu'allim)"
+    },
+    "resultCount": "{{n}} qari"
   },
   "editions": {
     "title": "Mushaf & Qiraat",

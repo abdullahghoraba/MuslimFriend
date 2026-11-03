@@ -1,8 +1,8 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { Language } from '../models';
-import { normalizeArabic } from '../quran/quran-utils';
 import { SettingsService } from '../services/settings.service';
+import { SearchText, prepareSearch, searchList, searchMatches } from '../util/search';
 
 /** One recording of a reciter (a riwayah, murattal or mujawwad...). [server] + "001.mp3" is al-Fatihah. */
 export interface Moshaf {
@@ -13,6 +13,15 @@ export interface Moshaf {
   server: string;
   /** Comma-separated sura numbers; empty means all 114. */
   suras: string;
+}
+
+/** How a recording is read: murattal (the usual), mujawwad (melodic, slower) or mu'allim (teaching, with repetition). */
+export type MoshafStyle = 'murattal' | 'mujawwad' | 'muallim';
+
+export function moshafStyle(m: Pick<Moshaf, 'ar'>): MoshafStyle {
+  if (m.ar.includes('المجود')) return 'mujawwad';
+  if (m.ar.includes('المعلم')) return 'muallim';
+  return 'murattal';
 }
 
 export interface FullReciter {
@@ -82,6 +91,18 @@ export class AudioCatalogService {
     return [...list].sort((a, b) => this.reciterName(a).localeCompare(this.reciterName(b), lang));
   });
   readonly radios = computed(() => this.catalog()?.radios ?? []);
+
+  /** Each reciter's names (Arabic, English, the reader's language) and recordings, ready to search. */
+  private readonly reciterIndex = computed(() => {
+    const index = new Map<number, SearchText[]>();
+    for (const r of this.catalog()?.reciters ?? []) {
+      index.set(r.id, [
+        prepareSearch(r.ar, r.en, this.names()?.reciters[r.id]),
+        prepareSearch(...r.moshaf.flatMap((m) => [m.ar, m.en, this.names()?.moshaf[m.id]])),
+      ]);
+    }
+    return index;
+  });
   readonly riwayat = computed(() => this.catalog()?.riwayat ?? []);
 
   load(): Promise<void> {
@@ -124,13 +145,23 @@ export class AudioCatalogService {
     return m.suras ? m.suras.split(',').map(Number).sort((a, b) => a - b) : Array.from({ length: 114 }, (_, i) => i + 1);
   }
 
-  /** Search in Arabic (ignoring hamza and tashkeel) and in the Latin / localized name. */
+  /** Forgiving search in the Arabic, English and localized names (see core/util/search). */
   matches(query: string, ...names: string[]): boolean {
-    const q = query.trim();
-    if (!q) return true;
-    const ar = normalizeArabic(q);
-    const latin = q.toLowerCase();
-    return names.some((n) => normalizeArabic(n).includes(ar) || n.toLowerCase().includes(latin));
+    return searchMatches(query, ...names);
+  }
+
+  /**
+   * Reciters matching [query] (name in any spelling, and words of their recordings: "الحصري ورش", "minshawi
+   * mujawwad"), with a recording in riwayah [rewaya] (0 = any) and of [style] (null = any); best matches first.
+   */
+  searchReciters(query: string, rewaya = 0, style: MoshafStyle | null = null): FullReciter[] {
+    const index = this.reciterIndex();
+    const list = this.reciters().filter((r) => r.moshaf.some((m) => (!rewaya || m.rewaya === rewaya) && (!style || moshafStyle(m) === style)));
+    return searchList(list, query, (r) => index.get(r.id) ?? []);
+  }
+
+  searchRadios(query: string): Radio[] {
+    return searchList(this.radios(), query, (r) => [prepareSearch(r.ar, r.en, this.names()?.radios[r.id])]);
   }
 
   private pick(x: { ar: string; en: string }, local?: string): string {

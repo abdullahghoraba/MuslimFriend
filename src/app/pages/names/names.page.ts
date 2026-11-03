@@ -3,7 +3,7 @@ import { IonBackButton, IonButtons, IonContent, IonHeader, IonSearchbar, IonTitl
 import { TranslatePipe } from '@ngx-translate/core';
 import { ASMA_UL_HUSNA, AllahName } from '../../core/content/asma-ul-husna';
 import { intlLocale } from '../../core/models';
-import { normalizeArabic } from '../../core/quran/quran-utils';
+import { prepareSearch, searchList } from '../../core/util/search';
 import { SettingsService } from '../../core/services/settings.service';
 
 /** The day of the year, so each day has its own name (the 99 names in turn). */
@@ -82,11 +82,9 @@ export class NamesPage {
   readonly today = signal(ASMA_UL_HUSNA[nameOfDay()]);
 
   readonly list = computed(() => {
-    const q = this.query().trim();
-    const nq = normalizeArabic(q);
-    const lq = q.toLowerCase();
-    return ASMA_UL_HUSNA.map((name, i) => ({ name, i })).filter(({ name }) =>
-      !q || normalizeArabic(name[0]).includes(nq) || name[1].toLowerCase().includes(lq) || name[2].toLowerCase().includes(lq) || normalizeArabic(name[3]).includes(nq));
+    // The name first, then its transliteration, English meaning and Arabic explanation; any spelling, best first.
+    const all = ASMA_UL_HUSNA.map((name, i) => ({ name, i }));
+    return searchList(all, this.query(), ({ name }) => [prepareSearch(name[0], name[1]), prepareSearch(name[2], name[3])], ({ i }) => [i + 1]);
   });
 
   meaning(name: AllahName): string {

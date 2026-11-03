@@ -8,7 +8,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AudioCatalogService, Moshaf } from '../../core/audio/audio-catalog.service';
 import { AudioPlayerService } from '../../core/audio/audio-player.service';
 import { QuranService } from '../../core/quran/quran.service';
-import { normalizeArabic } from '../../core/quran/quran-utils';
 import { intlLocale } from '../../core/models';
 import { ListenPlayerComponent } from './listen-player.component';
 
@@ -53,12 +52,7 @@ export class ListenReciterPage {
   readonly suras = computed(() => {
     const m = this.moshaf();
     if (!m || !this.quran.ready()) return [];
-    const q = this.query().trim();
-    const nq = normalizeArabic(q);
-    return this.catalog
-      .suras(m)
-      .map((n) => this.quran.sura(n))
-      .filter((s) => !q || String(s.index) === q || normalizeArabic(s.name).includes(nq) || `${s.tname} ${s.ename}`.toLowerCase().includes(q.toLowerCase()));
+    return this.quran.searchSuras(this.query(), this.catalog.suras(m).map((n) => this.quran.sura(n)));
   });
 
   ionViewWillEnter(): void {

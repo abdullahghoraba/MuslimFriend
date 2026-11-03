@@ -631,7 +631,14 @@
     "clearReadingMark": "Ondoa alama ya kusoma",
     "autoResume": "Fungua Kurani kwenye ukurasa wa mwisho niliosoma",
     "hifz": "Kuhifadhi",
-    "editions": "Misahafu"
+    "editions": "Misahafu",
+    "searchAllHint": "Tafuta aya, sura, wasomaji au ukurasa",
+    "searchAllExamples": "Jaribu الرحمن, صبر, jina la sura, msomaji kama Minshawi, namba ya ukurasa, au rejea kama 2:255.",
+    "surahs": "Sura",
+    "reciters": "Wasomaji",
+    "ayat": "aya",
+    "anyOrder": "Aya zenye maneno haya yote",
+    "ayatResults": "Aya"
   },
   "qibla": {
     "title": "Kibla",
@@ -1124,7 +1131,16 @@
     "someFailed": "Sura {{count}} hazikuweza kupakuliwa. Gusa Pakua zote kujaribu tena.",
     "downloadsStopped": "Upakuaji umesimama. Kagua muunganisho na nafasi iliyo wazi, kisha ujaribu tena.",
     "deleteAll": "Futa vilivyopakuliwa",
-    "deleteAllText": "Futa sura {{count}} zilizopakuliwa za kisomo hiki kutoka kwenye simu?"
+    "deleteAllText": "Futa sura {{count}} zilizopakuliwa za kisomo hiki kutoka kwenye simu?",
+    "searchReciters": "Tafuta msomaji au rekodi (k.m. Minshawi mujawwad)",
+    "style": "Mtindo",
+    "allStyles": "Mitindo yote",
+    "styles": {
+      "murattal": "Murattal",
+      "mujawwad": "Mujawwad",
+      "muallim": "Ya kufundishia (mu'allim)"
+    },
+    "resultCount": "Wasomaji {{n}}"
   },
   "editions": {
     "title": "Misahafu na Qiraa",

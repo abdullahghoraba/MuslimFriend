@@ -7,7 +7,7 @@ import {
 } from '@ionic/angular';
 import { SelectTextsDirective } from '../../shared/select-texts.directive';
 import { TranslatePipe } from '@ngx-translate/core';
-import { AudioCatalogService, FullReciter, Radio } from '../../core/audio/audio-catalog.service';
+import { AudioCatalogService, FullReciter, MoshafStyle, Radio, moshafStyle } from '../../core/audio/audio-catalog.service';
 import { AudioPlayerService } from '../../core/audio/audio-player.service';
 import { ListenPlayerComponent } from './listen-player.component';
 
@@ -35,23 +35,25 @@ export class ListenPage {
   /** Only reciters with a recording in this riwayah (0 = all). */
   readonly rewaya = signal(0);
   readonly showRiwayat = signal(false);
+  /** Only reciters with a murattal / mujawwad / mu'allim recording (null = all). */
+  readonly style = signal<MoshafStyle | null>(null);
+  readonly styles: MoshafStyle[] = ['murattal', 'mujawwad', 'muallim'];
 
+  /** Search by name (any spelling) and by recording ("الحصري ورش", "minshawi mujawwad"), best matches first. */
   readonly reciters = computed(() => {
-    const q = this.query();
     const fav = this.player.favorites().reciters;
-    const rw = this.rewaya();
-    const list = this.catalog
-      .reciters()
-      .filter((r) => (!rw || r.moshaf.some((m) => m.rewaya === rw)) && this.catalog.matches(q, r.ar, r.en, this.catalog.reciterName(r)));
+    const list = this.catalog.searchReciters(this.query(), this.rewaya(), this.style());
     return { favorites: list.filter((r) => fav.includes(r.id)), others: list.filter((r) => !fav.includes(r.id)) };
   });
 
   readonly radios = computed(() => {
-    const q = this.query();
     const fav = this.player.favorites().radios;
-    const list = this.catalog.radios().filter((r) => this.catalog.matches(q, r.ar, r.en, this.catalog.radioName(r)));
+    const list = this.catalog.searchRadios(this.query());
     return { favorites: list.filter((r) => fav.includes(r.id)), others: list.filter((r) => !fav.includes(r.id)) };
   });
+
+  /** "12 reciters" while searching or filtering. */
+  readonly filtering = computed(() => !!this.query().trim() || !!this.rewaya() || !!this.style());
 
   ionViewWillEnter(): void {
     if (this.tabParam() === 'riwayat') {
@@ -75,7 +77,15 @@ export class ListenPage {
 
   recordings(r: FullReciter): string {
     const rw = this.rewaya();
-    return r.moshaf.filter((m) => !rw || m.rewaya === rw).map((m) => this.catalog.moshafName(m)).join(' · ');
+    const st = this.style();
+    return r.moshaf
+      .filter((m) => (!rw || m.rewaya === rw) && (!st || moshafStyle(m) === st))
+      .map((m) => this.catalog.moshafName(m))
+      .join(' · ');
+  }
+
+  setStyle(value: unknown): void {
+    this.style.set(this.styles.includes(value as MoshafStyle) ? (value as MoshafStyle) : null);
   }
 
   isOn(r: Radio): boolean {

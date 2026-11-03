@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { firstValueFrom } from 'rxjs';
+import { SearchText, prepareSearch, searchList } from '../util/search';
 import {
   AyahRef,
   QuranMeta,
@@ -11,6 +12,7 @@ import {
   juzOf,
   normalizeArabic,
   pageOf,
+  quranSearchKey,
   pageRange,
   quarterOf,
   refAt,
@@ -48,6 +50,7 @@ export class QuranService {
   private metaData?: QuranMeta;
   private texts: string[] = [];
   private normalized?: string[];
+  private suraIndex?: Map<number, SearchText>;
   private loading?: Promise<void>;
   private readonly tafsirCache = new Map<string, string[]>();
 
@@ -149,12 +152,36 @@ export class QuranService {
 
   /** Arabic search, ignoring tashkeel and letter-form differences. Results in mushaf order. */
   search(query: string, limit = 200): SearchHit[] {
-    const q = normalizeArabic(query);
-    if (q.length < 2) return [];
-    this.normalized ??= this.texts.map(normalizeArabic);
+    const q = quranSearchKey(query);
+    if (normalizeArabic(query).length < 2 || !q) return [];
+    const keys = this.searchKeys();
     const hits: SearchHit[] = [];
-    for (let i = 0; i < this.normalized.length && hits.length < limit; i++) {
-      if (this.normalized[i].includes(q)) {
+    for (let i = 0; i < keys.length && hits.length < limit; i++) {
+      if (keys[i].includes(q)) {
+        const a = this.ayahAt(i);
+        hits.push({ ...a, page: this.pageOf(a) });
+      }
+    }
+    return hits;
+  }
+
+  /** Suras by name (Arabic, transliterated or English, any spelling) or number; [among] narrows the list. */
+  searchSuras(query: string, among?: SuraMeta[]): SuraMeta[] {
+    this.suraIndex ??= new Map(this.suras.map((x) => [x.index, prepareSearch(x.name, x.tname, x.ename)]));
+    return searchList(among ?? this.suras, query, (x) => [this.suraIndex!.get(x.index)!], (x) => [x.index]);
+  }
+
+  /**
+   * Ayat containing every word of [query] in any order (after an exact phrase finds nothing), e.g. "الصبر الصلاة".
+   * At most [limit].
+   */
+  searchWords(query: string, limit = 200): SearchHit[] {
+    const words = normalizeArabic(query).split(' ').filter((w) => w.length >= 2).map(quranSearchKey).filter(Boolean);
+    if (words.length < 2) return [];
+    const keys = this.searchKeys();
+    const hits: SearchHit[] = [];
+    for (let i = 0; i < keys.length && hits.length < limit; i++) {
+      if (words.every((w) => keys[i].includes(w))) {
         const a = this.ayahAt(i);
         hits.push({ ...a, page: this.pageOf(a) });
       }
@@ -164,10 +191,14 @@ export class QuranService {
 
   /** Number of matches without the limit (for "n results"). */
   countMatches(query: string): number {
-    const q = normalizeArabic(query);
-    if (q.length < 2) return 0;
-    this.normalized ??= this.texts.map(normalizeArabic);
-    return this.normalized.filter((t) => t.includes(q)).length;
+    const q = quranSearchKey(query);
+    if (normalizeArabic(query).length < 2 || !q) return 0;
+    return this.searchKeys().filter((t) => t.includes(q)).length;
+  }
+
+  private searchKeys(): string[] {
+    this.normalized ??= this.texts.map(quranSearchKey);
+    return this.normalized;
   }
 
   verseOfDay(date = new Date()): Ayah {

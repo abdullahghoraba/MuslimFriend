@@ -631,7 +631,14 @@
     "clearReadingMark": "Remover marca de leitura",
     "autoResume": "Abrir o Alcorão na última página lida",
     "hifz": "Hifz",
-    "editions": "Mushafs"
+    "editions": "Mushafs",
+    "searchAllHint": "Pesquisar versículos, suratas, recitadores ou uma página",
+    "searchAllExamples": "Experimente الرحمن, صبر, o nome de uma surata, um recitador como Minshawi, um número de página ou uma referência como 2:255.",
+    "surahs": "Suratas",
+    "reciters": "Recitadores",
+    "ayat": "versículos",
+    "anyOrder": "Versículos com todas estas palavras",
+    "ayatResults": "Versículos"
   },
   "qibla": {
     "title": "Qibla",
@@ -1124,7 +1131,16 @@
     "someFailed": "Não foi possível baixar {{count}} suratas. Toque em Baixar tudo para tentar de novo.",
     "downloadsStopped": "Download interrompido. Verifique a conexão e o espaço livre e tente de novo.",
     "deleteAll": "Apagar downloads",
-    "deleteAllText": "Apagar do telefone as {{count}} suratas baixadas desta gravação?"
+    "deleteAllText": "Apagar do telefone as {{count}} suratas baixadas desta gravação?",
+    "searchReciters": "Pesquisar recitador ou gravação (ex.: Minshawi mujawwad)",
+    "style": "Estilo",
+    "allStyles": "Todos os estilos",
+    "styles": {
+      "murattal": "Murattal",
+      "mujawwad": "Mujawwad",
+      "muallim": "Didático (mu'allim)"
+    },
+    "resultCount": "{{n}} recitadores"
   },
   "editions": {
     "title": "Mushafs e leituras",

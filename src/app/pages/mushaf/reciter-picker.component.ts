@@ -5,7 +5,7 @@ import {
 } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
 import { RECITERS, Reciter } from '../../core/quran/recitation.service';
-import { normalizeArabic } from '../../core/quran/quran-utils';
+import { prepareSearch, searchList } from '../../core/util/search';
 
 /** Choose the verse-by-verse reciter (searchable). Dismisses with the chosen id. */
 @Component({
@@ -59,12 +59,11 @@ export class ReciterPickerComponent {
   readonly total = RECITERS.length;
   readonly query = signal('');
 
+  /** Alphabetical; while searching, best matches first (any spelling: "عبد الباسط", "minshawy"). */
   readonly list = computed(() => {
-    const q = this.query().trim();
-    const nq = normalizeArabic(q);
     const lang = this.lang();
-    return RECITERS.filter((r) => !q || normalizeArabic(r.nameAr).includes(nq) || r.nameEn.toLowerCase().includes(q.toLowerCase()))
-      .sort((a, b) => this.name(a).localeCompare(this.name(b), lang));
+    const sorted = [...RECITERS].sort((a, b) => this.name(a).localeCompare(this.name(b), lang));
+    return searchList(sorted, this.query(), (r) => [prepareSearch(r.nameAr, r.nameEn)]);
   });
 
   name(r: Reciter): string {
