@@ -1461,5 +1461,40 @@
     "savedMusic": "Saved to music (Music/Muslim Friend).",
     "deleteConfirm": "Delete this recording?",
     "myRecitation": "My recitation"
+  },
+  "tasmee": {
+    "title": "Tasmee' (recite to be checked)",
+    "short": "Tasmee'",
+    "hideText": "Hide the text (memorisation)",
+    "stopOnMistake": "Stop at a mistake and show the right word",
+    "engine": "Recognition",
+    "enginePhone": "Phone (quick)",
+    "engineWhisper": "Offline AI (accurate)",
+    "downloading": "Downloading… {{pct}}%",
+    "whisperAbout": "Tarteel's Quran-trained Whisper runs on your phone: no internet after one download of about 80 MB.",
+    "download": "Download (≈80 MB)",
+    "whisperReady": "Offline AI is ready.",
+    "phoneAbout": "Uses your phone's speech recognition (Google). Works best online or with the offline Arabic pack.",
+    "best": "Best so far: {{pct}}%",
+    "errors": {
+      "unavailable": "Speech recognition is not available on this phone. Try the offline AI.",
+      "denied": "Allow the microphone to recite.",
+      "network": "The phone's recognition needs the internet (or its offline Arabic pack). Or use the offline AI.",
+      "download": "The download failed. Check the connection and try again."
+    },
+    "heard": "heard: {{word}}",
+    "youSkipped": "You skipped:",
+    "youSaid": "You said «{{word}}»; the right word is:",
+    "continue": "Continue",
+    "finish": "Finish",
+    "again": "Again",
+    "other": "Other ayat",
+    "start": "Start reciting",
+    "startHint": "Press the microphone and recite from memory. Words you say correctly appear.",
+    "perfect": "No mistakes. ما شاء الله!",
+    "mistakes": "{{n}} to review",
+    "skipped": "skipped",
+    "history": "Recent sessions",
+    "note": "It checks the words (which word was said), not tajweed. Speech recognition can mishear: listen to the ayah when in doubt."
   }
 }

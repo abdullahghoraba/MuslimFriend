@@ -1,0 +1,94 @@
+main { max-width: 760px; margin: auto; padding: 12px 12px 40px; }
+
+.card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: 18px;
+  margin-block: 10px;
+}
+
+.setup {
+  padding: 6px 14px 14px;
+  .range { display: flex; gap: 12px; ion-select { flex: 1; } }
+  ion-toggle { width: 100%; margin-top: 10px; }
+  h2 { font-size: 0.95rem; color: var(--app-muted); margin: 16px 4px 6px; font-weight: 600; }
+}
+
+.hint { color: var(--app-muted); font-size: 0.85rem; line-height: 1.5; margin: 8px 4px; &.center { text-align: center; } }
+.link { border: 0; background: none; color: var(--ion-color-danger); font: inherit; text-decoration: underline; }
+.error { color: var(--ion-color-danger); text-align: center; }
+
+// The ayat: the word to say next is underlined; hidden words keep their room as soft blanks.
+.recital {
+  padding: 18px 16px;
+  font-family: 'AmiriQuran', serif;
+  font-size: 1.55rem;
+  line-height: 2.5;
+  text-align: center;
+  min-height: 120px;
+
+  .w { position: relative; border-radius: 6px; padding: 0 2px; transition: background 0.15s; }
+  .w.correct { color: var(--ion-text-color); }
+  .w.wrong { color: #c0392b; background: rgba(192, 57, 43, 0.1); }
+  .w.skipped { color: #b9770e; background: rgba(185, 119, 14, 0.12); text-decoration: underline wavy; }
+  .w.pending { color: var(--app-muted); }
+  .w.hidden { display: inline-block; min-width: 2.2em; height: 0.9em; background: var(--app-surface-strong, rgba(0, 0, 0, 0.06)); vertical-align: middle; }
+  .w.next { box-shadow: inset 0 -3px 0 var(--ion-color-primary); }
+  .heard { position: absolute; inset-inline-start: 0; top: -1.1em; font-family: system-ui, sans-serif; font-size: 0.6rem; color: #c0392b; white-space: nowrap; line-height: 1; }
+  .num { color: var(--ion-color-primary); font-size: 1.1rem; }
+}
+
+.partial { text-align: center; color: var(--app-muted); font-size: 1rem; min-height: 1.5em; }
+
+.correction {
+  padding: 14px;
+  text-align: center;
+  border-color: #c0392b;
+  .right { font-family: 'AmiriQuran', serif; font-size: 2rem; color: #1e8449; margin: 6px 0; }
+}
+
+.row-buttons, .controls { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.controls { flex-direction: row; margin-top: 12px; }
+
+.mic {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--ion-color-primary);
+  color: #fff;
+  font-size: 2.4rem;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  &:disabled { opacity: 0.5; }
+}
+.controls:has(.mic) { flex-direction: column; align-items: center; }
+
+.summary {
+  padding: 14px;
+  .score { font-size: 2.6rem; font-weight: 700; text-align: center; margin: 4px 0; color: #b9770e; &.good { color: #1e8449; } }
+  h2 { font-size: 1rem; margin: 10px 4px; }
+}
+
+.mistake {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px;
+  border-top: 1px solid var(--app-border);
+  .where { min-width: 2.2em; text-align: center; color: var(--ion-color-primary); font-weight: 600; }
+  .body { flex: 1; display: flex; flex-direction: column; strong { font-family: 'AmiriQuran', serif; font-size: 1.3rem; font-weight: 400; } small { color: var(--app-muted); } }
+  .icon { min-width: 44px; min-height: 44px; border: 0; background: transparent; color: var(--ion-color-primary); font-size: 1.3rem; }
+}
+
+.section { font-size: 1rem; margin: 22px 4px 4px; }
+.hist {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  .body { flex: 1; display: flex; flex-direction: column; small { color: var(--app-muted); } }
+  .pct { font-weight: 700; color: #b9770e; &.good { color: #1e8449; } }
+}
+
+.note { color: var(--app-muted); font-size: 0.8rem; line-height: 1.5; text-align: center; margin-top: 18px; }

@@ -28,6 +28,15 @@ and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
   open-source Shamarly app, `node scripts/build-shamarly.mjs`), and seven riwayat with their own
   text, font and pages from the King Fahd Complex (Warsh, Qalun, Shu'bah, ad-Duri, as-Susi, al-Bazzi, Qunbul;
   github.com/thetruetruth/quran-data-kfgqpc). Shamarly page images have no stated licence: confirm before publishing.
+- **Tasmee' (recite and be corrected):** choose ayat, recite from memory (text hidden or shown), the app follows word by
+  word and marks wrong and skipped words, optionally stopping at a mistake to show the right words and play the ayah;
+  score, mistakes to review, history. Engines: the phone's speech recognition (native `SpeechPlugin.kt`) or, after an
+  ~80 MB download, Tarteel's Quran-trained Whisper on the phone (`tarteel-ai/whisper-tiny-ar-quran`, Apache-2.0, ONNX
+  export `aaqibhabib/whisper-tiny-ar-quran-onnx`, run by transformers.js in a worker), offline. Words only, not tajweed.
+  e2e: Alafasy's al-Fatihah played into a fake microphone is followed at 100%, and a skipped ayah is caught.
+- **Recitation studio:** record your recitation as sound or video (front/back camera), with on-phone AI noise removal
+  (GTCRN / RNNoise), voice EQ, compressor and optional room / hall / mosque reverb; the ayat on screen and over the
+  video; compare with the original; share or save to the gallery.
 - **Listen:** 244 reciters with whole suras in every recorded riwayah (Hafs, Warsh, Qalun...) and 176 Quran radio
   stations from mp3quran.net: search, filter by riwayah (18 riwayat of the ten qira'at), favourites, next sura plays on its own, repeat, sleep timer,
   playback in the background with the screen off (native Media3 player: notification, lock screen, headphone and

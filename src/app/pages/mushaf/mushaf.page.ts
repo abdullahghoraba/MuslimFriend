@@ -319,6 +319,18 @@ export class MushafPage {
     return layout && this.quran.ready() ? layout.pageOf(this.quran.ayah(ref).index) : this.quran.pageOf(ref);
   }
 
+  /** Tasmee' of the marked ayat (or from the selected ayah to the end of the page). */
+  openTasmee(): void {
+    const r = this.range();
+    if (!r) return;
+    let to = r.to;
+    if (r.to === r.from) {
+      const onPage = this.blocks().filter((b) => b.ayah.sura === r.sura && b.ayah.aya >= r.from).map((b) => b.ayah.aya);
+      to = Math.max(r.from, ...onPage);
+    }
+    void this.nav.navigateForward(['/tasmee'], { queryParams: { sura: r.sura, from: r.from, to } });
+  }
+
   /** The Shamarly mushaf's scanned page, as printed. */
   openScan(): void {
     void this.nav.navigateForward(['/mushaf-edition', 'shamarly', this.page()]);

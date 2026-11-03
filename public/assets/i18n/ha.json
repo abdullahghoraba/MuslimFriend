@@ -1461,5 +1461,40 @@
     "savedMusic": "An adana a waƙoƙi (Music/Muslim Friend).",
     "deleteConfirm": "A goge wannan rikodi?",
     "myRecitation": "Karatuna"
+  },
+  "tasmee": {
+    "title": "Tasmi'i (karanta don a gyara)",
+    "short": "Tasmi'i",
+    "hideText": "Ɓoye rubutu (haddacewa)",
+    "stopOnMistake": "Tsaya a kuskure ka nuna kalmar da ta dace",
+    "engine": "Ganewa",
+    "enginePhone": "Waya (mai sauri)",
+    "engineWhisper": "AI ba intanet (daidai)",
+    "downloading": "Ana saukewa… {{pct}}%",
+    "whisperAbout": "Whisper na Tarteel da aka horar da karatun Alƙur’ani yana aiki a wayarka: ba intanet bayan saukewa sau ɗaya kusan 80 MB.",
+    "download": "Sauke (≈80 MB)",
+    "whisperReady": "AI ba intanet ya shirya.",
+    "phoneAbout": "Yana amfani da gane magana na wayarka (Google). Ya fi kyau da intanet ko fakitin Larabci ba intanet.",
+    "best": "Mafi kyau: {{pct}}%",
+    "errors": {
+      "unavailable": "Gane magana ba ya aiki a wannan waya. Gwada AI ba intanet.",
+      "denied": "Ba da izinin makirofo don karatu.",
+      "network": "Ganewar waya na buƙatar intanet (ko fakitin Larabci). Ko yi amfani da AI ba intanet.",
+      "download": "Saukewa ta kasa. Duba haɗi ka sake gwadawa."
+    },
+    "heard": "an ji: {{word}}",
+    "youSkipped": "Ka tsallake:",
+    "youSaid": "Ka ce «{{word}}»; daidai ita ce:",
+    "continue": "Ci gaba",
+    "finish": "Gama",
+    "again": "Kuma",
+    "other": "Wasu ayoyi",
+    "start": "Fara karatu",
+    "startHint": "Danna makirofo ka karanta daga hadda. Kalmomin da ka faɗa daidai suna bayyana.",
+    "perfect": "Babu kuskure. Masha Allah!",
+    "mistakes": "{{n}} don dubawa",
+    "skipped": "an tsallake",
+    "history": "Zaman baya-bayan nan",
+    "note": "Yana duba kalmomi ne, ba tajwidi ba. Ganewa na iya jin kuskure: saurari ayar idan kana shakka."
   }
 }

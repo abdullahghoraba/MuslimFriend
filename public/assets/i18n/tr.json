@@ -1461,5 +1461,40 @@
     "savedMusic": "Müziğe kaydedildi (Music/Muslim Friend).",
     "deleteConfirm": "Bu kayıt silinsin mi?",
     "myRecitation": "Tilavetim"
+  },
+  "tasmee": {
+    "title": "Tesmî (okuyup kontrol ettir)",
+    "short": "Tesmî",
+    "hideText": "Metni gizle (ezber)",
+    "stopOnMistake": "Hatada dur ve doğru kelimeyi göster",
+    "engine": "Tanıma",
+    "enginePhone": "Telefon (hızlı)",
+    "engineWhisper": "Çevrimdışı YZ (doğru)",
+    "downloading": "İndiriliyor… %{{pct}}",
+    "whisperAbout": "Tarteel’in Kur’an tilavetiyle eğitilmiş Whisper modeli telefonunuzda çalışır: yaklaşık 80 MB’lık tek indirmeden sonra internetsiz.",
+    "download": "İndir (≈80 MB)",
+    "whisperReady": "Çevrimdışı YZ hazır.",
+    "phoneAbout": "Telefonun konuşma tanımasını (Google) kullanır. Çevrimiçi veya çevrimdışı Arapça paketiyle daha iyi çalışır.",
+    "best": "En iyi: %{{pct}}",
+    "errors": {
+      "unavailable": "Bu telefonda konuşma tanıma yok. Çevrimdışı YZ’yi deneyin.",
+      "denied": "Okumak için mikrofona izin verin.",
+      "network": "Telefonun tanıması internete (veya çevrimdışı Arapça paketine) ihtiyaç duyar. Ya da çevrimdışı YZ’yi kullanın.",
+      "download": "İndirme başarısız. Bağlantıyı kontrol edip tekrar deneyin."
+    },
+    "heard": "duyulan: {{word}}",
+    "youSkipped": "Atladınız:",
+    "youSaid": "«{{word}}» dediniz; doğrusu:",
+    "continue": "Devam",
+    "finish": "Bitir",
+    "again": "Tekrar",
+    "other": "Başka ayetler",
+    "start": "Okumaya başla",
+    "startHint": "Mikrofona basın ve ezberden okuyun. Doğru söylediğiniz kelimeler görünür.",
+    "perfect": "Hata yok. Maşallah!",
+    "mistakes": "{{n}} tekrar edilecek",
+    "skipped": "atlandı",
+    "history": "Son oturumlar",
+    "note": "Kelimeleri kontrol eder, tecvidi değil. Tanıma yanlış duyabilir: şüphede ayeti dinleyin."
   }
 }

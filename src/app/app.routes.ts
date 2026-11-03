@@ -83,6 +83,8 @@ export const routes: Routes = [
   { path: 'zakat', loadComponent: () => import('./pages/zakat/zakat.page').then((m) => m.ZakatPage) },
   // Recitation studio: record your recitation (sound or video) with noise removal.
   { path: 'studio', loadComponent: () => import('./pages/studio/studio.page').then((m) => m.StudioPage) },
+  // Tasmee': recite from memory, the app listens and corrects (?sura=&from=&to=).
+  { path: 'tasmee', loadComponent: () => import('./pages/tasmee/tasmee.page').then((m) => m.TasmeePage) },
   { path: 'qada', loadComponent: () => import('./pages/qada/qada.page').then((m) => m.QadaPage) },
   { path: 'athan', loadComponent: () => import('./pages/athan/athan.page').then(m => m.AthanPage) },
   // Listen to the Quran: full-sura reciters and live radios (mp3quran.net).

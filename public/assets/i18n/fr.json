@@ -1461,5 +1461,40 @@
     "savedMusic": "Enregistré dans la musique (Music/Muslim Friend).",
     "deleteConfirm": "Supprimer cet enregistrement ?",
     "myRecitation": "Ma récitation"
+  },
+  "tasmee": {
+    "title": "Tasmee' (réciter pour être corrigé)",
+    "short": "Tasmee'",
+    "hideText": "Masquer le texte (mémorisation)",
+    "stopOnMistake": "S’arrêter à une erreur et montrer le bon mot",
+    "engine": "Reconnaissance",
+    "enginePhone": "Téléphone (rapide)",
+    "engineWhisper": "IA hors ligne (précise)",
+    "downloading": "Téléchargement… {{pct}} %",
+    "whisperAbout": "Le Whisper de Tarteel, entraîné sur la récitation du Coran, tourne sur votre téléphone : sans internet après un téléchargement d’environ 80 Mo.",
+    "download": "Télécharger (≈80 Mo)",
+    "whisperReady": "L’IA hors ligne est prête.",
+    "phoneAbout": "Utilise la reconnaissance vocale du téléphone (Google). Fonctionne mieux en ligne ou avec le pack arabe hors ligne.",
+    "best": "Meilleur score : {{pct}} %",
+    "errors": {
+      "unavailable": "La reconnaissance vocale n’est pas disponible sur ce téléphone. Essayez l’IA hors ligne.",
+      "denied": "Autorisez le micro pour réciter.",
+      "network": "La reconnaissance du téléphone a besoin d’internet (ou du pack arabe hors ligne). Ou utilisez l’IA hors ligne.",
+      "download": "Le téléchargement a échoué. Vérifiez la connexion et réessayez."
+    },
+    "heard": "entendu : {{word}}",
+    "youSkipped": "Vous avez sauté :",
+    "youSaid": "Vous avez dit « {{word}} » ; le bon mot est :",
+    "continue": "Continuer",
+    "finish": "Terminer",
+    "again": "Encore",
+    "other": "Autres versets",
+    "start": "Commencer",
+    "startHint": "Appuyez sur le micro et récitez de mémoire. Les mots dits correctement apparaissent.",
+    "perfect": "Aucune erreur. Machallah !",
+    "mistakes": "{{n}} à revoir",
+    "skipped": "sauté",
+    "history": "Séances récentes",
+    "note": "Vérifie les mots, pas le tajwid. La reconnaissance peut mal entendre : écoutez le verset en cas de doute."
   }
 }

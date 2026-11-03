@@ -1461,5 +1461,40 @@
     "savedMusic": "Musiqaga saqlandi (Music/Muslim Friend).",
     "deleteConfirm": "Bu yozuv o'chirilsinmi?",
     "myRecitation": "Tilovatim"
+  },
+  "tasmee": {
+    "title": "Tasmi (o‘qib tekshirtirish)",
+    "short": "Tasmi",
+    "hideText": "Matnni yashirish (yodlash)",
+    "stopOnMistake": "Xatoda to‘xtab, to‘g‘ri so‘zni ko‘rsatish",
+    "engine": "Tanib olish",
+    "enginePhone": "Telefon (tez)",
+    "engineWhisper": "Oflayn SI (aniq)",
+    "downloading": "Yuklanmoqda… {{pct}}%",
+    "whisperAbout": "Qur’on tilovatida o‘qitilgan Tarteel Whisper modeli telefoningizda ishlaydi: taxminan 80 MB bir marta yuklangach internetsiz.",
+    "download": "Yuklab olish (≈80 MB)",
+    "whisperReady": "Oflayn SI tayyor.",
+    "phoneAbout": "Telefonning nutqni tanish xizmatidan (Google) foydalanadi. Onlayn yoki oflayn arab paketi bilan yaxshiroq.",
+    "best": "Eng yaxshi: {{pct}}%",
+    "errors": {
+      "unavailable": "Bu telefonda nutqni tanish yo‘q. Oflayn SI ni sinab ko‘ring.",
+      "denied": "Tilovat uchun mikrofonga ruxsat bering.",
+      "network": "Telefon tanishi internet (yoki oflayn arab paketi) talab qiladi. Yoki oflayn SI dan foydalaning.",
+      "download": "Yuklab bo‘lmadi. Ulanishni tekshirib, qayta urining."
+    },
+    "heard": "eshitildi: {{word}}",
+    "youSkipped": "Tashlab ketdingiz:",
+    "youSaid": "«{{word}}» dedingiz; to‘g‘risi:",
+    "continue": "Davom etish",
+    "finish": "Tugatish",
+    "again": "Yana",
+    "other": "Boshqa oyatlar",
+    "start": "Tilovatni boshlash",
+    "startHint": "Mikrofonni bosing va yoddan o‘qing. To‘g‘ri aytilgan so‘zlar paydo bo‘ladi.",
+    "perfect": "Xato yo‘q. Mashaalloh!",
+    "mistakes": "Takrorlash uchun: {{n}}",
+    "skipped": "tashlab ketilgan",
+    "history": "So‘nggi mashg‘ulotlar",
+    "note": "So‘zlarni tekshiradi, tajvidni emas. Tanish noto‘g‘ri eshitishi mumkin: shubha bo‘lsa oyatni tinglang."
   }
 }

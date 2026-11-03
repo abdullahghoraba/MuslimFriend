@@ -1461,5 +1461,40 @@
     "savedMusic": "In Musik gespeichert (Music/Muslim Friend).",
     "deleteConfirm": "Diese Aufnahme löschen?",
     "myRecitation": "Meine Rezitation"
+  },
+  "tasmee": {
+    "title": "Tasmee' (vortragen und prüfen lassen)",
+    "short": "Tasmee'",
+    "hideText": "Text ausblenden (Auswendiglernen)",
+    "stopOnMistake": "Bei einem Fehler anhalten und das richtige Wort zeigen",
+    "engine": "Erkennung",
+    "enginePhone": "Telefon (schnell)",
+    "engineWhisper": "Offline-KI (genau)",
+    "downloading": "Wird geladen… {{pct}} %",
+    "whisperAbout": "Tarteels auf Koranrezitation trainiertes Whisper läuft auf Ihrem Telefon: nach einem Download von etwa 80 MB ohne Internet.",
+    "download": "Herunterladen (≈80 MB)",
+    "whisperReady": "Offline-KI ist bereit.",
+    "phoneAbout": "Nutzt die Spracherkennung des Telefons (Google). Am besten online oder mit dem Offline-Arabischpaket.",
+    "best": "Bestes Ergebnis: {{pct}} %",
+    "errors": {
+      "unavailable": "Spracherkennung ist auf diesem Telefon nicht verfügbar. Versuchen Sie die Offline-KI.",
+      "denied": "Erlauben Sie das Mikrofon, um vorzutragen.",
+      "network": "Die Erkennung des Telefons braucht Internet (oder das Offline-Arabischpaket). Oder nutzen Sie die Offline-KI.",
+      "download": "Download fehlgeschlagen. Verbindung prüfen und erneut versuchen."
+    },
+    "heard": "gehört: {{word}}",
+    "youSkipped": "Ausgelassen:",
+    "youSaid": "Sie sagten «{{word}}»; richtig ist:",
+    "continue": "Weiter",
+    "finish": "Beenden",
+    "again": "Nochmal",
+    "other": "Andere Verse",
+    "start": "Rezitation starten",
+    "startHint": "Mikrofon drücken und auswendig vortragen. Richtig gesagte Wörter erscheinen.",
+    "perfect": "Keine Fehler. Maschallah!",
+    "mistakes": "{{n}} zum Wiederholen",
+    "skipped": "ausgelassen",
+    "history": "Letzte Sitzungen",
+    "note": "Geprüft werden die Wörter, nicht das Tadschwid. Die Erkennung kann sich verhören: im Zweifel den Vers anhören."
   }
 }

@@ -1461,5 +1461,40 @@
     "savedMusic": "Salvo em músicas (Music/Muslim Friend).",
     "deleteConfirm": "Excluir esta gravação?",
     "myRecitation": "Minha recitação"
+  },
+  "tasmee": {
+    "title": "Tasmee' (recitar para ser corrigido)",
+    "short": "Tasmee'",
+    "hideText": "Ocultar o texto (memorização)",
+    "stopOnMistake": "Parar num erro e mostrar a palavra certa",
+    "engine": "Reconhecimento",
+    "enginePhone": "Telefone (rápido)",
+    "engineWhisper": "IA offline (precisa)",
+    "downloading": "Baixando… {{pct}}%",
+    "whisperAbout": "O Whisper da Tarteel, treinado com recitação do Alcorão, roda no seu telefone: sem internet após um download de cerca de 80 MB.",
+    "download": "Baixar (≈80 MB)",
+    "whisperReady": "A IA offline está pronta.",
+    "phoneAbout": "Usa o reconhecimento de voz do telefone (Google). Funciona melhor online ou com o pacote árabe offline.",
+    "best": "Melhor resultado: {{pct}}%",
+    "errors": {
+      "unavailable": "O reconhecimento de voz não está disponível neste telefone. Tente a IA offline.",
+      "denied": "Permita o microfone para recitar.",
+      "network": "O reconhecimento do telefone precisa de internet (ou do pacote árabe offline). Ou use a IA offline.",
+      "download": "O download falhou. Verifique a conexão e tente de novo."
+    },
+    "heard": "ouvido: {{word}}",
+    "youSkipped": "Você pulou:",
+    "youSaid": "Você disse «{{word}}»; a certa é:",
+    "continue": "Continuar",
+    "finish": "Terminar",
+    "again": "De novo",
+    "other": "Outros versículos",
+    "start": "Começar a recitar",
+    "startHint": "Toque no microfone e recite de memória. As palavras ditas corretamente aparecem.",
+    "perfect": "Nenhum erro. Masha Allah!",
+    "mistakes": "{{n}} para revisar",
+    "skipped": "pulada",
+    "history": "Sessões recentes",
+    "note": "Verifica as palavras, não o tajwid. O reconhecimento pode ouvir mal: escute o versículo em caso de dúvida."
   }
 }

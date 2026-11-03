@@ -1461,5 +1461,40 @@
     "savedMusic": "Guardado en música (Music/Muslim Friend).",
     "deleteConfirm": "¿Eliminar esta grabación?",
     "myRecitation": "Mi recitación"
+  },
+  "tasmee": {
+    "title": "Tasmee' (recitar para ser corregido)",
+    "short": "Tasmee'",
+    "hideText": "Ocultar el texto (memorización)",
+    "stopOnMistake": "Detenerse en un error y mostrar la palabra correcta",
+    "engine": "Reconocimiento",
+    "enginePhone": "Teléfono (rápido)",
+    "engineWhisper": "IA sin conexión (precisa)",
+    "downloading": "Descargando… {{pct}} %",
+    "whisperAbout": "El Whisper de Tarteel, entrenado con recitación del Corán, funciona en su teléfono: sin internet tras una descarga de unos 80 MB.",
+    "download": "Descargar (≈80 MB)",
+    "whisperReady": "La IA sin conexión está lista.",
+    "phoneAbout": "Usa el reconocimiento de voz del teléfono (Google). Funciona mejor en línea o con el paquete árabe sin conexión.",
+    "best": "Mejor resultado: {{pct}} %",
+    "errors": {
+      "unavailable": "El reconocimiento de voz no está disponible en este teléfono. Pruebe la IA sin conexión.",
+      "denied": "Permita el micrófono para recitar.",
+      "network": "El reconocimiento del teléfono necesita internet (o el paquete árabe sin conexión). O use la IA sin conexión.",
+      "download": "La descarga falló. Compruebe la conexión e inténtelo de nuevo."
+    },
+    "heard": "se oyó: {{word}}",
+    "youSkipped": "Omitió:",
+    "youSaid": "Dijo «{{word}}»; la correcta es:",
+    "continue": "Continuar",
+    "finish": "Terminar",
+    "again": "Otra vez",
+    "other": "Otras aleyas",
+    "start": "Empezar a recitar",
+    "startHint": "Pulse el micrófono y recite de memoria. Las palabras dichas correctamente aparecen.",
+    "perfect": "Sin errores. ¡Masha Allah!",
+    "mistakes": "{{n}} para repasar",
+    "skipped": "omitida",
+    "history": "Sesiones recientes",
+    "note": "Comprueba las palabras, no el tayuid. El reconocimiento puede oír mal: escuche la aleya si tiene dudas."
   }
 }

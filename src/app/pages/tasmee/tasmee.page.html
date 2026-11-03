@@ -1,0 +1,144 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/more" [text]="''" [attr.aria-label]="'common.back' | translate" />
+    </ion-buttons>
+    <ion-title>{{ 'tasmee.title' | translate }}</ion-title>
+  </ion-toolbar>
+  @if (state() !== 'idle') {
+    <ion-progress-bar [value]="progress()" />
+  }
+</ion-header>
+
+<ion-content>
+  <main>
+    @if (state() === 'idle') {
+      <section class="card setup">
+        <ion-select interface="action-sheet" [label]="'studio.sura' | translate" [value]="sura()" (ionChange)="setSura($event.detail.value)">
+          @for (s of suraOptions(); track s.index) {
+            <ion-select-option [value]="s.index">{{ s.index }}. {{ s.name }}</ion-select-option>
+          }
+        </ion-select>
+        <div class="range">
+          <ion-select interface="popover" [label]="'mushaf.rangeFrom' | translate" [value]="from()" (ionChange)="setFrom($event.detail.value)">
+            @for (n of ayahNumbers(); track n) { <ion-select-option [value]="n">{{ n }}</ion-select-option> }
+          </ion-select>
+          <ion-select interface="popover" [label]="'mushaf.rangeTo' | translate" [value]="to()" (ionChange)="setTo($event.detail.value)">
+            @for (n of ayahNumbers(); track n) { <ion-select-option [value]="n">{{ n }}</ion-select-option> }
+          </ion-select>
+        </div>
+        <ion-toggle [checked]="tasmee.prefs().hideText" (ionChange)="tasmee.setPrefs({ hideText: $event.detail.checked })">{{ 'tasmee.hideText' | translate }}</ion-toggle>
+        <ion-toggle [checked]="tasmee.prefs().stopOnMistake" (ionChange)="tasmee.setPrefs({ stopOnMistake: $event.detail.checked })">{{ 'tasmee.stopOnMistake' | translate }}</ion-toggle>
+
+        <h2>{{ 'tasmee.engine' | translate }}</h2>
+        <ion-segment [value]="tasmee.prefs().engine" (ionChange)="setEngine($event.detail.value)">
+          <ion-segment-button value="phone"><ion-label>{{ 'tasmee.enginePhone' | translate }}</ion-label></ion-segment-button>
+          <ion-segment-button value="whisper"><ion-label>{{ 'tasmee.engineWhisper' | translate }}</ion-label></ion-segment-button>
+        </ion-segment>
+        @if (tasmee.prefs().engine === 'whisper') {
+          @if (downloading() !== null) {
+            <p class="hint">{{ 'tasmee.downloading' | translate: { pct: ((downloading() ?? 0) * 100).toFixed(0) } }}</p>
+            <ion-progress-bar [value]="downloading() ?? 0" />
+          } @else if (!whisperReady()) {
+            <p class="hint">{{ 'tasmee.whisperAbout' | translate }}</p>
+            <ion-button expand="block" fill="outline" (click)="downloadWhisper()">
+              <ion-icon slot="start" name="download-outline" aria-hidden="true" />{{ 'tasmee.download' | translate }}
+            </ion-button>
+          } @else {
+            <p class="hint">{{ 'tasmee.whisperReady' | translate }} <button type="button" class="link" (click)="removeWhisper()">{{ 'common.delete' | translate }}</button></p>
+          }
+        } @else {
+          <p class="hint">{{ 'tasmee.phoneAbout' | translate }}</p>
+        }
+        @if (best() !== null) {
+          <p class="hint">{{ 'tasmee.best' | translate: { pct: ((best() ?? 0) * 100).toFixed(0) } }}</p>
+        }
+      </section>
+    }
+
+    @if (error(); as e) {
+      <p class="error" role="alert">{{ 'tasmee.errors.' + e | translate }}</p>
+    }
+
+    <!-- The ayat: words appear as they are recited; mistakes in colour. -->
+    <section class="card recital" lang="ar" dir="rtl" aria-live="polite">
+      @for (w of words(); track $index; let i = $index) {
+        @let r = results()[i];
+        <span class="w" [class]="'w ' + (r?.status ?? 'pending')" [class.next]="i === position() && state() === 'listening'"
+              [class.hidden]="!shown(i)" [attr.title]="r?.heard ? ('tasmee.heard' | translate: { word: r.heard }) : null">{{ shown(i) ? w.text : '' }}@if (r?.status === 'wrong' && r?.heard) {<small class="heard">{{ r.heard }}</small>}</span>
+        @if (w.end) { <span class="num">﴿{{ ayahNumber(w.ref.aya) }}﴾</span> }
+        {{ ' ' }}
+      }
+    </section>
+
+    @if (state() === 'listening' && partial()) {
+      <p class="partial" lang="ar" dir="rtl">{{ partial() }}</p>
+    }
+
+    @if (correction(); as c) {
+      <section class="card correction" role="alert">
+        <p>{{ (c.skipped || !c.heard ? 'tasmee.youSkipped' : 'tasmee.youSaid') | translate: { word: c.heard ?? '' } }}</p>
+        <p class="right" lang="ar" dir="rtl">{{ correctionText() }}</p>
+        <div class="row-buttons">
+          <ion-button fill="outline" (click)="listen(words()[c.from].ref)"><ion-icon slot="start" name="play" aria-hidden="true" />{{ 'mushaf.listen' | translate }}</ion-button>
+          <ion-button (click)="continueAfterCorrection()">{{ 'tasmee.continue' | translate }}</ion-button>
+        </div>
+      </section>
+    }
+
+    <!-- Controls (the correction card has its own while it is shown) -->
+    @if (!correction()) {
+    <section class="controls">
+      @if (state() === 'listening') {
+        <ion-button color="medium" fill="outline" (click)="stop()"><ion-icon slot="start" name="pause" aria-hidden="true" />{{ 'studio.pause' | translate }}</ion-button>
+        <ion-button (click)="finish()"><ion-icon slot="start" name="checkmark-done-outline" aria-hidden="true" />{{ 'tasmee.finish' | translate }}</ion-button>
+      } @else if (state() === 'stopped') {
+        <ion-button (click)="start()"><ion-icon slot="start" name="mic-outline" aria-hidden="true" />{{ 'studio.resume' | translate }}</ion-button>
+        <ion-button fill="outline" (click)="finish()">{{ 'tasmee.finish' | translate }}</ion-button>
+      } @else if (state() === 'done') {
+        <ion-button (click)="start()"><ion-icon slot="start" name="refresh-outline" aria-hidden="true" />{{ 'tasmee.again' | translate }}</ion-button>
+        <ion-button fill="outline" (click)="reset()">{{ 'tasmee.other' | translate }}</ion-button>
+      } @else {
+        <button type="button" class="mic" (click)="start()" [disabled]="downloading() !== null" [attr.aria-label]="'tasmee.start' | translate">
+          <ion-icon name="mic-outline" aria-hidden="true" />
+        </button>
+        <p class="hint center">{{ 'tasmee.startHint' | translate }}</p>
+      }
+    </section>
+    }
+
+    @if (state() === 'done') {
+      <section class="card summary">
+        <p class="score" [class.good]="scorePct() >= 90">{{ scorePct() }}%</p>
+        @if (!mistakes().length) {
+          <p>{{ 'tasmee.perfect' | translate }}</p>
+        } @else {
+          <h2>{{ 'tasmee.mistakes' | translate: { n: mistakes().length } }}</h2>
+          @for (m of mistakes(); track m.i) {
+            <div class="mistake">
+              <span class="where">{{ ayahNumber(m.w.ref.aya) }}</span>
+              <span class="body" lang="ar" dir="rtl">
+                <strong>{{ m.w.text }}</strong>
+                <small>{{ m.r.status === 'skipped' ? ('tasmee.skipped' | translate) : ('tasmee.heard' | translate: { word: m.r.heard ?? '' }) }}</small>
+              </span>
+              <button type="button" class="icon" (click)="listen(m.w.ref)" [attr.aria-label]="'mushaf.listen' | translate"><ion-icon name="play" aria-hidden="true" /></button>
+              <button type="button" class="icon" (click)="openInMushaf(m.w.ref)" [attr.aria-label]="'editions.openInMushaf' | translate"><ion-icon name="book-outline" aria-hidden="true" /></button>
+            </div>
+          }
+        }
+      </section>
+    }
+
+    @if (state() === 'idle' && tasmee.history().length) {
+      <h2 class="section">{{ 'tasmee.history' | translate }}</h2>
+      @for (h of tasmee.history().slice(0, 10); track h.at) {
+        <div class="card hist">
+          <span class="body"><strong lang="ar">{{ quran.ready() ? quran.sura(h.sura).name : '' }} {{ h.from }}–{{ h.to }}</strong>
+            <small>{{ h.at | date: 'medium' : undefined : lang() }}</small></span>
+          <span class="pct" [class.good]="h.score >= 0.9">{{ (h.score * 100).toFixed(0) }}%</span>
+        </div>
+      }
+    }
+    <p class="note">{{ 'tasmee.note' | translate }}</p>
+  </main>
+</ion-content>

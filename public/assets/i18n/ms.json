@@ -1461,5 +1461,40 @@
     "savedMusic": "Disimpan ke muzik (Music/Muslim Friend).",
     "deleteConfirm": "Padam rakaman ini?",
     "myRecitation": "Tilawah saya"
+  },
+  "tasmee": {
+    "title": "Tasmi' (bacakan untuk disemak)",
+    "short": "Tasmi'",
+    "hideText": "Sembunyikan teks (hafazan)",
+    "stopOnMistake": "Berhenti apabila salah dan tunjukkan perkataan yang betul",
+    "engine": "Pengecaman",
+    "enginePhone": "Telefon (pantas)",
+    "engineWhisper": "AI luar talian (tepat)",
+    "downloading": "Memuat turun… {{pct}}%",
+    "whisperAbout": "Whisper Tarteel yang dilatih dengan bacaan al-Quran berjalan pada telefon anda: tanpa internet selepas sekali muat turun kira-kira 80 MB.",
+    "download": "Muat turun (≈80 MB)",
+    "whisperReady": "AI luar talian sedia.",
+    "phoneAbout": "Menggunakan pengecaman pertuturan telefon (Google). Lebih baik dalam talian atau dengan pakej Arab luar talian.",
+    "best": "Terbaik: {{pct}}%",
+    "errors": {
+      "unavailable": "Pengecaman pertuturan tiada pada telefon ini. Cuba AI luar talian.",
+      "denied": "Benarkan mikrofon untuk membaca.",
+      "network": "Pengecaman telefon perlukan internet (atau pakej Arab luar talian). Atau guna AI luar talian.",
+      "download": "Muat turun gagal. Semak sambungan dan cuba lagi."
+    },
+    "heard": "didengar: {{word}}",
+    "youSkipped": "Anda tertinggal:",
+    "youSaid": "Anda membaca «{{word}}»; yang betul:",
+    "continue": "Teruskan",
+    "finish": "Selesai",
+    "again": "Lagi",
+    "other": "Ayat lain",
+    "start": "Mula membaca",
+    "startHint": "Tekan mikrofon dan baca dari ingatan. Perkataan yang dibaca dengan betul akan muncul.",
+    "perfect": "Tiada kesilapan. Masya-Allah!",
+    "mistakes": "{{n}} untuk diulang kaji",
+    "skipped": "tertinggal",
+    "history": "Sesi terkini",
+    "note": "Ia menyemak perkataan, bukan tajwid. Pengecaman boleh tersalah dengar: dengar ayat itu jika ragu."
   }
 }

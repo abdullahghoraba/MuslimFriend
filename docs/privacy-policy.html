@@ -67,7 +67,11 @@
 
     <h2>Permissions and why they are needed</h2>
     <ul>
-      <li><strong>Internet</strong> — for recitations and radio, hadith, and the extra mushafs and tafsirs listed above.</li>
+      <li><strong>Internet</strong> — for recitations and radio, hadith, and the extra mushafs and tafsirs listed above,
+        and, only if you download it, the offline recitation-checking model (Tarteel's Whisper, from Hugging Face, with
+        ONNX Runtime from jsDelivr). After that one download, recitation checking with it works offline. If you choose
+        the phone's own speech recognition instead, the sound goes to your phone's speech service (usually Google)
+        under its own policy.</li>
       <li><strong>Display over other apps</strong> — to show a short dhikr card or the floating tasbih counter over other
         apps, only if you turn these on.</li>
       <li><strong>Foreground service (special use)</strong> — keeps those features running; it shows a notification you can

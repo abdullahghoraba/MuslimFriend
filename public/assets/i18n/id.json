@@ -1461,5 +1461,40 @@
     "savedMusic": "Disimpan ke musik (Music/Muslim Friend).",
     "deleteConfirm": "Hapus rekaman ini?",
     "myRecitation": "Tilawah saya"
+  },
+  "tasmee": {
+    "title": "Tasmi' (setor hafalan untuk dikoreksi)",
+    "short": "Tasmi'",
+    "hideText": "Sembunyikan teks (hafalan)",
+    "stopOnMistake": "Berhenti saat salah dan tampilkan kata yang benar",
+    "engine": "Pengenalan",
+    "enginePhone": "Ponsel (cepat)",
+    "engineWhisper": "AI offline (akurat)",
+    "downloading": "Mengunduh… {{pct}}%",
+    "whisperAbout": "Whisper dari Tarteel yang dilatih dengan bacaan Al-Qur’an berjalan di ponsel Anda: tanpa internet setelah satu kali unduh sekitar 80 MB.",
+    "download": "Unduh (≈80 MB)",
+    "whisperReady": "AI offline siap.",
+    "phoneAbout": "Memakai pengenalan suara ponsel (Google). Lebih baik saat online atau dengan paket bahasa Arab offline.",
+    "best": "Terbaik: {{pct}}%",
+    "errors": {
+      "unavailable": "Pengenalan suara tidak tersedia di ponsel ini. Coba AI offline.",
+      "denied": "Izinkan mikrofon untuk menyetor bacaan.",
+      "network": "Pengenalan ponsel butuh internet (atau paket Arab offline). Atau pakai AI offline.",
+      "download": "Unduhan gagal. Periksa koneksi lalu coba lagi."
+    },
+    "heard": "terdengar: {{word}}",
+    "youSkipped": "Anda melewatkan:",
+    "youSaid": "Anda membaca «{{word}}»; yang benar:",
+    "continue": "Lanjut",
+    "finish": "Selesai",
+    "again": "Ulangi",
+    "other": "Ayat lain",
+    "start": "Mulai menyetor",
+    "startHint": "Tekan mikrofon dan baca dari hafalan. Kata yang Anda baca dengan benar akan muncul.",
+    "perfect": "Tanpa kesalahan. Masya Allah!",
+    "mistakes": "{{n}} untuk diulang",
+    "skipped": "terlewat",
+    "history": "Sesi terakhir",
+    "note": "Yang diperiksa adalah kata-katanya, bukan tajwid. Pengenalan bisa salah dengar: dengarkan ayatnya bila ragu."
   }
 }

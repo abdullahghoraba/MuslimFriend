@@ -6,6 +6,7 @@ import com.getcapacitor.BridgeActivity;
 import com.muslimfriend.app.overlay.AthkarOverlayPlugin;
 import com.muslimfriend.app.audio.QuranAudioPlugin;
 import com.muslimfriend.app.studio.MediaSaverPlugin;
+import com.muslimfriend.app.tasmee.SpeechPlugin;
 
 public class MainActivity extends BridgeActivity {
     @Override
@@ -16,6 +17,7 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(AthkarOverlayPlugin.class);
         registerPlugin(QuranAudioPlugin.class);
         registerPlugin(MediaSaverPlugin.class);
+        registerPlugin(SpeechPlugin.class);
         super.onCreate(savedInstanceState);
         // The WebView scales all text with the phone's font size (up to 200%); beyond 140% the toolbars and players no
         // longer fit and their arrows and buttons run into each other. Quran and athkar text have their own size (up to 2x).

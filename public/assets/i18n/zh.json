@@ -1461,5 +1461,40 @@
     "savedMusic": "已保存到音乐（Music/Muslim Friend）。",
     "deleteConfirm": "删除此录音？",
     "myRecitation": "我的诵读"
+  },
+  "tasmee": {
+    "title": "背诵检查（背给应用听）",
+    "short": "背诵",
+    "hideText": "隐藏经文（背记）",
+    "stopOnMistake": "出错时停下并显示正确的词",
+    "engine": "识别方式",
+    "enginePhone": "手机（快速）",
+    "engineWhisper": "离线 AI（准确）",
+    "downloading": "正在下载… {{pct}}%",
+    "whisperAbout": "Tarteel 以古兰经诵读训练的 Whisper 在您的手机上运行：下载一次约 80 MB 后无需联网。",
+    "download": "下载（约 80 MB）",
+    "whisperReady": "离线 AI 已就绪。",
+    "phoneAbout": "使用手机的语音识别（Google）。联网或安装离线阿拉伯语包时效果更好。",
+    "best": "最好成绩：{{pct}}%",
+    "errors": {
+      "unavailable": "此手机不支持语音识别。请试试离线 AI。",
+      "denied": "请允许麦克风以进行背诵。",
+      "network": "手机识别需要联网（或离线阿拉伯语包）。或使用离线 AI。",
+      "download": "下载失败。请检查网络后重试。"
+    },
+    "heard": "听到：{{word}}",
+    "youSkipped": "您漏掉了：",
+    "youSaid": "您读的是“{{word}}”，正确的是：",
+    "continue": "继续",
+    "finish": "结束",
+    "again": "再来一次",
+    "other": "其他经文",
+    "start": "开始背诵",
+    "startHint": "按下麦克风凭记忆诵读。读对的词会显示出来。",
+    "perfect": "没有错误。玛莎安拉！",
+    "mistakes": "待复习 {{n}} 处",
+    "skipped": "漏读",
+    "history": "最近的练习",
+    "note": "它检查的是词语，而不是泰吉威德。识别可能听错：有疑问时请听该节经文。"
   }
 }
