@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/more" [text]="''" [attr.aria-label]="'common.back' | translate" />
     </ion-buttons>
-    <ion-title>{{ 'tasmee.title' | translate }}</ion-title>
+    <ion-title><span class="wrap">{{ 'tasmee.title' | translate }}</span></ion-title>
   </ion-toolbar>
   @if (state() !== 'idle') {
     <ion-progress-bar [value]="progress()" />
