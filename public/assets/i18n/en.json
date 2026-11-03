@@ -381,7 +381,9 @@
     "locationTitle": "Location",
     "locationText": "Only if you choose automatic location for prayer times: read once, rounded to about 1 km, stored on the device and never shared. You can pick a city instead.",
     "backupTitle": "Backups",
-    "backupText": "Export creates a file and opens the share sheet. You decide where it goes; the app uploads nothing. Online sources (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) receive only the request for a file or hadith, never anything about you."
+    "backupText": "Export creates a file and opens the share sheet. You decide where it goes; the app uploads nothing. Online sources (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) receive only the request for a file or hadith, never anything about you.",
+    "mediaTitle": "Microphone and camera",
+    "mediaText": "Asked only when you record your recitation in the studio or recite to the app to be checked. Noise removal and speech recognition run on your phone; nothing is uploaded. Recordings stay in the app until you share, save or delete them."
   },
   "prayer": {
     "fajr": "Fajr",
@@ -1405,5 +1407,58 @@
     "quran": "Quran",
     "athkar": "Athkar",
     "tools": "Tools"
+  },
+  "studio": {
+    "title": "Recitation studio",
+    "audio": "Sound",
+    "video": "Video",
+    "sura": "Surah",
+    "freeRecitation": "Free recitation (no text)",
+    "level": "Sound level",
+    "openCamera": "Tap to turn on the camera",
+    "openMic": "Tap to turn on the microphone",
+    "errors": {
+      "denied": "Allow the microphone (and the camera for video) in the phone settings to record.",
+      "unsupported": "This phone cannot record here.",
+      "failed": "The microphone or camera could not be started."
+    },
+    "prevAyah": "Previous ayah",
+    "nextAyah": "Next ayah",
+    "flipCamera": "Switch camera",
+    "record": "Record",
+    "stop": "Stop and save",
+    "pause": "Pause",
+    "resume": "Resume",
+    "paused": "paused",
+    "noise": "Noise removal",
+    "denoise": {
+      "off": "Off",
+      "light": "Light",
+      "strong": "Strong (AI)"
+    },
+    "strongUnavailable": "Strong noise removal is not available on this phone; the light one is used.",
+    "echo": "Echo",
+    "reverb": {
+      "none": "None",
+      "room": "Room",
+      "hall": "Hall",
+      "mosque": "Mosque"
+    },
+    "captions": "Show the ayat on the video",
+    "captionsHint": "Choose a surah to show its ayat on the video. During recording, tap ‹ to move to the next ayah.",
+    "privacy": "Recorded and processed on your phone. Nothing is uploaded unless you share it.",
+    "enhanced": "Enhanced",
+    "original": "Original",
+    "saveGallery": "Save to gallery",
+    "saveMusic": "Save to music",
+    "rename": "Rename",
+    "dropOriginal": "Keep enhanced only",
+    "myRecordings": "My recordings",
+    "noRecordings": "No recordings yet. Press the red button to start.",
+    "saveFailed": "The recording could not be saved.",
+    "savedGallery": "Saved to the gallery (Movies/Muslim Friend).",
+    "savedMusic": "Saved to music (Music/Muslim Friend).",
+    "deleteConfirm": "Delete this recording?",
+    "myRecitation": "My recitation"
   }
 }

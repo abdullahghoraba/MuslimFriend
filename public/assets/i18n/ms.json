@@ -381,7 +381,9 @@
     "locationTitle": "Lokasi",
     "locationText": "Hanya jika anda memilih lokasi automatik untuk waktu solat: dibaca sekali, dibundarkan kepada kira-kira 1 km, disimpan pada peranti dan tidak pernah dikongsi. Anda boleh memilih bandar sebaliknya.",
     "backupTitle": "Sandaran",
-    "backupText": "Eksport mencipta fail dan membuka helaian kongsi. Anda menentukan destinasinya; aplikasi tidak memuat naik apa-apa. Sumber dalam talian (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) hanya menerima permintaan fail atau hadis, tiada apa-apa tentang anda."
+    "backupText": "Eksport mencipta fail dan membuka helaian kongsi. Anda menentukan destinasinya; aplikasi tidak memuat naik apa-apa. Sumber dalam talian (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) hanya menerima permintaan fail atau hadis, tiada apa-apa tentang anda.",
+    "mediaTitle": "Mikrofon dan kamera",
+    "mediaText": "Hanya diminta apabila anda merakam tilawah di studio atau membaca kepada aplikasi untuk disemak. Penghapus hingar dan pengecaman pertuturan berjalan pada telefon anda; tiada yang dimuat naik. Rakaman kekal dalam aplikasi sehingga anda kongsi, simpan atau padam."
   },
   "prayer": {
     "fajr": "Subuh",
@@ -1405,5 +1407,58 @@
     "quran": "Al-Quran",
     "athkar": "Zikir",
     "tools": "Alatan"
+  },
+  "studio": {
+    "title": "Studio tilawah",
+    "audio": "Bunyi",
+    "video": "Video",
+    "sura": "Surah",
+    "freeRecitation": "Tilawah bebas (tanpa teks)",
+    "level": "Paras bunyi",
+    "openCamera": "Ketik untuk hidupkan kamera",
+    "openMic": "Ketik untuk hidupkan mikrofon",
+    "errors": {
+      "denied": "Benarkan mikrofon (dan kamera untuk video) dalam tetapan telefon untuk merakam.",
+      "unsupported": "Telefon ini tidak boleh merakam di sini.",
+      "failed": "Mikrofon atau kamera tidak dapat dimulakan."
+    },
+    "prevAyah": "Ayat sebelumnya",
+    "nextAyah": "Ayat seterusnya",
+    "flipCamera": "Tukar kamera",
+    "record": "Rakam",
+    "stop": "Henti dan simpan",
+    "pause": "Jeda",
+    "resume": "Sambung",
+    "paused": "dijeda",
+    "noise": "Penghapus hingar",
+    "denoise": {
+      "off": "Tutup",
+      "light": "Ringan",
+      "strong": "Kuat (AI)"
+    },
+    "strongUnavailable": "Penghapus hingar kuat tiada pada telefon ini; yang ringan digunakan.",
+    "echo": "Gema",
+    "reverb": {
+      "none": "Tiada",
+      "room": "Bilik",
+      "hall": "Dewan",
+      "mosque": "Masjid"
+    },
+    "captions": "Papar ayat pada video",
+    "captionsHint": "Pilih surah untuk memaparkan ayatnya pada video. Semasa merakam, ketik ‹ untuk ayat seterusnya.",
+    "privacy": "Dirakam dan diproses pada telefon anda. Tiada yang dimuat naik melainkan anda kongsi.",
+    "enhanced": "Dipertingkat",
+    "original": "Asal",
+    "saveGallery": "Simpan ke galeri",
+    "saveMusic": "Simpan ke muzik",
+    "rename": "Namakan semula",
+    "dropOriginal": "Simpan yang dipertingkat sahaja",
+    "myRecordings": "Rakaman saya",
+    "noRecordings": "Belum ada rakaman. Tekan butang merah untuk mula.",
+    "saveFailed": "Rakaman tidak dapat disimpan.",
+    "savedGallery": "Disimpan ke galeri (Movies/Muslim Friend).",
+    "savedMusic": "Disimpan ke muzik (Music/Muslim Friend).",
+    "deleteConfirm": "Padam rakaman ini?",
+    "myRecitation": "Tilawah saya"
   }
 }

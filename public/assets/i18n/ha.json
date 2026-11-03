@@ -381,7 +381,9 @@
     "locationTitle": "Wuri",
     "locationText": "Kawai idan ka zaɓi wuri na atomatik don lokutan sallah: ana karanta shi sau ɗaya, ana kusantar da shi zuwa kimanin kilomita 1, ana ajiye shi a na'ura kuma ba a taɓa raba shi ba. Kana iya zaɓar birni maimakon haka.",
     "backupTitle": "Madadi",
-    "backupText": "Fitarwa tana ƙirƙirar fayil ta buɗe zaɓin rabawa. Kai ne ka zaɓi inda zai je; manhajar ba ta ɗora komai. Tushen intanet (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) suna karɓar buƙatar fayil ko hadisi kawai, ba komai game da kai ba."
+    "backupText": "Fitarwa tana ƙirƙirar fayil ta buɗe zaɓin rabawa. Kai ne ka zaɓi inda zai je; manhajar ba ta ɗora komai. Tushen intanet (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) suna karɓar buƙatar fayil ko hadisi kawai, ba komai game da kai ba.",
+    "mediaTitle": "Makirofo da kyamara",
+    "mediaText": "Ana nema ne kawai idan ka yi rikodin karatunka a ɗakin karatu ko ka karanta wa manhajar don ta gyara. Cire hayaniya da gane magana suna aiki a wayarka; babu abin da ake turawa. Rikodi na zama a manhajar har sai ka raba, ka adana ko ka goge."
   },
   "prayer": {
     "fajr": "Asuba",
@@ -1405,5 +1407,58 @@
     "quran": "Alƙur'ani",
     "athkar": "Azkar",
     "tools": "Kayan aiki"
+  },
+  "studio": {
+    "title": "Ɗakin karatun Alƙur'ani",
+    "audio": "Sauti",
+    "video": "Bidiyo",
+    "sura": "Sura",
+    "freeRecitation": "Karatu na kai (ba rubutu)",
+    "level": "Ƙarfin sauti",
+    "openCamera": "Taɓa don kunna kyamara",
+    "openMic": "Taɓa don kunna makirofo",
+    "errors": {
+      "denied": "Ba da izinin makirofo (da kyamara don bidiyo) a saitunan waya don yin rikodi.",
+      "unsupported": "Wannan waya ba za ta iya rikodi a nan ba.",
+      "failed": "Ba a iya kunna makirofo ko kyamara ba."
+    },
+    "prevAyah": "Ayar da ta gabata",
+    "nextAyah": "Aya ta gaba",
+    "flipCamera": "Canja kyamara",
+    "record": "Rikodi",
+    "stop": "Tsaya ka adana",
+    "pause": "Dakata",
+    "resume": "Ci gaba",
+    "paused": "an dakata",
+    "noise": "Cire hayaniya",
+    "denoise": {
+      "off": "A kashe",
+      "light": "Mai sauƙi",
+      "strong": "Mai ƙarfi (AI)"
+    },
+    "strongUnavailable": "Cire hayaniya mai ƙarfi ba ya aiki a wannan waya; ana amfani da mai sauƙi.",
+    "echo": "Amo",
+    "reverb": {
+      "none": "Babu",
+      "room": "Ɗaki",
+      "hall": "Zaure",
+      "mosque": "Masallaci"
+    },
+    "captions": "Nuna ayoyi a bidiyo",
+    "captionsHint": "Zaɓi sura don nuna ayoyinta a bidiyo. Yayin rikodi, taɓa ‹ don zuwa aya ta gaba.",
+    "privacy": "Ana rikodi da gyarawa a wayarka. Babu abin da ake turawa sai ka raba.",
+    "enhanced": "Ingantacce",
+    "original": "Na asali",
+    "saveGallery": "Adana a hotuna",
+    "saveMusic": "Adana a waƙoƙi",
+    "rename": "Sake suna",
+    "dropOriginal": "Ajiye ingantacce kawai",
+    "myRecordings": "Rikodina",
+    "noRecordings": "Babu rikodi tukuna. Danna maɓallin ja don farawa.",
+    "saveFailed": "Ba a iya adana rikodin ba.",
+    "savedGallery": "An adana a hotuna (Movies/Muslim Friend).",
+    "savedMusic": "An adana a waƙoƙi (Music/Muslim Friend).",
+    "deleteConfirm": "A goge wannan rikodi?",
+    "myRecitation": "Karatuna"
   }
 }

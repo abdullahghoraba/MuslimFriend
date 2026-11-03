@@ -381,7 +381,9 @@
     "locationTitle": "Ubicación",
     "locationText": "Solo si eliges la ubicación automática para los horarios de oración: se lee una vez, se redondea a 1 km aprox., se guarda en el dispositivo y nunca se comparte. Puedes elegir una ciudad en su lugar.",
     "backupTitle": "Copias de seguridad",
-    "backupText": "Exportar crea un archivo y abre el menú de compartir. Tú decides adónde va; la app no sube nada. Las fuentes en línea (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) solo reciben la petición del archivo o del hadiz, nada sobre ti."
+    "backupText": "Exportar crea un archivo y abre el menú de compartir. Tú decides adónde va; la app no sube nada. Las fuentes en línea (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) solo reciben la petición del archivo o del hadiz, nada sobre ti.",
+    "mediaTitle": "Micrófono y cámara",
+    "mediaText": "Solo se piden al grabar su recitación en el estudio o al recitar a la app para que la corrija. La eliminación de ruido y el reconocimiento de voz funcionan en su teléfono; no se sube nada. Las grabaciones quedan en la app hasta que las comparta, guarde o elimine."
   },
   "prayer": {
     "fajr": "Fajr",
@@ -1405,5 +1407,58 @@
     "quran": "Corán",
     "athkar": "Recuerdos",
     "tools": "Herramientas"
+  },
+  "studio": {
+    "title": "Estudio de recitación",
+    "audio": "Audio",
+    "video": "Vídeo",
+    "sura": "Sura",
+    "freeRecitation": "Recitación libre (sin texto)",
+    "level": "Nivel de sonido",
+    "openCamera": "Toque para activar la cámara",
+    "openMic": "Toque para activar el micrófono",
+    "errors": {
+      "denied": "Permita el micrófono (y la cámara para vídeo) en los ajustes del teléfono para grabar.",
+      "unsupported": "Este teléfono no puede grabar aquí.",
+      "failed": "No se pudo iniciar el micrófono o la cámara."
+    },
+    "prevAyah": "Aleya anterior",
+    "nextAyah": "Aleya siguiente",
+    "flipCamera": "Cambiar cámara",
+    "record": "Grabar",
+    "stop": "Detener y guardar",
+    "pause": "Pausa",
+    "resume": "Reanudar",
+    "paused": "en pausa",
+    "noise": "Eliminación de ruido",
+    "denoise": {
+      "off": "No",
+      "light": "Ligera",
+      "strong": "Fuerte (IA)"
+    },
+    "strongUnavailable": "La eliminación fuerte no está disponible en este teléfono; se usa la ligera.",
+    "echo": "Eco",
+    "reverb": {
+      "none": "Ninguno",
+      "room": "Sala",
+      "hall": "Auditorio",
+      "mosque": "Mezquita"
+    },
+    "captions": "Mostrar las aleyas en el vídeo",
+    "captionsHint": "Elija una sura para mostrar sus aleyas en el vídeo. Al grabar, toque ‹ para pasar a la siguiente aleya.",
+    "privacy": "Se graba y procesa en su teléfono. No se sube nada salvo que lo comparta.",
+    "enhanced": "Mejorado",
+    "original": "Original",
+    "saveGallery": "Guardar en galería",
+    "saveMusic": "Guardar en música",
+    "rename": "Renombrar",
+    "dropOriginal": "Conservar solo el mejorado",
+    "myRecordings": "Mis grabaciones",
+    "noRecordings": "Aún no hay grabaciones. Pulse el botón rojo para empezar.",
+    "saveFailed": "No se pudo guardar la grabación.",
+    "savedGallery": "Guardado en la galería (Movies/Muslim Friend).",
+    "savedMusic": "Guardado en música (Music/Muslim Friend).",
+    "deleteConfirm": "¿Eliminar esta grabación?",
+    "myRecitation": "Mi recitación"
   }
 }

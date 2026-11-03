@@ -1,0 +1,206 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/more" [text]="''" [attr.aria-label]="'common.back' | translate" />
+    </ion-buttons>
+    <ion-title>{{ 'studio.title' | translate }}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [value]="prefs().kind" (ionChange)="setKind($event.detail.value)" [disabled]="state() !== 'idle'">
+      <ion-segment-button value="audio">
+        <ion-icon name="mic-outline" aria-hidden="true" />
+        <ion-label>{{ 'studio.audio' | translate }}</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="video">
+        <ion-icon name="videocam-outline" aria-hidden="true" />
+        <ion-label>{{ 'studio.video' | translate }}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <main>
+    <!-- What to recite: optional; read from the screen and shown on the video. -->
+    <section class="card ayat" [class.compact]="state() !== 'idle'">
+      <ion-select interface="action-sheet" [label]="'studio.sura' | translate" [value]="sura()" (ionChange)="setSura($event.detail.value)"
+                  [disabled]="state() !== 'idle'">
+        <ion-select-option [value]="0">{{ 'studio.freeRecitation' | translate }}</ion-select-option>
+        @for (s of suraOptions(); track s.index) {
+          <ion-select-option [value]="s.index">{{ s.index }}. {{ s.name }}</ion-select-option>
+        }
+      </ion-select>
+      @if (sura() && state() === 'idle') {
+        <div class="range">
+          <ion-select interface="popover" [label]="'mushaf.rangeFrom' | translate" [value]="from()" (ionChange)="setFrom($event.detail.value)">
+            @for (n of ayahNumbers(); track n) { <ion-select-option [value]="n">{{ n }}</ion-select-option> }
+          </ion-select>
+          <ion-select interface="popover" [label]="'mushaf.rangeTo' | translate" [value]="to()" (ionChange)="setTo($event.detail.value)">
+            @for (n of ayahNumbers(); track n) { <ion-select-option [value]="n">{{ n }}</ion-select-option> }
+          </ion-select>
+        </div>
+      }
+    </section>
+
+    <!-- Preview: the camera picture (video) or the level meter and the ayah to read (audio). -->
+    <section class="stage" [class.video]="prefs().kind === 'video'" [class.live]="!!session()">
+      <div #preview class="preview" [hidden]="prefs().kind !== 'video' || !session()"></div>
+      @if (prefs().kind === 'audio' || !session()) {
+        @if (caption(); as c) {
+          <div class="prompter" lang="ar" dir="rtl">
+            <p class="text">{{ c.text }}</p>
+            <p class="where">{{ c.title }}</p>
+          </div>
+        } @else if (prefs().kind === 'audio') {
+          <ion-icon class="big-mic" name="mic-outline" aria-hidden="true" />
+        }
+      }
+      @if (session()) {
+        <div class="meter" role="meter" [attr.aria-label]="'studio.level' | translate" aria-valuemin="0" aria-valuemax="100"
+             [attr.aria-valuenow]="levelPct()">
+          <span [style.width.%]="level() * 100" [class.hot]="level() > 0.9"></span>
+        </div>
+      }
+      @if (opening()) { <div class="overlay"><ion-spinner /></div> }
+      @if (!session() && !opening()) {
+        <button type="button" class="start" (click)="openSession()">
+          <ion-icon [name]="prefs().kind === 'video' ? 'videocam-outline' : 'mic-outline'" aria-hidden="true" />
+          <span>{{ (prefs().kind === 'video' ? 'studio.openCamera' : 'studio.openMic') | translate }}</span>
+        </button>
+      }
+    </section>
+
+    @if (error(); as e) {
+      <p class="error" role="alert">{{ 'studio.errors.' + e | translate }}</p>
+    }
+
+    <!-- Controls. -->
+    <section class="controls">
+      @if (sura() && state() !== 'idle') {
+        <button type="button" class="round small" (click)="prevAyah()" [attr.aria-label]="'studio.prevAyah' | translate">
+          <ion-icon name="chevron-forward" aria-hidden="true" />
+        </button>
+      } @else if (session()?.kind === 'video' && state() === 'idle') {
+        <button type="button" class="round small" (click)="flipCamera()" [attr.aria-label]="'studio.flipCamera' | translate">
+          <ion-icon name="camera-reverse-outline" aria-hidden="true" />
+        </button>
+      } @else {
+        <span class="round small ghost"></span>
+      }
+
+      @if (state() === 'idle') {
+        <button type="button" class="record" (click)="record()" [disabled]="opening()" [attr.aria-label]="'studio.record' | translate">
+          <span class="dot"></span>
+        </button>
+      } @else if (state() === 'saving') {
+        <span class="record busy"><ion-spinner /></span>
+      } @else {
+        <button type="button" class="record on" (click)="stop()" [attr.aria-label]="'studio.stop' | translate">
+          <span class="square"></span>
+        </button>
+      }
+
+      @if (state() === 'recording' || state() === 'paused') {
+        @if (sura()) {
+          <button type="button" class="round small" (click)="nextAyah()" [attr.aria-label]="'studio.nextAyah' | translate">
+            <ion-icon name="chevron-back" aria-hidden="true" />
+          </button>
+        } @else {
+          <button type="button" class="round small" (click)="togglePause()"
+                  [attr.aria-label]="(state() === 'paused' ? 'studio.resume' : 'studio.pause') | translate">
+            <ion-icon [name]="state() === 'paused' ? 'play' : 'pause'" aria-hidden="true" />
+          </button>
+        }
+      } @else {
+        <span class="round small ghost"></span>
+      }
+    </section>
+    <p class="timer" [class.rec]="state() === 'recording'" role="timer" aria-live="off">
+      @if (state() === 'recording') { <span class="blink" aria-hidden="true">●</span> }
+      {{ state() === 'idle' ? '' : time() }}
+      @if (state() === 'paused') { · {{ 'studio.paused' | translate }} }
+    </p>
+    @if (sura() && (state() === 'recording' || state() === 'paused')) {
+      <div class="pause-row">
+        <ion-button fill="clear" size="small" (click)="togglePause()">
+          <ion-icon slot="start" [name]="state() === 'paused' ? 'play' : 'pause'" aria-hidden="true" />
+          {{ (state() === 'paused' ? 'studio.resume' : 'studio.pause') | translate }}
+        </ion-button>
+      </div>
+    }
+
+    <!-- Sound settings: change them while previewing to hear the difference in the meter. -->
+    @if (state() === 'idle') {
+      <section class="card settings">
+        <h2>{{ 'studio.noise' | translate }}</h2>
+        <ion-segment [value]="prefs().denoise" (ionChange)="setDenoise($event.detail.value)">
+          @for (d of denoiseLevels; track d) {
+            <ion-segment-button [value]="d"><ion-label>{{ 'studio.denoise.' + d | translate }}</ion-label></ion-segment-button>
+          }
+        </ion-segment>
+        @if (session() && prefs().denoise === 'strong' && activeDenoise() === 'light') {
+          <p class="hint">{{ 'studio.strongUnavailable' | translate }}</p>
+        }
+        <h2>{{ 'studio.echo' | translate }}</h2>
+        <ion-segment [value]="prefs().reverb" (ionChange)="setReverb($event.detail.value)" scrollable>
+          @for (r of reverbs; track r) {
+            <ion-segment-button [value]="r"><ion-label>{{ 'studio.reverb.' + r | translate }}</ion-label></ion-segment-button>
+          }
+        </ion-segment>
+        @if (prefs().kind === 'video') {
+          <ion-toggle [checked]="prefs().captions" (ionChange)="setCaptions($event.detail.checked)" [disabled]="!sura()">
+            {{ 'studio.captions' | translate }}
+          </ion-toggle>
+          @if (!sura()) { <p class="hint">{{ 'studio.captionsHint' | translate }}</p> }
+        }
+        <p class="hint">{{ 'studio.privacy' | translate }}</p>
+      </section>
+    }
+
+    <!-- The recording just made, or one chosen from the list. -->
+    @if (review(); as rec) {
+      <section class="card review" [attr.aria-label]="rec.title">
+        <div class="review-head">
+          <strong>{{ rec.title }}</strong>
+          <button type="button" class="icon" (click)="closeReview()" [attr.aria-label]="'common.close' | translate">✕</button>
+        </div>
+        @if (reviewSrc()) {
+          @if (rec.kind === 'video') {
+            <video [src]="reviewSrc()" controls playsinline preload="metadata"></video>
+          } @else {
+            <audio [src]="reviewSrc()" controls preload="metadata"></audio>
+          }
+        }
+        @if (rec.raw) {
+          <ion-segment [value]="showOriginal() ? 'raw' : 'final'" (ionChange)="toggleOriginal()">
+            <ion-segment-button value="final"><ion-label>{{ 'studio.enhanced' | translate }}</ion-label></ion-segment-button>
+            <ion-segment-button value="raw"><ion-label>{{ 'studio.original' | translate }}</ion-label></ion-segment-button>
+          </ion-segment>
+        }
+        <div class="actions">
+          <button type="button" (click)="share(rec)"><ion-icon name="share-social-outline" aria-hidden="true" /><span>{{ 'common.share' | translate }}</span></button>
+          <button type="button" (click)="saveToDevice(rec)"><ion-icon name="download-outline" aria-hidden="true" /><span>{{ (rec.kind === 'video' ? 'studio.saveGallery' : 'studio.saveMusic') | translate }}</span></button>
+          <button type="button" (click)="rename(rec)"><ion-icon name="create-outline" aria-hidden="true" /><span>{{ 'studio.rename' | translate }}</span></button>
+          @if (rec.raw) {
+            <button type="button" (click)="dropOriginal(rec)"><ion-icon name="cut-outline" aria-hidden="true" /><span>{{ 'studio.dropOriginal' | translate }}</span></button>
+          }
+          <button type="button" class="danger" (click)="remove(rec)"><ion-icon name="trash-outline" aria-hidden="true" /><span>{{ 'common.delete' | translate }}</span></button>
+        </div>
+      </section>
+    }
+
+    <h2 class="section">{{ 'studio.myRecordings' | translate }}</h2>
+    @for (rec of studio.recordings(); track rec.id) {
+      <button type="button" class="card row" [class.on]="review()?.id === rec.id" (click)="openReview(rec)">
+        <ion-icon [name]="rec.kind === 'video' ? 'videocam-outline' : 'mic-outline'" aria-hidden="true" />
+        <span class="body">
+          <strong>{{ rec.title }}</strong>
+          <small>{{ rec.created | date: 'medium' : undefined : lang() }} · {{ formatTime(rec.duration) }}</small>
+        </span>
+        <ion-icon name="play-circle-outline" aria-hidden="true" />
+      </button>
+    } @empty {
+      <p class="empty">{{ 'studio.noRecordings' | translate }}</p>
+    }
+  </main>
+</ion-content>

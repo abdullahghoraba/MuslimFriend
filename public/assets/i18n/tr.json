@@ -381,7 +381,9 @@
     "locationTitle": "Konum",
     "locationText": "Yalnızca namaz vakitleri için otomatik konumu seçerseniz: bir kez okunur, yaklaşık 1 km'ye yuvarlanır, cihazda saklanır ve asla paylaşılmaz. Bunun yerine bir şehir seçebilirsiniz.",
     "backupTitle": "Yedekler",
-    "backupText": "Dışa aktarma bir dosya oluşturur ve paylaşım ekranını açar. Nereye gideceğine sen karar verirsin; uygulama hiçbir şey yüklemez. Çevrimiçi kaynaklar (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) yalnızca dosya veya hadis isteğini alır, senin hakkında hiçbir şey almaz."
+    "backupText": "Dışa aktarma bir dosya oluşturur ve paylaşım ekranını açar. Nereye gideceğine sen karar verirsin; uygulama hiçbir şey yüklemez. Çevrimiçi kaynaklar (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) yalnızca dosya veya hadis isteğini alır, senin hakkında hiçbir şey almaz.",
+    "mediaTitle": "Mikrofon ve kamera",
+    "mediaText": "Yalnızca stüdyoda tilavetinizi kaydederken veya kontrol için uygulamaya okurken istenir. Gürültü giderme ve konuşma tanıma telefonunuzda çalışır; hiçbir şey yüklenmez. Kayıtlar siz paylaşana, kaydedene veya silene kadar uygulamada kalır."
   },
   "prayer": {
     "fajr": "Sabah",
@@ -1405,5 +1407,58 @@
     "quran": "Kur'an",
     "athkar": "Zikirler",
     "tools": "Araçlar"
+  },
+  "studio": {
+    "title": "Tilavet stüdyosu",
+    "audio": "Ses",
+    "video": "Video",
+    "sura": "Sure",
+    "freeRecitation": "Serbest tilavet (metinsiz)",
+    "level": "Ses seviyesi",
+    "openCamera": "Kamerayı açmak için dokunun",
+    "openMic": "Mikrofonu açmak için dokunun",
+    "errors": {
+      "denied": "Kayıt için telefon ayarlarından mikrofona (video için kameraya) izin verin.",
+      "unsupported": "Bu telefon burada kayıt yapamıyor.",
+      "failed": "Mikrofon veya kamera başlatılamadı."
+    },
+    "prevAyah": "Önceki ayet",
+    "nextAyah": "Sonraki ayet",
+    "flipCamera": "Kamerayı değiştir",
+    "record": "Kaydet",
+    "stop": "Durdur ve kaydet",
+    "pause": "Duraklat",
+    "resume": "Devam",
+    "paused": "duraklatıldı",
+    "noise": "Gürültü giderme",
+    "denoise": {
+      "off": "Kapalı",
+      "light": "Hafif",
+      "strong": "Güçlü (YZ)"
+    },
+    "strongUnavailable": "Güçlü gürültü giderme bu telefonda yok; hafif olan kullanılıyor.",
+    "echo": "Yankı",
+    "reverb": {
+      "none": "Yok",
+      "room": "Oda",
+      "hall": "Salon",
+      "mosque": "Cami"
+    },
+    "captions": "Ayetleri videoda göster",
+    "captionsHint": "Ayetlerini videoda göstermek için bir sure seçin. Kayıt sırasında sonraki ayet için ‹ dokunun.",
+    "privacy": "Telefonunuzda kaydedilir ve işlenir. Siz paylaşmadıkça hiçbir şey yüklenmez.",
+    "enhanced": "İyileştirilmiş",
+    "original": "Orijinal",
+    "saveGallery": "Galeriye kaydet",
+    "saveMusic": "Müziğe kaydet",
+    "rename": "Yeniden adlandır",
+    "dropOriginal": "Yalnızca iyileştirilmişi tut",
+    "myRecordings": "Kayıtlarım",
+    "noRecordings": "Henüz kayıt yok. Başlamak için kırmızı düğmeye basın.",
+    "saveFailed": "Kayıt kaydedilemedi.",
+    "savedGallery": "Galeriye kaydedildi (Movies/Muslim Friend).",
+    "savedMusic": "Müziğe kaydedildi (Music/Muslim Friend).",
+    "deleteConfirm": "Bu kayıt silinsin mi?",
+    "myRecitation": "Tilavetim"
   }
 }

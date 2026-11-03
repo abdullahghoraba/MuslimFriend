@@ -381,7 +381,9 @@
     "locationTitle": "Eneo",
     "locationText": "Ukichagua eneo la kiotomatiki kwa nyakati za swala tu: husomwa mara moja, hukadiriwa hadi takriban kilomita 1, huhifadhiwa kwenye kifaa na haishirikiwi kamwe. Unaweza kuchagua mji badala yake.",
     "backupTitle": "Nakala rudufu",
-    "backupText": "Kuhamisha huunda faili na kufungua menyu ya kushiriki. Wewe unaamua inakokwenda; programu haipakii chochote. Vyanzo vya mtandaoni (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) hupokea ombi la faili au hadithi tu, si chochote kukuhusu."
+    "backupText": "Kuhamisha huunda faili na kufungua menyu ya kushiriki. Wewe unaamua inakokwenda; programu haipakii chochote. Vyanzo vya mtandaoni (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) hupokea ombi la faili au hadithi tu, si chochote kukuhusu.",
+    "mediaTitle": "Maikrofoni na kamera",
+    "mediaText": "Huombwa tu unaporekodi kisomo chako studioni au unaposomea programu ikusahihishe. Kuondoa kelele na kutambua usemi hufanyika kwenye simu yako; hakuna kinachopakiwa. Rekodi hubaki kwenye programu hadi uzishiriki, uzihifadhi au uzifute."
   },
   "prayer": {
     "fajr": "Alfajiri",
@@ -1405,5 +1407,58 @@
     "quran": "Qur'ani",
     "athkar": "Adhkari",
     "tools": "Zana"
+  },
+  "studio": {
+    "title": "Studio ya kisomo",
+    "audio": "Sauti",
+    "video": "Video",
+    "sura": "Sura",
+    "freeRecitation": "Kisomo huru (bila maandishi)",
+    "level": "Kiwango cha sauti",
+    "openCamera": "Gusa kuwasha kamera",
+    "openMic": "Gusa kuwasha maikrofoni",
+    "errors": {
+      "denied": "Ruhusu maikrofoni (na kamera kwa video) katika mipangilio ya simu ili kurekodi.",
+      "unsupported": "Simu hii haiwezi kurekodi hapa.",
+      "failed": "Maikrofoni au kamera haikuweza kuanza."
+    },
+    "prevAyah": "Aya iliyotangulia",
+    "nextAyah": "Aya inayofuata",
+    "flipCamera": "Badilisha kamera",
+    "record": "Rekodi",
+    "stop": "Simamisha na hifadhi",
+    "pause": "Sitisha",
+    "resume": "Endelea",
+    "paused": "imesitishwa",
+    "noise": "Kuondoa kelele",
+    "denoise": {
+      "off": "Zima",
+      "light": "Kidogo",
+      "strong": "Kwa nguvu (AI)"
+    },
+    "strongUnavailable": "Kuondoa kelele kwa nguvu hakupatikani kwenye simu hii; kidogo kinatumika.",
+    "echo": "Mwangwi",
+    "reverb": {
+      "none": "Hakuna",
+      "room": "Chumba",
+      "hall": "Ukumbi",
+      "mosque": "Msikiti"
+    },
+    "captions": "Onyesha aya kwenye video",
+    "captionsHint": "Chagua sura ili aya zake zionekane kwenye video. Ukirekodi, gusa ‹ kwenda aya inayofuata.",
+    "privacy": "Inarekodiwa na kuchakatwa kwenye simu yako. Hakuna kinachopakiwa usipokishiriki.",
+    "enhanced": "Iliyoboreshwa",
+    "original": "Asili",
+    "saveGallery": "Hifadhi kwenye picha",
+    "saveMusic": "Hifadhi kwenye muziki",
+    "rename": "Badili jina",
+    "dropOriginal": "Baki na iliyoboreshwa tu",
+    "myRecordings": "Rekodi zangu",
+    "noRecordings": "Bado hakuna rekodi. Bonyeza kitufe chekundu kuanza.",
+    "saveFailed": "Rekodi haikuweza kuhifadhiwa.",
+    "savedGallery": "Imehifadhiwa kwenye picha (Movies/Muslim Friend).",
+    "savedMusic": "Imehifadhiwa kwenye muziki (Music/Muslim Friend).",
+    "deleteConfirm": "Futa rekodi hii?",
+    "myRecitation": "Kisomo changu"
   }
 }

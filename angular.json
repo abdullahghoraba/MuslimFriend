@@ -32,6 +32,16 @@
                 "glob": "sql-wasm.wasm",
                 "input": "node_modules/sql.js/dist",
                 "output": "assets"
+              },
+              {
+                "glob": "{gtcrn,rnnoise,rnnoise_simd}.wasm",
+                "input": "node_modules/@sapphi-red/web-noise-suppressor/dist",
+                "output": "assets/noise"
+              },
+              {
+                "glob": "{gtcrn,rnnoise}/workletProcessor.js",
+                "input": "node_modules/@sapphi-red/web-noise-suppressor/dist",
+                "output": "assets/noise"
               }
             ],
             "styles": [

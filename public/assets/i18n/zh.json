@@ -381,7 +381,9 @@
     "locationTitle": "位置",
     "locationText": "仅当你为礼拜时间选择自动定位时：读取一次，精确到约 1 公里，保存在设备上，绝不分享。你也可以改为选择城市。",
     "backupTitle": "备份",
-    "backupText": "导出会生成文件并打开分享菜单，由你决定发送到哪里；应用不会上传任何内容。在线来源（everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org）只收到文件或圣训的请求，不会收到任何关于你的信息。"
+    "backupText": "导出会生成文件并打开分享菜单，由你决定发送到哪里；应用不会上传任何内容。在线来源（everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org）只收到文件或圣训的请求，不会收到任何关于你的信息。",
+    "mediaTitle": "麦克风和相机",
+    "mediaText": "仅在您于录音室录制诵读或向应用背诵以便纠正时请求。降噪和语音识别在您的手机上运行，不会上传任何内容。录音保存在应用内，直到您分享、保存或删除。"
   },
   "prayer": {
     "fajr": "晨礼",
@@ -1405,5 +1407,58 @@
     "quran": "古兰经",
     "athkar": "记念",
     "tools": "工具"
+  },
+  "studio": {
+    "title": "诵读录音室",
+    "audio": "音频",
+    "video": "视频",
+    "sura": "章",
+    "freeRecitation": "自由诵读（无经文）",
+    "level": "音量",
+    "openCamera": "点击开启相机",
+    "openMic": "点击开启麦克风",
+    "errors": {
+      "denied": "请在手机设置中允许麦克风（视频还需相机）以进行录制。",
+      "unsupported": "此手机无法在此录制。",
+      "failed": "无法启动麦克风或相机。"
+    },
+    "prevAyah": "上一节",
+    "nextAyah": "下一节",
+    "flipCamera": "切换相机",
+    "record": "录制",
+    "stop": "停止并保存",
+    "pause": "暂停",
+    "resume": "继续",
+    "paused": "已暂停",
+    "noise": "降噪",
+    "denoise": {
+      "off": "关闭",
+      "light": "轻度",
+      "strong": "强力（AI）"
+    },
+    "strongUnavailable": "此手机不支持强力降噪，已使用轻度降噪。",
+    "echo": "回声",
+    "reverb": {
+      "none": "无",
+      "room": "房间",
+      "hall": "大厅",
+      "mosque": "清真寺"
+    },
+    "captions": "在视频上显示经文",
+    "captionsHint": "选择一章以在视频上显示经文。录制时点按 ‹ 进入下一节。",
+    "privacy": "在您的手机上录制和处理。除非您分享，否则不会上传任何内容。",
+    "enhanced": "增强版",
+    "original": "原声",
+    "saveGallery": "保存到相册",
+    "saveMusic": "保存到音乐",
+    "rename": "重命名",
+    "dropOriginal": "仅保留增强版",
+    "myRecordings": "我的录音",
+    "noRecordings": "还没有录音。按红色按钮开始。",
+    "saveFailed": "无法保存录音。",
+    "savedGallery": "已保存到相册（Movies/Muslim Friend）。",
+    "savedMusic": "已保存到音乐（Music/Muslim Friend）。",
+    "deleteConfirm": "删除此录音？",
+    "myRecitation": "我的诵读"
   }
 }

@@ -381,7 +381,9 @@
     "locationTitle": "Localização",
     "locationText": "Só se você escolher a localização automática para os horários de oração: lida uma vez, arredondada para cerca de 1 km, guardada no aparelho e nunca compartilhada. Você pode escolher uma cidade em vez disso.",
     "backupTitle": "Backups",
-    "backupText": "Exportar cria um arquivo e abre o menu de compartilhar. Você decide para onde vai; o app não envia nada. As fontes online (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) recebem só o pedido do arquivo ou do hadith, nada sobre você."
+    "backupText": "Exportar cria um arquivo e abre o menu de compartilhar. Você decide para onde vai; o app não envia nada. As fontes online (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) recebem só o pedido do arquivo ou do hadith, nada sobre você.",
+    "mediaTitle": "Microfone e câmera",
+    "mediaText": "Pedidos apenas quando você grava sua recitação no estúdio ou recita para o app corrigir. A remoção de ruído e o reconhecimento de fala funcionam no seu telefone; nada é enviado. As gravações ficam no app até você compartilhar, salvar ou excluir."
   },
   "prayer": {
     "fajr": "Fajr",
@@ -1405,5 +1407,58 @@
     "quran": "Alcorão",
     "athkar": "Lembranças",
     "tools": "Ferramentas"
+  },
+  "studio": {
+    "title": "Estúdio de recitação",
+    "audio": "Áudio",
+    "video": "Vídeo",
+    "sura": "Surata",
+    "freeRecitation": "Recitação livre (sem texto)",
+    "level": "Nível do som",
+    "openCamera": "Toque para ligar a câmera",
+    "openMic": "Toque para ligar o microfone",
+    "errors": {
+      "denied": "Permita o microfone (e a câmera para vídeo) nas configurações do telefone para gravar.",
+      "unsupported": "Este telefone não pode gravar aqui.",
+      "failed": "Não foi possível iniciar o microfone ou a câmera."
+    },
+    "prevAyah": "Versículo anterior",
+    "nextAyah": "Próximo versículo",
+    "flipCamera": "Trocar câmera",
+    "record": "Gravar",
+    "stop": "Parar e salvar",
+    "pause": "Pausar",
+    "resume": "Continuar",
+    "paused": "pausado",
+    "noise": "Remoção de ruído",
+    "denoise": {
+      "off": "Desligada",
+      "light": "Leve",
+      "strong": "Forte (IA)"
+    },
+    "strongUnavailable": "A remoção forte não está disponível neste telefone; a leve é usada.",
+    "echo": "Eco",
+    "reverb": {
+      "none": "Nenhum",
+      "room": "Sala",
+      "hall": "Salão",
+      "mosque": "Mesquita"
+    },
+    "captions": "Mostrar os versículos no vídeo",
+    "captionsHint": "Escolha uma surata para mostrar os versículos no vídeo. Ao gravar, toque em ‹ para o próximo versículo.",
+    "privacy": "Gravado e processado no seu telefone. Nada é enviado a menos que você compartilhe.",
+    "enhanced": "Melhorado",
+    "original": "Original",
+    "saveGallery": "Salvar na galeria",
+    "saveMusic": "Salvar em músicas",
+    "rename": "Renomear",
+    "dropOriginal": "Manter só o melhorado",
+    "myRecordings": "Minhas gravações",
+    "noRecordings": "Ainda não há gravações. Toque no botão vermelho para começar.",
+    "saveFailed": "Não foi possível salvar a gravação.",
+    "savedGallery": "Salvo na galeria (Movies/Muslim Friend).",
+    "savedMusic": "Salvo em músicas (Music/Muslim Friend).",
+    "deleteConfirm": "Excluir esta gravação?",
+    "myRecitation": "Minha recitação"
   }
 }

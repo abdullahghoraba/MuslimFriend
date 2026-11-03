@@ -381,7 +381,9 @@
     "locationTitle": "Joylashuv",
     "locationText": "Faqat namoz vaqtlari uchun avtomatik joylashuvni tanlasangiz: bir marta o'qiladi, taxminan 1 km gacha yaxlitlanadi, qurilmada saqlanadi va hech kimga berilmaydi. O'rniga shahar tanlashingiz mumkin.",
     "backupTitle": "Zaxira nusxalar",
-    "backupText": "Eksport fayl yaratadi va ulashish oynasini ochadi. Qayerga borishini siz hal qilasiz; ilova hech narsa yuklamaydi. Onlayn manbalar (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) faqat fayl yoki hadis so'rovini oladi, siz haqingizda hech narsa emas."
+    "backupText": "Eksport fayl yaratadi va ulashish oynasini ochadi. Qayerga borishini siz hal qilasiz; ilova hech narsa yuklamaydi. Onlayn manbalar (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) faqat fayl yoki hadis so'rovini oladi, siz haqingizda hech narsa emas.",
+    "mediaTitle": "Mikrofon va kamera",
+    "mediaText": "Faqat studiyada tilovatingizni yozganda yoki tekshirish uchun ilovaga o‘qib berganda so‘raladi. Shovqinni tozalash va nutqni aniqlash telefoningizda ishlaydi; hech narsa yuklanmaydi. Yozuvlar siz ulashmaguningizcha, saqlamaguningizcha yoki o‘chirmaguningizcha ilovada qoladi."
   },
   "prayer": {
     "fajr": "Bomdod",
@@ -1405,5 +1407,58 @@
     "quran": "Qur'on",
     "athkar": "Zikrlar",
     "tools": "Vositalar"
+  },
+  "studio": {
+    "title": "Tilovat studiyasi",
+    "audio": "Ovoz",
+    "video": "Video",
+    "sura": "Sura",
+    "freeRecitation": "Erkin tilovat (matnsiz)",
+    "level": "Ovoz darajasi",
+    "openCamera": "Kamerani yoqish uchun bosing",
+    "openMic": "Mikrofonni yoqish uchun bosing",
+    "errors": {
+      "denied": "Yozib olish uchun telefon sozlamalarida mikrofonga (video uchun kameraga) ruxsat bering.",
+      "unsupported": "Bu telefon bu yerda yozib ololmaydi.",
+      "failed": "Mikrofon yoki kamerani yoqib bo'lmadi."
+    },
+    "prevAyah": "Oldingi oyat",
+    "nextAyah": "Keyingi oyat",
+    "flipCamera": "Kamerani almashtirish",
+    "record": "Yozish",
+    "stop": "To'xtatish va saqlash",
+    "pause": "Pauza",
+    "resume": "Davom etish",
+    "paused": "to'xtatilgan",
+    "noise": "Shovqinni olib tashlash",
+    "denoise": {
+      "off": "O'chiq",
+      "light": "Yengil",
+      "strong": "Kuchli (SI)"
+    },
+    "strongUnavailable": "Kuchli shovqin tozalash bu telefonda yo'q; yengili ishlatiladi.",
+    "echo": "Aks-sado",
+    "reverb": {
+      "none": "Yo'q",
+      "room": "Xona",
+      "hall": "Zal",
+      "mosque": "Masjid"
+    },
+    "captions": "Oyatlarni videoda ko'rsatish",
+    "captionsHint": "Oyatlari videoda ko'rinishi uchun sura tanlang. Yozish paytida keyingi oyat uchun ‹ ni bosing.",
+    "privacy": "Telefoningizda yoziladi va ishlanadi. Siz ulashmaguningizcha hech narsa yuklanmaydi.",
+    "enhanced": "Yaxshilangan",
+    "original": "Asl",
+    "saveGallery": "Galereyaga saqlash",
+    "saveMusic": "Musiqaga saqlash",
+    "rename": "Qayta nomlash",
+    "dropOriginal": "Faqat yaxshilanganini qoldirish",
+    "myRecordings": "Yozuvlarim",
+    "noRecordings": "Hali yozuv yo'q. Boshlash uchun qizil tugmani bosing.",
+    "saveFailed": "Yozuvni saqlab bo'lmadi.",
+    "savedGallery": "Galereyaga saqlandi (Movies/Muslim Friend).",
+    "savedMusic": "Musiqaga saqlandi (Music/Muslim Friend).",
+    "deleteConfirm": "Bu yozuv o'chirilsinmi?",
+    "myRecitation": "Tilovatim"
   }
 }
