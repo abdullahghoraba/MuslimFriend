@@ -1173,7 +1173,8 @@
     },
     "scanned": "Gescannte Seite",
     "openInMushaf": "Im Medina-Mushaf öffnen",
-    "ayatOnPage": "Verse auf dieser Seite"
+    "ayatOnPage": "Verse auf dieser Seite",
+    "textView": "Text (Schriftgröße, Markierungen)"
   },
   "hadith": {
     "title": "Hadithe",

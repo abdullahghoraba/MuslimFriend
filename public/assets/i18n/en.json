@@ -1173,7 +1173,8 @@
     },
     "scanned": "Scanned page",
     "openInMushaf": "Open in Madinah mushaf",
-    "ayatOnPage": "Ayat on this page"
+    "ayatOnPage": "Ayat on this page",
+    "textView": "Text (font size, marks)"
   },
   "hadith": {
     "title": "Hadith",

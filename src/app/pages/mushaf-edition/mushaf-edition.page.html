@@ -9,8 +9,8 @@
     </ion-title>
     <ion-buttons slot="end">
       @if (info()?.kind === 'images') {
-        <ion-button (click)="toggleScanned()" [attr.aria-pressed]="scanned()" [attr.aria-label]="'editions.scanned' | translate">
-          <ion-icon slot="icon-only" [name]="scanned() ? 'text-outline' : 'image-outline'" aria-hidden="true" />
+        <ion-button (click)="openText()" [attr.aria-label]="'editions.textView' | translate">
+          <ion-icon slot="icon-only" name="text-outline" aria-hidden="true" />
         </ion-button>
       }
       <ion-button (click)="nav.navigateForward('/mushaf-editions')" [attr.aria-label]="'editions.title' | translate">

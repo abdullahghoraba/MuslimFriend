@@ -1173,7 +1173,8 @@
     },
     "scanned": "Page scannée",
     "openInMushaf": "Ouvrir dans le mushaf de Médine",
-    "ayatOnPage": "Versets de cette page"
+    "ayatOnPage": "Versets de cette page",
+    "textView": "Texte (taille, marques)"
   },
   "hadith": {
     "title": "Hadiths",

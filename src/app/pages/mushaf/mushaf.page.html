@@ -8,6 +8,11 @@
       <span class="h-meta">{{ header().juz }} · {{ header().hizb }}</span>
     </ion-title>
     <ion-buttons slot="end">
+      @if (shamarly()) {
+        <ion-button (click)="openScan()" [attr.aria-label]="'editions.scanned' | translate">
+          <ion-icon slot="icon-only" name="image-outline" aria-hidden="true" />
+        </ion-button>
+      }
       <ion-button (click)="goToPrompt()" [attr.aria-label]="'mushaf.goTo' | translate">
         <ion-icon slot="icon-only" name="search-outline" aria-hidden="true" />
       </ion-button>
@@ -83,6 +88,12 @@
         <span class="ribbon" [attr.data-color]="bm.color" [attr.aria-label]="bm.name" role="img"></span>
       }
 
+      @if (!blocks().length && shamarly()) {
+        <div class="cover" lang="ar" dir="rtl">
+          <p class="cover-title">مصحف الشمرلي</p>
+          <p class="cover-sub">بِرِوَايَةِ حَفْصٍ عَنْ عَاصِمٍ</p>
+        </div>
+      }
       <div class="quran-text page-text" lang="ar" dir="rtl">
         @for (b of blocks(); track b.ayah.index) {
           @if (b.suraHeader; as h) {
@@ -101,14 +112,14 @@
                 (click)="select(b.ayah, $event)" (keydown.enter)="select(b.ayah, $event)"
                 (pointerdown)="pressStart(b.ayah, $event)" (pointermove)="pressMove($event)"
                 (pointerup)="pressEnd()" (pointercancel)="pressEnd()" (contextmenu)="$event.preventDefault()"
-                [attr.aria-label]="quran.sura(b.ayah.sura).name + ' ' + b.ayah.aya">@if (b.parts; as parts) {@for (p of parts; track $index) {<span [class]="p.rule ? 'tj-' + p.rule : null">{{ p.text }}</span>}} @else {<ng-container>{{ b.text }}</ng-container>}<span class="end">&nbsp;﴿{{ b.num }}﴾</span>@if (isStarred(b.ayah)) {<span class="mark star" aria-hidden="true">★</span>}@if (hasNote(b.ayah)) {<span class="mark note" aria-hidden="true">✎</span>}</span>
+                [attr.aria-label]="quran.sura(b.ayah.sura).name + ' ' + b.ayah.aya">@if (b.parts; as parts) {@for (p of parts; track $index) {<span [class]="p.rule ? 'tj-' + p.rule : null">{{ p.text }}</span>}} @else {<ng-container>{{ b.text }}</ng-container>}@if (b.num) {<span class="end">&nbsp;﴿{{ b.num }}﴾</span>}@if (isStarred(b.ayah)) {<span class="mark star" aria-hidden="true">★</span>}@if (hasNote(b.ayah)) {<span class="mark note" aria-hidden="true">✎</span>}</span>
           {{ ' ' }}
         }
       </div>
 
       <!-- Laid out like a printed mushaf in every language: the next page is on the left. -->
       <div class="page-footer" dir="ltr">
-        <button type="button" class="turn" (click)="next(); $event.stopPropagation()" [disabled]="page() >= 604"
+        <button type="button" class="turn" (click)="next(); $event.stopPropagation()" [disabled]="page() >= pageCount()"
                 [attr.aria-label]="'mushaf.nextPage' | translate">‹</button>
         <span class="page-num">{{ pageLabel() }}</span>
         <button type="button" class="turn" (click)="prev(); $event.stopPropagation()" [disabled]="page() <= 1"

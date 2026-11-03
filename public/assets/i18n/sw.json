@@ -1173,7 +1173,8 @@
     },
     "scanned": "Ukurasa uliochanganuliwa",
     "openInMushaf": "Fungua katika Msahafu wa Madina",
-    "ayatOnPage": "Aya za ukurasa huu"
+    "ayatOnPage": "Aya za ukurasa huu",
+    "textView": "Maandishi (ukubwa, alama)"
   },
   "hadith": {
     "title": "Hadithi",

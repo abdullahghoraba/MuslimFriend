@@ -40,6 +40,7 @@ import { TafsirSheetComponent } from './tafsir-sheet.component';
 import { WordByWordSheetComponent } from './word-by-word-sheet.component';
 import { ReciterPickerComponent } from './reciter-picker.component';
 import { EDITIONS, MushafEditionsService } from '../../core/quran/mushaf-editions.service';
+import { MushafLayout, ayahWords } from '../../core/quran/mushaf-layout';
 import { TajweedPart, alignTajweed } from '../../core/quran/tajweed';
 import { SelectTextsDirective } from '../../shared/select-texts.directive';
 
@@ -53,7 +54,10 @@ interface PageBlock {
   basmalaText: string;
   ayah: Ayah;
   text: string;
+  /** The ayah's number, shown where it ends ('' when it runs on to the next page). */
   num: string;
+  /** The page starts in the middle of this ayah (Shamarly). */
+  continued?: boolean;
   /** Colour-tajweed runs of the text (and of the basmala) when the tajweed mushaf is chosen. */
   parts?: TajweedPart[];
   basmalaParts?: TajweedPart[];
@@ -64,7 +68,8 @@ const VIEW_PREFS = 'mushafView';
 const READ_AFTER_MS = 3000;
 
 /**
- * The mushaf: Madani 604-page layout, Tanzil Uthmani text in Amiri Quran.
+ * The mushaf: Tanzil Uthmani text in Amiri Quran, on the Madinah mushaf's 604 pages or the Shamarly mushaf's 522
+ * (where pages break inside ayat, as printed).
  * Swipe to turn pages (RTL like a printed mushaf), tap an ayah for tafsir, recitation, bookmarks
  * (coloured), star, highlight, note, copy and share.
  */
@@ -86,6 +91,8 @@ export class MushafPage {
   readonly hifzPlan = input<string | undefined>(undefined, { alias: 'hifz' });
   /** Set by «استمع وكرّر»: ask how many times to repeat, then play the marked portion. */
   readonly repeatParam = input<string | undefined>(undefined, { alias: 'repeat' });
+  /** A page of the Shamarly mushaf (from its scanned pages), when it is the chosen mushaf. */
+  readonly shamarlyPage = input<string | undefined>(undefined, { alias: 'sp' });
   /** Set by the Friday al-Kahf card: reading here leaves the saved place («متابعة القراءة») where it was. */
   readonly visit = input<string | undefined>();
 
@@ -139,19 +146,29 @@ export class MushafPage {
     return this.lang() === 'ar' ? e.nameAr : e.nameEn;
   });
 
+  /** Page layout: the Madinah mushaf's, or the Shamarly mushaf's when it is the chosen mushaf. */
+  readonly layout = signal<MushafLayout | null>(null);
+  readonly pageCount = computed(() => this.layout()?.pages ?? TOTAL_PAGES);
+  readonly shamarly = computed(() => this.layout()?.id === 'shamarly');
+
   readonly blocks = computed<PageBlock[]>(() => {
-    if (!this.quran.ready()) return [];
-    return this.quran.pageAyahs(this.page()).map((ayah) => {
+    const layout = this.layout();
+    if (!this.quran.ready() || !layout) return [];
+    return layout.pieces(this.page()).map(({ index, from, to }) => {
+      const ayah = this.quran.ayahAt(index);
       const split = splitBasmala(ayah, ayah.text);
       const s = this.quran.sura(ayah.sura);
-      const tj = this.tajweed();
+      const whole = from === 0 && to === undefined;
+      const text = whole ? split.text : ayahWords(split.text).slice(from, to).join(' ');
+      const tj = whole ? this.tajweed() : null;
       return {
-        suraHeader: ayah.aya === 1 ? { sura: s.index, name: s.name, ayas: s.ayas, type: s.type } : undefined,
-        basmala: split.basmala,
+        suraHeader: ayah.aya === 1 && from === 0 ? { sura: s.index, name: s.name, ayas: s.ayas, type: s.type } : undefined,
+        basmala: split.basmala && from === 0,
         basmalaText: split.basmalaText,
         ayah,
-        text: split.text,
-        num: String(ayah.aya),
+        text,
+        num: to === undefined ? String(ayah.aya) : '',
+        continued: from > 0,
         // The text stays the Tanzil text; only the colours come from the tajweed markup.
         parts: tj ? (alignTajweed(split.text, tj[ayah.index]) ?? undefined) : undefined,
         basmalaParts: tj && split.basmala ? (alignTajweed(split.basmalaText, tj[0]) ?? undefined) : undefined,
@@ -177,7 +194,11 @@ export class MushafPage {
 
   readonly pageLabel = computed(() => String(this.page()));
   /** Bookmarks placed on this page (shown as coloured ribbons). */
-  readonly pageBookmarks = computed(() => this.marks.bookmarks().filter((b) => b.page === this.page()));
+  readonly pageBookmarks = computed(() => {
+    const layout = this.layout();
+    if (!layout || !this.quran.ready()) return [];
+    return this.marks.bookmarks().filter((b) => layout.pageOf(this.quran.ayah(b).index) === this.page());
+  });
 
   private readTimer?: ReturnType<typeof setTimeout>;
 
@@ -186,7 +207,8 @@ export class MushafPage {
     effect(() => {
       const cur = this.recitation.current();
       if (!cur || !this.quran.ready()) return;
-      const p = this.quran.pageOf(cur);
+      if (!this.layout()) return;
+      const p = this.pageOfRef(cur);
       untracked(() => {
         if (p !== this.page()) this.goTo(p, p > this.page() ? 'next' : 'prev');
         queueMicrotask(() => this.scrollToAyah(cur));
@@ -197,10 +219,15 @@ export class MushafPage {
   async ionViewWillEnter(): Promise<void> {
     await Promise.all([this.quran.load(), this.marks.load(), this.khatmah.load(), this.recitation.loadPrefs(), this.loadView(), this.hifz.load(), this.editions.load()]);
     this.tajweed.set(this.editions.current() === 'tajweed' ? await this.editions.tajweedText() : null);
-    const p = clampPage(Number(this.pageParam()));
-    this.goTo(p, 'none');
+    this.layout.set(await this.loadLayout());
     const sura = Number(this.sura());
     const aya = Number(this.aya());
+    // Links give the Madinah page (and often the ayah): in the Shamarly mushaf, open the page holding that ayah.
+    let p = clampPage(Number(this.pageParam()), TOTAL_PAGES);
+    if (sura && aya) p = this.pageOfRef({ sura, aya });
+    else if (this.shamarly() && Number(this.shamarlyPage())) p = clampPage(Number(this.shamarlyPage()), this.pageCount());
+    else if (this.shamarly()) p = this.pageOfRef(this.quran.pageAyahs(p)[0] ?? { sura: 1, aya: 1 });
+    this.goTo(p, 'none');
     if (sura && aya) {
       const ref = { sura, aya };
       this.selected.set(ref);
@@ -283,7 +310,34 @@ export class MushafPage {
   }
 
   next(): void {
-    if (this.page() < TOTAL_PAGES) this.goTo(this.page() + 1, 'next');
+    if (this.page() < this.pageCount()) this.goTo(this.page() + 1, 'next');
+  }
+
+  /** The page of this mushaf where [ref] begins. */
+  pageOfRef(ref: AyahRef): number {
+    const layout = this.layout();
+    return layout && this.quran.ready() ? layout.pageOf(this.quran.ayah(ref).index) : this.quran.pageOf(ref);
+  }
+
+  /** The Shamarly mushaf's scanned page, as printed. */
+  openScan(): void {
+    void this.nav.navigateForward(['/mushaf-edition', 'shamarly', this.page()]);
+  }
+
+  private async loadLayout(): Promise<MushafLayout> {
+    if (this.editions.current() === 'shamarly') {
+      try {
+        return await this.editions.shamarlyLayout((sura, aya) => this.quran.ayah({ sura, aya }).index);
+      } catch {
+        /* offline before the first load: the Madinah pages */
+      }
+    }
+    return {
+      id: 'madinah',
+      pages: TOTAL_PAGES,
+      pieces: (p) => this.quran.pageAyahs(p).map((a) => ({ index: a.index, from: 0 })),
+      pageOf: (index) => this.quran.pageOf(this.quran.ayahAt(index)),
+    };
   }
 
   prev(): void {
@@ -291,16 +345,22 @@ export class MushafPage {
   }
 
   goTo(page: number, slide: 'none' | 'next' | 'prev'): void {
-    const p = clampPage(page);
+    const p = clampPage(page, this.pageCount());
     this.slide.set(slide);
     this.page.set(p);
     this.selected.set(null);
-    this.location.replaceState(`/mushaf/${p}`);
     this.host.nativeElement.querySelector('ion-content')?.scrollToTop(0);
-    const first = this.quran.ready() ? this.quran.pageAyahs(p)[0] : undefined;
-    if (first && !this.visit()) void this.quran.setLastRead(p, first);
+    // Saved places (last read, khatmah) count Madinah pages, the same whichever mushaf is read.
+    const pieces = this.layout()?.pieces(p) ?? [];
+    const first = this.quran.ready() && pieces.length ? this.quran.ayahAt(pieces.find((x) => x.from === 0)?.index ?? pieces[0].index) : undefined;
+    const madinah = first ? this.quran.pageOf(first) : p;
+    this.location.replaceState(`/mushaf/${this.shamarly() ? madinah : p}`);
+    if (first && !this.visit()) void this.quran.setLastRead(madinah, first);
     clearTimeout(this.readTimer);
-    this.readTimer = setTimeout(() => void this.khatmah.recordPageRead(p), READ_AFTER_MS);
+    const last = this.quran.ready() && pieces.length ? this.quran.pageOf(this.quran.ayahAt(pieces[pieces.length - 1].index)) : madinah;
+    this.readTimer = setTimeout(() => {
+      for (let m = madinah; m <= last; m++) void this.khatmah.recordPageRead(m);
+    }, READ_AFTER_MS);
     setTimeout(() => this.slide.set('none'), 260);
   }
 
@@ -596,7 +656,7 @@ export class MushafPage {
         ...this.marks.bookmarks().map((b) => ({
           text: `${this.translate.instant('mushaf.moveBookmark')}: ${b.name}`,
           cssClass: `bm-${b.color}`,
-          handler: () => void this.marks.moveBookmark(b.id, ref, this.page()).then(() => this.toast('mushaf.bookmarkMoved')),
+          handler: () => void this.marks.moveBookmark(b.id, ref, this.quran.pageOf(ref)).then(() => this.toast('mushaf.bookmarkMoved')),
         })),
         { text: this.translate.instant('mushaf.newBookmark'), handler: () => void this.newBookmark(ref) },
         { text: this.translate.instant('common.cancel'), role: 'cancel' },
@@ -633,7 +693,7 @@ export class MushafPage {
           text: this.translate.instant('common.save'),
           handler: (data: { name?: string }) => {
             const name = data?.name?.trim() || colorName;
-            void this.marks.addBookmark(name, color, ref, this.page()).then(() => this.toast('mushaf.bookmarkAdded'));
+            void this.marks.addBookmark(name, color, ref, this.quran.pageOf(ref)).then(() => this.toast('mushaf.bookmarkAdded'));
           },
         },
       ],
@@ -709,7 +769,7 @@ export class MushafPage {
               const sura = Math.min(114, Math.max(1, +m[1]));
               const aya = Math.min(this.quran.sura(sura).ayas, Math.max(1, +m[2]));
               const ref = { sura, aya };
-              this.goTo(this.quran.pageOf(ref), 'none');
+              this.goTo(this.pageOfRef(ref), 'none');
               this.selected.set(ref);
               setTimeout(() => this.scrollToAyah(ref), 200);
             } else if (/^\d+$/.test(q)) {
@@ -783,6 +843,6 @@ export class MushafPage {
   }
 }
 
-function clampPage(p: number): number {
-  return Number.isFinite(p) ? Math.min(TOTAL_PAGES, Math.max(1, Math.round(p))) : 1;
+function clampPage(p: number, pages = TOTAL_PAGES): number {
+  return Number.isFinite(p) ? Math.min(pages, Math.max(1, Math.round(p))) : 1;
 }

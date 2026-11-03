@@ -1173,7 +1173,8 @@
     },
     "scanned": "Página escaneada",
     "openInMushaf": "Abrir en el mushaf de Medina",
-    "ayatOnPage": "Aleyas de esta página"
+    "ayatOnPage": "Aleyas de esta página",
+    "textView": "Texto (tamaño, marcas)"
   },
   "hadith": {
     "title": "Hadices",

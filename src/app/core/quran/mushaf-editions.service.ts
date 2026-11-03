@@ -5,6 +5,7 @@ import { Capacitor } from '@capacitor/core';
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { Preferences } from '@capacitor/preferences';
 import { AyahRef } from './quran-utils';
+import { MushafLayout, shamarlyLayout } from './mushaf-layout';
 
 /**
  * Mushaf editions:
@@ -125,6 +126,7 @@ export class MushafEditionsService {
   private readonly fonts = new Set<EditionId>();
   private shamarly?: Promise<ShamarlyMap>;
   private shamarlyAreas?: Promise<ShamarlyArea[][]>;
+  private shamarlyPages_?: Promise<MushafLayout>;
   private shamarlyBase?: Promise<string>;
   /** Shamarly pages saved on the device. */
   private shamarlyPages = new Set<number>();
@@ -304,6 +306,17 @@ export class MushafEditionsService {
       if (f && (f[0] < ref.sura || (f[0] === ref.sura && f[1] <= ref.aya))) found = i + 1;
     });
     return found;
+  }
+
+  /**
+   * The Shamarly mushaf's pages as text, broken where the printed pages break (inside ayat too; every page start
+   * checked against the scans, scripts/shamarly-ayat). [indexOf] gives an ayah's global index.
+   */
+  shamarlyLayout(indexOf: (sura: number, aya: number) => number): Promise<MushafLayout> {
+    this.shamarlyPages_ ??= firstValueFrom(this.http.get<{ start: ([number, number, number] | null)[] }>('assets/quran/shamarly-pages.json'))
+      .then((d) => shamarlyLayout(d.start, indexOf));
+    this.shamarlyPages_.catch(() => (this.shamarlyPages_ = undefined));
+    return this.shamarlyPages_;
   }
 
   /** Where each ayah sits on each page (index = page - 1). */

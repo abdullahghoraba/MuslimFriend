@@ -1173,7 +1173,8 @@
     },
     "scanned": "Taranmış sayfa",
     "openInMushaf": "Medine mushafında aç",
-    "ayatOnPage": "Bu sayfadaki ayetler"
+    "ayatOnPage": "Bu sayfadaki ayetler",
+    "textView": "Metin (yazı boyutu, işaretler)"
   },
   "hadith": {
     "title": "Hadis",

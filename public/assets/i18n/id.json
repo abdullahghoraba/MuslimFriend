@@ -1173,7 +1173,8 @@
     },
     "scanned": "Halaman pindaian",
     "openInMushaf": "Buka di mushaf Madinah",
-    "ayatOnPage": "Ayat di halaman ini"
+    "ayatOnPage": "Ayat di halaman ini",
+    "textView": "Teks (ukuran huruf, tanda)"
   },
   "hadith": {
     "title": "Hadis",

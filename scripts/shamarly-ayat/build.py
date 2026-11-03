@@ -103,12 +103,18 @@ for p in range(1, N + 1):
         entries.append([s, a, span(start_line, start_x, line, cx - mw / 2)])
         prev = (line, cx - mw / 2)
     # The ayah that runs on to the next page, after the page's last marker.
-    if p < N and assign[p] and assign[p][-1] + 1 < len(refs):
+    # (Not on the decorated opening pages, whose frames would read as text.)
+    if 3 < p < N and assign[p] and assign[p][-1] + 1 < len(refs):
         nxt = refs[assign[p][-1] + 1]
         line, left = prev
         text_after = line < len(lines) - 1 or left - x0 >= near_left
-        if text_after and tuple(first[p] or ()) == nxt and nxt[1] != 1:
+        if text_after and tuple(first[p] or ()) == nxt:
             sl, sx = (line + 1, x1) if left - x0 < near_left else (line, left)
+            if nxt[1] == 1:
+                # A new sura starts lower on this page: after its header frame (and basmala, but at-Tawbah).
+                frames = [i for i in range(line + 1, len(lines)) if lines[i][2]]
+                sl = frames[-1] + (1 if nxt[0] == 9 else 2) if frames else len(lines)
+                sx = x1
             rects = span(sl, sx, len(lines) - 1, x0) if sl < len(lines) else []
             if rects:
                 entries.append([nxt[0], nxt[1], rects])

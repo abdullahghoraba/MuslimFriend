@@ -1173,7 +1173,8 @@
     },
     "scanned": "Skanerlangan sahifa",
     "openInMushaf": "Madina mushafida ochish",
-    "ayatOnPage": "Shu sahifadagi oyatlar"
+    "ayatOnPage": "Shu sahifadagi oyatlar",
+    "textView": "Matn (shrift, belgilar)"
   },
   "hadith": {
     "title": "Hadislar",

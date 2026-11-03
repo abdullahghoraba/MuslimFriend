@@ -42,7 +42,7 @@ export class QuranIndexPage {
   openMark(): void { const m = this.quran.readingMark(); if (m) void this.router.navigate(['/mushaf', m.page], { queryParams: { sura: m.sura, aya: m.aya } }); }
   digits(n: number): string { return String(n); }
   words(ref: AyahRef): string { return this.quran.ayah(ref).text.split(/\s+/).slice(0,6).join(' ') + '…'; }
-  /** Opens [ref] in the chosen mushaf: the Madinah reader (also for colour tajweed) or Shamarly / a riwaya. */
+  /** Opens [ref] in the chosen mushaf: the reader (Madinah, colour tajweed, Shamarly) or a riwaya. */
   open(ref: AyahRef): void {
     const e = this.otherEdition();
     if (e) void this.router.navigate(['/mushaf-edition', e, 1], {queryParams: ref});
@@ -50,7 +50,8 @@ export class QuranIndexPage {
   }
   private otherEdition(): EditionId | null {
     const e = edition(this.editions.current());
-    return e && (e.kind === 'images' || e.kind === 'riwaya') && this.editions.isReady(e.id) ? e.id : null;
+    // Shamarly is read in the main reader (its own pages); only the riwayat have their own reader.
+    return e && e.kind === 'riwaya' && this.editions.isReady(e.id) ? e.id : null;
   }
   continue(): void {
     const e = this.otherEdition();

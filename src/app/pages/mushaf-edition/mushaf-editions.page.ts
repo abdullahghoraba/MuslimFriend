@@ -53,7 +53,7 @@ export class MushafEditionsPage {
   }
 
   async open(e: Edition): Promise<void> {
-    if (e.kind === 'hafs' || e.kind === 'tajweed') {
+    if (e.kind === 'hafs' || e.kind === 'tajweed' || e.kind === 'images') {
       const last = this.quran.lastRead();
       await this.nav.navigateForward(['/mushaf', last?.page ?? 1], { queryParams: last ? { sura: last.sura, aya: last.aya } : undefined });
       return;

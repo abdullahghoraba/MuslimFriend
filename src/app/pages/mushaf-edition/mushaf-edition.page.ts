@@ -205,6 +205,11 @@ export class MushafEditionPage {
     if (e.kind === 'images' && this.scanned()) await this.loadImage(p);
   }
 
+  /** Shamarly: back to the text in the reader (font size, marks, bookmarks...), on the same page. */
+  openText(): void {
+    void this.nav.navigateRoot(['/mushaf', 1], { queryParams: { sp: this.page() } });
+  }
+
   /** Shows the scanned Shamarly page (streamed from archive.org, or saved on the phone), or the text again. */
   async toggleScanned(): Promise<void> {
     this.scanned.update((v) => !v);

@@ -33,3 +33,25 @@ test('the Shamarly mushaf shows the scanned page and a tapped ayah opens its taf
   await expect(page.locator('ion-modal')).toBeVisible();
   await page.screenshot({ path: 'test-results/shamarly-tafsir.png' });
 });
+
+test('the Shamarly mushaf reads as text on its own pages, breaking inside ayat as printed', async ({ page }) => {
+  await onboard(page);
+  // Choose the Shamarly mushaf (as the Mushafs page does).
+  await page.evaluate(() => localStorage.setItem('CapacitorStorage.mushafEdition', 'shamarly'));
+  await page.goto('/mushaf/1?sp=100');
+  const ayat = page.locator('.page-text .ayah');
+  await expect(ayat.first()).toBeVisible();
+  // Page 100 begins inside al-Ma'idah 83 with «مع الشاهدين», which ends there with its number.
+  await expect(ayat.first()).toHaveAttribute('data-ayah', '5:83');
+  await expect(ayat.first()).toContainText('مَعَ');
+  await expect(ayat.first().locator('.end')).toContainText('83');
+  await expect(page.locator('.page-num')).toHaveText('100');
+  // The last ayah runs on to page 101: no number yet.
+  await expect(ayat.last().locator('.end')).toHaveCount(0);
+  await page.screenshot({ path: 'test-results/shamarly-text.png' });
+
+  // Marks and tafsir work as in the Madinah mushaf.
+  await ayat.first().click();
+  await page.getByRole('button', { name: ar.mushaf.tafsir }).click();
+  await expect(page.locator('ion-modal')).toBeVisible();
+});

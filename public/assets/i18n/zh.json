@@ -1173,7 +1173,8 @@
     },
     "scanned": "扫描页",
     "openInMushaf": "在麦地那版穆斯哈夫中打开",
-    "ayatOnPage": "本页经文"
+    "ayatOnPage": "本页经文",
+    "textView": "文字（字号、标记）"
   },
   "hadith": {
     "title": "圣训",
