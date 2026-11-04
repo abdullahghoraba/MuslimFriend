@@ -926,7 +926,8 @@
       "gold": "Or",
       "red": "Rouge",
       "purple": "Violet"
-    }
+    },
+    "tabPlans": "Plans"
   },
   "location": {
     "locating": "Recherche de votre position…",
@@ -1469,11 +1470,8 @@
     "stopOnMistake": "S’arrêter à une erreur et montrer le bon mot",
     "engine": "Reconnaissance",
     "enginePhone": "Téléphone (rapide)",
-    "engineWhisper": "IA hors ligne (précise)",
     "downloading": "Téléchargement… {{pct}} %",
-    "whisperAbout": "Le Whisper de Tarteel, entraîné sur la récitation du Coran, tourne sur votre téléphone : sans internet après un téléchargement d’environ 80 Mo.",
-    "download": "Télécharger (≈80 Mo)",
-    "whisperReady": "L’IA hors ligne est prête.",
+    "download": "Télécharger (36 Mo)",
     "phoneAbout": "Utilise la reconnaissance vocale du téléphone (Google). Fonctionne mieux en ligne ou avec le pack arabe hors ligne.",
     "best": "Meilleur score : {{pct}} %",
     "errors": {
@@ -1495,6 +1493,11 @@
     "mistakes": "{{n}} à revoir",
     "skipped": "sauté",
     "history": "Séances récentes",
-    "note": "Vérifie les mots, pas le tajwid. La reconnaissance peut mal entendre : écoutez le verset en cas de doute."
+    "note": "Vérifie les mots, pas le tajwid. La reconnaissance peut mal entendre : écoutez le verset en cas de doute.",
+    "engineOffline": "IA du Coran (hors ligne, précise)",
+    "offlineAbout": "Un modèle entraîné sur la récitation du Coran, y compris celle de personnes ordinaires récitant dans leur téléphone, tourne sur votre téléphone : plus besoin d’internet après un téléchargement de 36 Mo.",
+    "offlineReady": "L’IA du Coran est prête (fonctionne hors ligne).",
+    "noVoice": "Le micro n’entend rien : vérifiez qu’il n’est pas couvert et que l’appli peut l’utiliser.",
+    "mic": "Niveau du micro"
   }
 }

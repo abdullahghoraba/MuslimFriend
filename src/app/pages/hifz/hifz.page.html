@@ -2,10 +2,20 @@
   ><ion-toolbar
     ><ion-buttons slot="start"><ion-back-button defaultHref="/quran" /></ion-buttons
     ><ion-title>{{ 'hifz.title' | translate }}</ion-title></ion-toolbar
+  ><ion-toolbar
+    ><ion-segment [value]="tab()" (ionChange)="setTab($event.detail.value)"
+      ><ion-segment-button value="plans"><ion-label>{{ 'hifz.tabPlans' | translate }}</ion-label></ion-segment-button
+      ><ion-segment-button value="tasmee"><ion-label>{{ 'tasmee.short' | translate }}</ion-label></ion-segment-button></ion-segment
+    ></ion-toolbar
   ></ion-header
 >
 <ion-content
   ><main>
+    <!-- Tasmee': recite from memory and the app corrects you (kept alive while the reader looks at the plans). -->
+    @if (tasmeeOpened()) {
+      <app-tasmee [hidden]="tab() !== 'tasmee'" [startSura]="tasmeeRange()?.sura" [startFrom]="tasmeeRange()?.from" [startTo]="tasmeeRange()?.to" />
+    }
+    @if (tab() === 'plans') {
     @if (error()) {
       <p role="alert">{{ error() | translate }}</p>
     }
@@ -64,6 +74,11 @@
               >{{ 'hifz.memorized' | translate }}</ion-button
             >
             <ion-button
+              [disabled]="!service.today(p.id).newPortion.length"
+              (click)="recite(service.today(p.id).newPortion)"
+              ><ion-icon slot="start" name="mic-outline" aria-hidden="true" />{{ 'tasmee.short' | translate }}</ion-button
+            >
+            <ion-button
               fill="outline"
               [disabled]="!service.today(p.id).newPortion.length"
               (click)="test(service.today(p.id).newPortion)"
@@ -87,6 +102,11 @@
                 [disabled]="busy() || !service.today(p.id).due.length"
                 (click)="review(p, 'hard')"
                 >{{ 'hifz.hard' | translate }}</ion-button
+              >
+              <ion-button
+                [disabled]="!service.today(p.id).due.length"
+                (click)="recite(service.today(p.id).due)"
+                ><ion-icon slot="start" name="mic-outline" aria-hidden="true" />{{ 'tasmee.short' | translate }}</ion-button
               >
               <ion-button
                 fill="outline"
@@ -126,6 +146,7 @@
           [disabled]="busy()"
         />
       </section>
+    }
     }
   </main>
   <ion-modal

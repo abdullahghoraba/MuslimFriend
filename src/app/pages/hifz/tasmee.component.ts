@@ -1,14 +1,13 @@
-import { Component, OnDestroy, computed, inject, input, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { Component, OnDestroy, OnInit, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import { LocalDatePipe } from '../../shared/local-date.pipe';
 import { KeepAwake } from '@capacitor-community/keep-awake';
 import {
-  IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonLabel, IonProgressBar, IonSegment,
-  IonSegmentButton, IonSelect, IonSelectOption, IonTitle, IonToggle, IonToolbar, NavController,
+  IonButton, IonIcon, IonLabel, IonProgressBar, IonSegment, IonSegmentButton, IonSelect, IonSelectOption, IonToggle, NavController,
 } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
-import { WordResult, alignRecitation, heardWords, score } from '../../core/tasmee/align';
+import { WordResult, alignRecitation, bestAlternative, heardWords, score, wordKey } from '../../core/tasmee/align';
 import { TasmeeEngine, TasmeeService, dropOpenings } from '../../core/tasmee/tasmee.service';
-import { WhisperSpeech } from '../../core/tasmee/whisper-speech';
+import { QuranSpeech } from '../../core/tasmee/quran-speech';
 import { PhoneSpeech, SpeechCallbacks } from '../../native/speech';
 import { QuranService } from '../../core/quran/quran.service';
 import { RecitationService } from '../../core/quran/recitation.service';
@@ -26,25 +25,26 @@ interface Word {
 }
 
 /**
- * Tasmee' (تسميع): recite from memory and the app listens and corrects you, word by word: the words you say
- * correctly appear, a wrong word is shown in red with the right one, a skipped word in orange. Two free engines: the
- * phone's own speech recognition, or Tarteel's Quran-trained Whisper on the phone (offline, one download).
+ * Tasmee' (تسميع), the Hifz page's second tab: recite from memory and the app listens and corrects you, word by word:
+ * the words you say correctly appear, a wrong word is shown in red with the right one, a skipped word in orange. Two
+ * free engines: Google's (the phone's) speech recognition, biased toward the ayat and choosing among its guesses the
+ * one that fits them, or a Quran-trained model on the phone (offline, one 36 MB download; quran-speech.ts).
  * Words only (which word was said), not tajweed.
  */
 @Component({
   selector: 'app-tasmee',
   imports: [
-    TranslatePipe, DatePipe, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonContent, IonButton, IonIcon,
-    IonSelect, IonSelectOption, IonToggle, IonSegment, IonSegmentButton, IonLabel, IonProgressBar,
+    TranslatePipe, LocalDatePipe, IonButton, IonIcon, IonSelect, IonSelectOption, IonToggle, IonSegment, IonSegmentButton, IonLabel,
+    IonProgressBar,
   ],
-  templateUrl: './tasmee.page.html',
-  styleUrl: './tasmee.page.scss',
+  templateUrl: './tasmee.component.html',
+  styleUrl: './tasmee.component.scss',
 })
-export class TasmeePage implements OnDestroy {
-  /** ?sura=&from=&to= (from the mushaf or a hifz plan). */
-  readonly suraParam = input<string | undefined>(undefined, { alias: 'sura' });
-  readonly fromParam = input<string | undefined>(undefined, { alias: 'from' });
-  readonly toParam = input<string | undefined>(undefined, { alias: 'to' });
+export class TasmeeComponent implements OnInit, OnDestroy {
+  /** The ayat to recite (a hifz plan's portion, the mushaf's selection); the reader can change them here. */
+  readonly startSura = input<number | undefined>(undefined);
+  readonly startFrom = input<number | undefined>(undefined);
+  readonly startTo = input<number | undefined>(undefined);
 
   readonly tasmee = inject(TasmeeService);
   readonly quran = inject(QuranService);
@@ -68,10 +68,15 @@ export class TasmeePage implements OnDestroy {
     const c = this.correction();
     return c ? this.words().slice(c.from, c.to + 1).map((w) => w.text).join(' ') : '';
   });
-  readonly whisperReady = signal(WhisperSpeech.downloaded());
+  readonly offlineReady = signal(QuranSpeech.downloaded());
   readonly downloading = signal<number | null>(null);
+  /** Microphone level 0..1 while listening (shows that it hears you). */
+  readonly level = signal(0);
+  /** Listening for a while and the microphone hears nothing. */
+  readonly quiet = signal(false);
+  private lastSound = 0;
 
-  private engine: PhoneSpeech | WhisperSpeech | null = null;
+  private engine: PhoneSpeech | QuranSpeech | null = null;
   private notified = new Set<number>();
 
   readonly suraOptions = computed(() => (this.quran.ready() ? this.quran.suras : []));
@@ -111,23 +116,32 @@ export class TasmeePage implements OnDestroy {
   readonly scorePct = computed(() => Math.round(score(this.results()) * 100));
   readonly best = computed(() => this.tasmee.best(this.sura(), this.from(), this.to()));
 
-  async ionViewWillEnter(): Promise<void> {
-    await Promise.all([this.tasmee.load(), this.quran.load().catch(() => undefined)]);
-    const s = Number(this.suraParam());
-    if (s >= 1 && s <= 114) {
-      const n = this.quran.sura(s).ayas;
-      this.sura.set(s);
-      this.from.set(Math.min(n, Math.max(1, Number(this.fromParam()) || 1)));
-      this.to.set(Math.min(n, Math.max(this.from(), Number(this.toParam()) || n)));
-    }
+  constructor() {
+    // A new range from the host (another plan's portion): show it, unless a recitation is going on.
+    effect(() => {
+      const s = Number(this.startSura());
+      const f = Number(this.startFrom());
+      const t = Number(this.startTo());
+      if (!this.quran.ready() || !(s >= 1 && s <= 114)) return;
+      untracked(() => {
+        if (this.state() === 'listening') return;
+        const n = this.quran.sura(s).ayas;
+        this.sura.set(s);
+        this.from.set(Math.min(n, Math.max(1, f || 1)));
+        this.to.set(Math.min(n, Math.max(this.from(), t || n)));
+        this.reset();
+        this.state.set('idle');
+      });
+    });
   }
 
-  ionViewWillLeave(): void {
-    void this.stop();
+  async ngOnInit(): Promise<void> {
+    await Promise.all([this.tasmee.load(), this.quran.load().catch(() => undefined)]);
   }
 
   ngOnDestroy(): void {
     void this.engine?.stop();
+    void KeepAwake.allowSleep().catch(() => undefined);
   }
 
   setSura(v: unknown): void {
@@ -150,25 +164,25 @@ export class TasmeePage implements OnDestroy {
   }
 
   async setEngine(v: unknown): Promise<void> {
-    await this.tasmee.setPrefs({ engine: v === 'whisper' ? 'whisper' : 'phone' });
+    await this.tasmee.setPrefs({ engine: v === 'offline' ? 'offline' : 'phone' });
   }
 
-  /** Downloads Tarteel's model (once). */
-  async downloadWhisper(): Promise<void> {
+  /** Downloads the Quran model (once). */
+  async downloadModel(): Promise<void> {
     this.downloading.set(0);
     this.error.set(null);
     try {
       // A dropped connection on a big download is common: try again twice (finished files stay in the cache).
       for (let attempt = 1; ; attempt++) {
         try {
-          await WhisperSpeech.prepare((f) => this.downloading.set(f));
+          await QuranSpeech.prepare((f) => this.downloading.set(f));
           break;
         } catch (e) {
           if (attempt >= 3) throw e;
           await new Promise((r) => setTimeout(r, 2000 * attempt));
         }
       }
-      this.whisperReady.set(true);
+      this.offlineReady.set(true);
     } catch (e) {
       console.warn('[tasmee] model download failed', e);
       this.error.set('download');
@@ -177,9 +191,9 @@ export class TasmeePage implements OnDestroy {
     }
   }
 
-  async removeWhisper(): Promise<void> {
-    await WhisperSpeech.remove();
-    this.whisperReady.set(false);
+  async removeModel(): Promise<void> {
+    await QuranSpeech.remove();
+    this.offlineReady.set(false);
     await this.tasmee.setPrefs({ engine: 'phone' });
   }
 
@@ -187,20 +201,29 @@ export class TasmeePage implements OnDestroy {
     if (this.state() === 'listening') return;
     if (this.state() === 'done' || this.state() === 'idle') this.reset();
     this.error.set(null);
-    const engine: TasmeeEngine = this.tasmee.prefs().engine === 'whisper' && this.whisperReady() ? 'whisper' : 'phone';
+    const engine: TasmeeEngine = this.tasmee.prefs().engine === 'offline' && this.offlineReady() ? 'offline' : 'phone';
     if (engine === 'phone' && !(await PhoneSpeech.available())) {
       this.error.set('unavailable');
       return;
     }
+    const expected = this.words().map((w) => w.text);
     const cb: SpeechCallbacks = {
-      onFinal: (t) => {
-        this.finals.update((f) => [...f, t]);
+      onFinal: (t, alternatives) => {
+        // Of the recogniser's guesses, the one that fits the ayat from where the reader is.
+        const text = alternatives?.length ? bestAlternative(expected, this.position(), alternatives) : t;
+        this.finals.update((f) => [...f, text]);
         this.partial.set('');
         this.check();
       },
       onPartial: (t) => {
         this.partial.set(t);
         this.check();
+      },
+      onLevel: (l) => {
+        this.level.set(l);
+        const now = Date.now();
+        if (l > 0.04 || !this.lastSound) this.lastSound = now;
+        this.quiet.set(now - this.lastSound > 6000);
       },
       onError: (code) => {
         console.warn('[tasmee] recognition error', code);
@@ -209,8 +232,15 @@ export class TasmeePage implements OnDestroy {
       },
     };
     try {
-      this.engine = engine === 'whisper' ? new WhisperSpeech() : new PhoneSpeech();
-      await this.engine.start(cb);
+      if (engine === 'offline') {
+        const e = new QuranSpeech();
+        this.engine = e;
+        await e.start(cb);
+      } else {
+        const e = new PhoneSpeech();
+        this.engine = e;
+        await e.start(cb, this.biasPhrases());
+      }
       this.state.set('listening');
       await KeepAwake.keepAwake().catch(() => undefined);
     } catch (e) {
@@ -225,6 +255,9 @@ export class TasmeePage implements OnDestroy {
     if (this.state() !== 'listening') return;
     await this.engine?.stop();
     this.engine = null;
+    this.level.set(0);
+    this.quiet.set(false);
+    this.lastSound = 0;
     this.state.set('stopped');
     await KeepAwake.allowSleep().catch(() => undefined);
   }
@@ -234,7 +267,7 @@ export class TasmeePage implements OnDestroy {
     const engine = this.engine;
     await this.stop();
     // Let the last phrases come back from the offline recogniser (up to ~10 s).
-    for (let i = 0; i < 50 && engine instanceof WhisperSpeech && engine.busy; i++) await new Promise((r) => setTimeout(r, 200));
+    for (let i = 0; i < 50 && engine instanceof QuranSpeech && engine.busy; i++) await new Promise((r) => setTimeout(r, 200));
     const reached = this.position();
     this.state.set('done');
     const r = this.results().slice(0, Math.max(reached, 1));
@@ -277,6 +310,22 @@ export class TasmeePage implements OnDestroy {
   /** Visible text of a word: hidden until reached in memorisation mode. */
   shown(i: number): boolean {
     return !this.tasmee.prefs().hideText || this.results()[i]?.status !== 'pending' || this.state() === 'done';
+  }
+
+  /**
+   * What the recogniser should expect (Android 13+ favours these): the ayat in plain spelling (no tashkeel), cut
+   * into phrases of up to 8 words, from the start of the range (where the reader begins).
+   */
+  private biasPhrases(): string[] {
+    const plain = this.words().map((w) =>
+      w.text
+        .replace(/\u0648(?=\u0670)/g, '\u0627') // a waw written for an alif (salawat -> salat)
+        .replace(/[\u0670\u0671]/g, '\u0627') // dagger alif and alif wasla read as alif
+        .replace(/[^\u0621-\u063A\u0641-\u064A]/g, ''),
+    );
+    const out: string[] = [];
+    for (let i = 0; i < plain.length && out.length < 100; i += 8) out.push(plain.slice(i, i + 8).join(' ').trim());
+    return out.filter((p) => wordKey(p));
   }
 
   ayahNumber(n: number): string {

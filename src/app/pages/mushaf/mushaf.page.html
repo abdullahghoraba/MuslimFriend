@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>
       <span class="h-sura">{{ header().sura }}</span>
-      <span class="h-meta">{{ header().juz }} · {{ header().hizb }}</span>
+      <span class="h-meta">@if (shamarly() || edParam()) {{{ editionName() }} · }{{ header().juz }} · {{ header().hizb }}</span>
     </ion-title>
     <ion-buttons slot="end">
       @if (shamarly()) {

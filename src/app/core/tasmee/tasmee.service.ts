@@ -14,7 +14,8 @@ export interface TasmeeSession {
   mistakes: { aya: number; word: string; heard?: string; kind: 'wrong' | 'skipped' }[];
 }
 
-export type TasmeeEngine = 'phone' | 'whisper';
+/** 'phone': Google's (or the phone's) recogniser; 'offline': the Quran-trained model on the phone (quran-speech.ts). */
+export type TasmeeEngine = 'phone' | 'offline';
 
 export interface TasmeePrefs {
   engine: TasmeeEngine;
@@ -66,7 +67,7 @@ export class TasmeeService {
       try {
         const v = p.value ? (JSON.parse(p.value) as Partial<TasmeePrefs>) : {};
         this.prefs.update((d) => ({
-          engine: v.engine === 'whisper' ? 'whisper' : d.engine,
+          engine: v.engine === 'offline' || (v.engine as string) === 'whisper' ? 'offline' : d.engine,
           hideText: typeof v.hideText === 'boolean' ? v.hideText : d.hideText,
           stopOnMistake: typeof v.stopOnMistake === 'boolean' ? v.stopOnMistake : d.stopOnMistake,
         }));

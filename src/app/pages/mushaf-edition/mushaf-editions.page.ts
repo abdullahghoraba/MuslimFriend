@@ -54,8 +54,9 @@ export class MushafEditionsPage {
 
   async open(e: Edition): Promise<void> {
     if (e.kind === 'hafs' || e.kind === 'tajweed' || e.kind === 'images') {
+      // The reader shows this mushaf even when another one is the chosen mushaf (?ed=).
       const last = this.quran.lastRead();
-      await this.nav.navigateForward(['/mushaf', last?.page ?? 1], { queryParams: last ? { sura: last.sura, aya: last.aya } : undefined });
+      await this.nav.navigateForward(['/mushaf', last?.page ?? 1], { queryParams: { ed: e.id, ...(last ? { sura: last.sura, aya: last.aya } : {}) } });
       return;
     }
     const page = (await this.editions.lastPage(e.id)) ?? (await this.editions.pageFor(e.id, this.quran.lastRead() ?? { sura: 1, aya: 1 }).catch(() => 1));

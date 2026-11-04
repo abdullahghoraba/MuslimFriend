@@ -1,17 +1,7 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/more" [text]="''" [attr.aria-label]="'common.back' | translate" />
-    </ion-buttons>
-    <ion-title><span class="wrap">{{ 'tasmee.title' | translate }}</span></ion-title>
-  </ion-toolbar>
-  @if (state() !== 'idle') {
-    <ion-progress-bar [value]="progress()" />
-  }
-</ion-header>
-
-<ion-content>
-  <main>
+<main>
+    @if (state() !== 'idle') {
+      <ion-progress-bar class="top" [value]="progress()" />
+    }
     @if (state() === 'idle') {
       <section class="card setup">
         <ion-select interface="action-sheet" [label]="'studio.sura' | translate" [value]="sura()" (ionChange)="setSura($event.detail.value)">
@@ -33,19 +23,19 @@
         <h2>{{ 'tasmee.engine' | translate }}</h2>
         <ion-segment [value]="tasmee.prefs().engine" (ionChange)="setEngine($event.detail.value)">
           <ion-segment-button value="phone"><ion-label>{{ 'tasmee.enginePhone' | translate }}</ion-label></ion-segment-button>
-          <ion-segment-button value="whisper"><ion-label>{{ 'tasmee.engineWhisper' | translate }}</ion-label></ion-segment-button>
+          <ion-segment-button value="offline"><ion-label>{{ 'tasmee.engineOffline' | translate }}</ion-label></ion-segment-button>
         </ion-segment>
-        @if (tasmee.prefs().engine === 'whisper') {
+        @if (tasmee.prefs().engine === 'offline') {
           @if (downloading() !== null) {
             <p class="hint">{{ 'tasmee.downloading' | translate: { pct: ((downloading() ?? 0) * 100).toFixed(0) } }}</p>
             <ion-progress-bar [value]="downloading() ?? 0" />
-          } @else if (!whisperReady()) {
-            <p class="hint">{{ 'tasmee.whisperAbout' | translate }}</p>
-            <ion-button expand="block" fill="outline" (click)="downloadWhisper()">
+          } @else if (!offlineReady()) {
+            <p class="hint">{{ 'tasmee.offlineAbout' | translate }}</p>
+            <ion-button expand="block" fill="outline" (click)="downloadModel()">
               <ion-icon slot="start" name="download-outline" aria-hidden="true" />{{ 'tasmee.download' | translate }}
             </ion-button>
           } @else {
-            <p class="hint">{{ 'tasmee.whisperReady' | translate }} <button type="button" class="link" (click)="removeWhisper()">{{ 'common.delete' | translate }}</button></p>
+            <p class="hint">{{ 'tasmee.offlineReady' | translate }} <button type="button" class="link" (click)="removeModel()">{{ 'common.delete' | translate }}</button></p>
           }
         } @else {
           <p class="hint">{{ 'tasmee.phoneAbout' | translate }}</p>
@@ -71,8 +61,16 @@
       }
     </section>
 
-    @if (state() === 'listening' && partial()) {
-      <p class="partial" lang="ar" dir="rtl">{{ partial() }}</p>
+    @if (state() === 'listening') {
+      <div class="meter" role="meter" [attr.aria-label]="'tasmee.mic' | translate" aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="(level() * 100).toFixed(0)">
+        <ion-icon name="mic-outline" aria-hidden="true" /><span class="bar"><span [style.width.%]="level() * 100"></span></span>
+      </div>
+      @if (quiet()) {
+        <p class="hint center">{{ 'tasmee.noVoice' | translate }}</p>
+      }
+      @if (partial()) {
+        <p class="partial" lang="ar" dir="rtl">{{ partial() }}</p>
+      }
     }
 
     @if (correction(); as c) {
@@ -134,11 +132,10 @@
       @for (h of tasmee.history().slice(0, 10); track h.at) {
         <div class="card hist">
           <span class="body"><strong lang="ar">{{ quran.ready() ? quran.sura(h.sura).name : '' }} {{ h.from }}–{{ h.to }}</strong>
-            <small>{{ h.at | date: 'medium' : undefined : lang() }}</small></span>
+            <small>{{ h.at | localDate: lang() }}</small></span>
           <span class="pct" [class.good]="h.score >= 0.9">{{ (h.score * 100).toFixed(0) }}%</span>
         </div>
       }
     }
     <p class="note">{{ 'tasmee.note' | translate }}</p>
-  </main>
-</ion-content>
+</main>

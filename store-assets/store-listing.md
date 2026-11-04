@@ -17,7 +17,7 @@ Character limits are checked by `node scripts/check-listing.mjs` (title ≤ 30, 
 رفيق المسلم يرافقك طوال يومك: المصحف الشريف بالتفسير والتلاوات وخطط الحفظ، وأذكار الصباح والمساء بمصادرها، ومواقيت الصلاة مع الأذان، بلا إعلانات ولا تتبّع.
 
 سمّع ويصحّح لك
-• التسميع: اقرأ من حفظك ويستمع التطبيق ويتحقق من كل كلمة، فيُظهر الكلمة الخاطئة أو المتروكة مع صوابها، ويعمل بلا إنترنت بذكاء «ترتيل» المدرَّب على تلاوة القرآن.
+• التسميع: اقرأ من حفظك ويستمع التطبيق ويتحقق من كل كلمة، فيُظهر الكلمة الخاطئة أو المتروكة مع صوابها، ويعمل بلا إنترنت بذكاء اصطناعي مدرَّب على تلاوة القرآن.
 • استوديو التلاوة: سجّل تلاوتك صوتًا أو فيديو مع إزالة الضوضاء وتحسين الصوت وصدى المسجد إن شئت، وشاركها أو احفظها في المعرض.
 • مصحف الشمرلي بصفحاته المطبوعة نفسها، مع تكبير الخط والتظليل والعلامات، والصفحة المصوّرة بلمسة، إلى جانب مصحف المدينة وروايات ورش وقالون وغيرها.
 • بحث أذكى: القرّاء بأي كتابة، والسور بالاسم أو الرقم، وكلمات القرآن بالإملاء المعتاد.
@@ -70,7 +70,7 @@ Quran that checks your recitation, tafsir, athkar & prayer times. No ads.
 Muslim Friend keeps you company all day: the Holy Quran with tafsir, recitations and memorisation plans, sourced morning and evening athkar, and prayer times with the athan. No ads, no tracking.
 
 Recite and be corrected
-• Tasmee': recite from memory and the app listens and checks every word, showing a wrong or skipped word with the right one. Works offline with Tarteel's Quran-trained AI.
+• Tasmee': recite from memory and the app listens and checks every word, showing a wrong or skipped word with the right one. Works offline with an AI trained on Quran recitation.
 • Recitation studio: record your recitation as sound or video with noise removal, a clear voice and an optional mosque echo, then share it or save it to your gallery.
 • The Shamarly mushaf on its own printed pages, with text size, highlights and bookmarks, and the scanned page one tap away, besides the Madinah mushaf and the riwayat of Warsh, Qalun and more.
 • Smarter search: reciters in any spelling, surahs by name or number, and Quran words in everyday spelling.

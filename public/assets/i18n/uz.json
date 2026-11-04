@@ -926,7 +926,8 @@
       "gold": "Oltin",
       "red": "Qizil",
       "purple": "Binafsha"
-    }
+    },
+    "tabPlans": "Rejalar"
   },
   "location": {
     "locating": "Joylashuvingiz aniqlanmoqda…",
@@ -1469,11 +1470,8 @@
     "stopOnMistake": "Xatoda to‘xtab, to‘g‘ri so‘zni ko‘rsatish",
     "engine": "Tanib olish",
     "enginePhone": "Telefon (tez)",
-    "engineWhisper": "Oflayn SI (aniq)",
     "downloading": "Yuklanmoqda… {{pct}}%",
-    "whisperAbout": "Qur’on tilovatida o‘qitilgan Tarteel Whisper modeli telefoningizda ishlaydi: taxminan 80 MB bir marta yuklangach internetsiz.",
-    "download": "Yuklab olish (≈80 MB)",
-    "whisperReady": "Oflayn SI tayyor.",
+    "download": "Yuklab olish (36 MB)",
     "phoneAbout": "Telefonning nutqni tanish xizmatidan (Google) foydalanadi. Onlayn yoki oflayn arab paketi bilan yaxshiroq.",
     "best": "Eng yaxshi: {{pct}}%",
     "errors": {
@@ -1495,6 +1493,11 @@
     "mistakes": "Takrorlash uchun: {{n}}",
     "skipped": "tashlab ketilgan",
     "history": "So‘nggi mashg‘ulotlar",
-    "note": "So‘zlarni tekshiradi, tajvidni emas. Tanish noto‘g‘ri eshitishi mumkin: shubha bo‘lsa oyatni tinglang."
+    "note": "So‘zlarni tekshiradi, tajvidni emas. Tanish noto‘g‘ri eshitishi mumkin: shubha bo‘lsa oyatni tinglang.",
+    "engineOffline": "Qur’on SI (oflayn, aniq)",
+    "offlineAbout": "Qur’on tilovatida, jumladan oddiy odamlarning telefonga qilgan tilovatida o‘qitilgan model telefoningizda ishlaydi: 36 MB bir marta yuklangach internet kerak emas.",
+    "offlineReady": "Qur’on SI tayyor (oflayn ishlaydi).",
+    "noVoice": "Mikrofon hech narsani eshitmayapti: yopilmaganini va ilovaga ruxsat berilganini tekshiring.",
+    "mic": "Mikrofon darajasi"
   }
 }

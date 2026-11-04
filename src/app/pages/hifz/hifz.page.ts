@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, input, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -17,6 +17,10 @@ import {
   IonSelectOption,
   IonToggle,
   IonProgressBar,
+  IonSegment,
+  IonSegmentButton,
+  IonLabel,
+  IonIcon,
 } from '@ionic/angular';
 import { HifzPlan, HifzPlanInput, HifzService } from '../../core/quran/hifz.service';
 import { MARK_COLORS } from '../../core/quran/marks.service';
@@ -24,6 +28,12 @@ import { QuranService } from '../../core/quran/quran.service';
 import { AyahRef } from '../../core/quran/quran-utils';
 import { PrayerService } from '../../core/prayer/prayer.service';
 import { SelectTextsDirective } from '../../shared/select-texts.directive';
+import { TasmeeComponent } from './tasmee.component';
+
+/**
+ * Hifz: memorisation plans (today's portion, reviews, reminders) and, in the second tab, tasmee' (recite from
+ * memory and the app corrects you). /hifz?tab=tasmee&sura=&from=&to= opens tasmee' on those ayat.
+ */
 @Component({
   selector: 'app-hifz',
   standalone: true,
@@ -43,11 +53,26 @@ import { SelectTextsDirective } from '../../shared/select-texts.directive';
     IonSelectOption,
     IonToggle,
     IonProgressBar,
+    IonSegment,
+    IonSegmentButton,
+    IonLabel,
+    IonIcon,
+    TasmeeComponent,
   ],
   templateUrl: './hifz.page.html',
   styleUrl: './hifz.page.scss',
 })
 export class HifzPage {
+  /** ?tab=tasmee&sura=&from=&to= (the mushaf's «Tasmee'», old /tasmee links). */
+  readonly tabParam = input<string | undefined>(undefined, { alias: 'tab' });
+  readonly suraParam = input<string | undefined>(undefined, { alias: 'sura' });
+  readonly fromParam = input<string | undefined>(undefined, { alias: 'from' });
+  readonly toParam = input<string | undefined>(undefined, { alias: 'to' });
+  readonly tab = signal<'plans' | 'tasmee'>('plans');
+  /** Tasmee' was opened once: kept (hidden) so a recitation is not lost when looking at the plans. */
+  readonly tasmeeOpened = signal(false);
+  readonly tasmeeRange = signal<{ sura: number; from: number; to: number } | null>(null);
+  private readonly tasmeeView = viewChild(TasmeeComponent);
   readonly service = inject(HifzService);
   readonly quran = inject(QuranService);
   readonly prayer = inject(PrayerService);
@@ -70,10 +95,32 @@ export class HifzPage {
     followUp: true,
   };
   async ionViewWillEnter(): Promise<void> {
+    if (this.tabParam() === 'tasmee') {
+      const sura = Number(this.suraParam());
+      if (sura >= 1 && sura <= 114) this.tasmeeRange.set({ sura, from: Number(this.fromParam()) || 1, to: Number(this.toParam()) || 0 });
+      this.setTab('tasmee');
+    }
     await this.run(async () => {
       await this.service.load();
       this.ready.set(true);
     });
+  }
+  ionViewWillLeave(): void {
+    void this.tasmeeView()?.stop();
+  }
+  setTab(v: unknown): void {
+    const t = v === 'tasmee' ? 'tasmee' : 'plans';
+    this.tab.set(t);
+    if (t === 'tasmee') this.tasmeeOpened.set(true);
+    else void this.tasmeeView()?.stop();
+  }
+  /** Tasmee' of [refs] (today's portion or the ayat due), from the first one's sura. */
+  recite(refs: AyahRef[]): void {
+    const first = refs[0];
+    if (!first) return;
+    const inSura = refs.filter((r) => r.sura === first.sura).map((r) => r.aya);
+    this.tasmeeRange.set({ sura: first.sura, from: Math.min(...inSura), to: Math.max(...inSura) });
+    this.setTab('tasmee');
   }
   async run(work: () => Promise<unknown>): Promise<void> {
     if (this.busy()) return;

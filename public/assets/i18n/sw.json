@@ -926,7 +926,8 @@
       "gold": "Dhahabu",
       "red": "Nyekundu",
       "purple": "Zambarau"
-    }
+    },
+    "tabPlans": "Mipango"
   },
   "location": {
     "locating": "Inatafuta eneo lako…",
@@ -1469,11 +1470,8 @@
     "stopOnMistake": "Simama kwenye kosa na uonyeshe neno sahihi",
     "engine": "Utambuzi",
     "enginePhone": "Simu (haraka)",
-    "engineWhisper": "AI bila mtandao (sahihi)",
     "downloading": "Inapakua… {{pct}}%",
-    "whisperAbout": "Whisper ya Tarteel iliyofunzwa kwa kisomo cha Qur’ani inafanya kazi kwenye simu yako: bila mtandao baada ya kupakua mara moja takriban MB 80.",
-    "download": "Pakua (≈MB 80)",
-    "whisperReady": "AI bila mtandao iko tayari.",
+    "download": "Pakua (MB 36)",
     "phoneAbout": "Inatumia utambuzi wa sauti wa simu (Google). Hufanya kazi vizuri ukiwa mtandaoni au na kifurushi cha Kiarabu.",
     "best": "Bora zaidi: {{pct}}%",
     "errors": {
@@ -1495,6 +1493,11 @@
     "mistakes": "{{n}} ya kurudia",
     "skipped": "imerukwa",
     "history": "Vipindi vya karibuni",
-    "note": "Hukagua maneno, si tajwidi. Utambuzi unaweza kusikia vibaya: sikiliza aya ukiwa na shaka."
+    "note": "Hukagua maneno, si tajwidi. Utambuzi unaweza kusikia vibaya: sikiliza aya ukiwa na shaka.",
+    "engineOffline": "AI ya Qur’ani (bila mtandao, sahihi)",
+    "offlineAbout": "Muundo uliofunzwa kwa usomaji wa Qur’ani, pamoja na watu wa kawaida wakisoma kwenye simu zao, unafanya kazi kwenye simu yako: hakuna mtandao baada ya kupakua mara moja MB 36.",
+    "offlineReady": "AI ya Qur’ani iko tayari (inafanya kazi bila mtandao).",
+    "noVoice": "Maikrofoni haisikii chochote: hakikisha haijafunikwa na programu ina ruhusa ya kuitumia.",
+    "mic": "Kiwango cha maikrofoni"
   }
 }

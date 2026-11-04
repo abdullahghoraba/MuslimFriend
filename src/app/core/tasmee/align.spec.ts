@@ -1,4 +1,4 @@
-import { alignRecitation, heardWords, score, similarity, wordKey } from './align';
+import { alignRecitation, bestAlternative, heardWords, score, similarity, wordKey } from './align';
 
 // Al-Fatihah 2-4 as written in the mushaf (Uthmani), and as a recogniser writes what it hears (everyday spelling).
 const EXPECTED = 'ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ مَـٰلِكِ يَوْمِ ٱلدِّينِ'.split(' ');
@@ -45,5 +45,27 @@ describe('tasmee: comparing the recitation with the ayat', () => {
     expect(early[5].settled).toBe(false);
     const later = alignRecitation(EXPECTED, heardWords('الحمد لله رب العالمين الرحمن الكريم مالك يوم'));
     expect(later[5]).toMatchObject({ status: 'wrong', settled: true });
+  });
+  it('forgives letters a recogniser confuses, but not another word', () => {
+    // ص heard as س, ض as د, ق as ك: still the right word.
+    const r = alignRecitation(EXPECTED, heardWords('الحمد لله رب العالمين الرحمن الرحيم مالك يوم الدين'), true);
+    expect(score(r)).toBe(1);
+    const sirat = 'ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ'.split(' ');
+    expect(statuses(alignRecitation(sirat, heardWords('اهدنا السراط المستكيم'), true))).toEqual(['correct', 'correct', 'correct']);
+    expect(statuses(alignRecitation(sirat, heardWords('اهدنا الطريق المستقيم'), true))[1]).not.toBe('correct');
+  });
+
+  it('takes two heard words for one written word, and one for two', () => {
+    const ya = 'يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟'.split(' ');
+    expect(statuses(alignRecitation(ya, heardWords('يا أيها الذين آمنوا'), true))).toEqual(['correct', 'correct', 'correct']);
+    const two = 'فَإِذَا هُم'.split(' ');
+    expect(statuses(alignRecitation(two, heardWords('فاذاهم'), true))).toEqual(['correct', 'correct']);
+  });
+
+  it("chooses the recogniser's guess that fits the ayat", () => {
+    const alts = ['الحمد لله رب العالمين الرحمن الرحيم مالك يوم الدين'.replace('مالك يوم', 'ما لك يوما'), 'مالك يوم الدين', 'ملك اليوم'];
+    expect(bestAlternative(EXPECTED, 6, ['ما لك يوما الدين', 'مالك يوم الدين'])).toBe('مالك يوم الدين');
+    expect(bestAlternative(EXPECTED, 6, ['مالك يوم الدين', 'مالك يوم الدين'])).toBe('مالك يوم الدين');
+    expect(bestAlternative(EXPECTED, 0, alts.slice(0, 1))).toBe(alts[0]);
   });
 });

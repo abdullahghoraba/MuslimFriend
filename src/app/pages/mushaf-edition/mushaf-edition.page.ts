@@ -207,7 +207,7 @@ export class MushafEditionPage {
 
   /** Shamarly: back to the text in the reader (font size, marks, bookmarks...), on the same page. */
   openText(): void {
-    void this.nav.navigateRoot(['/mushaf', 1], { queryParams: { sp: this.page() } });
+    void this.nav.navigateRoot(['/mushaf', 1], { queryParams: { sp: this.page(), ed: 'shamarly' } });
   }
 
   /** Shows the scanned Shamarly page (streamed from archive.org, or saved on the phone), or the text again. */

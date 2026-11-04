@@ -50,7 +50,6 @@ export class MorePage {
         { link: '/listen', icon: 'headset-outline', label: 'listen.title' },
         { link: '/hifz', icon: 'school-outline', label: 'hifz.title' },
         { link: '/hifz/test', icon: 'checkmark-done-outline', label: 'recall.title' },
-        { link: '/tasmee', icon: 'ear-outline', label: 'tasmee.title' },
         { link: '/studio', icon: 'mic-outline', label: 'studio.title' },
         { link: '/khatmah', icon: 'repeat-outline', label: 'khatmah.title' },
         { link: '/mushaf-editions', icon: 'library-outline', label: 'editions.title' },

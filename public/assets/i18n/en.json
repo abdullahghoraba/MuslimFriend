@@ -926,7 +926,8 @@
       "gold": "Gold",
       "red": "Red",
       "purple": "Purple"
-    }
+    },
+    "tabPlans": "Plans"
   },
   "location": {
     "locating": "Finding your location…",
@@ -1469,11 +1470,8 @@
     "stopOnMistake": "Stop at a mistake and show the right word",
     "engine": "Recognition",
     "enginePhone": "Phone (quick)",
-    "engineWhisper": "Offline AI (accurate)",
     "downloading": "Downloading… {{pct}}%",
-    "whisperAbout": "Tarteel's Quran-trained Whisper runs on your phone: no internet after one download of about 80 MB.",
-    "download": "Download (≈80 MB)",
-    "whisperReady": "Offline AI is ready.",
+    "download": "Download (36 MB)",
     "phoneAbout": "Uses your phone's speech recognition (Google). Works best online or with the offline Arabic pack.",
     "best": "Best so far: {{pct}}%",
     "errors": {
@@ -1495,6 +1493,11 @@
     "mistakes": "{{n}} to review",
     "skipped": "skipped",
     "history": "Recent sessions",
-    "note": "It checks the words (which word was said), not tajweed. Speech recognition can mishear: listen to the ayah when in doubt."
+    "note": "It checks the words (which word was said), not tajweed. Speech recognition can mishear: listen to the ayah when in doubt.",
+    "engineOffline": "Quran AI (offline, accurate)",
+    "offlineAbout": "A model trained on Quran recitation, including ordinary people reciting into their phones, runs on your phone: no internet needed after one 36 MB download.",
+    "offlineReady": "The Quran AI is ready (works offline).",
+    "noVoice": "The microphone hears nothing: check it is not covered and that the app may use it.",
+    "mic": "Microphone level"
   }
 }

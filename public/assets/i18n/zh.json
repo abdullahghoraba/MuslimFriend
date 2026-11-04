@@ -926,7 +926,8 @@
       "gold": "金色",
       "red": "红色",
       "purple": "紫色"
-    }
+    },
+    "tabPlans": "计划"
   },
   "location": {
     "locating": "正在定位…",
@@ -1469,11 +1470,8 @@
     "stopOnMistake": "出错时停下并显示正确的词",
     "engine": "识别方式",
     "enginePhone": "手机（快速）",
-    "engineWhisper": "离线 AI（准确）",
     "downloading": "正在下载… {{pct}}%",
-    "whisperAbout": "Tarteel 以古兰经诵读训练的 Whisper 在您的手机上运行：下载一次约 80 MB 后无需联网。",
-    "download": "下载（约 80 MB）",
-    "whisperReady": "离线 AI 已就绪。",
+    "download": "下载（36 MB）",
     "phoneAbout": "使用手机的语音识别（Google）。联网或安装离线阿拉伯语包时效果更好。",
     "best": "最好成绩：{{pct}}%",
     "errors": {
@@ -1495,6 +1493,11 @@
     "mistakes": "待复习 {{n}} 处",
     "skipped": "漏读",
     "history": "最近的练习",
-    "note": "它检查的是词语，而不是泰吉威德。识别可能听错：有疑问时请听该节经文。"
+    "note": "它检查的是词语，而不是泰吉威德。识别可能听错：有疑问时请听该节经文。",
+    "engineOffline": "古兰经 AI（离线，更准确）",
+    "offlineAbout": "一个用古兰经诵读训练的模型（包括普通人对着手机诵读）在你的手机上运行：下载一次 36 MB 后无需联网。",
+    "offlineReady": "古兰经 AI 已就绪（可离线使用）。",
+    "noVoice": "麦克风听不到声音：请确认它没有被遮挡，并且应用有权使用它。",
+    "mic": "麦克风音量"
   }
 }

@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, computed, inject, signal, viewChild } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { LocalDatePipe } from '../../shared/local-date.pipe';
 import { Preferences } from '@capacitor/preferences';
 import { KeepAwake } from '@capacitor-community/keep-awake';
 import {
@@ -33,7 +33,7 @@ const PREFS_KEY = 'studioPrefs';
 @Component({
   selector: 'app-studio',
   imports: [
-    TranslatePipe, DatePipe, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonContent, IonSegment,
+    TranslatePipe, LocalDatePipe, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonContent, IonSegment,
     IonSegmentButton, IonLabel, IonIcon, IonSelect, IonSelectOption, IonToggle, IonButton, IonSpinner,
   ],
   templateUrl: './studio.page.html',
@@ -178,7 +178,7 @@ export class StudioPage implements OnDestroy {
     try {
       const p = this.prefs();
       const session = await StudioSession.open(
-        { kind: p.kind, facing: p.facing, denoise: p.denoise, reverb: p.reverb },
+        { kind: p.kind, facing: p.facing, denoise: p.denoise, reverb: p.reverb, brand: this.translate.instant('app.name') },
         () => (this.prefs().captions ? this.caption() : null),
       );
       this.session.set(session);

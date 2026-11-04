@@ -18,11 +18,36 @@ export type Facing = 'user' | 'environment';
 export interface SessionOptions extends ChainOptions {
   kind: 'audio' | 'video';
   facing: Facing;
+  /** The app's name, shown with its logo in the video's top corner. */
+  brand?: string;
 }
 
-/** Portrait video, the shape phones show full screen (and WhatsApp status, reels). */
+/** The app's logo and name, drawn small in the top right corner of videos. */
+export interface Brand {
+  image: HTMLImageElement;
+  name: string;
+}
+
+const LOGO = 'assets/studio/logo.png';
+
+/** Loads the logo (null if it cannot: the video is then made without it). */
+export function loadBrand(name: string): Promise<Brand | null> {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = () => resolve({ image, name });
+    image.onerror = () => resolve(null);
+    image.src = LOGO;
+  });
+}
+
+/** Portrait video, the shape phones show full screen (and WhatsApp status, reels): 720p, or 1080p when the camera gives it. */
 export const VIDEO_W = 720;
 export const VIDEO_H = 1280;
+export const VIDEO_W_HD = 1080;
+export const VIDEO_H_HD = 1920;
+
+/** Bit rate for a frame size: enough for a sharp picture of a face and a room (what phones' own cameras use). */
+export const videoBitrate = (width: number) => (width >= VIDEO_W_HD ? 10_000_000 : 6_000_000);
 
 /**
  * One recording session: the microphone (and camera) with the sound chain, a live preview, and the recorders.
@@ -37,6 +62,7 @@ export class StudioSession {
   rawMime = '';
 
   private camera?: MediaStream;
+  private brand: Brand | null = null;
   private readonly video?: HTMLVideoElement;
   private frame = 0;
   private recorders: MediaRecorder[] = [];
@@ -75,7 +101,10 @@ export class StudioSession {
       const ctx = new AudioContext({ sampleRate: 48000, latencyHint: 'interactive' });
       const chain = await RecitationChain.create(ctx, ctx.createMediaStreamSource(mic), options);
       const session = new StudioSession(options, mic, ctx, chain, caption);
-      if (options.kind === 'video') await session.startCamera(options.facing);
+      if (options.kind === 'video') {
+        session.brand = options.brand ? await loadBrand(options.brand) : null;
+        await session.startCamera(options.facing);
+      }
       return session;
     } catch (e) {
       mic.getTracks().forEach((t) => t.stop());
@@ -121,7 +150,7 @@ export class StudioSession {
     const main = new MediaRecorder(new MediaStream(tracks), {
       mimeType: this.mime || undefined,
       audioBitsPerSecond: 192_000,
-      videoBitsPerSecond: this.canvas ? 4_000_000 : undefined,
+      videoBitsPerSecond: this.canvas ? videoBitrate(this.canvas.width) : undefined,
     });
     this.recorders = [main];
     main.ondataavailable = (e) => e.data.size && sink.write(e.data);
@@ -167,6 +196,7 @@ export class StudioSession {
   /** Releases the microphone and camera. */
   close(): void {
     cancelAnimationFrame(this.frame);
+    this.cameraRun++;
     for (const r of this.recorders) if (r.state !== 'inactive') r.stop();
     this.mic.getTracks().forEach((t) => t.stop());
     this.camera?.getTracks().forEach((t) => t.stop());
@@ -175,24 +205,67 @@ export class StudioSession {
   }
 
   private async startCamera(facing: Facing): Promise<void> {
-    this.camera = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } },
-    });
+    // Full HD from the camera: the portrait frame is cut from the middle of a landscape picture, so a 720p camera
+    // would leave a 405-pixel-wide strip to blow up (blurry). Falls back to whatever the camera gives.
+    const want = { facingMode: facing, width: { ideal: 1920 }, height: { ideal: 1080 }, frameRate: { ideal: 30 } };
+    this.camera = await navigator.mediaDevices.getUserMedia({ video: want }).catch(() =>
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: facing } }),
+    );
+    const track = this.camera.getVideoTracks()[0];
+    // Keep the face sharp and well exposed as the reader moves (where the phone supports it).
+    await track
+      ?.applyConstraints({ advanced: [{ focusMode: 'continuous', exposureMode: 'continuous', whiteBalanceMode: 'continuous' } as MediaTrackConstraintSet] })
+      .catch(() => undefined);
     const video = this.video!;
     video.srcObject = this.camera;
     await video.play();
+    // 1080p output when the picture has the detail for it; otherwise 720p (no empty upscaling).
+    const canvas = this.canvas!;
+    const hd = Math.min(video.videoWidth, video.videoHeight) >= 1000;
+    canvas.width = hd ? VIDEO_W_HD : VIDEO_W;
+    canvas.height = hd ? VIDEO_H_HD : VIDEO_H;
     cancelAnimationFrame(this.frame);
-    const g = this.canvas!.getContext('2d')!;
+    const g = canvas.getContext('2d')!;
+    g.imageSmoothingQuality = 'high';
+    const mine = ++this.cameraRun;
+    // A weak phone that cannot draw the graded picture in time gets the plain one (smooth video comes first).
+    let frames = 0;
+    let spent = 0;
+    let grade = true;
     const draw = () => {
-      drawFrame(g, video, this.options.facing === 'user', this.caption());
-      this.frame = requestAnimationFrame(draw);
+      const t0 = performance.now();
+      drawFrame(g, video, this.options.facing === 'user', this.caption(), this.brand, grade);
+      if (grade && frames < 40) {
+        spent += performance.now() - t0;
+        if (++frames === 40 && spent / frames > 16) grade = false;
+      }
     };
-    draw();
+    // Each camera frame drawn once, as it arrives (smooth motion, no doubled or dropped frames); older WebViews: every
+    // screen refresh.
+    const v = video as HTMLVideoElement & { requestVideoFrameCallback?: (cb: () => void) => number };
+    if (v.requestVideoFrameCallback) {
+      const onFrame = () => {
+        if (mine !== this.cameraRun) return;
+        draw();
+        v.requestVideoFrameCallback!(onFrame);
+      };
+      v.requestVideoFrameCallback(onFrame);
+      draw();
+    } else {
+      const loop = () => {
+        draw();
+        this.frame = requestAnimationFrame(loop);
+      };
+      loop();
+    }
   }
+
+  /** Bumped when the camera restarts, so the previous frame loop stops. */
+  private cameraRun = 0;
 }
 
 /** The camera picture filling the portrait frame (cropped, not stretched), then the caption over its foot. */
-export function drawFrame(g: CanvasRenderingContext2D, video: HTMLVideoElement, mirror: boolean, caption: Caption | null): void {
+export function drawFrame(g: CanvasRenderingContext2D, video: HTMLVideoElement, mirror: boolean, caption: Caption | null, brand: Brand | null = null, grade = true): void {
   const { width: W, height: H } = g.canvas;
   const vw = video.videoWidth || W;
   const vh = video.videoHeight || H;
@@ -207,9 +280,61 @@ export function drawFrame(g: CanvasRenderingContext2D, video: HTMLVideoElement, 
     g.translate(W, 0);
     g.scale(-1, 1);
   }
+  // A gentle grade, as video editors do: a touch more contrast and colour, slightly brighter (phones' front cameras
+  // look flat and grey indoors).
+  if (grade) g.filter = 'contrast(1.06) saturate(1.1) brightness(1.03)';
   g.drawImage(video, (W - dw) / 2, (H - dh) / 2, dw, dh);
   g.restore();
+  drawVignette(g);
+  if (brand) drawBrand(g, brand);
   if (caption) drawCaption(g, caption);
+}
+
+/**
+ * The logo, small and a little transparent, in the top right corner with the app's name beside it: the corner of
+ * the frame, above where a reciter's face is, so it never covers them.
+ */
+export function drawBrand(g: CanvasRenderingContext2D, brand: Brand): void {
+  const { width: W } = g.canvas;
+  const size = Math.round(W * 0.075);
+  const margin = Math.round(W * 0.035);
+  const x = W - margin - size;
+  const y = margin;
+  g.save();
+  g.globalAlpha = 0.88;
+  g.shadowColor = 'rgba(0,0,0,0.35)';
+  g.shadowBlur = Math.round(size * 0.15);
+  const r = size * 0.22;
+  g.beginPath();
+  g.roundRect(x, y, size, size, r);
+  g.fillStyle = '#0F6B5C';
+  g.fill();
+  g.clip();
+  g.drawImage(brand.image, x, y, size, size);
+  g.restore();
+  g.save();
+  g.globalAlpha = 0.9;
+  g.font = `600 ${Math.round(size * 0.36)}px system-ui, sans-serif`;
+  g.textAlign = 'right';
+  g.textBaseline = 'middle';
+  g.direction = 'ltr';
+  g.fillStyle = '#fff';
+  g.shadowColor = 'rgba(0,0,0,0.6)';
+  g.shadowBlur = 4;
+  g.fillText(brand.name, x - size * 0.22, y + size / 2);
+  g.restore();
+}
+
+/** Soft dark corners that draw the eye to the reciter. */
+function drawVignette(g: CanvasRenderingContext2D): void {
+  const { width: W, height: H } = g.canvas;
+  const grad = g.createRadialGradient(W / 2, H * 0.45, Math.min(W, H) * 0.45, W / 2, H * 0.45, Math.hypot(W, H) * 0.6);
+  grad.addColorStop(0, 'rgba(0,0,0,0)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.28)');
+  g.save();
+  g.fillStyle = grad;
+  g.fillRect(0, 0, W, H);
+  g.restore();
 }
 
 /** A dark band at the foot of the frame with the ayah (wrapped, centred, right to left) and the sura's name. */

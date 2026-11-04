@@ -1,5 +1,5 @@
 import { dropOpenings } from './tasmee.service';
-import { PhraseSplitter } from './whisper-speech';
+import { PhraseSplitter } from './quran-speech';
 
 describe('tasmee helpers', () => {
   it("drops the isti'adha and basmala said before the ayat, but not al-Fatihah's own basmala", () => {
@@ -13,7 +13,7 @@ describe('tasmee helpers', () => {
     const rate = 16000;
     const frame = (loud: boolean) => Float32Array.from({ length: 1600 }, (_, i) => (loud ? 0.2 * Math.sin(i / 3) : 0.0005));
     const phrases: number[] = [];
-    const split = new PhraseSplitter((a) => phrases.push(a.length / rate), rate);
+    const split = new PhraseSplitter((a, final) => final && phrases.push(a.length / rate), rate);
     const play = (loud: boolean, seconds: number) => {
       for (let i = 0; i < seconds * 10; i++) split.push(frame(loud));
     };

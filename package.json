@@ -1,6 +1,6 @@
 {
   "name": "muslim-friend",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "scripts": {
     "ng": "ng",
     "start": "npm run content && ng serve",
@@ -35,7 +35,6 @@
     "@capacitor/haptics": "8.0.2",
     "@capacitor/preferences": "8.0.1",
     "@capacitor/share": "8.0.3",
-    "@huggingface/transformers": "4.3.1",
     "@ionic/angular": "9.0.8",
     "@ngx-translate/core": "18.0.0",
     "@ngx-translate/http-loader": "18.0.0",
@@ -44,6 +43,7 @@
     "html-to-image": "1.11.13",
     "ionicons": "8.1.0",
     "jeep-sqlite": "2.8.0",
+    "onnxruntime-web": "1.30.0",
     "rxjs": "7.8.2",
     "tslib": "2.8.1"
   },

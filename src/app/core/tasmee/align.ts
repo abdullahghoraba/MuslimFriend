@@ -7,7 +7,9 @@ import { quranSearchKey } from '../quran/quran-utils';
  * is correct, wrong (another word was said in its place), skipped, or still to come. Extra words (a repeated word,
  * "آمين", a cough read as a word) cost little, so they do not throw the alignment off. Words are compared by their
  * search key (no tashkeel, alif, hamza forms...), so the Uthmani spelling and the recogniser's everyday spelling match,
- * and by letters, so a recogniser's small spelling slip is not counted as a mistake.
+ * and by letters, so a recogniser's small spelling slip is not counted as a mistake. Letters a recogniser confuses
+ * (ص/س, ض/د/ظ/ذ/ز, ط/ت, ق/ك, ح/ه, ع/ء) count almost the same, and two heard words may make one written word (or the
+ * other way round: "يا أيها" for «يٰٓأيها»).
  */
 
 export type WordStatus = 'correct' | 'wrong' | 'skipped' | 'pending';
@@ -23,6 +25,32 @@ export interface WordResult {
 /** Letters-only key of a word. */
 export function wordKey(w: string): string {
   return quranSearchKey(w).replace(/[^ء-ي]/g, '');
+}
+
+/** Sound key: letters that sound alike to a recogniser folded together (and ع / ء dropped, like alif). */
+const SOUND: Record<string, string> = {
+  'ص': 'س', 'ث': 'س', 'ض': 'د', 'ظ': 'د', 'ذ': 'د', 'ز': 'د', 'ط': 'ت', 'ق': 'ك', 'ح': 'ه', 'خ': 'ه', 'ة': 'ه',
+  'ع': '', 'ء': '', 'أ': '', 'إ': '', 'آ': '', 'ؤ': 'و', 'ئ': 'ي', 'ى': 'ي',
+};
+export function soundKey(key: string): string {
+  let out = '';
+  for (const c of key) out += SOUND[c] ?? c;
+  return out;
+}
+
+const memo = new Map<string, number>();
+
+/** How alike a written word and a heard word are (keys), counting near-sounding letters as almost the same. */
+function wordSimilarity(a: string, b: string): number {
+  if (a === b) return 1;
+  const k = a + '|' + b;
+  let v = memo.get(k);
+  if (v === undefined) {
+    v = Math.max(similarity(a, b), similarity(soundKey(a), soundKey(b)) - 0.04);
+    if (memo.size > 200000) memo.clear();
+    memo.set(k, v);
+  }
+  return v;
 }
 
 /** 1 = same word, 0 = nothing in common (edit distance on the keys). */
@@ -48,6 +76,8 @@ const COST_WRONG = 1;
 const COST_UNRELATED = 2.2;
 const COST_SKIP = 1.1;
 const COST_EXTRA = 0.8;
+/** Two heard words for one written word, or one for two: only when they then match. */
+const COST_JOIN = 0.05;
 
 /**
  * Aligns [heard] (recognised words, in order) with [expected] (the ayat's words). The expected words after the last
@@ -61,8 +91,9 @@ export function alignRecitation(expected: string[], heard: string[], done = fals
   const m = H.length;
   // D[i][j]: least cost of reading the first i expected words as the first j heard words.
   const D: Float64Array[] = Array.from({ length: n + 1 }, () => new Float64Array(m + 1));
-  const move: Uint8Array[] = Array.from({ length: n + 1 }, () => new Uint8Array(m + 1)); // 1 diag, 2 skip, 3 extra
-  const sim = (i: number, j: number) => similarity(E[i], H[j]);
+  // Moves: 1 word for word, 2 skipped, 3 extra, 4 two heard words = one written, 5 one heard word = two written.
+  const move: Uint8Array[] = Array.from({ length: n + 1 }, () => new Uint8Array(m + 1));
+  const sim = (i: number, j: number) => wordSimilarity(E[i], H[j]);
   for (let i = 1; i <= n; i++) {
     D[i][0] = D[i - 1][0] + COST_SKIP;
     move[i][0] = 2;
@@ -87,6 +118,16 @@ export function alignRecitation(expected: string[], heard: string[], done = fals
         D[i][j] = extra;
         move[i][j] = 3;
       }
+      if (s < SAME) {
+        if (j >= 2 && D[i - 1][j - 2] + COST_JOIN < D[i][j] && wordSimilarity(E[i - 1], H[j - 2] + H[j - 1]) >= SAME) {
+          D[i][j] = D[i - 1][j - 2] + COST_JOIN;
+          move[i][j] = 4;
+        }
+        if (i >= 2 && D[i - 2][j - 1] + COST_JOIN < D[i][j] && wordSimilarity(E[i - 2] + E[i - 1], H[j - 1]) >= SAME) {
+          D[i][j] = D[i - 2][j - 1] + COST_JOIN;
+          move[i][j] = 5;
+        }
+      }
     }
   }
   // Every heard word is used; the reciter may not have reached the end: the best prefix of the expected words.
@@ -108,6 +149,15 @@ export function alignRecitation(expected: string[], heard: string[], done = fals
     } else if (mv === 2) {
       out[i - 1] = { status: 'skipped', settled: false };
       i--;
+    } else if (mv === 4) {
+      out[i - 1] = { status: 'correct', settled: false };
+      i--;
+      j -= 2;
+    } else if (mv === 5) {
+      out[i - 1] = { status: 'correct', settled: false };
+      out[i - 2] = { status: 'correct', settled: false };
+      i -= 2;
+      j--;
     } else {
       j--;
     }
@@ -120,6 +170,45 @@ export function alignRecitation(expected: string[], heard: string[], done = fals
     if (out[k].status === 'correct') correctAfter++;
   }
   return out;
+}
+
+/**
+ * Of the recogniser's guesses for a phrase (best first), the one that fits the ayat around [position] best: each is
+ * matched against the written words from a little before the position on (it may start anywhere there, and need not
+ * reach the end). Ties go to the recogniser's own first guess.
+ */
+export function bestAlternative(expected: string[], position: number, alternatives: string[]): string {
+  if (alternatives.length < 2) return alternatives[0] ?? '';
+  let best = alternatives[0];
+  let bestCost = Infinity;
+  for (const alt of alternatives) {
+    const H = heardWords(alt).map(wordKey).filter(Boolean);
+    if (!H.length) continue;
+    const from = Math.max(0, position - 6);
+    const E = expected.slice(from, position + H.length * 2 + 8).map(wordKey);
+    // Local alignment: free to start at any written word, scored by the heard words' cost.
+    let prev = Array.from({ length: H.length + 1 }, (_, j) => j * COST_EXTRA);
+    let least = prev[H.length];
+    for (let i = 1; i <= E.length; i++) {
+      const cur = [0];
+      for (let j = 1; j <= H.length; j++) {
+        const sm = wordSimilarity(E[i - 1], H[j - 1]);
+        cur[j] = Math.min(
+          prev[j - 1] + (sm >= SAME ? 0 : sm >= NEAR ? COST_WRONG : COST_UNRELATED),
+          prev[j] + COST_SKIP,
+          cur[j - 1] + COST_EXTRA,
+        );
+      }
+      least = Math.min(least, cur[H.length]);
+      prev = cur;
+    }
+    const cost = least / H.length;
+    if (cost < bestCost - 1e-9) {
+      bestCost = cost;
+      best = alt;
+    }
+  }
+  return best;
 }
 
 /** Splits recognised text into words (punctuation dropped). */

@@ -1,7 +1,13 @@
-// Long titles ("Tasmee' (recite to be checked)") wrap instead of being cut off.
-ion-title .wrap { display: block; white-space: normal; line-height: 1.25; font-size: 1rem; }
+:host { display: block; }
+main { max-width: 760px; margin: auto; padding: 0 0 40px; }
+ion-progress-bar.top { position: sticky; top: 0; z-index: 2; border-radius: 4px; }
 
-main { max-width: 760px; margin: auto; padding: 12px 12px 40px; }
+// Microphone level: shows that it hears you.
+.meter {
+  display: flex; align-items: center; gap: 8px; margin: 6px 6px 0; color: var(--app-muted);
+  .bar { flex: 1; height: 6px; border-radius: 3px; background: var(--app-border); overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--ion-color-primary); transition: width 0.12s linear; }
+}
 
 .card {
   background: var(--app-surface);

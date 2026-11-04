@@ -31,9 +31,12 @@ and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
 - **Tasmee' (recite and be corrected):** choose ayat, recite from memory (text hidden or shown), the app follows word by
   word and marks wrong and skipped words, optionally stopping at a mistake to show the right words and play the ayah;
   score, mistakes to review, history. Engines: the phone's speech recognition (native `SpeechPlugin.kt`) or, after an
-  ~80 MB download, Tarteel's Quran-trained Whisper on the phone (`tarteel-ai/whisper-tiny-ar-quran`, Apache-2.0, ONNX
-  export `aaqibhabib/whisper-tiny-ar-quran-onnx`, run by transformers.js in a worker), offline. Words only, not tajweed.
-  e2e: Alafasy's al-Fatihah played into a fake microphone is followed at 100%, and a skipped ayah is caught.
+  36 MB download, a Quran recitation model on the phone (`Abdou/quran-asr-small`, MIT, Conformer-CTC trained on
+  reciters and ordinary people reciting into phones; its Kaldi fbank front end in `qasr-features.ts`, run by
+  onnxruntime-web in a worker, the runtime bundled in assets/ort), offline. Google's recogniser is biased toward the ayat
+  (Android 13+, segmented session) and the alternative that fits the ayat is chosen. Lives in the Hifz page's second
+  tab. Words only, not tajweed. e2e: Alafasy's al-Fatihah, clean and with room noise, played into a fake microphone is
+  followed at 100%, and a skipped ayah is caught.
 - **Recitation studio:** record your recitation as sound or video (front/back camera), with on-phone AI noise removal
   (GTCRN / RNNoise), voice EQ, compressor and optional room / hall / mosque reverb; the ayat on screen and over the
   video; compare with the original; share or save to the gallery.

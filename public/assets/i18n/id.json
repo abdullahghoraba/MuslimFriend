@@ -926,7 +926,8 @@
       "gold": "Emas",
       "red": "Merah",
       "purple": "Ungu"
-    }
+    },
+    "tabPlans": "Rencana"
   },
   "location": {
     "locating": "Mencari lokasi Anda…",
@@ -1469,11 +1470,8 @@
     "stopOnMistake": "Berhenti saat salah dan tampilkan kata yang benar",
     "engine": "Pengenalan",
     "enginePhone": "Ponsel (cepat)",
-    "engineWhisper": "AI offline (akurat)",
     "downloading": "Mengunduh… {{pct}}%",
-    "whisperAbout": "Whisper dari Tarteel yang dilatih dengan bacaan Al-Qur’an berjalan di ponsel Anda: tanpa internet setelah satu kali unduh sekitar 80 MB.",
-    "download": "Unduh (≈80 MB)",
-    "whisperReady": "AI offline siap.",
+    "download": "Unduh (36 MB)",
     "phoneAbout": "Memakai pengenalan suara ponsel (Google). Lebih baik saat online atau dengan paket bahasa Arab offline.",
     "best": "Terbaik: {{pct}}%",
     "errors": {
@@ -1495,6 +1493,11 @@
     "mistakes": "{{n}} untuk diulang",
     "skipped": "terlewat",
     "history": "Sesi terakhir",
-    "note": "Yang diperiksa adalah kata-katanya, bukan tajwid. Pengenalan bisa salah dengar: dengarkan ayatnya bila ragu."
+    "note": "Yang diperiksa adalah kata-katanya, bukan tajwid. Pengenalan bisa salah dengar: dengarkan ayatnya bila ragu.",
+    "engineOffline": "AI Al-Qur’an (offline, akurat)",
+    "offlineAbout": "Model yang dilatih dengan bacaan Al-Qur’an, termasuk orang biasa yang membaca ke ponselnya, berjalan di ponsel Anda: tanpa internet setelah sekali unduh 36 MB.",
+    "offlineReady": "AI Al-Qur’an siap (bekerja offline).",
+    "noVoice": "Mikrofon tidak mendengar apa pun: pastikan tidak tertutup dan aplikasi diizinkan memakainya.",
+    "mic": "Level mikrofon"
   }
 }

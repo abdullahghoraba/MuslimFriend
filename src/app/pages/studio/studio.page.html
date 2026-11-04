@@ -195,7 +195,7 @@
         <ion-icon [name]="rec.kind === 'video' ? 'videocam-outline' : 'mic-outline'" aria-hidden="true" />
         <span class="body">
           <strong>{{ rec.title }}</strong>
-          <small>{{ rec.created | date: 'medium' : undefined : lang() }} · {{ formatTime(rec.duration) }}</small>
+          <small>{{ rec.created | localDate: lang() }} · {{ formatTime(rec.duration) }}</small>
         </span>
         <ion-icon name="play-circle-outline" aria-hidden="true" />
       </button>

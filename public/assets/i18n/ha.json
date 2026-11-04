@@ -926,7 +926,8 @@
       "gold": "Zinariya",
       "red": "Ja",
       "purple": "Shunayya"
-    }
+    },
+    "tabPlans": "Tsare-tsare"
   },
   "location": {
     "locating": "Ana neman wurinka…",
@@ -1469,11 +1470,8 @@
     "stopOnMistake": "Tsaya a kuskure ka nuna kalmar da ta dace",
     "engine": "Ganewa",
     "enginePhone": "Waya (mai sauri)",
-    "engineWhisper": "AI ba intanet (daidai)",
     "downloading": "Ana saukewa… {{pct}}%",
-    "whisperAbout": "Whisper na Tarteel da aka horar da karatun Alƙur’ani yana aiki a wayarka: ba intanet bayan saukewa sau ɗaya kusan 80 MB.",
-    "download": "Sauke (≈80 MB)",
-    "whisperReady": "AI ba intanet ya shirya.",
+    "download": "Sauke (36 MB)",
     "phoneAbout": "Yana amfani da gane magana na wayarka (Google). Ya fi kyau da intanet ko fakitin Larabci ba intanet.",
     "best": "Mafi kyau: {{pct}}%",
     "errors": {
@@ -1495,6 +1493,11 @@
     "mistakes": "{{n}} don dubawa",
     "skipped": "an tsallake",
     "history": "Zaman baya-bayan nan",
-    "note": "Yana duba kalmomi ne, ba tajwidi ba. Ganewa na iya jin kuskure: saurari ayar idan kana shakka."
+    "note": "Yana duba kalmomi ne, ba tajwidi ba. Ganewa na iya jin kuskure: saurari ayar idan kana shakka.",
+    "engineOffline": "AI na Alƙur’ani (ba tare da intanet ba, daidai)",
+    "offlineAbout": "Wani samfuri da aka horar da shi kan karatun Alƙur’ani, har da na mutane talakawa suna karatu a wayarsu, yana aiki a wayarka: babu buƙatar intanet bayan saukewa ɗaya ta 36 MB.",
+    "offlineReady": "AI na Alƙur’ani ya shirya (yana aiki ba tare da intanet ba).",
+    "noVoice": "Makirufo ba ya jin komai: duba cewa ba a rufe shi ba kuma manhajar tana da izinin amfani da shi.",
+    "mic": "Ƙarfin makirufo"
   }
 }

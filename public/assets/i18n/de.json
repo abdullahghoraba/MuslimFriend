@@ -926,7 +926,8 @@
       "gold": "Gold",
       "red": "Rot",
       "purple": "Lila"
-    }
+    },
+    "tabPlans": "Pläne"
   },
   "location": {
     "locating": "Standort wird ermittelt…",
@@ -1469,11 +1470,8 @@
     "stopOnMistake": "Bei einem Fehler anhalten und das richtige Wort zeigen",
     "engine": "Erkennung",
     "enginePhone": "Telefon (schnell)",
-    "engineWhisper": "Offline-KI (genau)",
     "downloading": "Wird geladen… {{pct}} %",
-    "whisperAbout": "Tarteels auf Koranrezitation trainiertes Whisper läuft auf Ihrem Telefon: nach einem Download von etwa 80 MB ohne Internet.",
-    "download": "Herunterladen (≈80 MB)",
-    "whisperReady": "Offline-KI ist bereit.",
+    "download": "Herunterladen (36 MB)",
     "phoneAbout": "Nutzt die Spracherkennung des Telefons (Google). Am besten online oder mit dem Offline-Arabischpaket.",
     "best": "Bestes Ergebnis: {{pct}} %",
     "errors": {
@@ -1495,6 +1493,11 @@
     "mistakes": "{{n}} zum Wiederholen",
     "skipped": "ausgelassen",
     "history": "Letzte Sitzungen",
-    "note": "Geprüft werden die Wörter, nicht das Tadschwid. Die Erkennung kann sich verhören: im Zweifel den Vers anhören."
+    "note": "Geprüft werden die Wörter, nicht das Tadschwid. Die Erkennung kann sich verhören: im Zweifel den Vers anhören.",
+    "engineOffline": "Koran-KI (offline, genau)",
+    "offlineAbout": "Ein auf Koranrezitation trainiertes Modell – auch auf ganz normale Menschen, die ins Handy rezitieren – läuft auf deinem Telefon: nach einem Download von 36 MB ohne Internet.",
+    "offlineReady": "Die Koran-KI ist bereit (funktioniert offline).",
+    "noVoice": "Das Mikrofon hört nichts: Prüfe, dass es nicht verdeckt ist und die App es nutzen darf.",
+    "mic": "Mikrofonpegel"
   }
 }

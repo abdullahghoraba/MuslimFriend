@@ -926,7 +926,8 @@
       "gold": "Dorado",
       "red": "Rojo",
       "purple": "Morado"
-    }
+    },
+    "tabPlans": "Planes"
   },
   "location": {
     "locating": "Buscando tu ubicación…",
@@ -1469,11 +1470,8 @@
     "stopOnMistake": "Detenerse en un error y mostrar la palabra correcta",
     "engine": "Reconocimiento",
     "enginePhone": "Teléfono (rápido)",
-    "engineWhisper": "IA sin conexión (precisa)",
     "downloading": "Descargando… {{pct}} %",
-    "whisperAbout": "El Whisper de Tarteel, entrenado con recitación del Corán, funciona en su teléfono: sin internet tras una descarga de unos 80 MB.",
-    "download": "Descargar (≈80 MB)",
-    "whisperReady": "La IA sin conexión está lista.",
+    "download": "Descargar (36 MB)",
     "phoneAbout": "Usa el reconocimiento de voz del teléfono (Google). Funciona mejor en línea o con el paquete árabe sin conexión.",
     "best": "Mejor resultado: {{pct}} %",
     "errors": {
@@ -1495,6 +1493,11 @@
     "mistakes": "{{n}} para repasar",
     "skipped": "omitida",
     "history": "Sesiones recientes",
-    "note": "Comprueba las palabras, no el tayuid. El reconocimiento puede oír mal: escuche la aleya si tiene dudas."
+    "note": "Comprueba las palabras, no el tayuid. El reconocimiento puede oír mal: escuche la aleya si tiene dudas.",
+    "engineOffline": "IA del Corán (sin conexión, precisa)",
+    "offlineAbout": "Un modelo entrenado con recitación del Corán, incluida la de personas corrientes que recitan al teléfono, funciona en tu móvil: sin internet tras una única descarga de 36 MB.",
+    "offlineReady": "La IA del Corán está lista (funciona sin conexión).",
+    "noVoice": "El micrófono no oye nada: comprueba que no esté tapado y que la app pueda usarlo.",
+    "mic": "Nivel del micrófono"
   }
 }

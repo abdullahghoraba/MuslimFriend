@@ -926,7 +926,8 @@
       "gold": "Emas",
       "red": "Merah",
       "purple": "Ungu"
-    }
+    },
+    "tabPlans": "Pelan"
   },
   "location": {
     "locating": "Mencari lokasi anda…",
@@ -1469,11 +1470,8 @@
     "stopOnMistake": "Berhenti apabila salah dan tunjukkan perkataan yang betul",
     "engine": "Pengecaman",
     "enginePhone": "Telefon (pantas)",
-    "engineWhisper": "AI luar talian (tepat)",
     "downloading": "Memuat turun… {{pct}}%",
-    "whisperAbout": "Whisper Tarteel yang dilatih dengan bacaan al-Quran berjalan pada telefon anda: tanpa internet selepas sekali muat turun kira-kira 80 MB.",
-    "download": "Muat turun (≈80 MB)",
-    "whisperReady": "AI luar talian sedia.",
+    "download": "Muat turun (36 MB)",
     "phoneAbout": "Menggunakan pengecaman pertuturan telefon (Google). Lebih baik dalam talian atau dengan pakej Arab luar talian.",
     "best": "Terbaik: {{pct}}%",
     "errors": {
@@ -1495,6 +1493,11 @@
     "mistakes": "{{n}} untuk diulang kaji",
     "skipped": "tertinggal",
     "history": "Sesi terkini",
-    "note": "Ia menyemak perkataan, bukan tajwid. Pengecaman boleh tersalah dengar: dengar ayat itu jika ragu."
+    "note": "Ia menyemak perkataan, bukan tajwid. Pengecaman boleh tersalah dengar: dengar ayat itu jika ragu.",
+    "engineOffline": "AI Al-Quran (luar talian, tepat)",
+    "offlineAbout": "Model yang dilatih dengan bacaan al-Quran, termasuk orang biasa membaca ke telefon mereka, berjalan pada telefon anda: tanpa internet selepas sekali muat turun 36 MB.",
+    "offlineReady": "AI Al-Quran sedia (berfungsi luar talian).",
+    "noVoice": "Mikrofon tidak mendengar apa-apa: pastikan ia tidak ditutup dan aplikasi dibenarkan menggunakannya.",
+    "mic": "Tahap mikrofon"
   }
 }

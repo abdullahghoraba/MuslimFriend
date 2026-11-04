@@ -55,5 +55,7 @@ test('records a video with the ayah shown over the picture', async ({ page }) =>
   const video = page.locator('section.review video');
   await expect(video).toBeVisible();
   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.readyState), { timeout: 10_000 }).toBeGreaterThan(0);
-  expect(await video.evaluate((v: HTMLVideoElement) => v.videoWidth)).toBe(720);
+  // Full HD portrait: the camera is asked for 1080p (Chrome's fake camera gives it), so the frame is sharp.
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.videoWidth), { timeout: 10_000 }).toBe(1080);
+  expect(await video.evaluate((v: HTMLVideoElement) => v.videoHeight)).toBe(1920);
 });

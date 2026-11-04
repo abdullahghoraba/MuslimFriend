@@ -42,6 +42,11 @@
                 "glob": "{gtcrn,rnnoise}/workletProcessor.js",
                 "input": "node_modules/@sapphi-red/web-noise-suppressor/dist",
                 "output": "assets/noise"
+              },
+              {
+                "glob": "ort-wasm-simd-threaded.{wasm,mjs}",
+                "input": "node_modules/onnxruntime-web/dist",
+                "output": "assets/ort"
               }
             ],
             "styles": [

@@ -95,6 +95,13 @@ export class MushafPage {
   readonly shamarlyPage = input<string | undefined>(undefined, { alias: 'sp' });
   /** Set by the Friday al-Kahf card: reading here leaves the saved place («متابعة القراءة») where it was. */
   readonly visit = input<string | undefined>();
+  /** ?ed=shamarly|tajweed|madinah: read this mushaf (the Mushafs page's «Open») without changing the chosen one. */
+  readonly edParam = input<string | undefined>(undefined, { alias: 'ed' });
+  /** The mushaf shown: the one asked for in the link, else the chosen one. */
+  private edition(): string {
+    const ed = this.edParam();
+    return ed === 'shamarly' || ed === 'tajweed' || ed === 'madinah' ? ed : this.editions.current();
+  }
 
   readonly quran = inject(QuranService);
   readonly marks = inject(MarksService);
@@ -142,7 +149,7 @@ export class MushafPage {
   /** quran.com tajweed markup per ayah, set while the colour-tajweed mushaf is the chosen one. */
   readonly tajweed = signal<string[] | null>(null);
   readonly editionName = computed(() => {
-    const e = EDITIONS.find((x) => x.id === this.editions.current()) ?? EDITIONS[0];
+    const e = EDITIONS.find((x) => x.id === this.edition()) ?? EDITIONS[0];
     return this.lang() === 'ar' ? e.nameAr : e.nameEn;
   });
 
@@ -218,7 +225,7 @@ export class MushafPage {
 
   async ionViewWillEnter(): Promise<void> {
     await Promise.all([this.quran.load(), this.marks.load(), this.khatmah.load(), this.recitation.loadPrefs(), this.loadView(), this.hifz.load(), this.editions.load()]);
-    this.tajweed.set(this.editions.current() === 'tajweed' ? await this.editions.tajweedText() : null);
+    this.tajweed.set(this.edition() === 'tajweed' ? await this.editions.tajweedText() : null);
     this.layout.set(await this.loadLayout());
     const sura = Number(this.sura());
     const aya = Number(this.aya());
@@ -328,7 +335,7 @@ export class MushafPage {
       const onPage = this.blocks().filter((b) => b.ayah.sura === r.sura && b.ayah.aya >= r.from).map((b) => b.ayah.aya);
       to = Math.max(r.from, ...onPage);
     }
-    void this.nav.navigateForward(['/tasmee'], { queryParams: { sura: r.sura, from: r.from, to } });
+    void this.nav.navigateForward(['/hifz'], { queryParams: { tab: 'tasmee', sura: r.sura, from: r.from, to } });
   }
 
   /** The Shamarly mushaf's scanned page, as printed. */
@@ -337,7 +344,7 @@ export class MushafPage {
   }
 
   private async loadLayout(): Promise<MushafLayout> {
-    if (this.editions.current() === 'shamarly') {
+    if (this.edition() === 'shamarly') {
       try {
         return await this.editions.shamarlyLayout((sura, aya) => this.quran.ayah({ sura, aya }).index);
       } catch {
