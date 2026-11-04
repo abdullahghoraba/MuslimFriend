@@ -17,7 +17,7 @@ describe('AudioCatalogService', () => {
   it('finds reciters ignoring hamza and tashkeel, and by Latin name in any case', () => {
     expect(catalog().matches('ابراهيم', 'إبراهيم الأخضر', 'Ibrahim Al-Akdar')).toBe(true);
     expect(catalog().matches('akdar', 'إبراهيم الأخضر', 'Ibrahim Al-Akdar')).toBe(true);
-    expect(catalog().matches('سديس', 'إبراهيم الأخضر', 'Ibrahim Al-Akdar')).toBe(false);
+    expect(catalog().matches('شريم', 'إبراهيم الأخضر', 'Ibrahim Al-Akdar')).toBe(false);
     expect(catalog().matches('  ', 'anything')).toBe(true);
   });
 });

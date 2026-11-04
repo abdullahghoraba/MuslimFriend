@@ -205,7 +205,7 @@
     "about": "Kuhusu",
     "version": "Toleo",
     "privacy": "Faragha",
-    "privacyText": "Muslim Friend haina matangazo, haina takwimu na haifuatilii. Data yako hubaki kwenye kifaa chako. Intaneti hutumika tu kwa sauti ya kisomo cha Kurani unayochagua kucheza.",
+    "privacyText": "Muslim Friend haina matangazo, uchambuzi wala ufuatiliaji. Data yako hubaki kwenye kifaa chako. Mtandao hutumika tu kwa unachochagua kucheza, kufungua au kupakua (visomo, redio, hadithi, misahafu, tafsiri, AI ya Qur'ani bila mtandao) na, ukichagua injini ya \"Simu\" kwa tasmii, kwa utambuzi wa usemi wa simu.",
     "credits": "Shukrani na leseni",
     "quranCredit": "Maandishi ya Kurani: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Fonti ya Kiarabu: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -383,7 +383,7 @@
     "backupTitle": "Nakala rudufu",
     "backupText": "Kuhamisha huunda faili na kufungua menyu ya kushiriki. Wewe unaamua inakokwenda; programu haipakii chochote. Vyanzo vya mtandaoni (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) hupokea ombi la faili au hadithi tu, si chochote kukuhusu.",
     "mediaTitle": "Maikrofoni na kamera",
-    "mediaText": "Huombwa tu unaporekodi kisomo chako studioni au unaposomea programu ikusahihishe. Kuondoa kelele na kutambua usemi hufanyika kwenye simu yako; hakuna kinachopakiwa. Rekodi hubaki kwenye programu hadi uzishiriki, uzihifadhi au uzifute."
+    "mediaText": "Huombwa tu unaporekodi kisomo chako studioni au unaposomea programu ikusahihishe. Kuondoa kelele na AI ya Qur'ani bila mtandao hufanyika kwenye simu yako na havipakii chochote. Ukichagua injini ya \"Simu\" kwa tasmii, sauti yako huenda kwenye huduma ya kutambua usemi ya simu (kwa kawaida Google) chini ya sera yake ya faragha. Rekodi hubaki kwenye programu hadi uzishiriki, uzihifadhi au uzifute."
   },
   "prayer": {
     "fajr": "Alfajiri",

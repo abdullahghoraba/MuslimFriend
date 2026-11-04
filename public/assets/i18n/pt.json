@@ -205,7 +205,7 @@
     "about": "Sobre",
     "version": "Versão",
     "privacy": "Privacidade",
-    "privacyText": "O Muslim Friend não tem anúncios, análises nem rastreamento. Seus dados ficam no seu aparelho. A internet só é usada para o áudio de recitação do Alcorão que você escolhe tocar.",
+    "privacyText": "O Muslim Friend não tem anúncios, análises nem rastreamento. Seus dados ficam no seu aparelho. A internet é usada só para o que você escolhe tocar, abrir ou baixar (recitações, rádio, hadiths, mushafs, tafsirs, a IA do Alcorão offline) e, se você escolher o mecanismo \"Telefone\" para o tasmee', para o reconhecimento de fala do telefone.",
     "credits": "Créditos e licenças",
     "quranCredit": "Texto do Alcorão: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Fonte árabe: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -383,7 +383,7 @@
     "backupTitle": "Backups",
     "backupText": "Exportar cria um arquivo e abre o menu de compartilhar. Você decide para onde vai; o app não envia nada. As fontes online (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) recebem só o pedido do arquivo ou do hadith, nada sobre você.",
     "mediaTitle": "Microfone e câmera",
-    "mediaText": "Pedidos apenas quando você grava sua recitação no estúdio ou recita para o app corrigir. A remoção de ruído e o reconhecimento de fala funcionam no seu telefone; nada é enviado. As gravações ficam no app até você compartilhar, salvar ou excluir."
+    "mediaText": "Pedidos apenas quando você grava sua recitação no estúdio ou recita para o app corrigir. A remoção de ruído e a IA do Alcorão offline funcionam no seu telefone e não enviam nada. Se você escolher o mecanismo \"Telefone\" para o tasmee', sua voz vai para o serviço de reconhecimento de fala do telefone (geralmente o Google), conforme a política de privacidade dele. As gravações ficam no app até você compartilhar, salvar ou excluir."
   },
   "prayer": {
     "fajr": "Fajr",

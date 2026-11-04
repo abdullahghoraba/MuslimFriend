@@ -205,7 +205,7 @@
     "about": "À propos",
     "version": "Version",
     "privacy": "Confidentialité",
-    "privacyText": "Muslim Friend n'a ni publicité, ni statistiques, ni pistage. Vos données restent sur votre appareil. Internet sert uniquement à la récitation du Coran que vous choisissez d'écouter.",
+    "privacyText": "Muslim Friend n’a ni publicité, ni statistiques, ni pistage. Vos données restent sur votre appareil. Internet sert uniquement à ce que vous choisissez d’écouter, d’ouvrir ou de télécharger (récitations, radio, hadiths, mushafs, tafsirs, l’IA du Coran hors ligne) et, si vous choisissez le moteur « Téléphone » pour le tasmee', à la reconnaissance vocale du téléphone.",
     "credits": "Crédits et licences",
     "quranCredit": "Texte du Coran : Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Police arabe : Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -383,7 +383,7 @@
     "backupTitle": "Sauvegardes",
     "backupText": "L'export crée un fichier et ouvre le menu de partage. Vous décidez où il va ; l'application n'envoie rien. Les sources en ligne (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) ne reçoivent que la demande du fichier ou du hadith, rien sur vous.",
     "mediaTitle": "Micro et caméra",
-    "mediaText": "Demandés seulement quand vous enregistrez votre récitation dans le studio ou récitez à l’app pour qu’elle vous corrige. La suppression du bruit et la reconnaissance vocale fonctionnent sur votre téléphone ; rien n’est envoyé. Les enregistrements restent dans l’app jusqu’à ce que vous les partagiez, sauvegardiez ou supprimiez."
+    "mediaText": "Demandés seulement quand vous enregistrez votre récitation dans le studio ou récitez à l’app pour qu’elle vous corrige. La suppression du bruit et l’IA du Coran hors ligne fonctionnent sur votre téléphone et n’envoient rien. Si vous choisissez le moteur « Téléphone » pour le tasmee', votre voix est envoyée au service de reconnaissance vocale du téléphone (généralement Google), selon sa propre politique de confidentialité. Les enregistrements restent dans l’app jusqu’à ce que vous les partagiez, sauvegardiez ou supprimiez."
   },
   "prayer": {
     "fajr": "Fajr",

@@ -205,7 +205,7 @@
     "about": "Perihal",
     "version": "Versi",
     "privacy": "Privasi",
-    "privacyText": "Muslim Friend tiada iklan, tiada analitik dan tiada penjejakan. Data anda kekal pada peranti anda. Internet hanya digunakan untuk audio bacaan Al-Quran yang anda pilih untuk dimainkan.",
+    "privacyText": "Muslim Friend tiada iklan, tiada analitik dan tiada penjejakan. Data anda kekal pada peranti anda. Internet hanya digunakan untuk apa yang anda pilih untuk dimainkan, dibuka atau dimuat turun (tilawah, radio, hadis, mushaf, tafsir, AI Al-Quran luar talian) dan, jika anda memilih enjin \"Telefon\" untuk tasmik, untuk pengecaman pertuturan telefon.",
     "credits": "Kredit dan lesen",
     "quranCredit": "Teks Al-Quran: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Fon Arab: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -383,7 +383,7 @@
     "backupTitle": "Sandaran",
     "backupText": "Eksport mencipta fail dan membuka helaian kongsi. Anda menentukan destinasinya; aplikasi tidak memuat naik apa-apa. Sumber dalam talian (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) hanya menerima permintaan fail atau hadis, tiada apa-apa tentang anda.",
     "mediaTitle": "Mikrofon dan kamera",
-    "mediaText": "Hanya diminta apabila anda merakam tilawah di studio atau membaca kepada aplikasi untuk disemak. Penghapus hingar dan pengecaman pertuturan berjalan pada telefon anda; tiada yang dimuat naik. Rakaman kekal dalam aplikasi sehingga anda kongsi, simpan atau padam."
+    "mediaText": "Hanya diminta apabila anda merakam tilawah di studio atau membaca kepada aplikasi untuk disemak. Penghapus hingar dan AI Al-Quran luar talian berjalan pada telefon anda dan tidak memuat naik apa-apa. Jika anda memilih enjin \"Telefon\" untuk tasmik, suara anda dihantar ke perkhidmatan pengecaman pertuturan telefon (biasanya Google) mengikut dasar privasinya sendiri. Rakaman kekal dalam aplikasi sehingga anda kongsi, simpan atau padam."
   },
   "prayer": {
     "fajr": "Subuh",

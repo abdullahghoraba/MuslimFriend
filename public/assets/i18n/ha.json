@@ -205,7 +205,7 @@
     "about": "Game da",
     "version": "Siga",
     "privacy": "Sirri",
-    "privacyText": "Muslim Friend ba shi da talla, ba ya tattara ƙididdiga kuma ba ya bin diddigi. Bayananka suna nan a na'urarka. Ana amfani da intanet ne kawai don sautin karatun Alƙur'ani da ka zaɓa ka kunna.",
+    "privacyText": "Muslim Friend ba shi da talla, ba nazari kuma ba bin diddigi. Bayananka na zama a na'urarka. Ana amfani da intanet ne kawai don abin da ka zaɓa ka kunna, ka buɗe ko ka sauke (karatu, rediyo, hadisi, mushafai, tafsiri, AI na Alƙur'ani ba tare da intanet ba) kuma, idan ka zaɓi injin \"Waya\" don tasmi'i, don gane magana na wayarka.",
     "credits": "Godiya da lasisoshi",
     "quranCredit": "Rubutun Alƙur'ani: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Rubutun Larabci: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -383,7 +383,7 @@
     "backupTitle": "Madadi",
     "backupText": "Fitarwa tana ƙirƙirar fayil ta buɗe zaɓin rabawa. Kai ne ka zaɓi inda zai je; manhajar ba ta ɗora komai. Tushen intanet (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) suna karɓar buƙatar fayil ko hadisi kawai, ba komai game da kai ba.",
     "mediaTitle": "Makirofo da kyamara",
-    "mediaText": "Ana nema ne kawai idan ka yi rikodin karatunka a ɗakin karatu ko ka karanta wa manhajar don ta gyara. Cire hayaniya da gane magana suna aiki a wayarka; babu abin da ake turawa. Rikodi na zama a manhajar har sai ka raba, ka adana ko ka goge."
+    "mediaText": "Ana nema ne kawai idan ka yi rikodin karatunka a ɗakin karatu ko ka karanta wa manhajar don ta gyara. Cire hayaniya da AI na Alƙur'ani ba tare da intanet ba suna aiki a wayarka; ba sa tura komai. Idan ka zaɓi injin \"Waya\" don tasmi'i, muryarka na zuwa sabis na gane magana na wayarka (yawanci Google) bisa ga manufar sirrinsa. Rikodi na zama a manhajar har sai ka raba, ka adana ko ka goge."
   },
   "prayer": {
     "fajr": "Asuba",

@@ -39,6 +39,13 @@ test('Listen finds a reciter however the name is spelled, and by recording', asy
   await expect(page.locator('.row', { hasText: 'عبدالباسط' }).first()).toBeVisible();
   await search(page, 'الحصري ورش');
   await expect(page.locator('.row', { hasText: 'الحصري' }).first()).toBeVisible();
-  await expect(page.locator('.row', { hasText: 'العفاسي' })).toHaveCount(0);
+  await expect(page.locator('.row', { hasText: 'المنشاوي' })).toHaveCount(0);
+  // Reciters taken out of the app (their recordings and radios too).
+  for (const name of ['العفاسي', 'Alafasy', 'السديس', 'Sudais']) {
+    await search(page, name);
+    await expect(page.locator('.row', { hasText: /العفاسي|السديس/ })).toHaveCount(0);
+  }
+  await search(page, 'الشريم');
+  await expect(page.locator('.row', { hasText: 'الشريم' }).first()).toBeVisible();
   await page.screenshot({ path: 'test-results/listen-search.png' });
 });

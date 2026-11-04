@@ -27,7 +27,11 @@ const byId = (list) => new Map(list.map((x) => [x.id, x]));
 const recEnById = byId(recEn.reciters);
 const radEnById = byId(radEn.radios);
 
+// Reciters the app does not offer (by name in Arabic or English, or by their recordings' folder).
+const EXCLUDED = /afasy|afasi|عفاسي|sudais|sudays|sudaes|سديس/i;
+
 const reciters = recAr.reciters
+  .filter((r) => !EXCLUDED.test(r.name) && !EXCLUDED.test(recEnById.get(r.id)?.name ?? '') && !r.moshaf.some((m) => EXCLUDED.test(m.server ?? '')))
   .map((r) => {
     const en = recEnById.get(r.id);
     const enMoshaf = byId(en?.moshaf ?? []);
@@ -53,6 +57,7 @@ const reciters = recAr.reciters
 const radios = radAr.radios
   // radiojar.com redirects every stream to plain http, which the app does not load (no cleartext traffic).
   .filter((r) => r.url?.startsWith('https://') && !new URL(r.url).hostname.endsWith('radiojar.com'))
+  .filter((r) => !EXCLUDED.test(r.name) && !EXCLUDED.test(radEnById.get(r.id)?.name ?? '') && !EXCLUDED.test(r.url))
   .map((r) => ({ id: r.id, ar: r.name.trim(), en: (radEnById.get(r.id)?.name ?? r.name).trim(), url: r.url }));
 
 // The riwayat (Warsh, Qalun, Khalaf...), to browse the ten qira'at. mp3quran's English names are garbled, so ours.

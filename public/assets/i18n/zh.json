@@ -205,7 +205,7 @@
     "about": "关于",
     "version": "版本",
     "privacy": "隐私",
-    "privacyText": "Muslim Friend 没有广告、没有统计分析、也没有跟踪。你的数据只保存在你的设备上。只有在你选择播放古兰经诵读音频时才会使用网络。",
+    "privacyText": "Muslim Friend 无广告、无分析、无跟踪。您的数据保存在您的设备上。仅在您选择播放、打开或下载内容时使用网络（诵读、电台、圣训、经本、经注、离线古兰经 AI），以及在背诵检查中选择“手机”引擎时用于手机的语音识别。",
     "credits": "致谢与许可",
     "quranCredit": "古兰经文本：Tanzil Quran Text (Uthmani)，© Tanzil Project，CC BY 3.0 — tanzil.net",
     "fontCredit": "阿拉伯文字体：Amiri，© The Amiri Project Authors，SIL Open Font License 1.1",
@@ -383,7 +383,7 @@
     "backupTitle": "备份",
     "backupText": "导出会生成文件并打开分享菜单，由你决定发送到哪里；应用不会上传任何内容。在线来源（everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org）只收到文件或圣训的请求，不会收到任何关于你的信息。",
     "mediaTitle": "麦克风和相机",
-    "mediaText": "仅在您于录音室录制诵读或向应用背诵以便纠正时请求。降噪和语音识别在您的手机上运行，不会上传任何内容。录音保存在应用内，直到您分享、保存或删除。"
+    "mediaText": "仅在您于录音室录制诵读或向应用背诵以便纠正时请求。降噪和离线古兰经 AI 在您的手机上运行，不上传任何内容。如果您在背诵检查中选择“手机”引擎，您的声音会按其自身的隐私政策发送到手机的语音识别服务（通常是 Google）。录音保存在应用内，直到您分享、保存或删除。"
   },
   "prayer": {
     "fajr": "晨礼",

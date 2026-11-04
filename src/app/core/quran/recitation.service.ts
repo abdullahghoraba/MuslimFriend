@@ -32,8 +32,6 @@ export const RECITERS: Reciter[] = [
   { id: 'Yasser_Ad-Dussary_128kbps', nameAr: 'ياسر الدوسري', nameEn: 'Yasser Ad-Dossary' },
   { id: 'Abu_Bakr_Ash-Shaatree_128kbps', nameAr: 'أبو بكر الشاطري', nameEn: 'Abu Bakr Ash-Shatri' },
   { id: 'Ghamadi_40kbps', nameAr: 'سعد الغامدي', nameEn: 'Saad Al-Ghamdi' },
-  { id: 'Alafasy_128kbps', nameAr: 'مشاري راشد العفاسي', nameEn: 'Mishary Rashid Alafasy' },
-  { id: 'Abdurrahmaan_As-Sudais_192kbps', nameAr: 'عبد الرحمن السديس', nameEn: 'Abdurrahman As-Sudais' },
   { id: 'Hudhaify_128kbps', nameAr: 'علي الحذيفي', nameEn: 'Ali Al-Hudhaifi' },
   { id: 'Salah_Al_Budair_128kbps', nameAr: 'صلاح البدير', nameEn: 'Salah Al-Budair' },
   { id: 'Abdullaah_3awwaad_Al-Juhaynee_128kbps', nameAr: 'عبد الله عواد الجهني', nameEn: 'Abdullah Al-Juhani' },
@@ -62,6 +60,8 @@ export const RECITERS: Reciter[] = [
 ];
 
 const AUDIO_BASE = 'https://everyayah.com/data';
+/** Reciters taken out of the list; ayat downloaded with them are deleted. */
+const REMOVED_RECITERS = ['Alafasy_128kbps', 'Abdurrahmaan_As-Sudais_192kbps'];
 const PREFS_KEY = 'recitation';
 
 export type RepeatMode = 1 | 2 | 3 | 5 | 7 | 10 | 15 | 20 | 0; // 0 = endless
@@ -147,6 +147,9 @@ export class RecitationService {
     // A reciter removed from the list falls back to the default one.
     if (!RECITERS.some((r) => r.id === this.prefs().reciterId)) this.prefs.update((p) => ({ ...p, reciterId: RECITERS[0].id }));
     this.prefsLoaded = true;
+    if (Capacitor.isNativePlatform()) {
+      for (const id of REMOVED_RECITERS) void Filesystem.rmdir({ path: `audio/${id}`, directory: Directory.Data, recursive: true }).catch(() => {});
+    }
   }
 
   async setPrefs(patch: Partial<RecitationPrefs>): Promise<void> {

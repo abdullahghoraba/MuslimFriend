@@ -205,7 +205,7 @@
     "about": "Ilova haqida",
     "version": "Versiya",
     "privacy": "Maxfiylik",
-    "privacyText": "Muslim Friend'da reklama, tahlil va kuzatuv yo'q. Ma'lumotlaringiz qurilmangizda qoladi. Internet faqat siz tanlab ijro etadigan Qur'on tilovati ovozi uchun ishlatiladi.",
+    "privacyText": "Muslim Friend’da reklama, tahlil va kuzatuv yo‘q. Ma’lumotlaringiz qurilmangizda qoladi. Internet faqat siz ijro etish, ochish yoki yuklab olishni tanlagan narsalar uchun (tilovatlar, radio, hadislar, mushaflar, tafsirlar, oflayn Qur’on sun’iy intellekti) va tasmi’ uchun “Telefon” dvigatelini tanlasangiz, telefonning nutqni aniqlashi uchun ishlatiladi.",
     "credits": "Minnatdorchilik va litsenziyalar",
     "quranCredit": "Qur'on matni: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Arab shrifti: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -383,7 +383,7 @@
     "backupTitle": "Zaxira nusxalar",
     "backupText": "Eksport fayl yaratadi va ulashish oynasini ochadi. Qayerga borishini siz hal qilasiz; ilova hech narsa yuklamaydi. Onlayn manbalar (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) faqat fayl yoki hadis so'rovini oladi, siz haqingizda hech narsa emas.",
     "mediaTitle": "Mikrofon va kamera",
-    "mediaText": "Faqat studiyada tilovatingizni yozganda yoki tekshirish uchun ilovaga o‘qib berganda so‘raladi. Shovqinni tozalash va nutqni aniqlash telefoningizda ishlaydi; hech narsa yuklanmaydi. Yozuvlar siz ulashmaguningizcha, saqlamaguningizcha yoki o‘chirmaguningizcha ilovada qoladi."
+    "mediaText": "Faqat studiyada tilovatingizni yozganda yoki tekshirish uchun ilovaga o‘qib berganda so‘raladi. Shovqinni tozalash va oflayn Qur’on sun’iy intellekti telefoningizda ishlaydi va hech narsa yuklamaydi. Tasmi’ uchun “Telefon” dvigatelini tanlasangiz, ovozingiz telefonning nutqni aniqlash xizmatiga (odatda Google) uning o‘z maxfiylik siyosati asosida yuboriladi. Yozuvlar siz ulashmaguningizcha, saqlamaguningizcha yoki o‘chirmaguningizcha ilovada qoladi."
   },
   "prayer": {
     "fajr": "Bomdod",

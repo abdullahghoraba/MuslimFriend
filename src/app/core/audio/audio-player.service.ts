@@ -27,6 +27,8 @@ const FAV_KEY = 'listenFavorites';
 const LAST_KEY = 'listenLast';
 const suraFile = (sura: number) => `${String(sura).padStart(3, '0')}.mp3`;
 const folder = (m: Moshaf) => `listen/${m.id}`;
+/** Recordings (moshaf ids) taken out of the catalogue: Mishary Alafasy's and Abdurrahman As-Sudais'. Suras downloaded from them are deleted. */
+const REMOVED_MOSHAF = [123, 124, 54];
 
 /**
  * Plays whole suras by any reciter of the catalogue (next sura follows on its own) and live Quran radios.
@@ -73,6 +75,9 @@ export class AudioPlayerService {
   async init(): Promise<void> {
     if (this.loaded) return;
     this.loaded = true;
+    if (this.canDownload) {
+      for (const id of REMOVED_MOSHAF) void Filesystem.rmdir({ path: `listen/${id}`, directory: Directory.Data, recursive: true }).catch(() => {});
+    }
     try {
       const { value } = await Preferences.get({ key: FAV_KEY });
       if (value) this.favorites.set({ reciters: [], radios: [], ...JSON.parse(value) });

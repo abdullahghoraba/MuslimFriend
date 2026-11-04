@@ -205,7 +205,7 @@
     "about": "Acerca de",
     "version": "Versión",
     "privacy": "Privacidad",
-    "privacyText": "Muslim Friend no tiene anuncios, ni analíticas, ni rastreo. Tus datos se quedan en tu dispositivo. Internet solo se usa para el audio de recitación del Corán que eliges escuchar.",
+    "privacyText": "Muslim Friend no tiene anuncios, ni analíticas, ni rastreo. Sus datos se quedan en su dispositivo. Internet se usa solo para lo que elige reproducir, abrir o descargar (recitaciones, radio, hadices, mushafs, tafsires, la IA del Corán sin conexión) y, si elige el motor «Teléfono» para el tasmee', para el reconocimiento de voz del teléfono.",
     "credits": "Créditos y licencias",
     "quranCredit": "Texto del Corán: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Fuente árabe: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -383,7 +383,7 @@
     "backupTitle": "Copias de seguridad",
     "backupText": "Exportar crea un archivo y abre el menú de compartir. Tú decides adónde va; la app no sube nada. Las fuentes en línea (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) solo reciben la petición del archivo o del hadiz, nada sobre ti.",
     "mediaTitle": "Micrófono y cámara",
-    "mediaText": "Solo se piden al grabar su recitación en el estudio o al recitar a la app para que la corrija. La eliminación de ruido y el reconocimiento de voz funcionan en su teléfono; no se sube nada. Las grabaciones quedan en la app hasta que las comparta, guarde o elimine."
+    "mediaText": "Solo se piden al grabar su recitación en el estudio o al recitar a la app para que la corrija. La eliminación de ruido y la IA del Corán sin conexión funcionan en su teléfono y no suben nada. Si elige el motor «Teléfono» para el tasmee', su voz va al servicio de reconocimiento de voz del teléfono (normalmente Google), según su propia política de privacidad. Las grabaciones quedan en la app hasta que las comparta, guarde o elimine."
   },
   "prayer": {
     "fajr": "Fajr",

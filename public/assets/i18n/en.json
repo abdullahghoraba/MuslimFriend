@@ -205,7 +205,7 @@
     "about": "About",
     "version": "Version",
     "privacy": "Privacy",
-    "privacyText": "Muslim Friend has no ads, no analytics and no tracking. Your data stays on your device. Internet is used only for Quran recitation audio you choose to play.",
+    "privacyText": "Muslim Friend has no ads, no analytics and no tracking. Your data stays on your device. Internet is used only for what you choose to play, open or download (recitations, radio, hadith, mushafs, tafsirs, the offline Quran AI) and, if you pick the Phone engine for tasmee', your phone's speech recognition.",
     "credits": "Credits and licences",
     "quranCredit": "Quran text: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Arabic font: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -383,7 +383,7 @@
     "backupTitle": "Backups",
     "backupText": "Export creates a file and opens the share sheet. You decide where it goes; the app uploads nothing. Online sources (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) receive only the request for a file or hadith, never anything about you.",
     "mediaTitle": "Microphone and camera",
-    "mediaText": "Asked only when you record your recitation in the studio or recite to the app to be checked. Noise removal and speech recognition run on your phone; nothing is uploaded. Recordings stay in the app until you share, save or delete them."
+    "mediaText": "Asked only when you record your recitation in the studio or recite to the app to be checked. Noise removal and the offline Quran AI run on your phone and upload nothing. If you choose the Phone engine for tasmee', your voice goes to your phone's speech service (usually Google) under its own privacy policy. Recordings stay in the app until you share, save or delete them."
   },
   "prayer": {
     "fajr": "Fajr",

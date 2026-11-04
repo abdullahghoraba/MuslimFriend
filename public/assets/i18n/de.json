@@ -205,7 +205,7 @@
     "about": "Über",
     "version": "Version",
     "privacy": "Datenschutz",
-    "privacyText": "Muslim Friend hat keine Werbung, keine Analyse und kein Tracking. Deine Daten bleiben auf deinem Gerät. Das Internet wird nur für Koranrezitationen genutzt, die du abspielen möchtest.",
+    "privacyText": "Muslim Friend hat keine Werbung, keine Analyse und kein Tracking. Ihre Daten bleiben auf Ihrem Gerät. Das Internet wird nur für das genutzt, was Sie abspielen, öffnen oder herunterladen (Rezitationen, Radio, Hadithe, Mushafs, Tafsire, die Offline-Koran-KI), und, wenn Sie für Tasmee' „Telefon“ wählen, für die Spracherkennung Ihres Telefons.",
     "credits": "Danksagungen und Lizenzen",
     "quranCredit": "Korantext: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Arabische Schrift: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -383,7 +383,7 @@
     "backupTitle": "Sicherungen",
     "backupText": "Der Export erstellt eine Datei und öffnet das Teilen-Menü. Du entscheidest, wohin sie geht; die App lädt nichts hoch. Online-Quellen (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) erhalten nur die Anfrage nach einer Datei oder einem Hadith, nichts über dich.",
     "mediaTitle": "Mikrofon und Kamera",
-    "mediaText": "Nur angefragt, wenn Sie im Studio Ihre Rezitation aufnehmen oder der App zur Prüfung vortragen. Rauschentfernung und Spracherkennung laufen auf Ihrem Telefon; nichts wird hochgeladen. Aufnahmen bleiben in der App, bis Sie sie teilen, speichern oder löschen."
+    "mediaText": "Nur angefragt, wenn Sie im Studio Ihre Rezitation aufnehmen oder der App zur Prüfung vortragen. Rauschentfernung und die Offline-Koran-KI laufen auf Ihrem Telefon und laden nichts hoch. Wählen Sie für Tasmee' die Erkennung „Telefon“, geht Ihre Stimme an den Spracherkennungsdienst Ihres Telefons (meist Google), nach dessen eigener Datenschutzerklärung. Aufnahmen bleiben in der App, bis Sie sie teilen, speichern oder löschen."
   },
   "prayer": {
     "fajr": "Fajr",

@@ -4,7 +4,7 @@ import { normalizeArabic } from '../quran/quran-utils';
  * Forgiving search for names (reciters, suras, radios, the Names of Allah...):
  * - Arabic ignores tashkeel, hamza forms, ى/ي, ة/ه, spaces ("عبد الباسط" = "عبدالباسط") and a leading "ال";
  * - Latin ignores case, accents, punctuation and how a name is transliterated: "Menshawy" finds "Al-Minshawi",
- *   "Sudais" finds "Alsudaes", "Husari" finds "Al-Hussary" (compared by consonants);
+ *   "Shuraim" finds "Al-Shuraym", "Husari" finds "Al-Hussary" (compared by consonants);
  * - several words match in any order and each may match a different field ("الحصري ورش": the reciter's name and
  *   one of his recordings).
  */
@@ -76,7 +76,7 @@ export function prepareQuery(query: string): SearchQuery {
       }
       const latin = foldLatin(w).replace(/\s/g, '');
       const skel = skeleton(latin);
-      // Short skeletons match too much; "afasy" (fs) is still specific enough with four letters typed.
+      // Short skeletons match too much; "ajmi" (jm) is still specific enough with four letters typed.
       const useSkel = skel.length >= 3 || (skel.length === 2 && latin.length >= 4);
       return latin ? { latin, skel: useSkel ? skel : undefined } : {};
     })

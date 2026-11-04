@@ -205,7 +205,7 @@
     "about": "Tentang",
     "version": "Versi",
     "privacy": "Privasi",
-    "privacyText": "Muslim Friend tanpa iklan, tanpa analitik, dan tanpa pelacakan. Data Anda tetap di perangkat Anda. Internet hanya dipakai untuk audio murotal Al-Qur'an yang Anda pilih untuk diputar.",
+    "privacyText": "Muslim Friend tanpa iklan, tanpa analitik, dan tanpa pelacakan. Data Anda tetap di perangkat Anda. Internet hanya dipakai untuk yang Anda pilih untuk diputar, dibuka, atau diunduh (tilawah, radio, hadis, mushaf, tafsir, AI Al-Qur'an offline) dan, jika Anda memilih mesin \"Ponsel\" untuk tasmi', untuk pengenalan suara ponsel.",
     "credits": "Kredit dan lisensi",
     "quranCredit": "Teks Al-Qur'an: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Huruf Arab: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -383,7 +383,7 @@
     "backupTitle": "Cadangan",
     "backupText": "Ekspor membuat berkas dan membuka lembar berbagi. Anda yang menentukan tujuannya; aplikasi tidak mengunggah apa pun. Sumber daring (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) hanya menerima permintaan berkas atau hadis, tidak ada data tentang Anda.",
     "mediaTitle": "Mikrofon dan kamera",
-    "mediaText": "Hanya diminta saat Anda merekam tilawah di studio atau menyetorkan bacaan ke aplikasi untuk dikoreksi. Penghilang bising dan pengenalan suara berjalan di ponsel Anda; tidak ada yang diunggah. Rekaman tetap di aplikasi sampai Anda membagikan, menyimpan, atau menghapusnya."
+    "mediaText": "Hanya diminta saat Anda merekam tilawah di studio atau menyetorkan bacaan ke aplikasi untuk dikoreksi. Penghilang bising dan AI Al-Qur'an offline berjalan di ponsel Anda dan tidak mengunggah apa pun. Jika Anda memilih mesin \"Ponsel\" untuk tasmi', suara Anda dikirim ke layanan pengenalan suara ponsel (biasanya Google) sesuai kebijakan privasinya sendiri. Rekaman tetap di aplikasi sampai Anda membagikan, menyimpan, atau menghapusnya."
   },
   "prayer": {
     "fajr": "Subuh",

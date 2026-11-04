@@ -3,7 +3,7 @@ import { foldLatin, prepareQuery, prepareSearch, searchList, searchMatches, sear
 
 describe('forgiving name search', () => {
   it('folds Latin and reduces names to consonants', () => {
-    expect(foldLatin('Mishary Al-ʿAfāsy')).toBe('mishary al afasy');
+    expect(foldLatin('ʿAbd al-ʿAzīz')).toBe('abd al aziz');
     expect(skeleton('minshawi')).toBe(skeleton('menshawy'));
     expect(skeleton('hussary')).toBe(skeleton('husari'));
     expect(skeleton('shuraim')).toBe(skeleton('shuraym'));
@@ -14,16 +14,16 @@ describe('forgiving name search', () => {
     expect(searchMatches('المنشاوى', 'محمد صديق المنشاوي')).toBe(true);
     expect(searchMatches('منشاوي', 'محمد صديق المنشاوي')).toBe(true);
     expect(searchMatches('الحُصَرِي', 'محمود خليل الحصري')).toBe(true);
-    expect(searchMatches('السديس', 'محمود خليل الحصري')).toBe(false);
+    expect(searchMatches('الشريم', 'محمود خليل الحصري')).toBe(false);
   });
 
   it('matches transliterations that differ from the stored spelling', () => {
-    expect(searchMatches('Sudais', 'Abdulrahman Alsudaes')).toBe(true);
+    expect(searchMatches('Shuraim', 'Saud Al-Shuraym')).toBe(true);
     expect(searchMatches('menshawy', 'Mohammed Siddiq Al-Minshawi')).toBe(true);
     expect(searchMatches('husari', 'Mahmoud Khalil Al-Hussary')).toBe(true);
     expect(searchMatches('abdel basit', 'Abdulbasit Abdulsamad')).toBe(true);
-    expect(searchMatches('afasy', 'Mishary Alafasi')).toBe(true);
-    expect(searchMatches('xyz', 'Mishary Alafasi')).toBe(false);
+    expect(searchMatches('muaiqly', 'Maher Al Meaqli')).toBe(true);
+    expect(searchMatches('xyz', 'Maher Al Meaqli')).toBe(false);
   });
 
   it('needs every word, each in any field', () => {
@@ -53,7 +53,8 @@ describe('forgiving name search', () => {
     expect(find('abdul basit')).toContain('عبدالباسط عبدالصمد');
     expect(find('المنشاوي المعلم')).toContain('محمد صديق المنشاوي');
     expect(find('Minshawy')).toContain('محمد صديق المنشاوي');
-    expect(find('sudais')).toContain('عبدالرحمن السديس');
-    expect(find('العفاسي')).toContain('مشاري العفاسي');
+    expect(find('sudais')).toEqual([]);
+    expect(find('المعيقلي')).toContain('ماهر المعيقلي');
+    expect(find('العفاسي')).toEqual([]);
   });
 });

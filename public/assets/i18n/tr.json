@@ -205,7 +205,7 @@
     "about": "Hakkında",
     "version": "Sürüm",
     "privacy": "Gizlilik",
-    "privacyText": "Muslim Friend'de reklam, analiz ve takip yoktur. Verileriniz cihazınızda kalır. İnternet yalnızca dinlemeyi seçtiğiniz Kuran tilaveti sesi için kullanılır.",
+    "privacyText": "Muslim Friend'de reklam, analiz ve takip yoktur. Verileriniz cihazınızda kalır. İnternet yalnızca sizin çalmayı, açmayı veya indirmeyi seçtikleriniz için (tilavetler, radyo, hadisler, mushaflar, tefsirler, çevrimdışı Kur'an yapay zekâsı) ve tesmî için \"Telefon\" motorunu seçerseniz telefonun konuşma tanıması için kullanılır.",
     "credits": "Emeği geçenler ve lisanslar",
     "quranCredit": "Kuran metni: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Arapça yazı tipi: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -383,7 +383,7 @@
     "backupTitle": "Yedekler",
     "backupText": "Dışa aktarma bir dosya oluşturur ve paylaşım ekranını açar. Nereye gideceğine sen karar verirsin; uygulama hiçbir şey yüklemez. Çevrimiçi kaynaklar (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) yalnızca dosya veya hadis isteğini alır, senin hakkında hiçbir şey almaz.",
     "mediaTitle": "Mikrofon ve kamera",
-    "mediaText": "Yalnızca stüdyoda tilavetinizi kaydederken veya kontrol için uygulamaya okurken istenir. Gürültü giderme ve konuşma tanıma telefonunuzda çalışır; hiçbir şey yüklenmez. Kayıtlar siz paylaşana, kaydedene veya silene kadar uygulamada kalır."
+    "mediaText": "Yalnızca stüdyoda tilavetinizi kaydederken veya kontrol için uygulamaya okurken istenir. Gürültü giderme ve çevrimdışı Kur'an yapay zekâsı telefonunuzda çalışır ve hiçbir şey yüklemez. Tesmî için \"Telefon\" motorunu seçerseniz sesiniz, kendi gizlilik politikasına göre telefonunuzun konuşma tanıma hizmetine (genellikle Google) gider. Kayıtlar siz paylaşana, kaydedene veya silene kadar uygulamada kalır."
   },
   "prayer": {
     "fajr": "Sabah",
