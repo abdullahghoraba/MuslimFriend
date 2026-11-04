@@ -5,7 +5,8 @@
   ><ion-toolbar
     ><ion-segment [value]="tab()" (ionChange)="setTab($event.detail.value)"
       ><ion-segment-button value="plans"><ion-label>{{ 'hifz.tabPlans' | translate }}</ion-label></ion-segment-button
-      ><ion-segment-button value="tasmee"><ion-label>{{ 'tasmee.short' | translate }}</ion-label></ion-segment-button></ion-segment
+      ><ion-segment-button value="tasmee"><ion-label>{{ 'tasmee.short' | translate }}</ion-label></ion-segment-button
+      ><ion-segment-button value="test"><ion-label>{{ 'recall.title' | translate }}</ion-label></ion-segment-button></ion-segment
     ></ion-toolbar
   ></ion-header
 >
@@ -15,13 +16,15 @@
     @if (tasmeeOpened()) {
       <app-tasmee [hidden]="tab() !== 'tasmee'" [startSura]="tasmeeRange()?.sura" [startFrom]="tasmeeRange()?.from" [startTo]="tasmeeRange()?.to" />
     }
+    @if (tab() === 'test') {
+      <app-hifz-test [startSura]="testRange()?.sura" [startFrom]="testRange()?.from" [startTo]="testRange()?.to" />
+    }
     @if (tab() === 'plans') {
     @if (error()) {
       <p role="alert">{{ error() | translate }}</p>
     }
     @if (ready()) {
       <ion-button (click)="open()" [disabled]="busy()">{{ 'hifz.create' | translate }}</ion-button>
-      <ion-button fill="outline" (click)="test([])">{{ 'recall.title' | translate }}</ion-button>
       @if (!service.list().length) {
         <section>
           <h2>{{ 'hifz.emptyTitle' | translate }}</h2>

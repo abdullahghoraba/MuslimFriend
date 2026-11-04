@@ -1439,6 +1439,7 @@
       "strong": "Kuat (AI)"
     },
     "strongUnavailable": "Penghapus hingar kuat tiada pada telefon ini; yang ringan digunakan.",
+    "denoiseUnavailable": "Penghapus hingar tidak dapat bermula pada telefon ini: rakaman akan mengekalkan bunyi bilik. Tutup aplikasi lain dan buka mikrofon semula.",
     "echo": "Gema",
     "reverb": {
       "none": "Tiada",
@@ -1471,8 +1472,8 @@
     "engine": "Pengecaman",
     "enginePhone": "Telefon (pantas)",
     "downloading": "Memuat turun… {{pct}}%",
-    "download": "Muat turun (36 MB)",
-    "phoneAbout": "Menggunakan pengecaman pertuturan telefon (Google). Lebih baik dalam talian atau dengan pakej Arab luar talian.",
+    "download": "Muat turun (40 MB)",
+    "phoneAbout": "Menggunakan pengecaman pertuturan telefon (Google). Lebih baik dalam talian atau dengan pakej Arab luar talian. Bagi Al-Quran, ia lebih kerap tersalah dengar berbanding AI Al-Quran.",
     "best": "Terbaik: {{pct}}%",
     "errors": {
       "unavailable": "Pengecaman pertuturan tiada pada telefon ini. Cuba AI luar talian.",
@@ -1495,7 +1496,7 @@
     "history": "Sesi terkini",
     "note": "Ia menyemak perkataan, bukan tajwid. Pengecaman boleh tersalah dengar: dengar ayat itu jika ragu.",
     "engineOffline": "AI Al-Quran (luar talian, tepat)",
-    "offlineAbout": "Model yang dilatih dengan bacaan al-Quran, termasuk orang biasa membaca ke telefon mereka, berjalan pada telefon anda: tanpa internet selepas sekali muat turun 36 MB.",
+    "offlineAbout": "Model yang dilatih dengan bacaan al-Quran, termasuk orang biasa membaca ke telefon mereka, berjalan pada telefon anda: tanpa internet selepas sekali muat turun 40 MB.",
     "offlineReady": "AI Al-Quran sedia (berfungsi luar talian).",
     "noVoice": "Mikrofon tidak mendengar apa-apa: pastikan ia tidak ditutup dan aplikasi dibenarkan menggunakannya.",
     "mic": "Tahap mikrofon"

@@ -1439,6 +1439,7 @@
       "strong": "Güçlü (YZ)"
     },
     "strongUnavailable": "Güçlü gürültü giderme bu telefonda yok; hafif olan kullanılıyor.",
+    "denoiseUnavailable": "Gürültü giderme bu telefonda başlatılamadı: kayıtta ortamın gürültüsü kalacak. Diğer uygulamaları kapatıp mikrofonu yeniden açın.",
     "echo": "Yankı",
     "reverb": {
       "none": "Yok",
@@ -1471,8 +1472,8 @@
     "engine": "Tanıma",
     "enginePhone": "Telefon (hızlı)",
     "downloading": "İndiriliyor… %{{pct}}",
-    "download": "İndir (36 MB)",
-    "phoneAbout": "Telefonun konuşma tanımasını (Google) kullanır. Çevrimiçi veya çevrimdışı Arapça paketiyle daha iyi çalışır.",
+    "download": "İndir (40 MB)",
+    "phoneAbout": "Telefonun konuşma tanımasını (Google) kullanır. Çevrimiçi veya çevrimdışı Arapça paketiyle daha iyi çalışır. Kur'an'da, Kur'an yapay zekâsından daha sık yanlış duyar.",
     "best": "En iyi: %{{pct}}",
     "errors": {
       "unavailable": "Bu telefonda konuşma tanıma yok. Çevrimdışı YZ’yi deneyin.",
@@ -1495,7 +1496,7 @@
     "history": "Son oturumlar",
     "note": "Kelimeleri kontrol eder, tecvidi değil. Tanıma yanlış duyabilir: şüphede ayeti dinleyin.",
     "engineOffline": "Kur’an yapay zekâsı (çevrimdışı, isabetli)",
-    "offlineAbout": "Kur’an tilavetiyle, telefonuna okuyan sıradan insanlar dahil, eğitilmiş bir model telefonunuzda çalışır: 36 MB’lık tek bir indirmeden sonra internet gerekmez.",
+    "offlineAbout": "Kur’an tilavetiyle, telefonuna okuyan sıradan insanlar dahil, eğitilmiş bir model telefonunuzda çalışır: 40 MB’lık tek bir indirmeden sonra internet gerekmez.",
     "offlineReady": "Kur’an yapay zekâsı hazır (çevrimdışı çalışır).",
     "noVoice": "Mikrofon hiçbir şey duymuyor: kapalı olmadığını ve uygulamanın izni olduğunu kontrol edin.",
     "mic": "Mikrofon seviyesi"

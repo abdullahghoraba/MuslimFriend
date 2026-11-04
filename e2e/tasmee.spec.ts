@@ -4,15 +4,15 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import ar from '../public/assets/i18n/ar.json';
 
-// The real thing: al-Fatihah recited by Mishary Alafasy (everyayah.com) is played into Chrome's fake microphone, and
+// The real thing: al-Fatihah recited by Mahmoud Khalil Al-Husary (everyayah.com) is played into Chrome's fake microphone, and
 // the offline Quran model (downloaded from Hugging Face, 36 MB) must follow it word by word, also with the noise of a
 // room mixed in. Needs the network; slow.
 // Kept outside test-results, which Playwright empties at the start of every run.
-const WAV = join(tmpdir(), 'muslim-friend-fatiha-alafasy.wav');
+const WAV = join(tmpdir(), 'muslim-friend-fatiha-husary.wav');
 /** The same recitation with ayah 4 («مالك يوم الدين») left out: a skipped ayah to catch. */
-const WAV_SKIP = join(tmpdir(), 'muslim-friend-fatiha-alafasy-no4.wav');
+const WAV_SKIP = join(tmpdir(), 'muslim-friend-fatiha-husary-no4.wav');
 /** The full recitation, quieter, through a phone-like band and with room noise at about 10 dB below the voice. */
-const WAV_NOISY = join(tmpdir(), 'muslim-friend-fatiha-alafasy-noisy.wav');
+const WAV_NOISY = join(tmpdir(), 'muslim-friend-fatiha-husary-noisy.wav');
 const BASE = 'http://localhost:4321';
 
 function makeNoisy(src: string, dst: string): void {
@@ -67,7 +67,7 @@ async function makeWav(path: string, ayat: number[]): Promise<void> {
   if (existsSync(path)) return;
   const parts: string[] = [];
   for (const aya of ayat) {
-    const res = await fetch(`https://everyayah.com/data/Alafasy_128kbps/001${String(aya).padStart(3, '0')}.mp3`);
+    const res = await fetch(`https://everyayah.com/data/Husary_128kbps/001${String(aya).padStart(3, '0')}.mp3`);
     expect(res.ok).toBe(true);
     parts.push(Buffer.from(await res.arrayBuffer()).toString('base64'));
   }

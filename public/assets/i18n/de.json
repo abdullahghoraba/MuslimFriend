@@ -1439,6 +1439,7 @@
       "strong": "Stark (KI)"
     },
     "strongUnavailable": "Starke Rauschentfernung ist auf diesem Telefon nicht verfügbar; die leichte wird verwendet.",
+    "denoiseUnavailable": "Die Rauschentfernung konnte auf diesem Telefon nicht starten: Die Aufnahme behält das Raumgeräusch. Schließen Sie andere Apps und öffnen Sie das Mikrofon erneut.",
     "echo": "Hall",
     "reverb": {
       "none": "Keiner",
@@ -1471,8 +1472,8 @@
     "engine": "Erkennung",
     "enginePhone": "Telefon (schnell)",
     "downloading": "Wird geladen… {{pct}} %",
-    "download": "Herunterladen (36 MB)",
-    "phoneAbout": "Nutzt die Spracherkennung des Telefons (Google). Am besten online oder mit dem Offline-Arabischpaket.",
+    "download": "Herunterladen (40 MB)",
+    "phoneAbout": "Nutzt die Spracherkennung des Telefons (Google). Am besten online oder mit dem Offline-Arabischpaket. Beim Koran verhört es sich öfter als die Koran-KI.",
     "best": "Bestes Ergebnis: {{pct}} %",
     "errors": {
       "unavailable": "Spracherkennung ist auf diesem Telefon nicht verfügbar. Versuchen Sie die Offline-KI.",
@@ -1495,7 +1496,7 @@
     "history": "Letzte Sitzungen",
     "note": "Geprüft werden die Wörter, nicht das Tadschwid. Die Erkennung kann sich verhören: im Zweifel den Vers anhören.",
     "engineOffline": "Koran-KI (offline, genau)",
-    "offlineAbout": "Ein auf Koranrezitation trainiertes Modell – auch auf ganz normale Menschen, die ins Handy rezitieren – läuft auf deinem Telefon: nach einem Download von 36 MB ohne Internet.",
+    "offlineAbout": "Ein auf Koranrezitation trainiertes Modell – auch auf ganz normale Menschen, die ins Handy rezitieren – läuft auf deinem Telefon: nach einem Download von 40 MB ohne Internet.",
     "offlineReady": "Die Koran-KI ist bereit (funktioniert offline).",
     "noVoice": "Das Mikrofon hört nichts: Prüfe, dass es nicht verdeckt ist und die App es nutzen darf.",
     "mic": "Mikrofonpegel"

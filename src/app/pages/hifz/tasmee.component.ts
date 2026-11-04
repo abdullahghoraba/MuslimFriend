@@ -5,10 +5,11 @@ import {
   IonButton, IonIcon, IonLabel, IonProgressBar, IonSegment, IonSegmentButton, IonSelect, IonSelectOption, IonToggle, NavController,
 } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
-import { WordResult, alignRecitation, bestAlternative, heardWords, score, wordKey } from '../../core/tasmee/align';
+import { HeardSource, WordResult, alignRecitation, alignWithCost, bestAlternative, heardWords, rescue, score, wordKey } from '../../core/tasmee/align';
+import { forcedGap, modelLetters } from '../../core/tasmee/ctc-score';
 import { TasmeeEngine, TasmeeService, dropOpenings } from '../../core/tasmee/tasmee.service';
 import { QuranSpeech } from '../../core/tasmee/quran-speech';
-import { PhoneSpeech, SpeechCallbacks } from '../../native/speech';
+import { PhoneSpeech, PhraseReading, SpeechCallbacks } from '../../native/speech';
 import { QuranService } from '../../core/quran/quran.service';
 import { RecitationService } from '../../core/quran/recitation.service';
 import { AyahRef, splitBasmala } from '../../core/quran/quran-utils';
@@ -24,12 +25,19 @@ interface Word {
   end: boolean;
 }
 
+/** A finished phrase: its text, and with the offline recogniser its words' frames and letter probabilities. */
+interface Final {
+  text: string;
+  reading?: PhraseReading;
+}
+
 /**
  * Tasmee' (تسميع), the Hifz page's second tab: recite from memory and the app listens and corrects you, word by word:
  * the words you say correctly appear, a wrong word is shown in red with the right one, a skipped word in orange. Two
  * free engines: Google's (the phone's) speech recognition, biased toward the ayat and choosing among its guesses the
- * one that fits them, or a Quran-trained model on the phone (offline, one 36 MB download; quran-speech.ts).
- * Words only (which word was said), not tajweed.
+ * one that fits them, or a Quran-trained model on the phone (offline, one 36 MB download; quran-speech.ts), whose
+ * mistakes get a second look against the audio itself (align.ts rescue()). A mistake is announced only from
+ * finished phrases: a live reading can stop in the middle of a word. Words only (which word was said), not tajweed.
  */
 @Component({
   selector: 'app-tasmee',
@@ -59,7 +67,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
   readonly to = signal(7);
 
   readonly state = signal<'idle' | 'listening' | 'stopped' | 'done'>('idle');
-  readonly finals = signal<string[]>([]);
+  readonly finals = signal<Final[]>([]);
   readonly partial = signal('');
   readonly error = signal<string | null>(null);
   /** The mistake being shown (stop-on-mistake mode): a run of wrong / skipped words. */
@@ -94,12 +102,50 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     return out;
   });
 
-  readonly heard = computed(() => {
-    const all = heardWords([...this.finals(), this.partial() === '…' ? '' : this.partial()].join(' '));
-    return dropOpenings(all, this.words().slice(0, 4).map((w) => w.text));
-  });
+  /** The words heard so far (with where each came from, to check its audio), without the isti'adha and basmala. */
+  private heard(withPartial: boolean, finals = this.finals()): { texts: string[]; sources: (HeardSource | undefined)[] } {
+    const texts: string[] = [];
+    const sources: (HeardSource | undefined)[] = [];
+    finals.forEach((f, phrase) => {
+      if (f.reading) {
+        for (const w of f.reading.words) {
+          texts.push(w.text);
+          sources.push({ phrase, start: w.start, end: w.end });
+        }
+      } else {
+        for (const w of heardWords(f.text)) {
+          texts.push(w);
+          sources.push(undefined);
+        }
+      }
+    });
+    if (withPartial && this.partial() !== '…') {
+      for (const w of heardWords(this.partial())) {
+        texts.push(w);
+        sources.push(undefined);
+      }
+    }
+    const kept = dropOpenings(texts, this.words().slice(0, 4).map((w) => w.text));
+    return { texts: kept, sources: sources.slice(texts.length - kept.length) };
+  }
 
-  readonly results = computed<WordResult[]>(() => alignRecitation(this.words().map((w) => w.text), this.heard(), this.state() === 'done'));
+  /** How much less likely the written words are than the offline recogniser's own reading of those frames. */
+  private readonly audioGap = (phrase: number, from: number, to: number, words: string[]): number => {
+    const r = this.finals()[phrase]?.reading;
+    return r ? forcedGap(r.lp, r.frames, r.vocab, from, to, words.map(modelLetters)) : Infinity;
+  };
+
+  private resultsOf(withPartial: boolean): WordResult[] {
+    const expected = this.words().map((w) => w.text);
+    const done = this.state() === 'done';
+    const { texts, sources } = this.heard(withPartial);
+    return rescue(alignRecitation(expected, texts, done), expected, sources, this.audioGap, done);
+  }
+
+  /** What is shown: the finished phrases and the one being recited. */
+  readonly results = computed<WordResult[]>(() => this.resultsOf(true));
+  /** What mistakes are announced from: the finished phrases only. */
+  private readonly confirmed = computed<WordResult[]>(() => this.resultsOf(false));
   /** Index of the next word to recite. */
   readonly position = computed(() => {
     const r = this.results();
@@ -208,12 +254,30 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     }
     const expected = this.words().map((w) => w.text);
     const cb: SpeechCallbacks = {
-      onFinal: (t, alternatives) => {
+      onFinal: (t, alternatives, reading) => {
         // Of the recogniser's guesses, the one that fits the ayat from where the reader is.
         const text = alternatives?.length ? bestAlternative(expected, this.position(), alternatives) : t;
-        this.finals.update((f) => [...f, text]);
+        this.finals.update((f) => [...f, { text, reading }]);
         this.partial.set('');
         this.check();
+      },
+      onJoin: (text, reading, phrases) => {
+        // The last phrases read again as one: kept if it confirms more words of the ayat (or as many, fitting better).
+        const list = this.finals();
+        const covered = (f: Final) => f.reading?.phrase !== undefined && phrases.includes(f.reading.phrase);
+        const first = list.findIndex(covered);
+        const at = first >= 0 ? first : list.length;
+        const candidate = [...list.slice(0, at).filter((f) => !covered(f)), { text, reading }, ...list.slice(at).filter((f) => !covered(f))];
+        const fit = (fs: Final[]) => {
+          const a = alignWithCost(expected, this.heard(false, fs).texts);
+          return { correct: a.results.filter((r) => r.status === 'correct').length, cost: a.cost };
+        };
+        const now = fit(list);
+        const joined = fit(candidate);
+        const keep = joined.correct > now.correct || (joined.correct === now.correct && joined.cost < now.cost - 1e-9);
+        if (keep) this.finals.set(candidate);
+        this.check();
+        return keep;
       },
       onPartial: (t) => {
         this.partial.set(t);
@@ -334,7 +398,9 @@ export class TasmeeComponent implements OnInit, OnDestroy {
 
   /** A newly settled mistake: vibrate, and in stop-on-mistake mode pause and show the right word. */
   private check(): void {
-    const r = this.results();
+    // A joined reading of the last phrases is on its way: it may take back a mistake, so wait for it.
+    if (this.engine instanceof QuranSpeech && this.engine.joining) return;
+    const r = this.confirmed();
     for (let i = 0; i < r.length; i++) {
       const x = r[i];
       if ((x.status === 'wrong' || x.status === 'skipped') && x.settled && !this.notified.has(i)) {
@@ -356,6 +422,6 @@ export class TasmeeComponent implements OnInit, OnDestroy {
       }
     }
     // Whole range recited: finish by itself.
-    if (this.state() === 'listening' && r.length && r[r.length - 1].status !== 'pending' && !this.partial()) void this.finish();
+    if (this.state() === 'listening' && r.length && r[r.length - 1].status !== 'pending') void this.finish();
   }
 }

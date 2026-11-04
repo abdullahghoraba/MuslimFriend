@@ -1439,6 +1439,7 @@
       "strong": "Mai ƙarfi (AI)"
     },
     "strongUnavailable": "Cire hayaniya mai ƙarfi ba ya aiki a wannan waya; ana amfani da mai sauƙi.",
+    "denoiseUnavailable": "Cire hayaniya bai iya farawa a wannan wayar ba: rikodin zai riƙe hayaniyar wurin. Rufe sauran manhajoji ka sake buɗe makirufo.",
     "echo": "Amo",
     "reverb": {
       "none": "Babu",
@@ -1471,8 +1472,8 @@
     "engine": "Ganewa",
     "enginePhone": "Waya (mai sauri)",
     "downloading": "Ana saukewa… {{pct}}%",
-    "download": "Sauke (36 MB)",
-    "phoneAbout": "Yana amfani da gane magana na wayarka (Google). Ya fi kyau da intanet ko fakitin Larabci ba intanet.",
+    "download": "Sauke (40 MB)",
+    "phoneAbout": "Yana amfani da gane magana na wayarka (Google). Ya fi kyau da intanet ko fakitin Larabci ba intanet. Amma tana kuskuren jin kalmomin Alƙur'ani fiye da AI na Alƙur'ani.",
     "best": "Mafi kyau: {{pct}}%",
     "errors": {
       "unavailable": "Gane magana ba ya aiki a wannan waya. Gwada AI ba intanet.",
@@ -1495,7 +1496,7 @@
     "history": "Zaman baya-bayan nan",
     "note": "Yana duba kalmomi ne, ba tajwidi ba. Ganewa na iya jin kuskure: saurari ayar idan kana shakka.",
     "engineOffline": "AI na Alƙur’ani (ba tare da intanet ba, daidai)",
-    "offlineAbout": "Wani samfuri da aka horar da shi kan karatun Alƙur’ani, har da na mutane talakawa suna karatu a wayarsu, yana aiki a wayarka: babu buƙatar intanet bayan saukewa ɗaya ta 36 MB.",
+    "offlineAbout": "Wani samfuri da aka horar da shi kan karatun Alƙur’ani, har da na mutane talakawa suna karatu a wayarsu, yana aiki a wayarka: babu buƙatar intanet bayan saukewa ɗaya ta 40 MB.",
     "offlineReady": "AI na Alƙur’ani ya shirya (yana aiki ba tare da intanet ba).",
     "noVoice": "Makirufo ba ya jin komai: duba cewa ba a rufe shi ba kuma manhajar tana da izinin amfani da shi.",
     "mic": "Ƙarfin makirufo"

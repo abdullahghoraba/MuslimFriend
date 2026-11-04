@@ -1439,6 +1439,7 @@
       "strong": "Forte (IA)"
     },
     "strongUnavailable": "La suppression forte n'est pas disponible sur ce téléphone ; la légère est utilisée.",
+    "denoiseUnavailable": "La suppression du bruit n’a pas pu démarrer sur ce téléphone : l’enregistrement garde le bruit de la pièce. Fermez les autres applis et rouvrez le micro.",
     "echo": "Écho",
     "reverb": {
       "none": "Aucun",
@@ -1471,8 +1472,8 @@
     "engine": "Reconnaissance",
     "enginePhone": "Téléphone (rapide)",
     "downloading": "Téléchargement… {{pct}} %",
-    "download": "Télécharger (36 Mo)",
-    "phoneAbout": "Utilise la reconnaissance vocale du téléphone (Google). Fonctionne mieux en ligne ou avec le pack arabe hors ligne.",
+    "download": "Télécharger (40 Mo)",
+    "phoneAbout": "Utilise la reconnaissance vocale du téléphone (Google). Fonctionne mieux en ligne ou avec le pack arabe hors ligne. Pour le Coran, elle se trompe plus souvent que l’IA du Coran.",
     "best": "Meilleur score : {{pct}} %",
     "errors": {
       "unavailable": "La reconnaissance vocale n’est pas disponible sur ce téléphone. Essayez l’IA hors ligne.",
@@ -1495,7 +1496,7 @@
     "history": "Séances récentes",
     "note": "Vérifie les mots, pas le tajwid. La reconnaissance peut mal entendre : écoutez le verset en cas de doute.",
     "engineOffline": "IA du Coran (hors ligne, précise)",
-    "offlineAbout": "Un modèle entraîné sur la récitation du Coran, y compris celle de personnes ordinaires récitant dans leur téléphone, tourne sur votre téléphone : plus besoin d’internet après un téléchargement de 36 Mo.",
+    "offlineAbout": "Un modèle entraîné sur la récitation du Coran, y compris celle de personnes ordinaires récitant dans leur téléphone, tourne sur votre téléphone : plus besoin d’internet après un téléchargement de 40 Mo.",
     "offlineReady": "L’IA du Coran est prête (fonctionne hors ligne).",
     "noVoice": "Le micro n’entend rien : vérifiez qu’il n’est pas couvert et que l’appli peut l’utiliser.",
     "mic": "Niveau du micro"

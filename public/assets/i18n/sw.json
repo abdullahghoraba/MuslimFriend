@@ -1439,6 +1439,7 @@
       "strong": "Kwa nguvu (AI)"
     },
     "strongUnavailable": "Kuondoa kelele kwa nguvu hakupatikani kwenye simu hii; kidogo kinatumika.",
+    "denoiseUnavailable": "Kuondoa kelele hakukuweza kuanza kwenye simu hii: rekodi itabaki na kelele za mahali. Funga programu nyingine kisha fungua maikrofoni tena.",
     "echo": "Mwangwi",
     "reverb": {
       "none": "Hakuna",
@@ -1471,8 +1472,8 @@
     "engine": "Utambuzi",
     "enginePhone": "Simu (haraka)",
     "downloading": "Inapakua… {{pct}}%",
-    "download": "Pakua (MB 36)",
-    "phoneAbout": "Inatumia utambuzi wa sauti wa simu (Google). Hufanya kazi vizuri ukiwa mtandaoni au na kifurushi cha Kiarabu.",
+    "download": "Pakua (MB 40)",
+    "phoneAbout": "Inatumia utambuzi wa sauti wa simu (Google). Hufanya kazi vizuri ukiwa mtandaoni au na kifurushi cha Kiarabu. Kwa Qur'ani hukosea kusikia mara nyingi kuliko AI ya Qur'ani.",
     "best": "Bora zaidi: {{pct}}%",
     "errors": {
       "unavailable": "Utambuzi wa sauti haupatikani kwenye simu hii. Jaribu AI bila mtandao.",
@@ -1495,7 +1496,7 @@
     "history": "Vipindi vya karibuni",
     "note": "Hukagua maneno, si tajwidi. Utambuzi unaweza kusikia vibaya: sikiliza aya ukiwa na shaka.",
     "engineOffline": "AI ya Qur’ani (bila mtandao, sahihi)",
-    "offlineAbout": "Muundo uliofunzwa kwa usomaji wa Qur’ani, pamoja na watu wa kawaida wakisoma kwenye simu zao, unafanya kazi kwenye simu yako: hakuna mtandao baada ya kupakua mara moja MB 36.",
+    "offlineAbout": "Muundo uliofunzwa kwa usomaji wa Qur’ani, pamoja na watu wa kawaida wakisoma kwenye simu zao, unafanya kazi kwenye simu yako: hakuna mtandao baada ya kupakua mara moja MB 40.",
     "offlineReady": "AI ya Qur’ani iko tayari (inafanya kazi bila mtandao).",
     "noVoice": "Maikrofoni haisikii chochote: hakikisha haijafunikwa na programu ina ruhusa ya kuitumia.",
     "mic": "Kiwango cha maikrofoni"

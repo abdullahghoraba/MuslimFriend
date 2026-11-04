@@ -117,17 +117,30 @@ ion-tab-bar {
   border-radius: 22px 22px 0 0;
   padding-top: 4px;
 }
+/* Material-style tabs: every icon sits in the same pill-sized box (so nothing moves when the tab changes); the
+   selected tab's pill is tinted and its icon filled. No rectangular tap flash or ripple over the whole button. */
 ion-tab-button {
   --color: var(--app-muted);
   --color-selected: var(--ion-color-primary);
+  --ripple-color: transparent;
+  --background-focused: transparent;
+  -webkit-tap-highlight-color: transparent;
   font-weight: 600;
-  ion-icon { font-size: 1.45rem; }
+  ion-icon {
+    font-size: 1.35rem;
+    padding: 4px 20px;
+    border-radius: 999px;
+    background: transparent;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+  }
+  ion-label { margin-top: 4px; font-size: 0.72rem; }
+  &:active ion-icon { transform: scale(0.92); }
 }
 ion-tab-button.tab-selected ion-icon {
-  background: color-mix(in srgb, var(--ion-color-primary) 14%, transparent);
-  border-radius: 999px;
-  padding: 2px 16px;
+  background: color-mix(in srgb, var(--ion-color-primary) 16%, transparent);
 }
+ion-tab-button.tab-selected ion-label { font-weight: 700; }
+ion-tab-button:focus-visible ion-icon { outline: 2px solid var(--ion-color-primary); outline-offset: 2px; }
 
 ion-list[inset],
 ion-list.list-inset {

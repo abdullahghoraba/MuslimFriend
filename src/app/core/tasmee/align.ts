@@ -20,6 +20,10 @@ export interface WordResult {
   heard?: string;
   /** Settled: the reciter has gone on past it, so it will not change any more. */
   settled: boolean;
+  /** The heard words matched to it: indexes [from, to) in the heard list (not for skipped words). */
+  h?: [number, number];
+  /** Accepted after checking the audio itself (the recogniser wrote it a little differently). */
+  rescued?: boolean;
 }
 
 /** Letters-only key of a word. */
@@ -84,9 +88,20 @@ const COST_JOIN = 0.05;
  * one reached are 'pending'. A word counts as settled once [settleAfter] correct words follow it, or when [done].
  */
 export function alignRecitation(expected: string[], heard: string[], done = false, settleAfter = 2): WordResult[] {
+  return alignWithCost(expected, heard, done, settleAfter).results;
+}
+
+/**
+ * alignRecitation() with the alignment's cost (0 = every heard word is an expected word, in order): to choose
+ * between two readings of the same recitation, the one that fits the ayat better.
+ */
+export function alignWithCost(expected: string[], heard: string[], done = false, settleAfter = 2): { results: WordResult[]; cost: number } {
   const E = expected.map(wordKey);
-  const H = heard.map(wordKey).filter(Boolean);
-  const heardText = heard.filter((w) => wordKey(w));
+  // Heard words without letters are dropped; [hIndex] maps back to the caller's list.
+  const hIndex: number[] = [];
+  heard.forEach((w, k) => wordKey(w) && hIndex.push(k));
+  const H = hIndex.map((k) => wordKey(heard[k]));
+  const heardText = hIndex.map((k) => heard[k]);
   const n = E.length;
   const m = H.length;
   // D[i][j]: least cost of reading the first i expected words as the first j heard words.
@@ -141,35 +156,88 @@ export function alignRecitation(expected: string[], heard: string[], done = fals
   let j = m;
   while (i > 0 || j > 0) {
     const mv = move[i][j];
+    const h = (a: number, b: number): [number, number] => [hIndex[a], hIndex[b - 1] + 1];
     if (mv === 1) {
       const s = sim(i - 1, j - 1);
-      out[i - 1] = s >= SAME ? { status: 'correct', settled: false } : { status: 'wrong', heard: heardText[j - 1], settled: false };
+      out[i - 1] = s >= SAME ? { status: 'correct', settled: false, h: h(j - 1, j) } : { status: 'wrong', heard: heardText[j - 1], settled: false, h: h(j - 1, j) };
       i--;
       j--;
     } else if (mv === 2) {
       out[i - 1] = { status: 'skipped', settled: false };
       i--;
     } else if (mv === 4) {
-      out[i - 1] = { status: 'correct', settled: false };
+      out[i - 1] = { status: 'correct', settled: false, h: h(j - 2, j) };
       i--;
       j -= 2;
     } else if (mv === 5) {
-      out[i - 1] = { status: 'correct', settled: false };
-      out[i - 2] = { status: 'correct', settled: false };
+      out[i - 1] = { status: 'correct', settled: false, h: h(j - 1, j) };
+      out[i - 2] = { status: 'correct', settled: false, h: h(j - 1, j) };
       i -= 2;
       j--;
     } else {
       j--;
     }
   }
-  // Settled: enough correct words after it (or the session is over).
+  return { results: settle(out, done, settleAfter), cost: D[end][m] };
+}
+
+/** Marks the words that will not change any more: enough correct words after them (or the session is over). */
+export function settle(results: WordResult[], done = false, settleAfter = 2): WordResult[] {
   let correctAfter = 0;
-  for (let k = n - 1; k >= 0; k--) {
-    if (out[k].status === 'pending') continue;
-    out[k].settled = done || correctAfter >= settleAfter;
-    if (out[k].status === 'correct') correctAfter++;
+  for (let k = results.length - 1; k >= 0; k--) {
+    if (results[k].status === 'pending') continue;
+    results[k].settled = done || correctAfter >= settleAfter;
+    if (results[k].status === 'correct') correctAfter++;
   }
-  return out;
+  return results;
+}
+
+/** Where a heard word came from: its phrase and frames (the offline recogniser), so its audio can be checked. */
+export interface HeardSource {
+  phrase: number;
+  start: number;
+  end: number;
+}
+
+/**
+ * Second look at the mistakes, with the audio (offline recogniser): each run of wrong or skipped words, with the
+ * correct word on each side, is scored against the frames those words were heard in; when the audio fits the
+ * written words almost as well as the recogniser's own reading ([gap] at most [maxGap] nats per word), the run was
+ * said right and only written differently («اله» for «الله», two words run together). [sources] gives each heard
+ * word's phrase and frames (undefined: no audio, e.g. a live reading). The results are changed in place and settled
+ * again.
+ */
+export function rescue(
+  results: WordResult[],
+  expected: string[],
+  sources: (HeardSource | undefined)[],
+  gap: (phrase: number, from: number, to: number, words: string[]) => number,
+  done = false,
+  maxGap = 1.6,
+): WordResult[] {
+  const bad = (r: WordResult) => r.status === 'wrong' || r.status === 'skipped';
+  for (let i = 0; i < results.length; i++) {
+    if (!bad(results[i])) continue;
+    let j = i;
+    while (j + 1 < results.length && bad(results[j + 1])) j++;
+    const before = i > 0 && results[i - 1].h ? i - 1 : -1;
+    const after = j + 1 < results.length && results[j + 1].h ? j + 1 : -1;
+    // The heard words from the word before the run to the word after it.
+    const from = before >= 0 ? results[before].h![0] : (results.slice(i, j + 1).find((r) => r.h)?.h?.[0] ?? -1);
+    const to = after >= 0 ? results[after].h![1] : (results.slice(i, j + 1).reverse().find((r) => r.h)?.h?.[1] ?? -1);
+    const src = from >= 0 && to > from ? sources.slice(from, to) : [];
+    if (src.length && src.every((x) => x && x.phrase === src[0]!.phrase)) {
+      const a = before >= 0 ? before : i;
+      const b = after >= 0 ? after : j;
+      const words = expected.slice(a, b + 1);
+      const g = gap(src[0]!.phrase, src[0]!.start - 2, src[src.length - 1]!.end + 2, words);
+      if (g <= maxGap * (j - i + 1)) {
+        for (let k = i; k <= j; k++) results[k] = { ...results[k], status: 'correct', heard: undefined, rescued: true };
+      }
+    }
+    i = j;
+  }
+  return settle(results, done);
 }
 
 /**

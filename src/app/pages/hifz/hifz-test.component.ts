@@ -1,7 +1,5 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
-import {
-  IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToolbar,
-} from '@ionic/angular';
+import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import { IonSelect, IonSelectOption, IonSpinner } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
 import { intlLocale } from '../../core/models';
 import { RecallSegment } from '../../core/quran/recall-test';
@@ -11,21 +9,15 @@ import { SettingsService } from '../../core/services/settings.service';
 import { RecallTestComponent } from '../../shared/recall-test.component';
 import { SelectTextsDirective } from '../../shared/select-texts.directive';
 
-/** Test your memorisation of a range of ayat: /hifz/test?sura=67&from=1&to=10 (or choose here). */
+/**
+ * «Test yourself» (اختبر حفظك), the Hifz page's third tab: the ayat hidden, recite from memory and reveal them to
+ * check. The host gives the ayat (a plan's portion, /hifz?tab=test&sura=67&from=1&to=10); the reader can change them.
+ */
 @Component({
   selector: 'app-hifz-test',
-  imports: [
-    TranslatePipe, RecallTestComponent, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonButton,
-    IonSelect, SelectTextsDirective, IonSelectOption, IonSpinner,
-  ],
+  imports: [TranslatePipe, RecallTestComponent, IonSelect, SelectTextsDirective, IonSelectOption, IonSpinner],
   template: `
-    <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="start"><ion-back-button defaultHref="/hifz" [text]="''" [attr.aria-label]="'common.back' | translate" /></ion-buttons>
-        <ion-title>{{ 'recall.title' | translate }}</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding">
+    <div class="ion-padding">
       @if (!quran.ready()) {
         <ion-spinner />
       } @else {
@@ -43,7 +35,7 @@ import { SelectTextsDirective } from '../../shared/select-texts.directive';
         <p class="note">{{ 'recall.intro' | translate }}</p>
         <app-recall-test [segments]="segments()" [quran]="true" />
       }
-    </ion-content>
+    </div>
   `,
   styles: `
     .pick { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
@@ -51,11 +43,11 @@ import { SelectTextsDirective } from '../../shared/select-texts.directive';
     .note { font-size: 0.85rem; color: var(--app-muted); }
   `,
 })
-export class HifzTestPage {
-  /** Query parameters (component input binding). */
-  readonly suraParam = input<string | undefined>(undefined, { alias: 'sura' });
-  readonly fromParam = input<string | undefined>(undefined, { alias: 'from' });
-  readonly toParam = input<string | undefined>(undefined, { alias: 'to' });
+export class HifzTestComponent {
+  /** The ayat to test (from the host). */
+  readonly startSura = input<number | undefined>(undefined);
+  readonly startFrom = input<number | undefined>(undefined);
+  readonly startTo = input<number | undefined>(undefined);
 
   readonly quran = inject(QuranService);
   private readonly settings = inject(SettingsService);
@@ -77,16 +69,22 @@ export class HifzTestPage {
     return out;
   });
 
-  async ionViewWillEnter(): Promise<void> {
-    await this.quran.load();
-    const sura = Number(this.suraParam());
-    if (sura >= 1 && sura <= 114) {
-      const ayas = this.quran.sura(sura).ayas;
-      const from = Math.min(Math.max(1, Number(this.fromParam()) || 1), ayas);
-      this.sura.set(sura);
-      this.from.set(from);
-      this.to.set(Math.min(Math.max(from, Number(this.toParam()) || ayas), ayas));
-    }
+  constructor() {
+    void this.quran.load();
+    // A new range from the host (another plan's portion).
+    effect(() => {
+      const sura = Number(this.startSura());
+      const f = Number(this.startFrom());
+      const t = Number(this.startTo());
+      if (!this.quran.ready() || !(sura >= 1 && sura <= 114)) return;
+      untracked(() => {
+        const ayas = this.quran.sura(sura).ayas;
+        const from = Math.min(Math.max(1, f || 1), ayas);
+        this.sura.set(sura);
+        this.from.set(from);
+        this.to.set(Math.min(Math.max(from, t || ayas), ayas));
+      });
+    });
   }
 
   setSura(sura: number): void {

@@ -52,7 +52,8 @@ export function dropOpenings(heard: string[], expectedFirst: string[]): string[]
 @Injectable({ providedIn: 'root' })
 export class TasmeeService {
   readonly history = signal<TasmeeSession[]>([]);
-  readonly prefs = signal<TasmeePrefs>({ engine: 'phone', hideText: true, stopOnMistake: false });
+  /** The Quran AI by default: it hears the Quran much better (until it is downloaded, the phone's recogniser is used). */
+  readonly prefs = signal<TasmeePrefs>({ engine: 'offline', hideText: true, stopOnMistake: false });
   private loaded?: Promise<void>;
 
   load(): Promise<void> {
@@ -67,7 +68,7 @@ export class TasmeeService {
       try {
         const v = p.value ? (JSON.parse(p.value) as Partial<TasmeePrefs>) : {};
         this.prefs.update((d) => ({
-          engine: v.engine === 'offline' || (v.engine as string) === 'whisper' ? 'offline' : d.engine,
+          engine: v.engine === 'phone' ? 'phone' : d.engine,
           hideText: typeof v.hideText === 'boolean' ? v.hideText : d.hideText,
           stopOnMistake: typeof v.stopOnMistake === 'boolean' ? v.stopOnMistake : d.stopOnMistake,
         }));

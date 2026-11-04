@@ -53,10 +53,8 @@ export const routes: Routes = [
     path: 'quran-marks',
     loadComponent: () => import('./pages/quran-marks/quran-marks.page').then((m) => m.QuranMarksPage),
   },
-  {
-    path: 'hifz/test',
-    loadComponent: () => import('./pages/hifz/hifz-test.page').then((m) => m.HifzTestPage),
-  },
+  // «Test yourself» is the Hifz page's third tab.
+  { path: 'hifz/test', redirectTo: ({ queryParams }) => `/hifz?${new URLSearchParams({ ...queryParams, tab: 'test' })}` },
   {
     path: 'hifz',
     loadComponent: () => import('./pages/hifz/hifz.page').then((m) => m.HifzPage),

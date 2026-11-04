@@ -137,21 +137,52 @@ export function ctcGreedy(logProbs: Float32Array, frames: number, vocab = VOCAB.
 }
 
 /**
- * Resampling to 16 kHz (the recogniser's rate) from the microphone's rate (48 kHz on most phones). Going down, each
- * output sample is the mean of the input samples it covers (a box filter), so high frequencies do not fold back into
- * the speech band; going up, linear interpolation.
+ * Resampling to 16 kHz (the recogniser's rate) from the microphone's rate (48 kHz or 44.1 kHz on phones). Going
+ * down, a windowed-sinc low-pass at 7.2 kHz (Blackman window, 16 zero crossings each side) keeps the sound above
+ * 8 kHz (a phone's microphone hears up to 20 kHz: hiss of «س» and «ش», breath, noise) from folding back into the
+ * speech band, where the recogniser would hear it as other letters. Going up, linear interpolation.
  */
+/** The low-pass kernel for one input rate, tabulated (OVERSAMPLE points per input sample). */
+const OVERSAMPLE = 512;
+const kernels = new Map<number, { half: number; table: Float32Array }>();
+function kernel(from: number, to: number): { half: number; table: Float32Array } {
+  const key = from * 1e6 + to;
+  let k = kernels.get(key);
+  if (!k) {
+    const cutoff = (0.45 * to) / from; // cycles per input sample
+    const half = Math.ceil(16 / (2 * cutoff)); // taps each side: 16 zero crossings
+    const table = new Float32Array(half * OVERSAMPLE + 2);
+    for (let i = 0; i < table.length; i++) {
+      const t = Math.min(half, i / OVERSAMPLE);
+      const x = 2 * cutoff * t;
+      const sinc = x === 0 ? 1 : Math.sin(Math.PI * x) / (Math.PI * x);
+      table[i] = sinc * (0.42 + 0.5 * Math.cos((Math.PI * t) / half) + 0.08 * Math.cos((2 * Math.PI * t) / half));
+    }
+    k = { half, table };
+    kernels.set(key, k);
+  }
+  return k;
+}
+
 export function resample(input: Float32Array, from: number, to = SAMPLE_RATE): Float32Array {
   if (from === to) return input;
   const ratio = from / to;
   const out = new Float32Array(Math.floor(input.length / ratio));
   if (ratio > 1) {
-    const prefix = new Float64Array(input.length + 1);
-    for (let i = 0; i < input.length; i++) prefix[i + 1] = prefix[i] + input[i];
+    const { half, table } = kernel(from, to);
     for (let i = 0; i < out.length; i++) {
-      const a = Math.max(0, Math.round((i - 0.5) * ratio));
-      const b = Math.min(input.length, Math.max(a + 1, Math.round((i + 0.5) * ratio)));
-      out[i] = (prefix[b] - prefix[a]) / (b - a);
+      const center = i * ratio;
+      const c = Math.floor(center);
+      let sum = 0;
+      let norm = 0;
+      for (let k = c - half + 1; k <= c + half; k++) {
+        const p = Math.abs(k - center) * OVERSAMPLE;
+        const j = p | 0;
+        const h = table[j] + (table[j + 1] - table[j]) * (p - j);
+        norm += h;
+        if (k >= 0 && k < input.length) sum += input[k] * h;
+      }
+      out[i] = sum / norm;
     }
     return out;
   }
@@ -162,4 +193,61 @@ export function resample(input: Float32Array, from: number, to = SAMPLE_RATE): F
     out[i] = input[a] + (input[b] - input[a]) * (x - a);
   }
   return out;
+}
+
+/** resample() for a stream (the microphone): each chunk in, the 16 kHz samples it completes out. */
+export class StreamResampler {
+  private buf = new Float32Array(0);
+  /** Position of the next output sample, in input samples from the start of [buf]. */
+  private next = 0;
+  private readonly ratio: number;
+  private readonly k?: { half: number; table: Float32Array };
+
+  constructor(
+    private readonly from: number,
+    to = SAMPLE_RATE,
+  ) {
+    this.ratio = from / to;
+    if (this.ratio > 1) this.k = kernel(from, to);
+  }
+
+  push(chunk: Float32Array): Float32Array {
+    if (this.ratio === 1) return chunk.slice();
+    const joined = new Float32Array(this.buf.length + chunk.length);
+    joined.set(this.buf);
+    joined.set(chunk, this.buf.length);
+    this.buf = joined;
+    const half = this.k?.half ?? 1;
+    const out: number[] = [];
+    while (Math.floor(this.next) + half < this.buf.length) {
+      out.push(this.k ? this.filtered(this.next) : this.linear(this.next));
+      this.next += this.ratio;
+    }
+    // Keep only what the next outputs still need.
+    const drop = Math.max(0, Math.floor(this.next) - half - 1);
+    this.buf = this.buf.slice(drop);
+    this.next -= drop;
+    return Float32Array.from(out);
+  }
+
+  private filtered(center: number): number {
+    const { half, table } = this.k!;
+    const c = Math.floor(center);
+    let sum = 0;
+    let norm = 0;
+    for (let k = c - half + 1; k <= c + half; k++) {
+      const p = Math.abs(k - center) * OVERSAMPLE;
+      const j = p | 0;
+      const h = table[j] + (table[j + 1] - table[j]) * (p - j);
+      norm += h;
+      if (k >= 0) sum += this.buf[k] * h;
+    }
+    return sum / norm;
+  }
+
+  private linear(x: number): number {
+    const a = Math.floor(x);
+    const b = Math.min(this.buf.length - 1, a + 1);
+    return this.buf[a] + (this.buf[b] - this.buf[a]) * (x - a);
+  }
 }

@@ -141,6 +141,9 @@
         @if (session() && prefs().denoise === 'strong' && activeDenoise() === 'light') {
           <p class="hint">{{ 'studio.strongUnavailable' | translate }}</p>
         }
+        @if (session() && prefs().denoise !== 'off' && activeDenoise() === 'off') {
+          <p class="hint warn" role="alert">{{ 'studio.denoiseUnavailable' | translate }}</p>
+        }
         <h2>{{ 'studio.echo' | translate }}</h2>
         <ion-segment [value]="prefs().reverb" (ionChange)="setReverb($event.detail.value)" scrollable>
           @for (r of reverbs; track r) {

@@ -22,8 +22,8 @@
 
         <h2>{{ 'tasmee.engine' | translate }}</h2>
         <ion-segment [value]="tasmee.prefs().engine" (ionChange)="setEngine($event.detail.value)">
-          <ion-segment-button value="phone"><ion-label>{{ 'tasmee.enginePhone' | translate }}</ion-label></ion-segment-button>
           <ion-segment-button value="offline"><ion-label>{{ 'tasmee.engineOffline' | translate }}</ion-label></ion-segment-button>
+          <ion-segment-button value="phone"><ion-label>{{ 'tasmee.enginePhone' | translate }}</ion-label></ion-segment-button>
         </ion-segment>
         @if (tasmee.prefs().engine === 'offline') {
           @if (downloading() !== null) {
@@ -67,9 +67,6 @@
       </div>
       @if (quiet()) {
         <p class="hint center">{{ 'tasmee.noVoice' | translate }}</p>
-      }
-      @if (partial()) {
-        <p class="partial" lang="ar" dir="rtl">{{ partial() }}</p>
       }
     }
 

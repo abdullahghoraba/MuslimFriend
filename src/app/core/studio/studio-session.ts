@@ -232,9 +232,10 @@ export class StudioSession {
     let frames = 0;
     let spent = 0;
     let grade = true;
+    const overlay = new Overlay();
     const draw = () => {
       const t0 = performance.now();
-      drawFrame(g, video, this.options.facing === 'user', this.caption(), this.brand, grade);
+      drawFrame(g, video, this.options.facing === 'user', overlay.get(canvas.width, canvas.height, this.caption(), this.brand), grade);
       if (grade && frames < 40) {
         spent += performance.now() - t0;
         if (++frames === 40 && spent / frames > 16) grade = false;
@@ -264,8 +265,33 @@ export class StudioSession {
   private cameraRun = 0;
 }
 
-/** The camera picture filling the portrait frame (cropped, not stretched), then the caption over its foot. */
-export function drawFrame(g: CanvasRenderingContext2D, video: HTMLVideoElement, mirror: boolean, caption: Caption | null, brand: Brand | null = null, grade = true): void {
+/**
+ * What is drawn over the picture (the vignette, the logo, the caption), drawn once into its own canvas and pasted
+ * on every frame: shadows, gradients and text are slow to draw thirty times a second on a phone without a fast
+ * graphics chip, and a busy phone also starves the noise removal of the sound being recorded.
+ */
+export class Overlay {
+  private readonly canvas = document.createElement('canvas');
+  private key = '';
+
+  get(width: number, height: number, caption: Caption | null, brand: Brand | null): HTMLCanvasElement {
+    const key = `${width}x${height}|${caption?.title ?? ''}|${caption?.text ?? ''}|${brand ? `${brand.name}|${brand.image.complete}` : ''}`;
+    if (key !== this.key) {
+      this.key = key;
+      this.canvas.width = width;
+      this.canvas.height = height;
+      const g = this.canvas.getContext('2d')!;
+      g.clearRect(0, 0, width, height);
+      drawVignette(g);
+      if (brand) drawBrand(g, brand);
+      if (caption) drawCaption(g, caption);
+    }
+    return this.canvas;
+  }
+}
+
+/** The camera picture filling the portrait frame (cropped, not stretched), then the overlay (vignette, logo, caption). */
+export function drawFrame(g: CanvasRenderingContext2D, video: HTMLVideoElement, mirror: boolean, overlay: CanvasImageSource | null, grade = true): void {
   const { width: W, height: H } = g.canvas;
   const vw = video.videoWidth || W;
   const vh = video.videoHeight || H;
@@ -273,8 +299,6 @@ export function drawFrame(g: CanvasRenderingContext2D, video: HTMLVideoElement, 
   const dw = vw * scale;
   const dh = vh * scale;
   g.save();
-  g.fillStyle = '#000';
-  g.fillRect(0, 0, W, H);
   // The front camera is shown as in a mirror, as people expect to see themselves.
   if (mirror) {
     g.translate(W, 0);
@@ -285,9 +309,7 @@ export function drawFrame(g: CanvasRenderingContext2D, video: HTMLVideoElement, 
   if (grade) g.filter = 'contrast(1.06) saturate(1.1) brightness(1.03)';
   g.drawImage(video, (W - dw) / 2, (H - dh) / 2, dw, dh);
   g.restore();
-  drawVignette(g);
-  if (brand) drawBrand(g, brand);
-  if (caption) drawCaption(g, caption);
+  if (overlay) g.drawImage(overlay, 0, 0);
 }
 
 /**

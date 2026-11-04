@@ -29,6 +29,7 @@ import { AyahRef } from '../../core/quran/quran-utils';
 import { PrayerService } from '../../core/prayer/prayer.service';
 import { SelectTextsDirective } from '../../shared/select-texts.directive';
 import { TasmeeComponent } from './tasmee.component';
+import { HifzTestComponent } from './hifz-test.component';
 
 /**
  * Hifz: memorisation plans (today's portion, reviews, reminders) and, in the second tab, tasmee' (recite from
@@ -58,20 +59,23 @@ import { TasmeeComponent } from './tasmee.component';
     IonLabel,
     IonIcon,
     TasmeeComponent,
+    HifzTestComponent,
   ],
   templateUrl: './hifz.page.html',
   styleUrl: './hifz.page.scss',
 })
 export class HifzPage {
-  /** ?tab=tasmee&sura=&from=&to= (the mushaf's «Tasmee'», old /tasmee links). */
+  /** ?tab=tasmee|test&sura=&from=&to= (the mushaf's «Tasmee'», old /tasmee and /hifz/test links). */
   readonly tabParam = input<string | undefined>(undefined, { alias: 'tab' });
   readonly suraParam = input<string | undefined>(undefined, { alias: 'sura' });
   readonly fromParam = input<string | undefined>(undefined, { alias: 'from' });
   readonly toParam = input<string | undefined>(undefined, { alias: 'to' });
-  readonly tab = signal<'plans' | 'tasmee'>('plans');
+  readonly tab = signal<'plans' | 'tasmee' | 'test'>('plans');
   /** Tasmee' was opened once: kept (hidden) so a recitation is not lost when looking at the plans. */
   readonly tasmeeOpened = signal(false);
   readonly tasmeeRange = signal<{ sura: number; from: number; to: number } | null>(null);
+  /** The ayat of «Test yourself» (a plan's portion). */
+  readonly testRange = signal<{ sura: number; from: number; to: number } | null>(null);
   private readonly tasmeeView = viewChild(TasmeeComponent);
   readonly service = inject(HifzService);
   readonly quran = inject(QuranService);
@@ -95,10 +99,12 @@ export class HifzPage {
     followUp: true,
   };
   async ionViewWillEnter(): Promise<void> {
-    if (this.tabParam() === 'tasmee') {
+    const tab = this.tabParam();
+    if (tab === 'tasmee' || tab === 'test') {
       const sura = Number(this.suraParam());
-      if (sura >= 1 && sura <= 114) this.tasmeeRange.set({ sura, from: Number(this.fromParam()) || 1, to: Number(this.toParam()) || 0 });
-      this.setTab('tasmee');
+      const range = sura >= 1 && sura <= 114 ? { sura, from: Number(this.fromParam()) || 1, to: Number(this.toParam()) || 0 } : null;
+      if (range) (tab === 'tasmee' ? this.tasmeeRange : this.testRange).set(range);
+      this.setTab(tab);
     }
     await this.run(async () => {
       await this.service.load();
@@ -109,7 +115,7 @@ export class HifzPage {
     void this.tasmeeView()?.stop();
   }
   setTab(v: unknown): void {
-    const t = v === 'tasmee' ? 'tasmee' : 'plans';
+    const t = v === 'tasmee' || v === 'test' ? v : 'plans';
     this.tab.set(t);
     if (t === 'tasmee') this.tasmeeOpened.set(true);
     else void this.tasmeeView()?.stop();
@@ -187,15 +193,13 @@ export class HifzPage {
         queryParams: { sura: r.sura, aya: r.aya, hifz: p.id, ...(repeat ? { repeat: 1 } : {}) },
       });
   }
-  /** Tests memorisation of [refs] (today's portion or the ayat due), from the first one's sura. */
+  /** Tests memorisation of [refs] (today's portion or the ayat due), from the first one's sura, in the third tab. */
   test(refs: AyahRef[]): void {
     const first = refs[0];
-    if (!first) {
-      void this.router.navigate(['/hifz/test']);
-      return;
-    }
+    if (!first) return;
     const inSura = refs.filter((r) => r.sura === first.sura).map((r) => r.aya);
-    void this.router.navigate(['/hifz/test'], { queryParams: { sura: first.sura, from: Math.min(...inSura), to: Math.max(...inSura) } });
+    this.testRange.set({ sura: first.sura, from: Math.min(...inSura), to: Math.max(...inSura) });
+    this.setTab('test');
   }
   memorize(p: HifzPlan): Promise<void> {
     return this.run(() =>

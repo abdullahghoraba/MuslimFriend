@@ -4,11 +4,13 @@ const noiseLib = () => import('@sapphi-red/web-noise-suppressor');
 /**
  * The recitation sound chain, built with the Web Audio API on the phone (nothing is uploaded):
  *
- *   mic -> high-pass (hum, handling noise) -> noise removal -> voice EQ -> compressor -> + reverb -> limiter -> out
+ *   mic -> high-pass (hum, handling noise) -> noise removal -> gate -> voice EQ -> compressor -> + reverb -> limiter -> out
  *
  * Noise removal is a small neural network running in an AudioWorklet: GTCRN ("strong", the default) or RNNoise
- * ("light"), both open source (github.com/sapphi-red/web-noise-suppressor, MIT). The reverb is generated here
- * (no samples to download): a short room, a hall, or the long tail of a large mosque.
+ * ("light"), both open source (github.com/sapphi-red/web-noise-suppressor, MIT). After it, a gate (our own
+ * worklet, assets/studio/gate-processor.js) turns down by 24 dB what is left of the noise between words and ayat,
+ * before the compressor would bring it back up: real rooms leave some noise even after the network. The reverb is
+ * generated here (no samples to download): a short room, a hall, or the long tail of a large mosque.
  */
 
 export type Denoise = 'off' | 'light' | 'strong';
@@ -83,7 +85,10 @@ export class RecitationChain {
   private readonly wet: GainNode;
   private readonly convolver: ConvolverNode;
   private readonly preDenoise: AudioNode;
-  private readonly postDenoise: AudioNode;
+  /** Where the denoised sound goes in: the gate (with noise removal on), else straight to the EQ. */
+  private readonly postDenoise: GainNode;
+  private readonly eq: AudioNode;
+  private gate?: AudioWorkletNode;
 
   private constructor(private readonly ctx: AudioContext, source: AudioNode) {
     const highpass = new BiquadFilterNode(ctx, { type: 'highpass', frequency: 80, Q: 0.7 });
@@ -104,14 +109,15 @@ export class RecitationChain {
 
     source.connect(highpass);
     this.preDenoise = highpass;
-    this.postDenoise = mud;
-    highpass.connect(mud);
+    this.postDenoise = new GainNode(ctx, { gain: 1 });
+    this.eq = mud;
+    highpass.connect(this.postDenoise).connect(mud);
     mud.connect(presence).connect(air).connect(compressor).connect(makeup);
     makeup.connect(dry).connect(limiter);
     makeup.connect(this.convolver).connect(this.wet).connect(limiter);
     limiter.connect(this.output);
     limiter.connect(this.meter);
-    this.nodes.push(highpass, mud, presence, air, compressor, makeup, dry, this.wet, this.convolver, limiter);
+    this.nodes.push(highpass, this.postDenoise, mud, presence, air, compressor, makeup, dry, this.wet, this.convolver, limiter);
   }
 
   /** Builds the chain on [source] (a microphone) with [options]. */
@@ -159,6 +165,23 @@ export class RecitationChain {
     if (node) this.preDenoise.connect(node).connect(this.postDenoise);
     else this.preDenoise.connect(this.postDenoise);
     this.denoise = actual;
+    await this.setGate(actual !== 'off');
+  }
+
+  /** The gate after the noise removal (only with noise removal on: "off" leaves the sound as it is). */
+  private async setGate(on: boolean): Promise<void> {
+    if (on && !this.gate && this.ctx.audioWorklet) {
+      try {
+        await this.ctx.audioWorklet.addModule('assets/studio/gate-processor.js');
+        this.gate = new AudioWorkletNode(this.ctx, 'studio-gate', { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1] });
+      } catch {
+        /* without the gate the chain still works */
+      }
+    }
+    this.postDenoise.disconnect();
+    this.gate?.disconnect();
+    if (on && this.gate) this.postDenoise.connect(this.gate).connect(this.eq);
+    else this.postDenoise.connect(this.eq);
   }
 
   setReverb(reverb: Reverb): void {
@@ -184,6 +207,7 @@ export class RecitationChain {
   }
 
   dispose(): void {
+    this.gate?.disconnect();
     this.denoiser?.disconnect();
     this.denoiser?.destroy?.();
     for (const n of this.nodes) n.disconnect();

@@ -14,10 +14,29 @@ export interface SpeechPlugin {
 const Native = registerPlugin<SpeechPlugin>('Speech');
 
 /** What the recogniser heard: [final] text after pauses (to keep), [partial] the words of the current phrase. */
+/** A phrase as the offline recogniser read it. */
+export interface PhraseReading {
+  /** The phrase's number in the session (the offline recogniser counts its phrases from 0). */
+  phrase?: number;
+  words: { text: string; start: number; end: number }[];
+  lp: Float32Array;
+  frames: number;
+  vocab: number;
+}
+
 export interface SpeechCallbacks {
-  /** [alternatives]: the recogniser's other guesses (best first), when it gives them. */
-  onFinal(text: string, alternatives?: string[]): void;
+  /**
+   * [alternatives]: the recogniser's other guesses (best first), when it gives them. [reading]: the offline
+   * recogniser's words with their frames and letter probabilities (to check a mistake against the audio).
+   */
+  onFinal(text: string, alternatives?: string[], reading?: PhraseReading): void;
   onPartial(text: string, alternatives?: string[]): void;
+  /**
+   * The offline recogniser read the last phrases again joined into one (a pause inside an ayah cuts it in short
+   * pieces, read less well alone): [phrases] are the phrase numbers it covers. Return true to keep this reading in
+   * place of theirs (it fits the ayat better), so the next phrase may be joined to it too.
+   */
+  onJoin?(text: string, reading: PhraseReading, phrases: number[]): boolean;
   onError(code: string): void;
   /** Microphone level 0..1 (the offline engine; to show it hears you). */
   onLevel?(level: number): void;

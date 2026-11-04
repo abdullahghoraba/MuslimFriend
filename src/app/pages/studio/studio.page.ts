@@ -50,7 +50,8 @@ export class StudioPage implements OnDestroy {
 
   readonly lang = computed(() => this.settings.settings().language);
   readonly prefs = signal<StudioPrefs>({ kind: 'audio', facing: 'user', denoise: 'strong', reverb: 'room', captions: true });
-  readonly denoiseLevels: Denoise[] = ['off', 'light', 'strong'];
+  /** Off or the AI (GTCRN). RNNoise («light») removed too little of a real room's noise to offer; it is only the fallback. */
+  readonly denoiseLevels: Denoise[] = ['off', 'strong'];
   readonly reverbs: Reverb[] = ['none', 'room', 'hall', 'mosque'];
 
   /** The ayat to recite (optional): shown on the screen and, in a video, over the picture. */

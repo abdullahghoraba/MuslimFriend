@@ -1439,6 +1439,7 @@
       "strong": "Fuerte (IA)"
     },
     "strongUnavailable": "La eliminación fuerte no está disponible en este teléfono; se usa la ligera.",
+    "denoiseUnavailable": "La eliminación de ruido no pudo iniciarse en este teléfono: la grabación conservará el ruido del lugar. Cierre otras apps y vuelva a abrir el micrófono.",
     "echo": "Eco",
     "reverb": {
       "none": "Ninguno",
@@ -1471,8 +1472,8 @@
     "engine": "Reconocimiento",
     "enginePhone": "Teléfono (rápido)",
     "downloading": "Descargando… {{pct}} %",
-    "download": "Descargar (36 MB)",
-    "phoneAbout": "Usa el reconocimiento de voz del teléfono (Google). Funciona mejor en línea o con el paquete árabe sin conexión.",
+    "download": "Descargar (40 MB)",
+    "phoneAbout": "Usa el reconocimiento de voz del teléfono (Google). Funciona mejor en línea o con el paquete árabe sin conexión. Con el Corán se equivoca más a menudo que la IA del Corán.",
     "best": "Mejor resultado: {{pct}} %",
     "errors": {
       "unavailable": "El reconocimiento de voz no está disponible en este teléfono. Pruebe la IA sin conexión.",
@@ -1495,7 +1496,7 @@
     "history": "Sesiones recientes",
     "note": "Comprueba las palabras, no el tayuid. El reconocimiento puede oír mal: escuche la aleya si tiene dudas.",
     "engineOffline": "IA del Corán (sin conexión, precisa)",
-    "offlineAbout": "Un modelo entrenado con recitación del Corán, incluida la de personas corrientes que recitan al teléfono, funciona en tu móvil: sin internet tras una única descarga de 36 MB.",
+    "offlineAbout": "Un modelo entrenado con recitación del Corán, incluida la de personas corrientes que recitan al teléfono, funciona en tu móvil: sin internet tras una única descarga de 40 MB.",
     "offlineReady": "La IA del Corán está lista (funciona sin conexión).",
     "noVoice": "El micrófono no oye nada: comprueba que no esté tapado y que la app pueda usarlo.",
     "mic": "Nivel del micrófono"

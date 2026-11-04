@@ -1439,6 +1439,7 @@
       "strong": "Strong (AI)"
     },
     "strongUnavailable": "Strong noise removal is not available on this phone; the light one is used.",
+    "denoiseUnavailable": "Noise removal could not start on this phone: the recording keeps the room's noise. Close other apps and open the microphone again.",
     "echo": "Echo",
     "reverb": {
       "none": "None",
@@ -1471,8 +1472,8 @@
     "engine": "Recognition",
     "enginePhone": "Phone (quick)",
     "downloading": "Downloading… {{pct}}%",
-    "download": "Download (36 MB)",
-    "phoneAbout": "Uses your phone's speech recognition (Google). Works best online or with the offline Arabic pack.",
+    "download": "Download (40 MB)",
+    "phoneAbout": "Uses your phone's speech recognition (Google). Works best online or with the offline Arabic pack. For the Quran it mishears more often than the Quran AI.",
     "best": "Best so far: {{pct}}%",
     "errors": {
       "unavailable": "Speech recognition is not available on this phone. Try the offline AI.",
@@ -1495,7 +1496,7 @@
     "history": "Recent sessions",
     "note": "It checks the words (which word was said), not tajweed. Speech recognition can mishear: listen to the ayah when in doubt.",
     "engineOffline": "Quran AI (offline, accurate)",
-    "offlineAbout": "A model trained on Quran recitation, including ordinary people reciting into their phones, runs on your phone: no internet needed after one 36 MB download.",
+    "offlineAbout": "A model trained on Quran recitation, including ordinary people reciting into their phones, runs on your phone: no internet needed after one 40 MB download.",
     "offlineReady": "The Quran AI is ready (works offline).",
     "noVoice": "The microphone hears nothing: check it is not covered and that the app may use it.",
     "mic": "Microphone level"

@@ -1439,6 +1439,7 @@
       "strong": "Kuchli (SI)"
     },
     "strongUnavailable": "Kuchli shovqin tozalash bu telefonda yo'q; yengili ishlatiladi.",
+    "denoiseUnavailable": "Bu telefonda shovqinni tozalash ishga tushmadi: yozuvda xona shovqini qoladi. Boshqa ilovalarni yoping va mikrofonni qayta oching.",
     "echo": "Aks-sado",
     "reverb": {
       "none": "Yo'q",
@@ -1471,8 +1472,8 @@
     "engine": "Tanib olish",
     "enginePhone": "Telefon (tez)",
     "downloading": "Yuklanmoqda… {{pct}}%",
-    "download": "Yuklab olish (36 MB)",
-    "phoneAbout": "Telefonning nutqni tanish xizmatidan (Google) foydalanadi. Onlayn yoki oflayn arab paketi bilan yaxshiroq.",
+    "download": "Yuklab olish (40 MB)",
+    "phoneAbout": "Telefonning nutqni tanish xizmatidan (Google) foydalanadi. Onlayn yoki oflayn arab paketi bilan yaxshiroq. Qur’onda u Qur’on sun’iy intellektidan ko‘ra ko‘proq xato eshitadi.",
     "best": "Eng yaxshi: {{pct}}%",
     "errors": {
       "unavailable": "Bu telefonda nutqni tanish yo‘q. Oflayn SI ni sinab ko‘ring.",
@@ -1495,7 +1496,7 @@
     "history": "So‘nggi mashg‘ulotlar",
     "note": "So‘zlarni tekshiradi, tajvidni emas. Tanish noto‘g‘ri eshitishi mumkin: shubha bo‘lsa oyatni tinglang.",
     "engineOffline": "Qur’on SI (oflayn, aniq)",
-    "offlineAbout": "Qur’on tilovatida, jumladan oddiy odamlarning telefonga qilgan tilovatida o‘qitilgan model telefoningizda ishlaydi: 36 MB bir marta yuklangach internet kerak emas.",
+    "offlineAbout": "Qur’on tilovatida, jumladan oddiy odamlarning telefonga qilgan tilovatida o‘qitilgan model telefoningizda ishlaydi: 40 MB bir marta yuklangach internet kerak emas.",
     "offlineReady": "Qur’on SI tayyor (oflayn ishlaydi).",
     "noVoice": "Mikrofon hech narsani eshitmayapti: yopilmaganini va ilovaga ruxsat berilganini tekshiring.",
     "mic": "Mikrofon darajasi"

@@ -7,10 +7,13 @@
  * runtime's small loader ships with the app (assets/ort). Nothing is uploaded.
  *
  * Messages in:  {type:'load'} | {type:'transcribe', id, audio: Float32Array (16 kHz mono)} | {type:'remove'}
- * Messages out: {type:'progress', loaded, total} | {type:'ready'} | {type:'text', id, text} | {type:'error', id?, message}
+ * Messages out: {type:'progress', loaded, total} | {type:'ready'} | {type:'error', id?, message}
+ *   | {type:'text', id, text, words: [{text, start, end}], lp: Float32Array [frames * vocab], frames, vocab}
+ *   (the words with their frames and the letter probabilities, so tasmee' can check the audio of a mistake)
  */
 import * as ort from 'onnxruntime-web/wasm';
-import { NUM_BINS, ctcGreedy, fbank } from './qasr-features';
+import { NUM_BINS, fbank } from './qasr-features';
+import { HeardSpan, greedyWords } from './ctc-score';
 
 const REVISION = '004f898639f3127a74eac1b898a2cb3ef0b5268d';
 export const QASR_MODEL_URL = `https://huggingface.co/Abdou/quran-asr-small/resolve/${REVISION}/model.int8.onnx`;
@@ -86,16 +89,26 @@ function load(): Promise<ort.InferenceSession> {
   return session;
 }
 
-async function transcribe(audio: Float32Array): Promise<string> {
+interface Reading {
+  text: string;
+  words: HeardSpan[];
+  lp: Float32Array;
+  frames: number;
+  vocab: number;
+}
+
+async function transcribe(audio: Float32Array): Promise<Reading> {
   const s = await load();
   const { data, frames } = fbank(audio);
-  if (frames < 10) return '';
+  if (frames < 10) return { text: '', words: [], lp: new Float32Array(0), frames: 0, vocab: 0 };
   const out = await s.run({
     x: new ort.Tensor('float32', data, [1, frames, NUM_BINS]),
     x_lens: new ort.Tensor('int64', BigInt64Array.from([BigInt(frames)]), [1]),
   });
-  const lp = out['log_probs'];
-  return ctcGreedy(lp.data as Float32Array, lp.dims[1], lp.dims[2]);
+  const t = out['log_probs'];
+  const lp = new Float32Array(t.data as Float32Array);
+  const words = greedyWords(lp, t.dims[1], t.dims[2]);
+  return { text: words.map((w) => w.text).join(' '), words, lp, frames: t.dims[1], vocab: t.dims[2] };
 }
 
 addEventListener('message', async (e: MessageEvent<{ type: string; id?: number; audio?: Float32Array }>) => {
@@ -104,7 +117,8 @@ addEventListener('message', async (e: MessageEvent<{ type: string; id?: number; 
       await load();
       postMessage({ type: 'ready' });
     } else if (e.data.type === 'transcribe' && e.data.audio) {
-      postMessage({ type: 'text', id: e.data.id, text: await transcribe(e.data.audio) });
+      const r = await transcribe(e.data.audio);
+      postMessage({ type: 'text', id: e.data.id, ...r }, { transfer: [r.lp.buffer] });
     } else if (e.data.type === 'remove') {
       session = null;
       await caches.delete(QASR_CACHE);

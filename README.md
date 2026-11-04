@@ -34,11 +34,17 @@ and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
   36 MB download, a Quran recitation model on the phone (`Abdou/quran-asr-small`, MIT, Conformer-CTC trained on
   reciters and ordinary people reciting into phones; its Kaldi fbank front end in `qasr-features.ts`, run by
   onnxruntime-web in a worker, its WebAssembly downloaded and cached with the model), offline. Google's recogniser is biased toward the ayat
-  (Android 13+, segmented session) and the alternative that fits the ayat is chosen. Lives in the Hifz page's second
-  tab. Words only, not tajweed. e2e: Alafasy's al-Fatihah, clean and with room noise, played into a fake microphone is
-  followed at 100%, and a skipped ayah is caught.
+  (Android 13+, segmented session) and the alternative that fits the ayat is chosen. The offline engine listens in
+  phrases (pauses found against the room's quietest moments; a breath is not voice), reads a phrase again joined with
+  the one before when that fits the ayat better (a pause inside an ayah), and checks each mistake against the audio
+  itself (CTC forced scoring, `ctc-score.ts`) before showing it; mistakes are announced from finished phrases only.
+  Measured on ordinary non-Arab reciters' phone recordings labelled correct (RetaSy Quranic Audio Dataset, two shards,
+  243 ayat): 1.5% of words wrongly marked (1.0.13: 39%), and every skipped or replaced ayah in built sessions caught.
+  Lives in the Hifz page's second tab (the third is «test yourself»). Words only, not tajweed. e2e: Al-Husary's
+  al-Fatihah, clean and with room noise, played into a fake microphone is followed at 100%, and a skipped ayah is caught.
 - **Recitation studio:** record your recitation as sound or video (front/back camera), with on-phone AI noise removal
-  (GTCRN / RNNoise), voice EQ, compressor and optional room / hall / mosque reverb; the ayat on screen and over the
+  (GTCRN; RNNoise only as a fallback) and a gate that quiets the pauses, voice EQ, compressor and optional room / hall /
+  mosque reverb (real room noise in phone recordings: 31 dB less, sound and video); the ayat on screen and over the
   video; compare with the original; share or save to the gallery.
 - **Listen:** 244 reciters with whole suras in every recorded riwayah (Hafs, Warsh, Qalun...) and 176 Quran radio
   stations from mp3quran.net: search, filter by riwayah (18 riwayat of the ten qira'at), favourites, next sura plays on its own, repeat, sleep timer,

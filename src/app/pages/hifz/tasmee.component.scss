@@ -47,7 +47,6 @@ ion-progress-bar.top { position: sticky; top: 0; z-index: 2; border-radius: 4px;
   .num { color: var(--ion-color-primary); font-size: 1.1rem; }
 }
 
-.partial { text-align: center; color: var(--app-muted); font-size: 1rem; min-height: 1.5em; }
 
 .correction {
   padding: 14px;
@@ -101,3 +100,7 @@ ion-progress-bar.top { position: sticky; top: 0; z-index: 2; border-radius: 4px;
 }
 
 .note { color: var(--app-muted); font-size: 0.8rem; line-height: 1.5; text-align: center; margin-top: 18px; }
+
+/* Engine names are long in some languages: they wrap instead of being cut. */
+.setup ion-segment-button { min-height: 48px; }
+.setup ion-segment-button ion-label { white-space: normal; line-height: 1.25; padding: 6px 0; }
