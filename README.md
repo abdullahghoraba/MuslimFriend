@@ -33,7 +33,7 @@ and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
   score, mistakes to review, history. Engines: the phone's speech recognition (native `SpeechPlugin.kt`) or, after an
   36 MB download, a Quran recitation model on the phone (`Abdou/quran-asr-small`, MIT, Conformer-CTC trained on
   reciters and ordinary people reciting into phones; its Kaldi fbank front end in `qasr-features.ts`, run by
-  onnxruntime-web in a worker, the runtime bundled in assets/ort), offline. Google's recogniser is biased toward the ayat
+  onnxruntime-web in a worker, its WebAssembly downloaded and cached with the model), offline. Google's recogniser is biased toward the ayat
   (Android 13+, segmented session) and the alternative that fits the ayat is chosen. Lives in the Hifz page's second
   tab. Words only, not tajweed. e2e: Alafasy's al-Fatihah, clean and with room noise, played into a fake microphone is
   followed at 100%, and a skipped ayah is caught.

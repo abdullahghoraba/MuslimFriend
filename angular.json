@@ -44,7 +44,7 @@
                 "output": "assets/noise"
               },
               {
-                "glob": "ort-wasm-simd-threaded.{wasm,mjs}",
+                "glob": "ort-wasm-simd-threaded.mjs",
                 "input": "node_modules/onnxruntime-web/dist",
                 "output": "assets/ort"
               }
