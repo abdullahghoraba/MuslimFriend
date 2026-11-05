@@ -67,6 +67,7 @@ export class MorePage {
       title: 'more.tools',
       entries: [
         { link: '/zakat', icon: 'calculator-outline', label: 'zakat.title' },
+        { link: '/mawarith', icon: 'git-network-outline', label: 'mawarith.title' },
         { link: '/names', icon: 'sparkles-outline', label: 'names.title' },
         { link: '/qibla', icon: 'compass-outline', label: 'qibla.title' },
         { link: '/qada', icon: 'time-outline', label: 'qada.title' },
