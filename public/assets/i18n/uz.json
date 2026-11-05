@@ -1509,5 +1509,23 @@
     "offlineReady": "Qur’on SI tayyor (oflayn ishlaydi).",
     "noVoice": "Mikrofon hech narsani eshitmayapti: yopilmaganini va ilovaga ruxsat berilganini tekshiring.",
     "mic": "Mikrofon darajasi"
+  },
+  "ruqyah": {
+    "title": "Shar'iy ruqya",
+    "intro": "Siz tanlagan shayx ovozida Qur'ondagi ruqya oyatlari va Payg‘ambar ﷺ o‘rgatgan ruqya. Diqqat bilan tinglang yoki birga o‘qib, og‘riyotgan joyga yengil dam soling.",
+    "sheikh": "Shayx",
+    "play": "Ruqyani ijro etish",
+    "resume": "Davom etish",
+    "pause": "To‘xtatib turish",
+    "stop": "To‘xtatish",
+    "loop": "Tugagach ruqyani boshidan boshlash",
+    "offline": "Ovoz ijro bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.",
+    "length": "Qur'ondan {{count}} oyat",
+    "verses": "Ruqya oyatlari",
+    "playFrom": "Shu yerdan ijro",
+    "duas": "Payg‘ambar ﷺ ruqyasidan",
+    "duasHint": "Ularni o‘zingiz, o‘zingizga yoki bemorga o‘qing.",
+    "radio": "Ruqya radiosi (jonli)",
+    "credit": "Tilovatlar: everyayah.com · Hadislar ikki Sahih va Sunanlardan"
   }
 }

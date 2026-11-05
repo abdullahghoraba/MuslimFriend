@@ -11,7 +11,7 @@ export interface QuranAudioItem {
 }
 export type QuranAudioRepeat = 'off' | 'one' | 'all';
 /** Who plays: each screen follows only its own playback. */
-export type QuranAudioSession = 'listen' | 'mushaf';
+export type QuranAudioSession = 'listen' | 'mushaf' | 'ruqyah';
 
 export interface QuranAudioState {
   /** '' once stopped. */

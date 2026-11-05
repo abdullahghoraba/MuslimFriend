@@ -1509,5 +1509,23 @@
     "offlineReady": "AI na Alƙur’ani ya shirya (yana aiki ba tare da intanet ba).",
     "noVoice": "Makirufo ba ya jin komai: duba cewa ba a rufe shi ba kuma manhajar tana da izinin amfani da shi.",
     "mic": "Ƙarfin makirufo"
+  },
+  "ruqyah": {
+    "title": "Ruƙiyya ta shari'a",
+    "intro": "Ayoyin ruƙiyya na Alƙur'ani da muryar shehin da ka zaɓa, da ruƙiyyar da Annabi ﷺ ya koyar. Saurara da hankali, ko ka karanta tare ka ɗan tofa a wurin da ke ciwo.",
+    "sheikh": "Shehi",
+    "play": "Kunna ruƙiyya",
+    "resume": "Ci gaba",
+    "pause": "Dakata",
+    "stop": "Tsaya",
+    "loop": "Fara ruƙiyya daga farko idan ta ƙare",
+    "offline": "Ba a iya kunna sautin ba. Duba intanet ka sake gwadawa.",
+    "length": "Ayoyi {{count}} na Alƙur'ani",
+    "verses": "Ayoyin ruƙiyya",
+    "playFrom": "Kunna daga",
+    "duas": "Daga ruƙiyyar Annabi ﷺ",
+    "duasHint": "Ka karanta su da kanka, a kanka ko a kan mara lafiya.",
+    "radio": "Rediyon ruƙiyya (kai tsaye)",
+    "credit": "Karatu: everyayah.com · Hadisai daga Sahihai biyu da Sunan"
   }
 }

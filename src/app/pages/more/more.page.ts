@@ -48,6 +48,7 @@ export class MorePage {
       title: 'more.quran',
       entries: [
         { link: '/listen', icon: 'headset-outline', label: 'listen.title' },
+        { link: '/ruqyah', icon: 'shield-checkmark-outline', label: 'ruqyah.title' },
         { link: '/hifz', icon: 'school-outline', label: 'hifz.title' },
         { link: '/studio', icon: 'mic-outline', label: 'studio.title' },
         { link: '/khatmah', icon: 'repeat-outline', label: 'khatmah.title' },

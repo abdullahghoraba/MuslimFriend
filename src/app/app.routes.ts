@@ -78,6 +78,7 @@ export const routes: Routes = [
   { path: 'athkar-settings', loadComponent: () => import('./pages/athkar-settings/athkar-settings.page').then((m) => m.AthkarSettingsPage) },
   { path: 'occasions', loadComponent: () => import('./pages/occasions/occasions.page').then((m) => m.OccasionsPage) },
   { path: 'names', loadComponent: () => import('./pages/names/names.page').then((m) => m.NamesPage) },
+  { path: 'ruqyah', loadComponent: () => import('./pages/ruqyah/ruqyah.page').then((m) => m.RuqyahPage) },
   { path: 'zakat', loadComponent: () => import('./pages/zakat/zakat.page').then((m) => m.ZakatPage) },
   // Recitation studio: record your recitation (sound or video) with noise removal.
   { path: 'studio', loadComponent: () => import('./pages/studio/studio.page').then((m) => m.StudioPage) },

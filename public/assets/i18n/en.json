@@ -1509,5 +1509,23 @@
     "offlineReady": "The Quran AI is ready (works offline).",
     "noVoice": "The microphone hears nothing: check it is not covered and that the app may use it.",
     "mic": "Microphone level"
+  },
+  "ruqyah": {
+    "title": "Ruqyah",
+    "intro": "The ruqyah verses of the Quran in the voice of the sheikh you choose, and the ruqyah the Prophet ﷺ taught. Listen attentively, or read along and blow lightly over the place of pain.",
+    "sheikh": "Sheikh",
+    "play": "Play the ruqyah",
+    "resume": "Resume",
+    "pause": "Pause",
+    "stop": "Stop",
+    "loop": "Start the ruqyah again when it ends",
+    "offline": "The audio could not play. Check your internet connection and try again.",
+    "length": "{{count}} ayat of the Quran",
+    "verses": "Ruqyah verses",
+    "playFrom": "Play from",
+    "duas": "From the ruqyah of the Prophet ﷺ",
+    "duasHint": "Read them yourself, over yourself or over the sick.",
+    "radio": "Ruqyah radio (live)",
+    "credit": "Recitations: everyayah.com · Hadith from the two Sahihs and the Sunan"
   }
 }

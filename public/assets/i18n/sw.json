@@ -1509,5 +1509,23 @@
     "offlineReady": "AI ya Qur’ani iko tayari (inafanya kazi bila mtandao).",
     "noVoice": "Maikrofoni haisikii chochote: hakikisha haijafunikwa na programu ina ruhusa ya kuitumia.",
     "mic": "Kiwango cha maikrofoni"
+  },
+  "ruqyah": {
+    "title": "Ruqya ya kisheria",
+    "intro": "Aya za ruqya za Qur'ani kwa sauti ya sheikh unayemchagua, na ruqya aliyofundisha Mtume ﷺ. Sikiliza kwa makini, au soma pamoja na upulize kidogo mahali penye maumivu.",
+    "sheikh": "Sheikh",
+    "play": "Cheza ruqya",
+    "resume": "Endelea",
+    "pause": "Sitisha",
+    "stop": "Simamisha",
+    "loop": "Anza ruqya upya inapoisha",
+    "offline": "Sauti haikucheza. Angalia intaneti kisha ujaribu tena.",
+    "length": "Aya {{count}} za Qur'ani",
+    "verses": "Aya za ruqya",
+    "playFrom": "Cheza kuanzia",
+    "duas": "Kutoka ruqya ya Mtume ﷺ",
+    "duasHint": "Zisome mwenyewe, juu yako au juu ya mgonjwa.",
+    "radio": "Redio ya ruqya (mubashara)",
+    "credit": "Visomo: everyayah.com · Hadithi kutoka Sahih mbili na Sunan"
   }
 }

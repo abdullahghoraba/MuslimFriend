@@ -1509,5 +1509,23 @@
     "offlineReady": "A IA do Alcorão está pronta (funciona offline).",
     "noVoice": "O microfone não ouve nada: verifique se não está tapado e se a app o pode usar.",
     "mic": "Nível do microfone"
+  },
+  "ruqyah": {
+    "title": "Ruqya",
+    "intro": "Os versículos da ruqya com a voz do xeique que você escolher e a ruqya ensinada pelo Profeta ﷺ. Ouça com atenção, ou leia junto e sopre levemente sobre o local da dor.",
+    "sheikh": "Xeique",
+    "play": "Tocar a ruqya",
+    "resume": "Continuar",
+    "pause": "Pausar",
+    "stop": "Parar",
+    "loop": "Recomeçar a ruqya ao terminar",
+    "offline": "Não foi possível tocar. Verifique a internet e tente de novo.",
+    "length": "{{count}} versículos do Alcorão",
+    "verses": "Versículos da ruqya",
+    "playFrom": "Tocar a partir de",
+    "duas": "Da ruqya do Profeta ﷺ",
+    "duasHint": "Leia você mesmo, sobre si ou sobre o doente.",
+    "radio": "Rádio de ruqya (ao vivo)",
+    "credit": "Recitações: everyayah.com · Hadiths dos dois Sahih e das Sunan"
   }
 }

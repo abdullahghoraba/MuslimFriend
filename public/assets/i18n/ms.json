@@ -1509,5 +1509,23 @@
     "offlineReady": "AI Al-Quran sedia (berfungsi luar talian).",
     "noVoice": "Mikrofon tidak mendengar apa-apa: pastikan ia tidak ditutup dan aplikasi dibenarkan menggunakannya.",
     "mic": "Tahap mikrofon"
+  },
+  "ruqyah": {
+    "title": "Ruqyah",
+    "intro": "Ayat-ayat ruqyah daripada al-Quran dengan suara syeikh pilihan anda, dan ruqyah yang diajar Nabi ﷺ. Dengar dengan khusyuk, atau baca bersama lalu tiup perlahan pada tempat yang sakit.",
+    "sheikh": "Syeikh",
+    "play": "Mainkan ruqyah",
+    "resume": "Sambung",
+    "pause": "Jeda",
+    "stop": "Henti",
+    "loop": "Ulang ruqyah dari awal apabila tamat",
+    "offline": "Audio tidak dapat dimainkan. Semak sambungan internet dan cuba lagi.",
+    "length": "{{count}} ayat al-Quran",
+    "verses": "Ayat-ayat ruqyah",
+    "playFrom": "Main dari",
+    "duas": "Daripada ruqyah Nabi ﷺ",
+    "duasHint": "Bacalah sendiri, untuk diri anda atau orang sakit.",
+    "radio": "Radio ruqyah (siaran langsung)",
+    "credit": "Bacaan: everyayah.com · Hadis daripada dua Sahih dan kitab Sunan"
   }
 }

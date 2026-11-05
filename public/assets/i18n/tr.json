@@ -1509,5 +1509,23 @@
     "offlineReady": "Kur’an yapay zekâsı hazır (çevrimdışı çalışır).",
     "noVoice": "Mikrofon hiçbir şey duymuyor: kapalı olmadığını ve uygulamanın izni olduğunu kontrol edin.",
     "mic": "Mikrofon seviyesi"
+  },
+  "ruqyah": {
+    "title": "Rukye",
+    "intro": "Seçtiğiniz hocanın sesiyle Kur'an'dan rukye ayetleri ve Peygamber ﷺ'in öğrettiği rukye. Dikkatle dinleyin ya da birlikte okuyup ağrıyan yere hafifçe üfleyin.",
+    "sheikh": "Hoca",
+    "play": "Rukyeyi çal",
+    "resume": "Devam et",
+    "pause": "Duraklat",
+    "stop": "Durdur",
+    "loop": "Bitince rukyeyi baştan başlat",
+    "offline": "Ses çalınamadı. İnternet bağlantınızı kontrol edip tekrar deneyin.",
+    "length": "Kur'an'dan {{count}} ayet",
+    "verses": "Rukye ayetleri",
+    "playFrom": "Buradan çal",
+    "duas": "Peygamber ﷺ'in rukyesinden",
+    "duasHint": "Kendiniz, kendinize veya hastaya okuyun.",
+    "radio": "Rukye radyosu (canlı)",
+    "credit": "Tilavetler: everyayah.com · Hadisler iki Sahih ve Sünenlerden"
   }
 }

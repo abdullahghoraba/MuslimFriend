@@ -319,7 +319,7 @@ export class RecitationService {
   }
 
   private onNative(s: QuranAudioState): void {
-    if (!this.current() || s.session === 'listen') return;
+    if (!this.current() || s.session === 'listen' || s.session === 'ruqyah') return;
     if (s.index < 0) {
       // Stopped from the notification.
       this.pendingGroup = undefined;

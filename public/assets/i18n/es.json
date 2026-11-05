@@ -1509,5 +1509,23 @@
     "offlineReady": "La IA del Corán está lista (funciona sin conexión).",
     "noVoice": "El micrófono no oye nada: comprueba que no esté tapado y que la app pueda usarlo.",
     "mic": "Nivel del micrófono"
+  },
+  "ruqyah": {
+    "title": "Ruqya",
+    "intro": "Las aleyas de la ruqya con la voz del jeque que elijas y la ruqya que enseñó el Profeta ﷺ. Escucha con atención, o lee a la vez y sopla suavemente sobre el lugar del dolor.",
+    "sheikh": "Jeque",
+    "play": "Reproducir la ruqya",
+    "resume": "Continuar",
+    "pause": "Pausa",
+    "stop": "Detener",
+    "loop": "Repetir la ruqya desde el inicio al terminar",
+    "offline": "No se pudo reproducir. Comprueba tu conexión a internet e inténtalo de nuevo.",
+    "length": "{{count}} aleyas del Corán",
+    "verses": "Aleyas de la ruqya",
+    "playFrom": "Reproducir desde",
+    "duas": "De la ruqya del Profeta ﷺ",
+    "duasHint": "Léelas tú mismo, sobre ti o sobre el enfermo.",
+    "radio": "Radio de ruqya (en directo)",
+    "credit": "Recitaciones: everyayah.com · Hadices de los dos Sahih y las Sunan"
   }
 }

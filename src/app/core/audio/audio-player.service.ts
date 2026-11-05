@@ -369,7 +369,7 @@ export class AudioPlayerService {
   /** The native player's state: it moves on to the next sura by itself, stops from the notification or the sleep timer. */
   private onNative(s: QuranAudioState): void {
     const now = this.now();
-    if (!now || s.session === 'mushaf') return;
+    if (!now || s.session === 'mushaf' || s.session === 'ruqyah') return;
     if (s.index < 0) {
       this.reset();
       return;

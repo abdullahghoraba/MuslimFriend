@@ -1509,5 +1509,23 @@
     "offlineReady": "Die Koran-KI ist bereit (funktioniert offline).",
     "noVoice": "Das Mikrofon hört nichts: Prüfe, dass es nicht verdeckt ist und die App es nutzen darf.",
     "mic": "Mikrofonpegel"
+  },
+  "ruqyah": {
+    "title": "Ruqya",
+    "intro": "Die Ruqya-Verse des Korans mit der Stimme des Scheichs Ihrer Wahl und die Ruqya, die der Prophet ﷺ lehrte. Hören Sie aufmerksam zu oder lesen Sie mit und pusten Sie leicht auf die schmerzende Stelle.",
+    "sheikh": "Scheich",
+    "play": "Ruqya abspielen",
+    "resume": "Fortsetzen",
+    "pause": "Pause",
+    "stop": "Stopp",
+    "loop": "Ruqya am Ende von vorn beginnen",
+    "offline": "Wiedergabe nicht möglich. Prüfen Sie die Internetverbindung und versuchen Sie es erneut.",
+    "length": "{{count}} Koranverse",
+    "verses": "Ruqya-Verse",
+    "playFrom": "Abspielen ab",
+    "duas": "Aus der Ruqya des Propheten ﷺ",
+    "duasHint": "Lesen Sie sie selbst, für sich oder über dem Kranken.",
+    "radio": "Ruqya-Radio (live)",
+    "credit": "Rezitationen: everyayah.com · Hadithe aus den beiden Sahih und den Sunan"
   }
 }

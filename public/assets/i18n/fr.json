@@ -1509,5 +1509,23 @@
     "offlineReady": "L’IA du Coran est prête (fonctionne hors ligne).",
     "noVoice": "Le micro n’entend rien : vérifiez qu’il n’est pas couvert et que l’appli peut l’utiliser.",
     "mic": "Niveau du micro"
+  },
+  "ruqyah": {
+    "title": "Roqya",
+    "intro": "Les versets de la roqya dans la voix du cheikh de votre choix, et la roqya enseignée par le Prophète ﷺ. Écoutez attentivement, ou lisez en même temps et soufflez légèrement sur l'endroit douloureux.",
+    "sheikh": "Cheikh",
+    "play": "Lancer la roqya",
+    "resume": "Reprendre",
+    "pause": "Pause",
+    "stop": "Arrêter",
+    "loop": "Recommencer la roqya à la fin",
+    "offline": "Lecture impossible. Vérifiez votre connexion Internet et réessayez.",
+    "length": "{{count}} versets du Coran",
+    "verses": "Versets de la roqya",
+    "playFrom": "Lire à partir de",
+    "duas": "De la roqya du Prophète ﷺ",
+    "duasHint": "Lisez-les vous-même, sur vous ou sur le malade.",
+    "radio": "Radio roqya (en direct)",
+    "credit": "Récitations : everyayah.com · Hadiths des deux Sahih et des Sunan"
   }
 }
