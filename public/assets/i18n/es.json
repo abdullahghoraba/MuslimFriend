@@ -1288,7 +1288,16 @@
     "benefits": "Enseñanzas del hadiz",
     "wordMeanings": "Significado de las palabras",
     "more": "Cargar más",
-    "encCredit": "Fuente: Enciclopedia de hadices proféticos traducidos, HadeethEnc.com"
+    "encCredit": "Fuente: Enciclopedia de hadices proféticos traducidos, HadeethEnc.com",
+    "explainButton": "Explícame este hadiz de forma sencilla",
+    "explainTitle": "Explicación del hadiz",
+    "explainLoading": "Buscando una explicación sencilla de este hadiz…",
+    "explainNone": "Aún no se encontró una explicación sencilla de este hadiz. Puedes buscarlo en Dorar.",
+    "explainOffline": "La explicación necesita internet la primera vez; luego queda en tu teléfono. Conéctate y vuelve a intentarlo.",
+    "explainSimilar": "Esto explica una narración cercana de este hadiz con otras palabras; el significado es el mismo:",
+    "explainEarlier": "Esta narración da otra cadena del hadiz anterior del libro; esta es la explicación de ese hadiz:",
+    "explainArabicOnly": "La explicación de este hadiz solo está en árabe.",
+    "explainDorarCredit": "Explicación: enciclopedia de hadices Dorar, dorar.net"
   },
   "wbw": {
     "meaningsIn": "Significados en",

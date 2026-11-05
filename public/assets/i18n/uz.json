@@ -1288,7 +1288,16 @@
     "benefits": "Hadisdan foydalar",
     "wordMeanings": "So'zlar ma'nosi",
     "more": "Yana",
-    "encCredit": "Manba: Tarjima qilingan nabaviy hadislar ensiklopediyasi, HadeethEnc.com"
+    "encCredit": "Manba: Tarjima qilingan nabaviy hadislar ensiklopediyasi, HadeethEnc.com",
+    "explainButton": "Bu hadisni menga sodda tushuntiring",
+    "explainTitle": "Hadis sharhi",
+    "explainLoading": "Bu hadisning sodda sharhi qidirilmoqda…",
+    "explainNone": "Bu hadisning sodda sharhi hali topilmadi. Uni Dorar saytida qidirishingiz mumkin.",
+    "explainOffline": "Sharh birinchi marta internet talab qiladi, keyin telefoningizda saqlanadi. Ulanib, qayta urinib ko‘ring.",
+    "explainSimilar": "Bu — hadisning boshqa lafzdagi yaqin rivoyati sharhi; ma’nosi bir:",
+    "explainEarlier": "Bu rivoyat kitobdagi oldingi hadisning boshqa sanadi; quyida o‘sha hadis sharhi:",
+    "explainArabicOnly": "Bu hadisning sharhi faqat arab tilida mavjud.",
+    "explainDorarCredit": "Sharh: Dorar hadis ensiklopediyasi, dorar.net"
   },
   "wbw": {
     "meaningsIn": "Ma'nolar tili",

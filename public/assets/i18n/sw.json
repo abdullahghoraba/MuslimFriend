@@ -1288,7 +1288,16 @@
     "benefits": "Mafunzo ya hadithi",
     "wordMeanings": "Maana ya maneno",
     "more": "Pakia zaidi",
-    "encCredit": "Chanzo: Ensaiklopidia ya Hadithi za Mtume Zilizotafsiriwa, HadeethEnc.com"
+    "encCredit": "Chanzo: Ensaiklopidia ya Hadithi za Mtume Zilizotafsiriwa, HadeethEnc.com",
+    "explainButton": "Nieleze hadithi hii kwa urahisi",
+    "explainTitle": "Maelezo ya hadithi",
+    "explainLoading": "Tunatafuta maelezo rahisi ya hadithi hii…",
+    "explainNone": "Bado hatujapata maelezo rahisi ya hadithi hii. Unaweza kuitafuta kwenye Dorar.",
+    "explainOffline": "Maelezo yanahitaji intaneti mara ya kwanza, kisha yanabaki kwenye simu yako. Unganisha na ujaribu tena.",
+    "explainSimilar": "Haya ni maelezo ya riwaya iliyo karibu na hadithi hii kwa maneno mengine; maana ni moja:",
+    "explainEarlier": "Riwaya hii inataja mnyororo mwingine wa hadithi iliyoitangulia kitabuni; haya ni maelezo ya hadithi hiyo:",
+    "explainArabicOnly": "Maelezo ya hadithi hii yapo kwa Kiarabu tu.",
+    "explainDorarCredit": "Maelezo: ensaiklopidia ya hadithi Dorar, dorar.net"
   },
   "wbw": {
     "meaningsIn": "Maana kwa lugha",

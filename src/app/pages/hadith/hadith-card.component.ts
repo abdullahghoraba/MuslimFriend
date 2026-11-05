@@ -19,10 +19,13 @@ import { ShareService } from '../../core/services/share.service';
           <ion-badge [color]="color(g.grade)" [attr.aria-label]="g.grade + ' · ' + g.name">{{ 'hadith.grades.' + kind(g.grade) | translate }}@if (g.name) { · <bdi>{{ g.name }}</bdi>}</ion-badge>
         } @empty { <ion-badge [color]="sourceColor()">{{ 'hadith.grades.' + sourceKind() | translate }}</ion-badge> }
       </div>
-      <p class="arabic" lang="ar" dir="rtl">{{ hadith().arabic }}</p>
+      <p class="arabic" lang="ar" dir="rtl" [class.tappable]="explainable()" (click)="explainable() && explain()">{{ hadith().arabic }}</p>
       @if (hadith().translation) {
         @if (hadith().translationLang !== lang()) { <p class="muted">{{ 'hadith.fallback' | translate }}</p> }
         <p class="translation" [attr.lang]="hadith().translationLang" dir="auto">{{ hadith().translation }}</p>
+      }
+      @if (explainable()) {
+        <ion-button class="explain-button" expand="block" (click)="explain()"><ion-icon slot="start" name="bulb-outline" />{{ 'hadith.explainButton' | translate }}</ion-button>
       }
       <ion-button class="ruling-button" fill="outline" expand="block" (click)="ruling()">{{ 'hadith.rulingQuestion' | translate }}</ion-button>
       <div class="actions">
@@ -48,7 +51,10 @@ import { ShareService } from '../../core/services/share.service';
     p { overflow-wrap:anywhere; } .grades,.actions { display:flex; flex-wrap:wrap; gap:4px; }
     ion-badge { white-space:normal; text-align:start; line-height:1.6; }
     ion-button { min-width:44px; min-height:44px; margin:0; }
-    .ruling-button { white-space:normal; height:auto; --padding-top:12px; --padding-bottom:12px; line-height:1.7; margin-block:14px; }
+    .ruling-button,.explain-button { white-space:normal; height:auto; --padding-top:12px; --padding-bottom:12px; line-height:1.7; margin-block:14px; }
+    .explain-button { margin-block:14px 0; font-weight:700; }
+    .tappable { cursor:pointer; -webkit-tap-highlight-color:transparent; border-radius:12px; }
+    .tappable:active { background:color-mix(in srgb,var(--ion-color-primary) 8%,transparent); }
     .note { border-inline-start:3px solid var(--ion-color-primary); padding-inline-start:12px; color:var(--app-muted); }
   `],
 })
@@ -57,6 +63,8 @@ export class HadithCardComponent {
   readonly heading = input('');
   readonly showRead = input(false);
   readonly focused = input(false);
+  /** Offer the simple explanation (the encyclopedia's own page shows it already). */
+  readonly explainable = input(true);
   readonly settings = inject(SettingsService);
   private readonly marks = inject(HadithBookmarksService);
   private readonly shares = inject(ShareService);
@@ -128,6 +136,16 @@ export class HadithCardComponent {
   }
   async resize(delta: number): Promise<void> {
     await this.action(() => this.settings.update({ fontScale: Math.max(.8, Math.min(2, Math.round((this.settings.settings().fontScale + delta) * 10) / 10)) }));
+  }
+  /** The hadith's meaning in simple words: tapping it, or the button under it. */
+  async explain(): Promise<void> {
+    if (this.busy()) return;
+    if (window.getSelection()?.toString()) return; // selecting text to copy, not asking for the meaning
+    await this.action(async () => {
+      const { HadithExplainComponent } = await import('./hadith-explain.component');
+      const modal = await this.modals.create({ component: HadithExplainComponent, componentProps: { hadith: this.hadith(), lang: this.lang() }, breakpoints: [0, .5, 1], initialBreakpoint: 1 });
+      await modal.present();
+    });
   }
   async ruling(): Promise<void> {
     await this.action(async () => {

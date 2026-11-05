@@ -1288,7 +1288,16 @@
     "benefits": "Hadisten çıkan faydalar",
     "wordMeanings": "Kelime anlamları",
     "more": "Daha fazla",
-    "encCredit": "Kaynak: Tercüme Edilmiş Nebevî Hadis Ansiklopedisi, HadeethEnc.com"
+    "encCredit": "Kaynak: Tercüme Edilmiş Nebevî Hadis Ansiklopedisi, HadeethEnc.com",
+    "explainButton": "Bu hadisi bana basitçe açıkla",
+    "explainTitle": "Hadisin açıklaması",
+    "explainLoading": "Bu hadis için basit bir açıklama aranıyor…",
+    "explainNone": "Bu hadis için henüz basit bir açıklama bulunamadı. Dorar'da arayabilirsiniz.",
+    "explainOffline": "Açıklama ilk seferde internet ister, sonra telefonunuzda kalır. Bağlanıp tekrar deneyin.",
+    "explainSimilar": "Bu, hadisin başka kelimelerle gelen yakın bir rivayetinin açıklamasıdır; anlam aynıdır:",
+    "explainEarlier": "Bu rivayet, kitapta kendinden önceki hadisin başka bir senedidir; o hadisin açıklaması:",
+    "explainArabicOnly": "Bu hadisin açıklaması yalnızca Arapça mevcut.",
+    "explainDorarCredit": "Açıklama: Dorar hadis ansiklopedisi, dorar.net"
   },
   "wbw": {
     "meaningsIn": "Anlamların dili",

@@ -1288,7 +1288,16 @@
     "benefits": "Lehren aus dem Hadith",
     "wordMeanings": "Wortbedeutungen",
     "more": "Mehr laden",
-    "encCredit": "Quelle: Enzyklopädie übersetzter prophetischer Hadithe, HadeethEnc.com"
+    "encCredit": "Quelle: Enzyklopädie übersetzter prophetischer Hadithe, HadeethEnc.com",
+    "explainButton": "Erkläre diesen Hadith einfach",
+    "explainTitle": "Erklärung des Hadith",
+    "explainLoading": "Suche nach einer einfachen Erklärung dieses Hadith…",
+    "explainNone": "Für diesen Hadith wurde noch keine einfache Erklärung gefunden. Sie können ihn bei Dorar suchen.",
+    "explainOffline": "Die Erklärung braucht beim ersten Mal Internet, danach bleibt sie auf Ihrem Telefon. Verbinden Sie sich und versuchen Sie es erneut.",
+    "explainSimilar": "Dies erklärt eine nahe Überlieferung dieses Hadith mit anderen Worten; die Bedeutung ist dieselbe:",
+    "explainEarlier": "Diese Überlieferung nennt eine andere Kette für den vorherigen Hadith im Buch; dies ist dessen Erklärung:",
+    "explainArabicOnly": "Die Erklärung dieses Hadith gibt es nur auf Arabisch.",
+    "explainDorarCredit": "Erklärung: Hadith-Enzyklopädie Dorar, dorar.net"
   },
   "wbw": {
     "meaningsIn": "Bedeutungen auf",

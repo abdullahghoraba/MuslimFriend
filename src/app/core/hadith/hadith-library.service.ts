@@ -2,7 +2,8 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { HadithStorage } from './hadith-storage.service';
 import { dailyCandidates, isGoodDaily, localDay } from './daily-online';
-import { DailyHadith, Hadith, HadithCollection, HadithEdition, HadithPackage, dailyIndex, hadithText, normalizeHadith, readHadiths, validateEdition } from './hadith.models';
+import { isChainOnly } from './hadith-explain';
+import { DailyHadith, Hadith, HadithCollection, HadithEdition, HadithPackage, HadithPosition, dailyIndex, hadithText, normalizeHadith, readHadiths, validateEdition } from './hadith.models';
 
 const CDN = 'https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/';
 const DAILY_KEY = 'hadith-daily-online';
@@ -80,6 +81,23 @@ export class HadithLibraryService {
       };
       await Preferences.set({ key: DAILY_KEY, value: JSON.stringify({ day, lang, hadith }) }).catch(() => {});
       return hadith;
+    }
+    return null;
+  }
+
+  /**
+   * The Arabic of the closest hadith before [h] that has its own words, for a narration that only gives another
+   * chain for it («بهذا الإسناد مثله»): from the downloaded book, else online. Null when none of the last six has.
+   */
+  async earlierWithText(h: HadithPosition): Promise<string | null> {
+    const n = Number(h.number);
+    if (!Number.isFinite(n)) return null;
+    const book = await this.package(h.collection).catch(() => null);
+    const rows = book?.editions['ar']?.hadiths;
+    for (let k = Math.floor(n) - 1; k >= Math.max(1, n - 6); k--) {
+      const row = rows ? rows.find((r) => Number(r.hadithnumber) === k) : (await this.one(`ara-${h.collection}`, k))?.hadiths[0];
+      const text = row ? hadithText(row.text) : '';
+      if (text && !isChainOnly(text)) return text;
     }
     return null;
   }

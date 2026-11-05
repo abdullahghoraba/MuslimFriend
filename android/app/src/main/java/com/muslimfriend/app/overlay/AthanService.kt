@@ -102,16 +102,20 @@ class AthanService : Service() {
                     return@post
                 }
                 t.setAudioAttributes(attributes)
-                t.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                    override fun onStart(id: String?) {}
-                    override fun onDone(id: String?) { if (id == "second") handler.post { if (event === incoming) finishPlayback() } }
-                    @Deprecated("Deprecated in Java")
-                    override fun onError(id: String?) { handler.post { if (event === incoming) finishPlayback() } }
-                })
-                val params = Bundle().apply { putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, incoming.volume) }
-                t.speak(text, TextToSpeech.QUEUE_FLUSH, params, "first")
-                t.playSilentUtterance(700, TextToSpeech.QUEUE_ADD, "pause")
-                t.speak(text, TextToSpeech.QUEUE_ADD, params, "second")
+                // Always a man's voice (chosen once per language, see MaleVoice).
+                MaleVoice.apply(this, t, locale, text, handler) {
+                    if (tts !== t || event !== incoming) return@apply
+                    t.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                        override fun onStart(id: String?) {}
+                        override fun onDone(id: String?) { if (id == "second") handler.post { if (event === incoming) finishPlayback() } }
+                        @Deprecated("Deprecated in Java")
+                        override fun onError(id: String?) { handler.post { if (event === incoming) finishPlayback() } }
+                    })
+                    val params = Bundle().apply { putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, incoming.volume) }
+                    t.speak(text, TextToSpeech.QUEUE_FLUSH, params, "first")
+                    t.playSilentUtterance(700, TextToSpeech.QUEUE_ADD, "pause")
+                    t.speak(text, TextToSpeech.QUEUE_ADD, params, "second")
+                }
             }
         }
         tts = engine

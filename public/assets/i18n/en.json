@@ -1288,7 +1288,16 @@
     "benefits": "Lessons from the hadith",
     "wordMeanings": "Word meanings",
     "more": "Load more",
-    "encCredit": "Source: Encyclopedia of Translated Prophetic Hadiths, HadeethEnc.com"
+    "encCredit": "Source: Encyclopedia of Translated Prophetic Hadiths, HadeethEnc.com",
+    "explainButton": "Explain this hadith simply",
+    "explainTitle": "Explanation of the hadith",
+    "explainLoading": "Looking for a simple explanation of this hadith…",
+    "explainNone": "No simple explanation of this hadith was found yet. You can look it up on Dorar.",
+    "explainOffline": "The explanation needs the internet the first time, then it stays on your phone. Connect and try again.",
+    "explainSimilar": "This explains a close narration of this hadith in other words; the meaning is the same:",
+    "explainEarlier": "This narration gives another chain for the hadith before it in the book; this is that hadith's explanation:",
+    "explainArabicOnly": "The explanation of this hadith is only available in Arabic.",
+    "explainDorarCredit": "Explanation: Dorar hadith encyclopedia, dorar.net"
   },
   "wbw": {
     "meaningsIn": "Meanings in",

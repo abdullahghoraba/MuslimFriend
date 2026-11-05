@@ -21,7 +21,7 @@ import { HadithCardComponent } from './hadith-card.component';
           <ion-button fill="outline" (click)="load()">{{ 'hadith.retry' | translate }}</ion-button></div>
       } @else if (hadith(); as h) {
         <p class="title" [attr.dir]="rtl() ? 'rtl' : 'ltr'">{{ h.title }}</p>
-        <app-hadith-card [hadith]="card()!" />
+        <app-hadith-card [hadith]="card()!" [explainable]="false" />
         @if (h.grade && lang() !== 'ar') {
           <p class="meta">{{ h.grade }} · {{ h.attribution }}</p>
         }

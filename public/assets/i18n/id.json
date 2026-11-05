@@ -1288,7 +1288,16 @@
     "benefits": "Faedah hadis",
     "wordMeanings": "Makna kata",
     "more": "Muat lagi",
-    "encCredit": "Sumber: Ensiklopedia Hadis Nabi Terjemahan, HadeethEnc.com"
+    "encCredit": "Sumber: Ensiklopedia Hadis Nabi Terjemahan, HadeethEnc.com",
+    "explainButton": "Jelaskan hadis ini dengan sederhana",
+    "explainTitle": "Penjelasan hadis",
+    "explainLoading": "Mencari penjelasan sederhana hadis ini…",
+    "explainNone": "Belum ditemukan penjelasan sederhana untuk hadis ini. Anda bisa mencarinya di Dorar.",
+    "explainOffline": "Penjelasan butuh internet pertama kali, lalu tersimpan di ponsel Anda. Sambungkan dan coba lagi.",
+    "explainSimilar": "Ini menjelaskan riwayat yang dekat dengan hadis ini dengan lafaz lain; maknanya sama:",
+    "explainEarlier": "Riwayat ini menyebut sanad lain untuk hadis sebelumnya dalam kitab; ini penjelasan hadis tersebut:",
+    "explainArabicOnly": "Penjelasan hadis ini hanya tersedia dalam bahasa Arab.",
+    "explainDorarCredit": "Penjelasan: ensiklopedia hadis Dorar, dorar.net"
   },
   "wbw": {
     "meaningsIn": "Arti dalam",

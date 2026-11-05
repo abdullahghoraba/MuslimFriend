@@ -1288,7 +1288,16 @@
     "benefits": "Darussan hadisin",
     "wordMeanings": "Ma'anonin kalmomi",
     "more": "Ƙari",
-    "encCredit": "Tushe: Kundin Hadisan Annabi da aka Fassara, HadeethEnc.com"
+    "encCredit": "Tushe: Kundin Hadisan Annabi da aka Fassara, HadeethEnc.com",
+    "explainButton": "Yi mini bayanin wannan hadisi a sauƙaƙe",
+    "explainTitle": "Bayanin hadisi",
+    "explainLoading": "Ana neman sauƙaƙƙen bayanin wannan hadisi…",
+    "explainNone": "Ba a sami sauƙaƙƙen bayanin wannan hadisi ba tukuna. Kuna iya nemo shi a Dorar.",
+    "explainOffline": "Bayanin yana buƙatar intanet a karon farko, sannan ya zauna a wayarka. Haɗa intanet ka sake gwadawa.",
+    "explainSimilar": "Wannan bayanin wata riwaya ce mai kusanci da wannan hadisi da wasu kalmomi; ma'anar ɗaya ce:",
+    "explainEarlier": "Wannan riwaya ta ambaci wani isnadi na hadisin da ke gabaninta a littafin; ga bayanin wannan hadisin:",
+    "explainArabicOnly": "Bayanin wannan hadisi yana cikin Larabci kawai.",
+    "explainDorarCredit": "Bayani: kundin hadisi na Dorar, dorar.net"
   },
   "wbw": {
     "meaningsIn": "Ma'anoni da harshe",

@@ -1288,7 +1288,16 @@
     "benefits": "圣训的教益",
     "wordMeanings": "词语释义",
     "more": "加载更多",
-    "encCredit": "来源：圣训译解百科 HadeethEnc.com"
+    "encCredit": "来源：圣训译解百科 HadeethEnc.com",
+    "explainButton": "请用简单的话解释这段圣训",
+    "explainTitle": "圣训讲解",
+    "explainLoading": "正在查找这段圣训的简明讲解…",
+    "explainNone": "暂未找到这段圣训的简明讲解。您可以在 Dorar 上查找。",
+    "explainOffline": "首次查看讲解需要联网，之后会保存在手机上。请联网后重试。",
+    "explainSimilar": "这是对本圣训另一相近传述（措辞不同）的讲解，意思相同：",
+    "explainEarlier": "这段传述是书中前一段圣训的另一传述链；以下是那段圣训的讲解：",
+    "explainArabicOnly": "这段圣训的讲解只有阿拉伯语版本。",
+    "explainDorarCredit": "讲解：Dorar 圣训百科，dorar.net"
   },
   "wbw": {
     "meaningsIn": "释义语言",
