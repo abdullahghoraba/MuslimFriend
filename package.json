@@ -1,6 +1,6 @@
 {
   "name": "muslim-friend",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "scripts": {
     "ng": "ng",
     "start": "npm run content && ng serve",
