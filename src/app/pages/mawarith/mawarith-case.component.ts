@@ -1,6 +1,6 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, input, signal } from '@angular/core';
 import {
-  IonButton, IonIcon, IonInput, IonItem, IonLabel, IonSegment, IonSegmentButton, IonSelect, IonSelectOption, IonTextarea, IonToggle,
+  IonButton, IonIcon, IonItem, IonLabel, IonSegment, IonSegmentButton, IonSelect, IonSelectOption, IonTextarea,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Calculation, SCHOOLS, School, Share, compareSchools } from '../../core/mawarith/engine';
@@ -9,6 +9,9 @@ import { Family, HEIR, HEIRS, HeirGroup, HeirKey } from '../../core/mawarith/hei
 import { parseFamily } from '../../core/mawarith/parse';
 import { intlLocale } from '../../core/models';
 import { SettingsService } from '../../core/services/settings.service';
+import { EstateStore } from '../../core/mawarith/estate-store.service';
+import { MawarithAssetsComponent } from './mawarith-assets.component';
+import { MawarithDivisionComponent } from './mawarith-division.component';
 
 const GROUPS: HeirGroup[] = ['spouse', 'descendants', 'ascendants', 'siblings', 'relatives', 'arham'];
 
@@ -18,7 +21,7 @@ const GROUPS: HeirGroup[] = ['spouse', 'descendants', 'ascendants', 'siblings', 
  */
 @Component({
   selector: 'app-mawarith-case',
-  imports: [TranslatePipe, IonButton, IonIcon, IonInput, IonItem, IonLabel, IonSegment, IonSegmentButton, IonSelect, IonSelectOption, IonTextarea, IonToggle],
+  imports: [TranslatePipe, MawarithAssetsComponent, MawarithDivisionComponent, IonButton, IonIcon, IonItem, IonLabel, IonSegment, IonSegmentButton, IonSelect, IonSelectOption, IonTextarea],
   template: `
     <section class="smart">
       <h3>{{ 'mawarith.smartTitle' | translate }}</h3>
@@ -38,25 +41,8 @@ const GROUPS: HeirGroup[] = ['spouse', 'descendants', 'ascendants', 'siblings', 
       </ion-segment>
     }
 
-    <section class="estate">
-      @if (root()) {
-        <ion-item><ion-input type="number" inputmode="decimal" min="0" [label]="'mawarith.estate' | translate" labelPlacement="stacked"
-          [value]="amount() || null" (ionInput)="amount.set(num($event.detail.value))" /></ion-item>
-        <ion-item><ion-input type="number" inputmode="decimal" min="0" [label]="'mawarith.funeral' | translate" labelPlacement="stacked"
-          [value]="funeral() || null" (ionInput)="funeral.set(num($event.detail.value))" /></ion-item>
-        <ion-item><ion-input type="number" inputmode="decimal" min="0" [label]="'mawarith.debts' | translate" labelPlacement="stacked"
-          [value]="debts() || null" (ionInput)="debts.set(num($event.detail.value))" /></ion-item>
-        <ion-item><ion-input type="number" inputmode="decimal" min="0" [label]="'mawarith.will' | translate" labelPlacement="stacked"
-          [value]="will() || null" (ionInput)="will.set(num($event.detail.value))" /></ion-item>
-        @if (willCapped()) {
-          <ion-item lines="none"><ion-toggle [checked]="consent()" (ionChange)="consent.set($event.detail.checked)">{{ 'mawarith.willConsent' | translate }}</ion-toggle></ion-item>
-          @if (!consent()) { <p class="hint warn">{{ 'mawarith.willCapped' | translate: { max: money(willMax()) } }}</p> }
-        }
-        @if (amount() > 0) { <p class="net">{{ 'mawarith.net' | translate: { amount: money(net()) } }}</p> }
-      } @else if (inherited() > 0) {
-        <p class="net">{{ 'mawarith.inheritedPart' | translate: { amount: money(inherited()) } }}</p>
-      }
-    </section>
+    @if (root()) { <app-mawarith-assets /> }
+    @else if (inherited() > 0) { <p class="net">{{ 'mawarith.inheritedPart' | translate: { amount: money(inherited()) } }}</p> }
 
     @for (g of groups; track g) {
       @if (g !== 'arham' || showArham()) {
@@ -137,6 +123,7 @@ const GROUPS: HeirGroup[] = ['spouse', 'descendants', 'ascendants', 'siblings', 
           @for (n of r.notes; track n) { <p class="note">{{ 'mawarith.note.' + n | translate }}</p> }
         </section>
       }
+      @if (root() && shown(); as r) { <app-mawarith-division [calc]="r" [deceased]="deceased()" [agreed]="school() === 'auto' && compared().same" /> }
     }`,
   styles: `
     :host { display: block; }
@@ -178,7 +165,7 @@ const GROUPS: HeirGroup[] = ['spouse', 'descendants', 'ascendants', 'siblings', 
     .died { --color: var(--ion-color-medium); font-size: .8rem; }
   `,
 })
-export class MawarithCaseComponent {
+export class MawarithCaseComponent implements OnInit {
   /** Set for an heir who died before the division: their gender is known. */
   readonly fixedGender = input<'m' | 'f' | undefined>(undefined);
   /** The part this heir inherited from the first estate (an heir's own case). */
@@ -199,19 +186,13 @@ export class MawarithCaseComponent {
   readonly tab = signal<School>('hanafi');
   readonly arhamOpen = signal(false);
   readonly died = signal(new Set<HeirKey>());
-  readonly amount = signal(0);
-  readonly funeral = signal(0);
-  readonly debts = signal(0);
-  readonly will = signal(0);
-  readonly consent = signal(false);
 
   readonly root = computed(() => this.depth() === 0);
-  readonly afterDebts = computed(() => Math.max(0, this.amount() - this.funeral() - this.debts()));
-  readonly willMax = computed(() => this.afterDebts() / 3);
-  readonly willCapped = computed(() => this.will() > this.willMax() + 1e-9);
-  readonly net = computed(() => Math.max(0, this.afterDebts() - (this.consent() ? Math.min(this.will(), this.afterDebts()) : Math.min(this.will(), this.willMax()))));
+  private readonly store = inject(EstateStore);
+  /** The saved case was read back: from now on it is kept as it changes. */
+  private readonly restored = signal(false);
   /** What is divided: the net estate, or the part an heir inherited. */
-  readonly estate = computed(() => (this.root() ? this.net() : this.inherited()));
+  readonly estate = computed(() => (this.root() ? this.store.net() : this.inherited()));
 
   readonly hasHeirs = computed(() => Object.values(this.family()).some((n) => (n ?? 0) > 0));
   readonly showArham = computed(() => this.arhamOpen() || HEIRS.some((h) => h.group === 'arham' && (this.family()[h.key] ?? 0) > 0));
@@ -223,6 +204,25 @@ export class MawarithCaseComponent {
     if (s !== 'auto') return results.find((r) => r.school === s)!;
     return same ? results[0] : results.find((r) => r.school === this.tab())!;
   });
+
+  constructor() {
+    // The first case is kept on the phone (the family, the school, the sentence) with its estate.
+    effect(() => {
+      const state = { deceased: this.chosenGender(), family: this.family(), school: this.school(), text: this.text() };
+      if (this.root() && this.restored()) this.store.update(state);
+    });
+  }
+
+  async ngOnInit(): Promise<void> {
+    if (!this.root()) return;
+    await this.store.load();
+    const s = this.store.state();
+    this.chosenGender.set(s.deceased);
+    this.family.set(s.family ?? {});
+    this.school.set(s.school ?? 'auto');
+    this.text.set(s.text ?? '');
+    this.restored.set(true);
+  }
 
   heirsOf(g: HeirGroup) { return HEIRS.filter((h) => h.group === g && (!h.only || h.only === this.deceased())); }
   count(k: HeirKey): number { return this.family()[k] ?? 0; }

@@ -121,6 +121,27 @@ describe('inheritance (الفرائض)', () => {
     expect(shares('m', { wife: 1, daughterSon: 1, daughterDaughter: 1 }, 'hanbali')).toEqual({ wife: '1/4', daughterSon: '3/8', daughterDaughter: '3/8' });
   });
 
+  it('the cases people ask about most', () => {
+    // A wife and no children, no one else: her quarter, then the rest returned to her (later scholars) in every school.
+    for (const school of ['hanafi', 'maliki', 'shafii', 'hanbali'] as School[]) expect(shares('m', { wife: 1 }, school)).toEqual({ wife: '1' });
+    // A wife and brothers, no children.
+    expect(shares('m', { wife: 1, fullBrother: 2, fullSister: 1 })).toEqual({ wife: '1/4', fullBrother: '3/5', fullSister: '3/20' });
+    // A wife, uncles and aunts, no children: the paternal uncle is the residuary, aunts are relatives of the womb.
+    expect(shares('m', { wife: 1, fullUncle: 2, patAunt: 1, matUncle: 1 })).toEqual({ wife: '1/4', fullUncle: '3/4', patAunt: '0', matUncle: '0' });
+    // Only aunts and a maternal uncle with a wife: the wife a quarter, the rest to them.
+    expect(shares('m', { wife: 1, patAunt: 1, matUncle: 1 }, 'hanbali')).toEqual({ wife: '1/4', patAunt: '1/2', matUncle: '1/4' });
+    expect(shares('m', { wife: 1, patAunt: 1, matUncle: 1 }, 'hanafi')).toEqual({ wife: '1/4', patAunt: '1/2', matUncle: '1/4' });
+    // A husband, a mother and a sister (عول to 8).
+    expect(shares('f', { husband: 1, mother: 1, fullSister: 1 })).toEqual({ husband: '3/8', mother: '1/4', fullSister: '3/8' });
+    // Four wives, a daughter and a father.
+    expect(shares('m', { wife: 4, daughter: 1, father: 1 })).toEqual({ wife: '1/8', daughter: '1/2', father: '3/8' });
+    // A mother, a maternal brother and a full uncle.
+    expect(shares('m', { mother: 1, matBrother: 1, fullUncle: 1 })).toEqual({ mother: '1/3', matBrother: '1/6', fullUncle: '1/2' });
+    // Sons and daughters only.
+    expect(shares('f', { son: 2, daughter: 3 })).toEqual({ son: '4/7', daughter: '3/7' });
+    expect(calc('f', { son: 2, daughter: 3 }).asl).toBe(7);
+  });
+
   it('always gives out the whole estate, in every school', () => {
     const families: [('m' | 'f'), Family][] = [
       ['m', { wife: 4, son: 3, daughter: 5, father: 1, mother: 1 }],
