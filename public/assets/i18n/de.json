@@ -383,7 +383,9 @@
     "backupTitle": "Sicherungen",
     "backupText": "Der Export erstellt eine Datei und öffnet das Teilen-Menü. Du entscheidest, wohin sie geht; die App lädt nichts hoch. Online-Quellen (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) erhalten nur die Anfrage nach einer Datei oder einem Hadith, nichts über dich.",
     "mediaTitle": "Mikrofon und Kamera",
-    "mediaText": "Nur angefragt, wenn Sie im Studio Ihre Rezitation aufnehmen oder der App zur Prüfung vortragen. Rauschentfernung und die Offline-Koran-KI laufen auf Ihrem Telefon und laden nichts hoch. Wählen Sie für Tasmee' die Erkennung „Telefon“, geht Ihre Stimme an den Spracherkennungsdienst Ihres Telefons (meist Google), nach dessen eigener Datenschutzerklärung. Aufnahmen bleiben in der App, bis Sie sie teilen, speichern oder löschen."
+    "mediaText": "Nur angefragt, wenn Sie im Studio Ihre Rezitation aufnehmen oder der App zur Prüfung vortragen. Rauschentfernung und die Offline-Koran-KI laufen auf Ihrem Telefon und laden nichts hoch. Wählen Sie für Tasmee' die Erkennung „Telefon“, geht Ihre Stimme an den Spracherkennungsdienst Ihres Telefons (meist Google), nach dessen eigener Datenschutzerklärung. Aufnahmen bleiben in der App, bis Sie sie teilen, speichern oder löschen.",
+    "tajweedTitle": "Tadschwid-Korrektur",
+    "tajweedText": "Nur wenn Sie nach dem Rezitieren „Mein Tadschwid prüfen“ tippen: Ton und Versnummern gehen an den eigenen Tadschwid-Server der App (bei Hugging Face), werden von einem KI-Modell geprüft und dann gelöscht; nichts wird gespeichert oder weitergegeben."
   },
   "prayer": {
     "fajr": "Fajr",
@@ -1776,5 +1778,35 @@
       "total": "Gesamt",
       "transfers": "Zahlungen zwischen den Erben"
     }
+  },
+  "tajweed": {
+    "title": "Tadschwid-Korrektur",
+    "hint": "Prüft Madd-Längen, Ghunna, Qalqala, schwere und leichte Laute und die Artikulation Ihrer Rezitation. Die Aufnahme wird an den Tadschwid-Server gesendet, geprüft und sofort gelöscht; Internet nötig.",
+    "button": "Mein Tadschwid prüfen",
+    "notice": "Diese Prüfung macht eine KI (das offene Modell Quran Muaalem) und kann sich irren; sie ersetzt nicht das Lernen bei einem qualifizierten Lehrer. Ihre Rezitation wird zur Prüfung an den Server der App gesendet und dort nicht gespeichert.",
+    "agree": "Verstanden, weiter",
+    "waking": "Tadschwid-Server startet… beim ersten Mal kann das ein bis zwei Minuten dauern.",
+    "checking": "Tadschwid wird geprüft: {{done}} von {{total}}",
+    "failed": "Der Tadschwid-Server ist nicht erreichbar. Prüfen Sie die Verbindung und versuchen Sie es erneut.",
+    "none": "Keine Tadschwid-Fehler gefunden. Möge Allah Sie segnen!",
+    "count": "Wörter mit Hinweisen: {{n}}",
+    "disclaimer": "KI-Prüfung kann irren: hören Sie im Zweifel dem Rezitator zu und rezitieren Sie vor einem qualifizierten Lehrer.",
+    "maddSettings": "Ihre Madd-Längen",
+    "monfasel": "Madd munfasil",
+    "mottasel": "Madd muttasil",
+    "aared": "Madd 'arid lis-sukun",
+    "counts": "{{n}} Zählzeiten",
+    "credit": "Prüfung mit dem quelloffenen Modell Quran Muaalem.",
+    "onlyOffline": "Die Tadschwid-Prüfung funktioniert nur mit der Offline-Erkennung, da sie den Ton Ihrer Rezitation behält.",
+    "madd": "Madd",
+    "rule": "Tadschwid-Regel",
+    "length": "Sie hielten {{heard}} Zählzeiten; richtig sind {{expected}}",
+    "missing": "Fehlt in Ihrer Rezitation",
+    "extra": "Hinzugefügt, gehört nicht zur Lesung",
+    "notRight": "Nicht richtig ausgeführt",
+    "haraka": "Vokalfehler",
+    "letter": "Buchstabe falsch ausgesprochen",
+    "expectedHeard": "Richtig: „{{expected}}“, gesagt: „{{heard}}“",
+    "partial": "Einige Abschnitte konnten nicht geprüft werden ({{n}}); das Ergebnis gilt nur für die übrigen."
   }
 }

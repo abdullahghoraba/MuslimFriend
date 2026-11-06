@@ -24,6 +24,8 @@ export interface WordResult {
   h?: [number, number];
   /** Accepted after checking the audio itself (the recogniser wrote it a little differently). */
   rescued?: boolean;
+  /** Said wrongly or left out at first, then said right when the reciter went back over it. */
+  corrected?: boolean;
 }
 
 /** Letters-only key of a word. */
@@ -82,6 +84,8 @@ const COST_SKIP = 1.1;
 const COST_EXTRA = 0.8;
 /** Two heard words for one written word, or one for two: only when they then match. */
 const COST_JOIN = 0.05;
+/** Going back to recite again from an earlier word (two repeated words cost more as extras). */
+const COST_RESTART = 1.2;
 
 /**
  * Aligns [heard] (recognised words, in order) with [expected] (the ayat's words). The expected words after the last
@@ -106,8 +110,10 @@ export function alignWithCost(expected: string[], heard: string[], done = false,
   const m = H.length;
   // D[i][j]: least cost of reading the first i expected words as the first j heard words.
   const D: Float64Array[] = Array.from({ length: n + 1 }, () => new Float64Array(m + 1));
-  // Moves: 1 word for word, 2 skipped, 3 extra, 4 two heard words = one written, 5 one heard word = two written.
+  // Moves: 1 word for word, 2 skipped, 3 extra, 4 two heard words = one written, 5 one heard word = two written,
+  // 6 went back to an earlier word to recite again from there ([back] says from which word).
   const move: Uint8Array[] = Array.from({ length: n + 1 }, () => new Uint8Array(m + 1));
+  const back: Int32Array[] = Array.from({ length: n + 1 }, () => new Int32Array(m + 1));
   const sim = (i: number, j: number) => wordSimilarity(E[i], H[j]);
   for (let i = 1; i <= n; i++) {
     D[i][0] = D[i - 1][0] + COST_SKIP;
@@ -117,8 +123,8 @@ export function alignWithCost(expected: string[], heard: string[], done = false,
     D[0][j] = D[0][j - 1] + COST_EXTRA;
     move[0][j] = 3;
   }
-  for (let i = 1; i <= n; i++) {
-    for (let j = 1; j <= m; j++) {
+  for (let j = 1; j <= m; j++) {
+    for (let i = 1; i <= n; i++) {
       const s = sim(i - 1, j - 1);
       const diag = D[i - 1][j - 1] + (s >= SAME ? 0 : s >= NEAR ? COST_WRONG : COST_UNRELATED);
       const skip = D[i - 1][j] + COST_SKIP;
@@ -144,6 +150,21 @@ export function alignWithCost(expected: string[], heard: string[], done = false,
         }
       }
     }
+    // Going back: after the j-th heard word the reciter may start again from an earlier word (to repeat an ayah, or to
+    // put a mistake right). Cheaper than counting the words said again as extras once two or more are repeated.
+    let least = Infinity;
+    let from = -1;
+    for (let k = n - 1; k >= 0; k--) {
+      if (D[k + 1][j] < least) {
+        least = D[k + 1][j];
+        from = k + 1;
+      }
+      if (least + COST_RESTART < D[k][j] - 1e-9) {
+        D[k][j] = least + COST_RESTART;
+        move[k][j] = 6;
+        back[k][j] = from;
+      }
+    }
   }
   // Every heard word is used; the reciter may not have reached the end: the best prefix of the expected words.
   // Ties go to the shorter prefix, so words not yet said are not called skipped.
@@ -152,26 +173,42 @@ export function alignWithCost(expected: string[], heard: string[], done = false,
   else for (let i = 1; i <= n; i++) if (D[i][m] < D[end][m] - 1e-9) end = i;
 
   const out: WordResult[] = expected.map(() => ({ status: 'pending' as WordStatus, settled: false }));
+  // The path is walked from the last heard word back, so a word met again belongs to an earlier pass: the later
+  // reading stands (a mistake put right by going back counts as put right), except that a word left out of a later
+  // pass (or after it, at the end) keeps what the earlier pass said about it.
+  const seen = new Uint8Array(n);
+  const put = (k: number, r: WordResult) => {
+    if (!seen[k]) {
+      seen[k] = 1;
+      out[k] = r;
+    } else if (out[k].status === 'skipped' && r.status !== 'skipped') {
+      out[k] = r;
+    } else if (out[k].status === 'correct' && r.status !== 'correct' && !out[k].corrected) {
+      out[k] = { ...out[k], corrected: true };
+    }
+  };
   let i = end;
   let j = m;
   while (i > 0 || j > 0) {
     const mv = move[i][j];
     const h = (a: number, b: number): [number, number] => [hIndex[a], hIndex[b - 1] + 1];
-    if (mv === 1) {
+    if (mv === 6) {
+      i = back[i][j];
+    } else if (mv === 1) {
       const s = sim(i - 1, j - 1);
-      out[i - 1] = s >= SAME ? { status: 'correct', settled: false, h: h(j - 1, j) } : { status: 'wrong', heard: heardText[j - 1], settled: false, h: h(j - 1, j) };
+      put(i - 1, s >= SAME ? { status: 'correct', settled: false, h: h(j - 1, j) } : { status: 'wrong', heard: heardText[j - 1], settled: false, h: h(j - 1, j) });
       i--;
       j--;
     } else if (mv === 2) {
-      out[i - 1] = { status: 'skipped', settled: false };
+      put(i - 1, { status: 'skipped', settled: false });
       i--;
     } else if (mv === 4) {
-      out[i - 1] = { status: 'correct', settled: false, h: h(j - 2, j) };
+      put(i - 1, { status: 'correct', settled: false, h: h(j - 2, j) });
       i--;
       j -= 2;
     } else if (mv === 5) {
-      out[i - 1] = { status: 'correct', settled: false, h: h(j - 1, j) };
-      out[i - 2] = { status: 'correct', settled: false, h: h(j - 1, j) };
+      put(i - 1, { status: 'correct', settled: false, h: h(j - 1, j) });
+      put(i - 2, { status: 'correct', settled: false, h: h(j - 1, j) });
       i -= 2;
       j--;
     } else {
@@ -216,25 +253,38 @@ export function rescue(
   maxGap = 1.6,
 ): WordResult[] {
   const bad = (r: WordResult) => r.status === 'wrong' || r.status === 'skipped';
+  /** The audio of heard words [from, to) when it is all one phrase. */
+  const span = (from: number, to: number) => {
+    const src = from >= 0 && to > from ? sources.slice(from, to) : [];
+    return src.length && src.every((x) => x && x.phrase === src[0]!.phrase) ? (src as HeardSource[]) : null;
+  };
+  const fits = (src: HeardSource[], start: number, end: number, a: number, b: number, n: number) =>
+    gap(src[0].phrase, start, end, expected.slice(a, b + 1)) <= maxGap * n;
   for (let i = 0; i < results.length; i++) {
     if (!bad(results[i])) continue;
     let j = i;
     while (j + 1 < results.length && bad(results[j + 1])) j++;
     const before = i > 0 && results[i - 1].h ? i - 1 : -1;
     const after = j + 1 < results.length && results[j + 1].h ? j + 1 : -1;
-    // The heard words from the word before the run to the word after it.
-    const from = before >= 0 ? results[before].h![0] : (results.slice(i, j + 1).find((r) => r.h)?.h?.[0] ?? -1);
-    const to = after >= 0 ? results[after].h![1] : (results.slice(i, j + 1).reverse().find((r) => r.h)?.h?.[1] ?? -1);
-    const src = from >= 0 && to > from ? sources.slice(from, to) : [];
-    if (src.length && src.every((x) => x && x.phrase === src[0]!.phrase)) {
-      const a = before >= 0 ? before : i;
-      const b = after >= 0 ? after : j;
-      const words = expected.slice(a, b + 1);
-      const g = gap(src[0]!.phrase, src[0]!.start - 2, src[src.length - 1]!.end + 2, words);
-      if (g <= maxGap * (j - i + 1)) {
-        for (let k = i; k <= j; k++) results[k] = { ...results[k], status: 'correct', heard: undefined, rescued: true };
-      }
+    const own = results.slice(i, j + 1).filter((r) => r.h);
+    const ownFrom = own[0]?.h?.[0] ?? -1;
+    const ownTo = own[own.length - 1]?.h?.[1] ?? -1;
+    const n = j - i + 1;
+    let ok = false;
+    // The heard words from the word before the run to the word after it, all in one phrase.
+    const from = before >= 0 ? results[before].h![0] : ownFrom;
+    const to = after >= 0 ? results[after].h![1] : ownTo;
+    const all = span(from, to);
+    if (all) ok = fits(all, all[0].start - 2, all[all.length - 1].end + 2, before >= 0 ? before : i, after >= 0 ? after : j, n);
+    else if (before >= 0 && after >= 0) {
+      // A pause fell inside the run: the words may end the phrase before it, or begin the phrase after it.
+      const b = span(results[before].h![0], results[before].h![1]);
+      const a = span(results[after].h![0], results[after].h![1]);
+      const withOwn = own.length ? span(ownFrom, ownTo) : null;
+      if (b && (!withOwn || withOwn[0].phrase === b[0].phrase)) ok = fits(b, b[0].start - 2, (withOwn ?? b)[(withOwn ?? b).length - 1].end + 1e6, before, j, n);
+      if (!ok && a && (!withOwn || withOwn[0].phrase === a[0].phrase)) ok = fits(a, 0, a[a.length - 1].end + 2, i, after, n);
     }
+    if (ok) for (let k = i; k <= j; k++) results[k] = { ...results[k], status: 'correct', heard: undefined, rescued: true };
     i = j;
   }
   return settle(results, done);

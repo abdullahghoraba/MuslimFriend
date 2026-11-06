@@ -383,7 +383,9 @@
     "backupTitle": "Backups",
     "backupText": "Export creates a file and opens the share sheet. You decide where it goes; the app uploads nothing. Online sources (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) receive only the request for a file or hadith, never anything about you.",
     "mediaTitle": "Microphone and camera",
-    "mediaText": "Asked only when you record your recitation in the studio or recite to the app to be checked. Noise removal and the offline Quran AI run on your phone and upload nothing. If you choose the Phone engine for tasmee', your voice goes to your phone's speech service (usually Google) under its own privacy policy. Recordings stay in the app until you share, save or delete them."
+    "mediaText": "Asked only when you record your recitation in the studio or recite to the app to be checked. Noise removal and the offline Quran AI run on your phone and upload nothing. If you choose the Phone engine for tasmee', your voice goes to your phone's speech service (usually Google) under its own privacy policy. Recordings stay in the app until you share, save or delete them.",
+    "tajweedTitle": "Tajweed check",
+    "tajweedText": "Only if you tap “Check my tajweed” after a tasmee': your recitation's audio and its ayah numbers are sent to the app's own tajweed server (on Hugging Face) to be checked by an AI model, then deleted; it is not stored or shared with anyone."
   },
   "prayer": {
     "fajr": "Fajr",
@@ -1776,5 +1778,35 @@
       "total": "Total",
       "transfers": "Payments between the heirs"
     }
+  },
+  "tajweed": {
+    "title": "Tajweed check",
+    "hint": "Checks the madd lengths, ghunnah, qalqalah, heavy and light letters and the articulation in your recitation. The recording is sent to the tajweed server, checked, and deleted at once; it needs the internet.",
+    "button": "Check my tajweed",
+    "notice": "This check is done by AI (the open Quran Muaalem model) and can be wrong; it does not replace learning from a qualified teacher. Your recitation is sent to the app's server to be checked and is not kept there.",
+    "agree": "I understand, continue",
+    "waking": "Starting the tajweed server… the first time can take a minute or two.",
+    "checking": "Checking tajweed: {{done}} of {{total}}",
+    "failed": "Could not reach the tajweed server. Check your internet connection and try again.",
+    "none": "No tajweed mistakes found. May Allah bless you!",
+    "count": "Words with remarks: {{n}}",
+    "disclaimer": "AI checking can be wrong: listen to the reciter when in doubt, and recite to a qualified teacher.",
+    "maddSettings": "Madd lengths you recite with",
+    "monfasel": "Madd munfasil",
+    "mottasel": "Madd muttasil",
+    "aared": "Madd 'arid lis-sukun",
+    "counts": "{{n}} counts",
+    "credit": "Checking by the open-source Quran Muaalem model.",
+    "onlyOffline": "The tajweed check works only with the offline engine, since it keeps your recitation's audio.",
+    "madd": "Madd",
+    "rule": "Tajweed rule",
+    "length": "You held it {{heard}} counts; it should be {{expected}}",
+    "missing": "Missing in your recitation",
+    "extra": "Added, not part of the reading",
+    "notRight": "Not done properly",
+    "haraka": "Vowel (haraka) mistake",
+    "letter": "Letter pronounced wrongly",
+    "expectedHeard": "Should be “{{expected}}”, you said “{{heard}}”",
+    "partial": "Some phrases could not be checked ({{n}}); the result covers the rest only."
   }
 }

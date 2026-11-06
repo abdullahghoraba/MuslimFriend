@@ -11,7 +11,7 @@
     <string name="channel_quran">الورد القرآني اليومي</string>
     <string name="channel_worship">الصيام وقضاء الفوائت</string>
     <string name="channel_periodic">أذكار دورية</string>
-    <string name="channel_periodic_desc">تُستخدم عندما يتعذّر عرض الأذكار فوق التطبيقات، فيظهر الذكر كإشعار بدلًا من ذلك.</string>
+    <string name="channel_periodic_desc">تُستخدم عندما يتعذّر عرض الأذكار فوق التطبيقات، فيظهر الذكر في إشعار بدلًا منها.</string>
 
     <string name="overlay_notification_title">الأذكار فوق التطبيقات مفعّلة</string>
     <string name="overlay_notification_text">سيظهر ذكر فوق تطبيقاتك من حين لآخر.</string>
@@ -23,7 +23,7 @@
     <string name="widget_description">أداة مواقيت الصلاة</string>
     <string name="widget_next">الصلاة القادمة</string>
     <string name="widget_empty">افتح التطبيق لتحميل مواقيت الصلاة</string>
-    <string name="widget_in">خلال %1$d س %2$d د</string>
+    <string name="widget_in">بعد %1$d س و%2$d د</string>
     <string name="widget_verse">آية اليوم</string>
     <string name="widget_hadith">حديث اليوم</string>
     <string name="widget_verse_description">آية اليوم</string>

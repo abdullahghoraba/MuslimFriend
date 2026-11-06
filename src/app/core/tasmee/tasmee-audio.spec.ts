@@ -115,4 +115,19 @@ describe("tasmee: checking a mistake against the audio", () => {
     expect(check(['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَـٰنِ'])).toEqual(['correct', 'correct', 'correct']);
     expect(check(['بِسْمِ', 'رَبِّكَ', 'ٱلرَّحْمَـٰنِ'])[1]).not.toBe('correct');
   });
+
+  it('checks a word said softly at the end of a phrase against that phrase, though the next word is in another', () => {
+    // Phrase 0: «بسم» clearly, then «الله» softly (the model nearly writes it, but blanks win); phrase 1: «الرحمن».
+    const p0 = frames('_ب_س_م_ ________', { 8: 'ا', 10: 'ل', 12: 'ل', 14: 'ه' });
+    const p1 = frames('_ا_ل_ر_ح_م_ن_');
+    const lps = [p0, p1];
+    const heard = lps.flatMap((lp, phrase) => greedyWords(lp, lp.length / V).map((w) => ({ ...w, phrase })));
+    expect(heard.map((w) => w.text)).toEqual(['بسم', 'الرحمن']);
+    const sources = heard.map((w) => ({ phrase: w.phrase, start: w.start, end: w.end }));
+    const gap = (p: number, a: number, b: number, ws: string[]) => forcedGap(lps[p], lps[p].length / V, V, a, b, ws.map(modelLetters));
+    const check = (expected: string[]) =>
+      rescue(alignRecitation(expected, heard.map((w) => w.text), true), expected, sources, gap, true).map((r) => r.status);
+    expect(check(['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَـٰنِ'])).toEqual(['correct', 'correct', 'correct']);
+    expect(check(['بِسْمِ', 'رَبِّكَ', 'ٱلرَّحْمَـٰنِ'])[1]).toBe('skipped');
+  });
 });

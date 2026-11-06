@@ -305,7 +305,10 @@ export class QuranSpeech {
     const partials = new Map<number, number>();
     const joins = this.joins;
     joins.clear();
-    const reading = (d: WorkerOut, phrase?: number) => ({ phrase, words: d.words ?? [], lp: d.lp ?? new Float32Array(0), frames: d.frames ?? 0, vocab: d.vocab ?? 0 });
+    const audioOf = new Map<number, Float32Array>(); // id -> the audio read (kept for the tajweed check)
+    const reading = (d: WorkerOut, phrase?: number, audio?: Float32Array) => ({
+      phrase, words: d.words ?? [], lp: d.lp ?? new Float32Array(0), frames: d.frames ?? 0, vocab: d.vocab ?? 0, audio,
+    });
     worker.onmessage = (e: MessageEvent<WorkerOut>) => {
       const id = e.data.id ?? 0;
       if (joins.has(id)) {
@@ -314,7 +317,7 @@ export class QuranSpeech {
         this.pendingFinals.delete(id);
         const last = join.phrases[join.phrases.length - 1];
         // Kept: the next phrase may be joined to the whole group (if no newer phrase came in the meantime).
-        if (e.data.type === 'text' && e.data.text && cb.onJoin?.(e.data.text, reading(e.data, last), join.phrases)) {
+        if (e.data.type === 'text' && e.data.text && cb.onJoin?.(e.data.text, reading(e.data, last, join.audio), join.phrases)) {
           if (this.group?.phrases[0] === last && this.group.phrases.length === 1) this.group = join;
         }
         if (!this.pendingFinals.size) cb.onPartial('');
@@ -322,7 +325,9 @@ export class QuranSpeech {
         const phrase = finals.get(id)!;
         finals.delete(id);
         this.pendingFinals.delete(id);
-        if (e.data.type === 'text' && e.data.text && e.data.words && e.data.lp) cb.onFinal(e.data.text, undefined, reading(e.data, phrase));
+        const audio = audioOf.get(id);
+        audioOf.delete(id);
+        if (e.data.type === 'text' && e.data.text && e.data.words && e.data.lp) cb.onFinal(e.data.text, undefined, reading(e.data, phrase, audio));
         else if (e.data.type === 'error') cb.onError(e.data.message ?? 'error');
         if (!this.pendingFinals.size) cb.onPartial('');
       } else if (partials.has(id)) {
@@ -347,6 +352,7 @@ export class QuranSpeech {
         const id = this.nextId++;
         const phrase = this.phrase;
         finals.set(id, phrase);
+        audioOf.set(id, pcm.slice());
         this.pendingFinals.add(id);
         this.partialPhrase = phrase; // its live reads are now out of date
         this.phrase++;

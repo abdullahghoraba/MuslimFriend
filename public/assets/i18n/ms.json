@@ -383,7 +383,9 @@
     "backupTitle": "Sandaran",
     "backupText": "Eksport mencipta fail dan membuka helaian kongsi. Anda menentukan destinasinya; aplikasi tidak memuat naik apa-apa. Sumber dalam talian (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) hanya menerima permintaan fail atau hadis, tiada apa-apa tentang anda.",
     "mediaTitle": "Mikrofon dan kamera",
-    "mediaText": "Hanya diminta apabila anda merakam tilawah di studio atau membaca kepada aplikasi untuk disemak. Penghapus hingar dan AI Al-Quran luar talian berjalan pada telefon anda dan tidak memuat naik apa-apa. Jika anda memilih enjin \"Telefon\" untuk tasmik, suara anda dihantar ke perkhidmatan pengecaman pertuturan telefon (biasanya Google) mengikut dasar privasinya sendiri. Rakaman kekal dalam aplikasi sehingga anda kongsi, simpan atau padam."
+    "mediaText": "Hanya diminta apabila anda merakam tilawah di studio atau membaca kepada aplikasi untuk disemak. Penghapus hingar dan AI Al-Quran luar talian berjalan pada telefon anda dan tidak memuat naik apa-apa. Jika anda memilih enjin \"Telefon\" untuk tasmik, suara anda dihantar ke perkhidmatan pengecaman pertuturan telefon (biasanya Google) mengikut dasar privasinya sendiri. Rakaman kekal dalam aplikasi sehingga anda kongsi, simpan atau padam.",
+    "tajweedTitle": "Pembetulan tajwid",
+    "tajweedText": "Hanya jika anda menekan “Semak tajwid saya” selepas tasmik: audio bacaan dan nombor ayatnya dihantar ke pelayan tajwid aplikasi sendiri (di Hugging Face) untuk disemak oleh model AI, kemudian dipadam; tidak disimpan dan tidak dikongsi."
   },
   "prayer": {
     "fajr": "Subuh",
@@ -1776,5 +1778,35 @@
       "total": "Jumlah",
       "transfers": "Bayaran antara waris"
     }
+  },
+  "tajweed": {
+    "title": "Pembetulan tajwid",
+    "hint": "Menyemak panjang mad, dengung, qalqalah, tebal-nipis huruf dan makhraj dalam bacaan anda. Rakaman dihantar ke pelayan tajwid, disemak, lalu terus dipadam; memerlukan internet.",
+    "button": "Semak tajwid saya",
+    "notice": "Semakan ini dibuat oleh AI (model terbuka Quran Muaalem) dan boleh tersilap; ia tidak menggantikan belajar dengan guru yang bertauliah. Bacaan anda dihantar ke pelayan aplikasi untuk disemak dan tidak disimpan di sana.",
+    "agree": "Saya faham, teruskan",
+    "waking": "Menghidupkan pelayan tajwid… kali pertama mungkin mengambil masa seminit dua.",
+    "checking": "Menyemak tajwid: {{done}} daripada {{total}}",
+    "failed": "Tidak dapat menghubungi pelayan tajwid. Semak internet anda dan cuba lagi.",
+    "none": "Tiada kesilapan tajwid ditemui. Semoga Allah memberkati anda!",
+    "count": "Perkataan dengan catatan: {{n}}",
+    "disclaimer": "Semakan AI boleh tersilap: dengar qari jika ragu, dan perdengarkan bacaan kepada guru yang bertauliah.",
+    "maddSettings": "Panjang mad yang anda baca",
+    "monfasel": "Mad munfasil",
+    "mottasel": "Mad muttasil",
+    "aared": "Mad 'aridh lissukun",
+    "counts": "{{n}} harakat",
+    "credit": "Semakan oleh model sumber terbuka Quran Muaalem.",
+    "onlyOffline": "Pembetulan tajwid hanya berfungsi dengan pengecam luar talian, kerana ia menyimpan audio bacaan anda.",
+    "madd": "Mad",
+    "rule": "Hukum tajwid",
+    "length": "Anda memanjangkan {{heard}} harakat; sepatutnya {{expected}}",
+    "missing": "Tiada dalam bacaan anda",
+    "extra": "Tambahan yang bukan daripada bacaan",
+    "notRight": "Tidak dilakukan dengan betul",
+    "haraka": "Kesilapan baris",
+    "letter": "Huruf disebut salah",
+    "expectedHeard": "Sepatutnya “{{expected}}”, anda membaca “{{heard}}”",
+    "partial": "Beberapa petikan tidak dapat disemak ({{n}}); keputusan hanya untuk yang lain."
   }
 }

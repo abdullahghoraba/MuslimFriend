@@ -383,7 +383,9 @@
     "backupTitle": "Nakala rudufu",
     "backupText": "Kuhamisha huunda faili na kufungua menyu ya kushiriki. Wewe unaamua inakokwenda; programu haipakii chochote. Vyanzo vya mtandaoni (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) hupokea ombi la faili au hadithi tu, si chochote kukuhusu.",
     "mediaTitle": "Maikrofoni na kamera",
-    "mediaText": "Huombwa tu unaporekodi kisomo chako studioni au unaposomea programu ikusahihishe. Kuondoa kelele na AI ya Qur'ani bila mtandao hufanyika kwenye simu yako na havipakii chochote. Ukichagua injini ya \"Simu\" kwa tasmii, sauti yako huenda kwenye huduma ya kutambua usemi ya simu (kwa kawaida Google) chini ya sera yake ya faragha. Rekodi hubaki kwenye programu hadi uzishiriki, uzihifadhi au uzifute."
+    "mediaText": "Huombwa tu unaporekodi kisomo chako studioni au unaposomea programu ikusahihishe. Kuondoa kelele na AI ya Qur'ani bila mtandao hufanyika kwenye simu yako na havipakii chochote. Ukichagua injini ya \"Simu\" kwa tasmii, sauti yako huenda kwenye huduma ya kutambua usemi ya simu (kwa kawaida Google) chini ya sera yake ya faragha. Rekodi hubaki kwenye programu hadi uzishiriki, uzihifadhi au uzifute.",
+    "tajweedTitle": "Kusahihisha tajwidi",
+    "tajweedText": "Ikiwa tu utabonyeza “Sahihisha tajwidi yangu” baada ya kusoma kwa moyo: sauti ya kisomo na namba za aya hutumwa kwa seva ya tajwidi ya programu yenyewe (kwenye Hugging Face) ili modeli ya AI ikague, kisha hufutwa; haihifadhiwi wala haishirikiwi na mtu yeyote."
   },
   "prayer": {
     "fajr": "Alfajiri",
@@ -1776,5 +1778,35 @@
       "total": "Jumla",
       "transfers": "Malipo kati ya warithi"
     }
+  },
+  "tajweed": {
+    "title": "Kusahihisha tajwidi",
+    "hint": "Hukagua urefu wa madd, ghunna, qalqala, herufi nzito na nyepesi na matamshi katika kisomo chako. Rekodi hutumwa kwa seva ya tajwidi, hukaguliwa na kufutwa mara moja; inahitaji intaneti.",
+    "button": "Sahihisha tajwidi yangu",
+    "notice": "Ukaguzi huu hufanywa na AI (modeli huria ya Quran Muaalem) na unaweza kukosea; hauchukui nafasi ya kujifunza kwa mwalimu mahiri. Kisomo chako hutumwa kwa seva ya programu kukaguliwa na hakihifadhiwi huko.",
+    "agree": "Nimeelewa, endelea",
+    "waking": "Inawasha seva ya tajwidi… mara ya kwanza inaweza kuchukua dakika moja au mbili.",
+    "checking": "Inakagua tajwidi: {{done}} kati ya {{total}}",
+    "failed": "Imeshindwa kufikia seva ya tajwidi. Angalia intaneti kisha ujaribu tena.",
+    "none": "Hakuna makosa ya tajwidi yaliyopatikana. Allah akubariki!",
+    "count": "Maneno yenye maelezo: {{n}}",
+    "disclaimer": "Ukaguzi wa AI unaweza kukosea: sikiliza msomaji ukiwa na shaka, na umsomee mwalimu mahiri.",
+    "maddSettings": "Urefu wa madd unaosoma nao",
+    "monfasel": "Madd munfasil",
+    "mottasel": "Madd muttasil",
+    "aared": "Madd 'arid lis-sukun",
+    "counts": "harakati {{n}}",
+    "credit": "Ukaguzi kwa modeli huria ya Quran Muaalem.",
+    "onlyOffline": "Kusahihisha tajwidi hufanya kazi na utambuzi wa nje ya mtandao pekee, kwa kuwa ndio huhifadhi sauti ya kisomo chako.",
+    "madd": "Madd",
+    "rule": "Kanuni ya tajwidi",
+    "length": "Uliivuta harakati {{heard}}; sahihi ni {{expected}}",
+    "missing": "Haipo katika kisomo chako",
+    "extra": "Nyongeza isiyo sehemu ya kisomo",
+    "notRight": "Haikutekelezwa ipasavyo",
+    "haraka": "Kosa la irabu",
+    "letter": "Herufi imetamkwa vibaya",
+    "expectedHeard": "Sahihi ni “{{expected}}”, wewe ulisoma “{{heard}}”",
+    "partial": "Baadhi ya vipande havikuweza kukaguliwa ({{n}}); matokeo ni ya vilivyobaki tu."
   }
 }

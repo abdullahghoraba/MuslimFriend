@@ -383,7 +383,9 @@
     "backupTitle": "Zaxira nusxalar",
     "backupText": "Eksport fayl yaratadi va ulashish oynasini ochadi. Qayerga borishini siz hal qilasiz; ilova hech narsa yuklamaydi. Onlayn manbalar (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) faqat fayl yoki hadis so'rovini oladi, siz haqingizda hech narsa emas.",
     "mediaTitle": "Mikrofon va kamera",
-    "mediaText": "Faqat studiyada tilovatingizni yozganda yoki tekshirish uchun ilovaga o‘qib berganda so‘raladi. Shovqinni tozalash va oflayn Qur’on sun’iy intellekti telefoningizda ishlaydi va hech narsa yuklamaydi. Tasmi’ uchun “Telefon” dvigatelini tanlasangiz, ovozingiz telefonning nutqni aniqlash xizmatiga (odatda Google) uning o‘z maxfiylik siyosati asosida yuboriladi. Yozuvlar siz ulashmaguningizcha, saqlamaguningizcha yoki o‘chirmaguningizcha ilovada qoladi."
+    "mediaText": "Faqat studiyada tilovatingizni yozganda yoki tekshirish uchun ilovaga o‘qib berganda so‘raladi. Shovqinni tozalash va oflayn Qur’on sun’iy intellekti telefoningizda ishlaydi va hech narsa yuklamaydi. Tasmi’ uchun “Telefon” dvigatelini tanlasangiz, ovozingiz telefonning nutqni aniqlash xizmatiga (odatda Google) uning o‘z maxfiylik siyosati asosida yuboriladi. Yozuvlar siz ulashmaguningizcha, saqlamaguningizcha yoki o‘chirmaguningizcha ilovada qoladi.",
+    "tajweedTitle": "Tajvidni tuzatish",
+    "tajweedText": "Faqat yod tekshiruvidan so‘ng «Tajvidimni tuzat»ni bossangiz: tilovat ovozi va oyat raqamlari ilovaning o‘z tajvid serveriga (Hugging Face’da) sun’iy intellekt modeli tekshirishi uchun yuboriladi, so‘ng o‘chiriladi; saqlanmaydi va hech kimga berilmaydi."
   },
   "prayer": {
     "fajr": "Bomdod",
@@ -1776,5 +1778,35 @@
       "total": "Jami",
       "transfers": "Merosxo‘rlar o‘rtasidagi to‘lovlar"
     }
+  },
+  "tajweed": {
+    "title": "Tajvidni tuzatish",
+    "hint": "Tilovatingizdagi madd uzunligi, g‘unna, qalqala, yo‘g‘on-ingichka harflar va maxrajlarni tekshiradi. Yozuv tajvid serveriga yuboriladi, tekshiriladi va darhol o‘chiriladi; internet kerak.",
+    "button": "Tajvidimni tuzat",
+    "notice": "Bu tekshiruvni sun’iy intellekt (ochiq Quran Muaalem modeli) bajaradi va xato qilishi mumkin; malakali ustozdan o‘rganishning o‘rnini bosmaydi. Tilovatingiz tekshirish uchun ilova serveriga yuboriladi va u yerda saqlanmaydi.",
+    "agree": "Tushundim, davom etish",
+    "waking": "Tajvid serveri ishga tushmoqda… birinchi marta bir-ikki daqiqa olishi mumkin.",
+    "checking": "Tajvid tekshirilmoqda: {{total}} tadan {{done}}",
+    "failed": "Tajvid serveriga ulanib bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.",
+    "none": "Tajvid xatolari topilmadi. Alloh sizni barakali qilsin!",
+    "count": "Izohli so‘zlar: {{n}}",
+    "disclaimer": "Sun’iy intellekt tekshiruvi xato qilishi mumkin: shubha bo‘lsa, qorini tinglang va tilovatingizni malakali ustozga o‘qib bering.",
+    "maddSettings": "Siz o‘qiydigan madd uzunliklari",
+    "monfasel": "Madd munfasil",
+    "mottasel": "Madd muttasil",
+    "aared": "Madd ‘oriz lis-sukun",
+    "counts": "{{n}} harakat",
+    "credit": "Tekshiruv: ochiq manbali Quran Muaalem modeli.",
+    "onlyOffline": "Tajvidni tuzatish faqat oflayn aniqlash bilan ishlaydi, chunki tilovatingiz ovozini u saqlaydi.",
+    "madd": "Madd",
+    "rule": "Tajvid qoidasi",
+    "length": "Siz {{heard}} harakat cho‘zdingiz; to‘g‘risi {{expected}}",
+    "missing": "Tilovatingizda yo‘q",
+    "extra": "Qiroatga kirmaydigan qo‘shimcha",
+    "notRight": "To‘g‘ri bajarilmadi",
+    "haraka": "Harakat xatosi",
+    "letter": "Harf noto‘g‘ri talaffuz qilindi",
+    "expectedHeard": "To‘g‘risi «{{expected}}», siz «{{heard}}» dedingiz",
+    "partial": "Ba’zi qismlarni tekshirib bo‘lmadi ({{n}}); natija faqat qolganlari uchun."
   }
 }

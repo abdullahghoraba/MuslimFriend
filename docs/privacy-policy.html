@@ -19,10 +19,11 @@
 <main>
   <section lang="en">
     <h1>Muslim Friend — Privacy Policy</h1>
-    <p class="muted">Effective date: 29 October 2026</p>
+    <p class="muted">Effective date: 5 November 2026</p>
 
     <p>Muslim Friend ("the app") is a Quran and athkar (remembrance of Allah) app for Android. It has
-      <strong>no ads, no analytics, no tracking and no accounts</strong>, and we do not run any server.</p>
+      <strong>no ads, no analytics, no tracking and no accounts</strong>. Our only server is the optional tajweed checker
+      described below, which keeps nothing.</p>
 
     <h2>Data we collect</h2>
     <p>None. We do not collect, receive, store, sell or share any personal or usage data.</p>
@@ -52,6 +53,14 @@
     <p>Like any web request, those servers can see your IP address and which file or hadith was requested; the app sends
       nothing else (no identifiers, no account, no usage data, no location). What you download is stored privately on your
       phone and works offline afterwards.</p>
+
+    <h2>Tajweed check (optional)</h2>
+    <p>Only when you tap “Check my tajweed” after reciting to the app (tasmee'), the audio of what you recited and the
+      numbers of its ayat are sent over HTTPS to the app's own tajweed server, hosted on <a href="https://huggingface.co">Hugging
+      Face</a> Spaces, where an AI model (the open-source Quran Muaalem model) checks the tajweed and returns the mistakes.
+      The audio is processed in memory and deleted at once: it is not stored, logged, used for training or shared with
+      anyone. No name, account or device identifier is sent. Before the first check the app tells you that it is AI and
+      can be wrong.</p>
 
     <h2>Data stored on your device</h2>
     <ul>
@@ -119,9 +128,9 @@
 
   <section lang="ar">
     <h1>رفيق المسلم — سياسة الخصوصية</h1>
-    <p class="muted">تاريخ السريان: 29 أكتوبر 2026</p>
+    <p class="muted">تاريخ السريان: 5 نوفمبر 2026</p>
     <p>«رفيق المسلم» تطبيق للقرآن الكريم والأذكار على أندرويد، <strong>بلا إعلانات ولا تحليلات ولا تتبّع ولا حسابات</strong>،
-      ولا نشغّل أي خادم.</p>
+      وخادمنا الوحيد هو خادم تصحيح التجويد الاختياري المذكور أدناه، ولا يحفظ شيئًا.</p>
 
     <h2>البيانات التي نجمعها</h2>
     <p>لا شيء. لا نجمع أي بيانات شخصية أو بيانات استخدام، ولا نستقبلها ولا نخزّنها ولا نبيعها ولا نشاركها.</p>
@@ -143,6 +152,12 @@
     </ul>
     <p>وكأي طلب على الويب، يمكن لهذه الخوادم رؤية عنوان IP والملف أو الحديث المطلوب؛ ولا يرسل التطبيق أي شيء آخر (لا معرّفات ولا حساب
       ولا بيانات استخدام ولا موقع). وكل ما تنزّله يُحفظ على هاتفك ويعمل بعد ذلك دون إنترنت.</p>
+
+    <h2>تصحيح التجويد (اختياري)</h2>
+    <p>فقط عند ضغطك «صحّح تجويدي» بعد التسميع: يُرسَل صوت ما قرأته وأرقام آياته عبر HTTPS إلى خادم التجويد الخاص بالتطبيق
+      على <a href="https://huggingface.co">Hugging Face</a>، حيث يفحص نموذج ذكاء اصطناعي (نموذج «المعلّم القرآني» مفتوح المصدر)
+      التجويد ويعيد الأخطاء. يُعالَج الصوت في الذاكرة ويُحذف فورًا: لا يُحفظ ولا يُسجَّل ولا يُستخدم للتدريب ولا يُشارك مع أحد،
+      ولا يُرسَل اسم ولا حساب ولا معرّف للجهاز. وقبل أول فحص يخبرك التطبيق أنه ذكاء اصطناعي وقد يخطئ.</p>
 
     <h2>البيانات المحفوظة على جهازك</h2>
     <ul>

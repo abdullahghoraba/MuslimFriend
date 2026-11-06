@@ -383,7 +383,9 @@
     "backupTitle": "Sauvegardes",
     "backupText": "L'export crée un fichier et ouvre le menu de partage. Vous décidez où il va ; l'application n'envoie rien. Les sources en ligne (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) ne reçoivent que la demande du fichier ou du hadith, rien sur vous.",
     "mediaTitle": "Micro et caméra",
-    "mediaText": "Demandés seulement quand vous enregistrez votre récitation dans le studio ou récitez à l’app pour qu’elle vous corrige. La suppression du bruit et l’IA du Coran hors ligne fonctionnent sur votre téléphone et n’envoient rien. Si vous choisissez le moteur « Téléphone » pour le tasmee', votre voix est envoyée au service de reconnaissance vocale du téléphone (généralement Google), selon sa propre politique de confidentialité. Les enregistrements restent dans l’app jusqu’à ce que vous les partagiez, sauvegardiez ou supprimiez."
+    "mediaText": "Demandés seulement quand vous enregistrez votre récitation dans le studio ou récitez à l’app pour qu’elle vous corrige. La suppression du bruit et l’IA du Coran hors ligne fonctionnent sur votre téléphone et n’envoient rien. Si vous choisissez le moteur « Téléphone » pour le tasmee', votre voix est envoyée au service de reconnaissance vocale du téléphone (généralement Google), selon sa propre politique de confidentialité. Les enregistrements restent dans l’app jusqu’à ce que vous les partagiez, sauvegardiez ou supprimiez.",
+    "tajweedTitle": "Correction du tajwid",
+    "tajweedText": "Seulement si vous touchez « Corriger mon tajwid » après une récitation : l'audio et les numéros des versets sont envoyés au serveur de tajwid de l'application (sur Hugging Face) pour être vérifiés par un modèle d'IA, puis supprimés ; rien n'est conservé ni partagé."
   },
   "prayer": {
     "fajr": "Fajr",
@@ -1776,5 +1778,35 @@
       "total": "Total",
       "transfers": "Paiements entre héritiers"
     }
+  },
+  "tajweed": {
+    "title": "Correction du tajwid",
+    "hint": "Vérifie les durées des madd, la ghunna, la qalqala, l'emphase et l'articulation dans votre récitation. L'enregistrement est envoyé au serveur de tajwid, vérifié puis supprimé aussitôt ; Internet est nécessaire.",
+    "button": "Corriger mon tajwid",
+    "notice": "Cette correction est faite par une IA (le modèle ouvert Quran Muaalem) et peut se tromper ; elle ne remplace pas l'apprentissage auprès d'un enseignant qualifié. Votre récitation est envoyée au serveur de l'application pour être vérifiée et n'y est pas conservée.",
+    "agree": "J'ai compris, continuer",
+    "waking": "Démarrage du serveur de tajwid… la première fois peut prendre une à deux minutes.",
+    "checking": "Vérification du tajwid : {{done}} sur {{total}}",
+    "failed": "Impossible de joindre le serveur de tajwid. Vérifiez votre connexion et réessayez.",
+    "none": "Aucune erreur de tajwid trouvée. Qu'Allah vous bénisse !",
+    "count": "Mots avec remarques : {{n}}",
+    "disclaimer": "La correction par IA peut se tromper : écoutez le récitateur en cas de doute et récitez devant un enseignant qualifié.",
+    "maddSettings": "Durées des madd que vous suivez",
+    "monfasel": "Madd munfasil",
+    "mottasel": "Madd muttasil",
+    "aared": "Madd 'arid lis-sukun",
+    "counts": "{{n}} temps",
+    "credit": "Correction par le modèle libre Quran Muaalem.",
+    "onlyOffline": "La correction du tajwid fonctionne seulement avec le moteur hors ligne, qui garde l'audio de votre récitation.",
+    "madd": "Madd",
+    "rule": "Règle de tajwid",
+    "length": "Vous l'avez tenu {{heard}} temps ; il en faut {{expected}}",
+    "missing": "Absent de votre récitation",
+    "extra": "Ajout qui ne fait pas partie de la lecture",
+    "notRight": "Mal réalisé",
+    "haraka": "Erreur de voyelle",
+    "letter": "Lettre mal prononcée",
+    "expectedHeard": "Il faut « {{expected}} », vous avez dit « {{heard}} »",
+    "partial": "Certains passages n'ont pas pu être vérifiés ({{n}}) ; le résultat ne couvre que les autres."
   }
 }

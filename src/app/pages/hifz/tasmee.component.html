@@ -54,7 +54,7 @@
     <section class="card recital" lang="ar" dir="rtl" aria-live="polite">
       @for (w of words(); track $index; let i = $index) {
         @let r = results()[i];
-        <span class="w" [class]="'w ' + (r?.status ?? 'pending')" [class.next]="i === position() && state() === 'listening'"
+        <span class="w" [class]="'w ' + (r?.status ?? 'pending')" [class.next]="i === position() && state() === 'listening'" [class.corrected]="!!r?.corrected" [class.tajweed]="tajweedIssues().has(i)"
               [class.hidden]="!shown(i)" [attr.title]="r?.heard ? ('tasmee.heard' | translate: { word: r.heard }) : null">{{ shown(i) ? w.text : '' }}@if (r?.status === 'wrong' && r?.heard) {<small class="heard">{{ r.heard }}</small>}</span>
         @if (w.end) { <span class="num">﴿{{ ayahNumber(w.ref.aya) }}﴾</span> }
         {{ ' ' }}
@@ -122,6 +122,78 @@
           }
         }
       </section>
+    }
+
+    <!-- Tajweed: the phrases' audio checked by the tajweed server (AI), after the words. -->
+    @if (state() === 'done' && tajweedPhrases().length) {
+      <section class="card tajweed-card">
+        <h2><ion-icon name="sparkles-outline" aria-hidden="true" /> {{ 'tajweed.title' | translate }}</h2>
+        @switch (tajweedState()) {
+          @case ('idle') {
+            <p class="hint">{{ 'tajweed.hint' | translate }}</p>
+            <ion-button expand="block" (click)="checkTajweed()">{{ 'tajweed.button' | translate }}</ion-button>
+          }
+          @case ('notice') {
+            <p class="notice" role="note">{{ 'tajweed.notice' | translate }}</p>
+            <ion-button expand="block" (click)="acceptTajweedNotice()">{{ 'tajweed.agree' | translate }}</ion-button>
+          }
+          @case ('waking') {
+            <p class="hint">{{ 'tajweed.waking' | translate }}</p>
+            <ion-progress-bar type="indeterminate" />
+          }
+          @case ('checking') {
+            <p class="hint">{{ 'tajweed.checking' | translate: { done: tajweedDone(), total: tajweedTotal() } }}</p>
+            <ion-progress-bar [value]="tajweedTotal() ? tajweedDone() / tajweedTotal() : 0" />
+          }
+          @case ('failed') {
+            <p class="error" role="alert">{{ 'tajweed.failed' | translate }}</p>
+            <ion-button expand="block" fill="outline" (click)="checkTajweed()">{{ 'listen.retry' | translate }}</ion-button>
+          }
+          @case ('done') {
+            @if (tajweedFailed()) {
+              <p class="error">{{ 'tajweed.partial' | translate: { n: tajweedFailed() } }}</p>
+            }
+            @if (!tajweedList().length) {
+              <p>{{ 'tajweed.none' | translate }}</p>
+            } @else {
+              <p class="hint">{{ 'tajweed.count' | translate: { n: tajweedList().length } }}</p>
+              @for (x of tajweedList(); track x.i) {
+                <div class="tj">
+                  <div class="tj-head">
+                    <strong lang="ar" dir="rtl">{{ x.w.text }}</strong>
+                    <span class="where">{{ ayahNumber(x.w.ref.aya) }}</span>
+                    <button type="button" class="icon" (click)="listen(x.w.ref)" [attr.aria-label]="'mushaf.listen' | translate"><ion-icon name="play" aria-hidden="true" /></button>
+                  </div>
+                  @for (e of x.errors; track $index) {
+                    @let d = tajweedText(e);
+                    <p class="tj-line"><b>{{ d.title }}</b>@if (d.detail) {: {{ d.detail }}}</p>
+                  }
+                </div>
+              }
+            }
+            <p class="hint">{{ 'tajweed.disclaimer' | translate }}</p>
+          }
+        }
+        @if (tajweedPrefs(); as tp) {
+          @if (tajweedState() === 'done' || tajweedState() === 'idle') {
+            <details class="madd">
+              <summary>{{ 'tajweed.maddSettings' | translate }}</summary>
+              <ion-select interface="popover" [label]="'tajweed.monfasel' | translate" [value]="tp.monfasel" (ionChange)="setMadd('monfasel', $event.detail.value)">
+                @for (n of [2, 4, 5]; track n) { <ion-select-option [value]="n">{{ lang() === 'ar' ? harakat(n, true) : ('tajweed.counts' | translate: { n: n }) }}</ion-select-option> }
+              </ion-select>
+              <ion-select interface="popover" [label]="'tajweed.mottasel' | translate" [value]="tp.mottasel" (ionChange)="setMadd('mottasel', $event.detail.value)">
+                @for (n of [4, 5, 6]; track n) { <ion-select-option [value]="n">{{ lang() === 'ar' ? harakat(n, true) : ('tajweed.counts' | translate: { n: n }) }}</ion-select-option> }
+              </ion-select>
+              <ion-select interface="popover" [label]="'tajweed.aared' | translate" [value]="tp.aared" (ionChange)="setMadd('aared', $event.detail.value)">
+                @for (n of [2, 4, 6]; track n) { <ion-select-option [value]="n">{{ lang() === 'ar' ? harakat(n, true) : ('tajweed.counts' | translate: { n: n }) }}</ion-select-option> }
+              </ion-select>
+            </details>
+          }
+        }
+        <p class="credit">{{ 'tajweed.credit' | translate }}</p>
+      </section>
+    } @else if (state() === 'done' && tasmee.prefs().engine === 'phone') {
+      <p class="hint center">{{ 'tajweed.onlyOffline' | translate }}</p>
     }
 
     @if (state() === 'idle' && tasmee.history().length) {

@@ -30,5 +30,5 @@ import { TranslatePipe } from '@ngx-translate/core';
   `,
 })
 export class PrivacyPage {
-  readonly sections = ['collect', 'device', 'permissions', 'location', 'media', 'backup'];
+  readonly sections = ['collect', 'device', 'permissions', 'location', 'media', 'tajweed', 'backup'];
 }

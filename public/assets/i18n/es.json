@@ -383,7 +383,9 @@
     "backupTitle": "Copias de seguridad",
     "backupText": "Exportar crea un archivo y abre el menú de compartir. Tú decides adónde va; la app no sube nada. Las fuentes en línea (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) solo reciben la petición del archivo o del hadiz, nada sobre ti.",
     "mediaTitle": "Micrófono y cámara",
-    "mediaText": "Solo se piden al grabar su recitación en el estudio o al recitar a la app para que la corrija. La eliminación de ruido y la IA del Corán sin conexión funcionan en su teléfono y no suben nada. Si elige el motor «Teléfono» para el tasmee', su voz va al servicio de reconocimiento de voz del teléfono (normalmente Google), según su propia política de privacidad. Las grabaciones quedan en la app hasta que las comparta, guarde o elimine."
+    "mediaText": "Solo se piden al grabar su recitación en el estudio o al recitar a la app para que la corrija. La eliminación de ruido y la IA del Corán sin conexión funcionan en su teléfono y no suben nada. Si elige el motor «Teléfono» para el tasmee', su voz va al servicio de reconocimiento de voz del teléfono (normalmente Google), según su propia política de privacidad. Las grabaciones quedan en la app hasta que las comparta, guarde o elimine.",
+    "tajweedTitle": "Corrección del tajwid",
+    "tajweedText": "Solo si pulsas «Corregir mi tajwid» tras recitar: el audio y los números de las aleyas se envían al servidor de tajwid de la app (en Hugging Face) para que un modelo de IA los revise, y luego se borran; no se guardan ni se comparten."
   },
   "prayer": {
     "fajr": "Fajr",
@@ -1776,5 +1778,35 @@
       "total": "Total",
       "transfers": "Pagos entre herederos"
     }
+  },
+  "tajweed": {
+    "title": "Corrección del tajwid",
+    "hint": "Revisa la duración de los madd, la ghunna, la qalqala, el énfasis y la articulación de tu recitación. La grabación se envía al servidor de tajwid, se revisa y se borra al momento; necesita internet.",
+    "button": "Corregir mi tajwid",
+    "notice": "Esta corrección la hace una IA (el modelo abierto Quran Muaalem) y puede equivocarse; no sustituye aprender con un maestro cualificado. Tu recitación se envía al servidor de la app para revisarla y no se guarda allí.",
+    "agree": "Entendido, continuar",
+    "waking": "Iniciando el servidor de tajwid… la primera vez puede tardar uno o dos minutos.",
+    "checking": "Revisando el tajwid: {{done}} de {{total}}",
+    "failed": "No se pudo conectar con el servidor de tajwid. Revisa tu conexión e inténtalo de nuevo.",
+    "none": "No se encontraron errores de tajwid. ¡Que Allah te bendiga!",
+    "count": "Palabras con observaciones: {{n}}",
+    "disclaimer": "La corrección por IA puede fallar: escucha al recitador si dudas y recita ante un maestro cualificado.",
+    "maddSettings": "Duraciones de madd que sigues",
+    "monfasel": "Madd munfasil",
+    "mottasel": "Madd muttasil",
+    "aared": "Madd 'arid lis-sukun",
+    "counts": "{{n}} tiempos",
+    "credit": "Corrección con el modelo abierto Quran Muaalem.",
+    "onlyOffline": "La corrección del tajwid funciona solo con el motor sin conexión, que guarda el audio de tu recitación.",
+    "madd": "Madd",
+    "rule": "Regla de tajwid",
+    "length": "Lo alargaste {{heard}} tiempos; deben ser {{expected}}",
+    "missing": "Falta en tu recitación",
+    "extra": "Añadido que no es de la lectura",
+    "notRight": "No se hizo bien",
+    "haraka": "Error de vocal",
+    "letter": "Letra mal pronunciada",
+    "expectedHeard": "Debe ser «{{expected}}», dijiste «{{heard}}»",
+    "partial": "No se pudieron revisar algunos fragmentos ({{n}}); el resultado cubre solo el resto."
   }
 }

@@ -62,6 +62,28 @@ describe('tasmee: comparing the recitation with the ayat', () => {
     expect(statuses(alignRecitation(two, heardWords('فاذاهم'), true))).toEqual(['correct', 'correct']);
   });
 
+  it('follows a reciter who goes back to repeat the ayah, and keeps the last reading', () => {
+    // Said wrongly («الكريم»), went on a word, then went back to «الرحمن» and said it right, then went on.
+    const r = alignRecitation(EXPECTED, heardWords('الحمد لله رب العالمين الرحمن الكريم مالك الرحمن الرحيم مالك يوم الدين'), true);
+    expect(statuses(r).every((s) => s === 'correct')).toBe(true);
+    expect(r[5].corrected).toBe(true);
+    // The whole passage twice (repeating for memorisation): no mistakes, nothing left pending.
+    const twice = 'الحمد لله رب العالمين الرحمن الرحيم مالك يوم الدين';
+    expect(statuses(alignRecitation(EXPECTED, heardWords(twice + ' ' + twice), true)).every((s) => s === 'correct')).toBe(true);
+    // Repeating the first ayah while still going: the words not reached yet stay pending.
+    const live = alignRecitation(EXPECTED, heardWords('الحمد لله رب العالمين الحمد لله رب العالمين الرحمن'));
+    expect(statuses(live)).toEqual(['correct', 'correct', 'correct', 'correct', 'correct', 'pending', 'pending', 'pending', 'pending']);
+  });
+
+  it('keeps a word skipped on the way back counted as said, and a real mistake in the last reading as a mistake', () => {
+    // Went back over ayah 3 leaving «يوم» out the second time: it was said the first time.
+    const r = alignRecitation(EXPECTED, heardWords('الحمد لله رب العالمين الرحمن الرحيم مالك يوم الدين مالك الدين'), true);
+    expect(statuses(r).every((s) => s === 'correct')).toBe(true);
+    // Said wrongly both times: still wrong.
+    const w = alignRecitation(EXPECTED, heardWords('الحمد لله رب العالمين الرحمن الكريم الرحمن الكريم مالك يوم الدين'), true);
+    expect(w[5].status).toBe('wrong');
+  });
+
   it("chooses the recogniser's guess that fits the ayat", () => {
     const alts = ['الحمد لله رب العالمين الرحمن الرحيم مالك يوم الدين'.replace('مالك يوم', 'ما لك يوما'), 'مالك يوم الدين', 'ملك اليوم'];
     expect(bestAlternative(EXPECTED, 6, ['ما لك يوما الدين', 'مالك يوم الدين'])).toBe('مالك يوم الدين');

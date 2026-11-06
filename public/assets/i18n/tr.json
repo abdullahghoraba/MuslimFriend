@@ -383,7 +383,9 @@
     "backupTitle": "Yedekler",
     "backupText": "Dışa aktarma bir dosya oluşturur ve paylaşım ekranını açar. Nereye gideceğine sen karar verirsin; uygulama hiçbir şey yüklemez. Çevrimiçi kaynaklar (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) yalnızca dosya veya hadis isteğini alır, senin hakkında hiçbir şey almaz.",
     "mediaTitle": "Mikrofon ve kamera",
-    "mediaText": "Yalnızca stüdyoda tilavetinizi kaydederken veya kontrol için uygulamaya okurken istenir. Gürültü giderme ve çevrimdışı Kur'an yapay zekâsı telefonunuzda çalışır ve hiçbir şey yüklemez. Tesmî için \"Telefon\" motorunu seçerseniz sesiniz, kendi gizlilik politikasına göre telefonunuzun konuşma tanıma hizmetine (genellikle Google) gider. Kayıtlar siz paylaşana, kaydedene veya silene kadar uygulamada kalır."
+    "mediaText": "Yalnızca stüdyoda tilavetinizi kaydederken veya kontrol için uygulamaya okurken istenir. Gürültü giderme ve çevrimdışı Kur'an yapay zekâsı telefonunuzda çalışır ve hiçbir şey yüklemez. Tesmî için \"Telefon\" motorunu seçerseniz sesiniz, kendi gizlilik politikasına göre telefonunuzun konuşma tanıma hizmetine (genellikle Google) gider. Kayıtlar siz paylaşana, kaydedene veya silene kadar uygulamada kalır.",
+    "tajweedTitle": "Tecvid düzeltme",
+    "tajweedText": "Yalnızca ezber kontrolünden sonra “Tecvidimi düzelt”e dokunursanız: okuyuşunuzun sesi ve ayet numaraları uygulamanın kendi tecvid sunucusuna (Hugging Face üzerinde) yapay zekâ modelince kontrol edilmek üzere gönderilir, sonra silinir; saklanmaz ve kimseyle paylaşılmaz."
   },
   "prayer": {
     "fajr": "Sabah",
@@ -1776,5 +1778,35 @@
       "total": "Toplam",
       "transfers": "Mirasçılar arası ödemeler"
     }
+  },
+  "tajweed": {
+    "title": "Tecvid düzeltme",
+    "hint": "Okuyuşunuzdaki med sürelerini, gunneyi, kalkaleyi, kalın-ince harfleri ve mahreçleri kontrol eder. Kayıt tecvid sunucusuna gönderilir, kontrol edilir ve hemen silinir; internet gerekir.",
+    "button": "Tecvidimi düzelt",
+    "notice": "Bu kontrolü yapay zekâ (açık Quran Muaalem modeli) yapar ve yanılabilir; ehil bir hocadan öğrenmenin yerini tutmaz. Okuyuşunuz kontrol için uygulamanın sunucusuna gönderilir ve orada saklanmaz.",
+    "agree": "Anladım, devam et",
+    "waking": "Tecvid sunucusu başlatılıyor… ilk seferde bir iki dakika sürebilir.",
+    "checking": "Tecvid kontrol ediliyor: {{done}} / {{total}}",
+    "failed": "Tecvid sunucusuna ulaşılamadı. İnternetinizi kontrol edip tekrar deneyin.",
+    "none": "Tecvid hatası bulunmadı. Allah sizden razı olsun!",
+    "count": "Notlu kelimeler: {{n}}",
+    "disclaimer": "Yapay zekâ kontrolü yanılabilir: şüphede kâriyi dinleyin ve okuyuşunuzu ehil bir hocaya arz edin.",
+    "maddSettings": "Okuduğunuz med süreleri",
+    "monfasel": "Medd-i munfasıl",
+    "mottasel": "Medd-i muttasıl",
+    "aared": "Medd-i ârız",
+    "counts": "{{n}} elif",
+    "credit": "Kontrol: açık kaynak Quran Muaalem modeli.",
+    "onlyOffline": "Tecvid kontrolü yalnızca çevrimdışı tanıma ile çalışır, çünkü okuyuşunuzun sesini o saklar.",
+    "madd": "Med",
+    "rule": "Tecvid kuralı",
+    "length": "{{heard}} elif uzattınız; doğrusu {{expected}}",
+    "missing": "Okuyuşunuzda yok",
+    "extra": "Kıraatte olmayan bir ekleme",
+    "notRight": "Gereği gibi yapılmadı",
+    "haraka": "Hareke hatası",
+    "letter": "Harf yanlış okundu",
+    "expectedHeard": "Doğrusu “{{expected}}”, siz “{{heard}}” dediniz",
+    "partial": "Bazı bölümler kontrol edilemedi ({{n}}); sonuç yalnızca diğerlerini kapsar."
   }
 }

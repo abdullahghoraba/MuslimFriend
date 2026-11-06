@@ -383,7 +383,9 @@
     "backupTitle": "Madadi",
     "backupText": "Fitarwa tana ƙirƙirar fayil ta buɗe zaɓin rabawa. Kai ne ka zaɓi inda zai je; manhajar ba ta ɗora komai. Tushen intanet (everyayah.com, mp3quran.net, hadeethenc.com, dorar.net, jsDelivr, quran.com, archive.org) suna karɓar buƙatar fayil ko hadisi kawai, ba komai game da kai ba.",
     "mediaTitle": "Makirofo da kyamara",
-    "mediaText": "Ana nema ne kawai idan ka yi rikodin karatunka a ɗakin karatu ko ka karanta wa manhajar don ta gyara. Cire hayaniya da AI na Alƙur'ani ba tare da intanet ba suna aiki a wayarka; ba sa tura komai. Idan ka zaɓi injin \"Waya\" don tasmi'i, muryarka na zuwa sabis na gane magana na wayarka (yawanci Google) bisa ga manufar sirrinsa. Rikodi na zama a manhajar har sai ka raba, ka adana ko ka goge."
+    "mediaText": "Ana nema ne kawai idan ka yi rikodin karatunka a ɗakin karatu ko ka karanta wa manhajar don ta gyara. Cire hayaniya da AI na Alƙur'ani ba tare da intanet ba suna aiki a wayarka; ba sa tura komai. Idan ka zaɓi injin \"Waya\" don tasmi'i, muryarka na zuwa sabis na gane magana na wayarka (yawanci Google) bisa ga manufar sirrinsa. Rikodi na zama a manhajar har sai ka raba, ka adana ko ka goge.",
+    "tajweedTitle": "Gyaran tajwidi",
+    "tajweedText": "Sai kawai idan ka danna “Gyara tajwidina” bayan karatun haddace: ana aika sautin karatunka da lambobin ayoyinsa zuwa sabar tajwidi ta manhajar kanta (a Hugging Face) don samfurin AI ya duba, sannan a goge; ba a ajiye ba kuma ba a raba da kowa."
   },
   "prayer": {
     "fajr": "Asuba",
@@ -1776,5 +1778,35 @@
       "total": "Jimilla",
       "transfers": "Biyan kuɗi tsakanin magada"
     }
+  },
+  "tajweed": {
+    "title": "Gyaran tajwidi",
+    "hint": "Yana duba tsawon madda, gunna, kalkala, kauri da siriri na furucin haruffa a karatunka. Ana aika rikodin zuwa sabar tajwidi, a duba shi, sannan a goge shi nan take; yana bukatar intanet.",
+    "button": "Gyara tajwidina",
+    "notice": "Wannan duba na AI ne (buɗaɗɗen samfurin Quran Muaalem) kuma yana iya kuskure; ba ya maye gurbin koyo wurin malami gwani. Ana aika karatunka zuwa sabar manhajar don a duba shi, kuma ba a ajiye shi a can.",
+    "agree": "Na fahimta, ci gaba",
+    "waking": "Ana kunna sabar tajwidi… a karon farko yana iya ɗaukar minti ɗaya ko biyu.",
+    "checking": "Ana duba tajwidi: {{done}} cikin {{total}}",
+    "failed": "Ba a iya kaiwa sabar tajwidi ba. Duba intanet ka sake gwadawa.",
+    "none": "Ba a sami kuskuren tajwidi ba. Allah ya albarkace ka!",
+    "count": "Kalmomi masu bayani: {{n}}",
+    "disclaimer": "Duba na AI na iya kuskure: saurari mai karatu idan ka yi shakka, kuma ka karanta wa malami gwani.",
+    "maddSettings": "Tsawon maddodin da kake karatu da su",
+    "monfasel": "Madd munfasil",
+    "mottasel": "Madd muttasil",
+    "aared": "Madd 'arid lis-sukun",
+    "counts": "harakoki {{n}}",
+    "credit": "Duba: buɗaɗɗen samfurin Quran Muaalem.",
+    "onlyOffline": "Gyaran tajwidi yana aiki ne kawai da gane-gane na waje da intanet, domin shi ne yake ajiye sautin karatunka.",
+    "madd": "Madda",
+    "rule": "Hukuncin tajwidi",
+    "length": "Ka ja shi harakoki {{heard}}; daidai shi ne {{expected}}",
+    "missing": "Babu shi a karatunka",
+    "extra": "Ƙari da ba ya cikin karatu",
+    "notRight": "Ba a yi shi yadda ya kamata ba",
+    "haraka": "Kuskuren wasali",
+    "letter": "An furta harafi ba daidai ba",
+    "expectedHeard": "Daidai shi ne “{{expected}}”, kai ka karanta “{{heard}}”",
+    "partial": "Ba a iya duba wasu sassa ba ({{n}}); sakamakon na sauran ne kawai."
   }
 }

@@ -4,11 +4,13 @@ import { KeepAwake } from '@capacitor-community/keep-awake';
 import {
   IonButton, IonIcon, IonLabel, IonProgressBar, IonSegment, IonSegmentButton, IonSelect, IonSelectOption, IonToggle, NavController,
 } from '@ionic/angular';
-import { TranslatePipe } from '@ngx-translate/core';
-import { HeardSource, WordResult, alignRecitation, alignWithCost, bestAlternative, heardWords, rescue, score, wordKey } from '../../core/tasmee/align';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { HeardSource, WordResult, alignRecitation, alignWithCost, bestAlternative, heardWords, rescue, score, similarity, wordKey } from '../../core/tasmee/align';
 import { forcedGap, modelLetters } from '../../core/tasmee/ctc-score';
 import { TasmeeEngine, TasmeeService, dropOpenings } from '../../core/tasmee/tasmee.service';
 import { QuranSpeech } from '../../core/tasmee/quran-speech';
+import { TajweedError, TajweedPart, TajweedPrefs, TajweedService } from '../../core/tasmee/tajweed.service';
+
 import { PhoneSpeech, PhraseReading, SpeechCallbacks } from '../../native/speech';
 import { QuranService } from '../../core/quran/quran.service';
 import { RecitationService } from '../../core/quran/recitation.service';
@@ -23,6 +25,8 @@ interface Word {
   ref: AyahRef;
   /** Last word of its ayah (the ayah's number follows). */
   end: boolean;
+  /** Its place in the ayah (0-based). */
+  n: number;
 }
 
 /** A finished phrase: its text, and with the offline recogniser its words' frames and letter probabilities. */
@@ -85,6 +89,23 @@ export class TasmeeComponent implements OnInit, OnDestroy {
   private lastSound = 0;
 
   private engine: PhoneSpeech | QuranSpeech | null = null;
+
+  // ---- Tajweed check (after a tasmee' with the offline engine, which keeps each phrase's audio) ----
+  private readonly tajweed = inject(TajweedService);
+  private readonly translate = inject(TranslateService);
+  readonly tajweedState = signal<'idle' | 'notice' | 'waking' | 'checking' | 'done' | 'failed'>('idle');
+  readonly tajweedDone = signal(0);
+  readonly tajweedTotal = signal(0);
+  /** Phrases the server could not check (the result covers the others). */
+  readonly tajweedFailed = signal(0);
+  /** The mistakes found, by word (index in words()). */
+  readonly tajweedIssues = signal<Map<number, TajweedError[]>>(new Map());
+  readonly tajweedList = computed(() =>
+    [...this.tajweedIssues().entries()].sort((a, b) => a[0] - b[0]).map(([i, errors]) => ({ i, w: this.words()[i], errors })),
+  );
+  readonly tajweedPrefs = signal<TajweedPrefs | null>(null);
+  /** Phrases whose audio can be checked: their words, read once and in order. */
+  readonly tajweedPhrases = computed(() => this.phrasesForTajweed());
   private notified = new Set<number>();
 
   readonly suraOptions = computed(() => (this.quran.ready() ? this.quran.suras : []));
@@ -97,7 +118,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
       const ref = { sura: this.sura(), aya };
       const a = this.quran.ayah(ref);
       const ws = ayahWords(splitBasmala(a, a.text).text);
-      ws.forEach((text, i) => out.push({ text, ref, end: i === ws.length - 1 }));
+      ws.forEach((text, i) => out.push({ text, ref, end: i === ws.length - 1, n: i }));
     }
     return out;
   });
@@ -183,6 +204,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     await Promise.all([this.tasmee.load(), this.quran.load().catch(() => undefined)]);
+    this.tajweedPrefs.set(await this.tajweed.prefs());
   }
 
   ngOnDestroy(): void {
@@ -349,11 +371,131 @@ export class TasmeeComponent implements OnInit, OnDestroy {
   }
 
   reset(): void {
+    this.tajweedState.set('idle');
+    this.tajweedIssues.set(new Map());
     this.finals.set([]);
     this.partial.set('');
     this.correction.set(null);
     this.notified.clear();
     if (this.state() !== 'listening') this.state.set('idle');
+  }
+
+  /**
+   * Each finished phrase with its audio and the words it covers ([sura, aya, first, last] parts), when its words were
+   * read once and in order (a phrase where the reciter went back has no single reference to compare with).
+   */
+  private phrasesForTajweed(): { audio: Float32Array; parts: TajweedPart[] }[] {
+    const results = this.results();
+    const words = this.words();
+    const { sources } = this.heard(false);
+    const byPhrase = new Map<number, number[]>();
+    results.forEach((r, k) => {
+      if (!r.h || (r.status !== 'correct' && r.status !== 'wrong')) return;
+      const src = sources[r.h[0]];
+      if (!src) return;
+      const list = byPhrase.get(src.phrase) ?? [];
+      if (!list.includes(k)) list.push(k);
+      byPhrase.set(src.phrase, list);
+    });
+    const out: { audio: Float32Array; parts: TajweedPart[] }[] = [];
+    for (const [phrase, list] of [...byPhrase.entries()].sort((a, b) => a[0] - b[0])) {
+      const audio = this.finals()[phrase]?.reading?.audio;
+      if (!audio || audio.length > 20 * 16000 || audio.length < 0.3 * 16000) continue;
+      list.sort((a, b) => a - b);
+      if (list[list.length - 1] - list[0] + 1 !== list.length) continue;
+      // Every word heard in the phrase must be one of these (no isti'adha or basmala before them, nothing said twice).
+      const heardHere = this.finals()[phrase]?.reading?.words.length ?? 0;
+      if (heardHere > list.length + 1) continue;
+      const parts: TajweedPart[] = [];
+      for (const k of list) {
+        const w = words[k];
+        const last = parts[parts.length - 1];
+        if (last && last[1] === w.ref.aya) last[3] = w.n;
+        else parts.push([w.ref.sura, w.ref.aya, w.n, w.n]);
+      }
+      out.push({ audio, parts });
+    }
+    return out;
+  }
+
+  async checkTajweed(): Promise<void> {
+    const prefs = await this.tajweed.prefs();
+    this.tajweedPrefs.set(prefs);
+    // The model's licence: the reader is told it is AI (and can be wrong) before the first use.
+    if (!prefs.noticeSeen) {
+      this.tajweedState.set('notice');
+      return;
+    }
+    const phrases = this.tajweedPhrases();
+    if (!phrases.length) return;
+    this.tajweedIssues.set(new Map());
+    this.tajweedDone.set(0);
+    this.tajweedTotal.set(phrases.length);
+    this.tajweedState.set('waking');
+    if (!(await this.tajweed.wake())) {
+      this.tajweedState.set('failed');
+      return;
+    }
+    this.tajweedState.set('checking');
+    const words = this.words();
+    const results = this.results();
+    this.tajweed.progress = (done) => this.tajweedDone.set(done);
+    const replies = await this.tajweed.check(phrases);
+    const issues = new Map<number, TajweedError[]>();
+    let failed = 0;
+    replies.forEach((reply, n) => {
+      if (!reply) {
+        failed++;
+        return;
+      }
+      for (const e of reply.errors) {
+        const k = words.findIndex((w) => w.ref.aya === e.aya && w.n === e.word && w.ref.sura === phrases[n].parts[0][0]);
+        // The server's mushaf and the app's split the ayah the same way; if a word differs, it is not shown.
+        if (k < 0 || (e.wordText && similarity(wordKey(e.wordText), wordKey(words[k].text)) < 0.7)) continue;
+        // A letter said wrongly is shown only if the word check heard a wrong word too: when the word was recognised
+        // as said right, a changed letter is most often the tajweed model mishearing (madd, ghunnah, harakat stay).
+        if (e.type === 'normal' && results[k]?.status === 'correct') continue;
+        issues.set(k, [...(issues.get(k) ?? []), e]);
+      }
+    });
+    this.tajweedIssues.set(issues);
+    this.tajweedFailed.set(failed);
+    this.tajweedState.set(failed === phrases.length ? 'failed' : 'done');
+  }
+
+  async acceptTajweedNotice(): Promise<void> {
+    await this.tajweed.setPrefs({ noticeSeen: true });
+    await this.checkTajweed();
+  }
+
+  async setMadd(key: 'monfasel' | 'mottasel' | 'aared', v: unknown): Promise<void> {
+    await this.tajweed.setPrefs({ [key]: Number(v) });
+    this.tajweedPrefs.set(await this.tajweed.prefs());
+  }
+
+  /** A number of counts (harakat): in Arabic with the right form (حركة واحدة، حركتان، ٣ حركات). */
+  harakat(n: number, subject = false): string {
+    if (this.lang() !== 'ar') return String(n);
+    if (n === 1) return 'حركة واحدة';
+    if (n === 2) return subject ? 'حركتان' : 'حركتين';
+    return `${this.ayahNumber(n)} حركات`;
+  }
+
+  /** What a tajweed mistake was, in words. */
+  tajweedText(e: TajweedError): { title: string; detail: string } {
+    const ar = this.lang() === 'ar';
+    const rule = e.rules[0] ? (ar ? e.rules[0].ar : e.rules[0].en) : '';
+    const t = (key: string, params?: object) => this.translate.instant('tajweed.' + key, params);
+    if (e.type === 'tajweed' && e.expectedLen != null && e.heardLen != null && e.expectedLen !== e.heardLen) {
+      return { title: rule || t('madd'), detail: t('length', { heard: this.harakat(e.heardLen), expected: this.harakat(e.expectedLen) }) };
+    }
+    if (e.type === 'tajweed') {
+      return { title: rule || t('rule'), detail: e.kind === 'delete' ? t('missing') : e.kind === 'insert' ? t('extra') : t('notRight') };
+    }
+    return {
+      title: e.type === 'tashkeel' ? t('haraka') : t('letter'),
+      detail: e.expected || e.heard ? t('expectedHeard', { expected: e.expected || '—', heard: e.heard || '—' }) : '',
+    };
   }
 
   /** Recites the ayah of a mistake with the chosen reciter. */

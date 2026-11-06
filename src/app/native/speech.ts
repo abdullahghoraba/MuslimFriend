@@ -22,6 +22,8 @@ export interface PhraseReading {
   lp: Float32Array;
   frames: number;
   vocab: number;
+  /** The phrase's audio (16 kHz mono), for the tajweed check. */
+  audio?: Float32Array;
 }
 
 export interface SpeechCallbacks {
