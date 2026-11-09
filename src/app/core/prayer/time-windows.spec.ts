@@ -59,9 +59,10 @@ describe('recentPrayer', () => {
     expect(recentPrayer(d(21, 15, 34), times(21), times(20), 50)?.elapsedMin).toBe(39);
     expect(recentPrayer(d(21, 15, 7), times(21), times(20), 0)).toBeNull();
   });
-  it("ignores sunrise and finds yesterday's isha after midnight", () => {
+  it("counts from sunrise too and finds yesterday's isha after midnight", () => {
     expect(recentPrayer(d(21, 5, 30), times(21), times(20), 40)?.name).toBe('fajr');
-    expect(recentPrayer(d(21, 6, 40), times(21), times(20), 120)?.name).toBe('fajr');
+    expect(recentPrayer(d(21, 7, 0), times(21), times(20), 40)).toEqual({ name: 'sunrise', at: d(21, 6, 30), elapsedMin: 30 });
+    expect(recentPrayer(d(21, 7, 10), times(21), times(20), 40)).toBeNull();
     const late = { date: d(20, 0), times: { ...times(20).times, isha: d(20, 23, 50) } };
     expect(recentPrayer(d(21, 0, 10), times(21), late, 40)).toEqual({ name: 'isha', at: d(20, 23, 50), elapsedMin: 20 });
   });

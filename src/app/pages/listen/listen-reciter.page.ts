@@ -1,3 +1,4 @@
+import { ReciterAvatarComponent } from '../../shared/reciter-avatar.component';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import {
   AlertController, IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonProgressBar, IonSearchbar,
@@ -14,7 +15,7 @@ import { ListenPlayerComponent } from './listen-player.component';
 /** One reciter: choose the recording (riwayah), then play or download any sura. */
 @Component({
   selector: 'app-listen-reciter',
-  imports: [
+  imports: [ReciterAvatarComponent,
     TranslatePipe, ListenPlayerComponent, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonButton, IonContent,
     IonFooter, IonIcon, IonProgressBar, IonSearchbar, IonSelect, SelectTextsDirective, IonSelectOption, IonSpinner,
   ],

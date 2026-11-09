@@ -1,3 +1,5 @@
+import { ReciterAvatarComponent } from '../../shared/reciter-avatar.component';
+import { MadinahArtComponent } from '../../shared/sacred-art.component';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { Router } from '@angular/router';
@@ -14,7 +16,7 @@ import { ListenPlayerComponent } from './listen-player.component';
 /** Listen to the Quran: hundreds of reciters (whole suras) and live Quran radios. */
 @Component({
   selector: 'app-listen',
-  imports: [
+  imports: [ReciterAvatarComponent, MadinahArtComponent,
     NgTemplateOutlet, TranslatePipe, ListenPlayerComponent, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonContent, IonFooter,
     IonSegment, IonSegmentButton, IonLabel, IonSearchbar, IonIcon, IonSpinner, IonSelect, SelectTextsDirective, IonSelectOption,
   ],

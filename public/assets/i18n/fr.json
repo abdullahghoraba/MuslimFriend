@@ -55,6 +55,7 @@
     "fridayLabel": "Vendredi (dès le Maghrib du jeudi)",
     "readKahf": "Lire la sourate al-Kahf",
     "sinceAthan": "Depuis l'adhan de {{prayer}}",
+    "sinceSunrise": "Depuis le lever du soleil",
     "continueReading": "Continuer la lecture"
   },
   "category": {
@@ -1456,8 +1457,14 @@
       "none": "Aucun",
       "room": "Pièce",
       "hall": "Salle",
-      "mosque": "Mosquée"
+      "mosque": "Mosquée",
+      "haram": "Haram"
     },
+    "voiceControl": "Réglage de la voix",
+    "voiceLevel": "Niveau de la voix",
+    "clarity": "Clarté",
+    "echoAmount": "Quantité d'écho",
+    "resetSound": "Réinitialiser",
     "captions": "Afficher les versets sur la vidéo",
     "captionsHint": "Choisissez une sourate pour afficher ses versets sur la vidéo. Pendant l'enregistrement, touchez ‹ pour le verset suivant.",
     "privacy": "Enregistré et traité sur votre téléphone. Rien n'est envoyé sauf si vous le partagez.",

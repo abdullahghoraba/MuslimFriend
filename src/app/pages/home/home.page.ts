@@ -1,3 +1,4 @@
+import { KaabaArtComponent } from '../../shared/sacred-art.component';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
@@ -23,7 +24,7 @@ import { SettingsService } from '../../core/services/settings.service';
 import { PrayerService } from '../../core/prayer/prayer.service';
 import { OverlayService } from '../../core/services/overlay.service';
 import { NowSuggestion, nowSuggestions, recentPrayer } from '../../core/prayer/time-windows';
-import { prayerKey, prayerTimesFor } from '../../core/prayer/prayer-times';
+import { nextPrayer, prayerKey, prayerTimesFor } from '../../core/prayer/prayer-times';
 import { QuranService } from '../../core/quran/quran.service';
 import { AthanService } from '../../core/prayer/athan.service';
 import { addDays, hijriOf } from '../../core/prayer/islamic-calendar';
@@ -31,6 +32,8 @@ import { HijriDateComponent } from '../../shared/hijri-date.component';
 import { HomeCategoriesComponent } from '../../shared/home-categories.component';
 import { VerseOfDayComponent } from '../../shared/verse-of-day.component';
 import { HadithOfDayComponent } from '../../shared/hadith-of-day.component';
+
+import { formatCountdown, HomeClock } from './countdown';
 
 interface DailyStatus {
   categoryId: 'morning' | 'evening';
@@ -41,7 +44,7 @@ interface DailyStatus {
 
 @Component({
   selector: 'app-home',
-  imports: [
+  imports: [KaabaArtComponent,
     RouterLink,
     TranslatePipe,
     IonHeader,
@@ -81,7 +84,29 @@ export class HomePage {
   readonly lang = computed(() => this.settings.settings().language);
   readonly daily = signal<DailyStatus[]>([]);
   readonly position = signal<ReaderPosition | null>(null);
-  readonly next = this.prayer.next;
+  private readonly clock = new HomeClock();
+  private visible = false;
+  private readonly visibilityChanged = () => this.clock.setActive(this.visible && !document.hidden);
+  readonly next = computed(() => nextPrayer(this.prayer.prayer(), this.clock.now()));
+
+  constructor() {
+    document.addEventListener('visibilitychange', this.visibilityChanged);
+  }
+
+  ionViewDidEnter(): void {
+    this.visible = true;
+    this.visibilityChanged();
+  }
+
+  ionViewWillLeave(): void {
+    this.visible = false;
+    this.visibilityChanged();
+  }
+
+  ngOnDestroy(): void {
+    this.clock.setActive(false);
+    document.removeEventListener('visibilitychange', this.visibilityChanged);
+  }
   readonly prayerKey = prayerKey;
   private readonly athan = inject(AthanService);
   /**
@@ -89,9 +114,9 @@ export class HomePage {
    * iftar during the day, otherwise the next Fajr (after Maghrib the card already counts towards tomorrow's fast).
    */
   readonly ramadan = computed(() => {
-    const now = this.prayer.now();
+    const now = this.clock.now();
     const s = this.prayer.prayer();
-    const afterMaghrib = (this.prayer.today()?.times.maghrib.getTime() ?? Infinity) <= now.getTime();
+    const afterMaghrib = (prayerTimesFor(s, now)?.times.maghrib.getTime() ?? Infinity) <= now.getTime();
     const day = afterMaghrib ? addDays(now, 1) : now;
     const hijri = hijriOf(day, s.hijriOffset ?? 0);
     const times = prayerTimesFor(s, day)?.times;
@@ -102,10 +127,10 @@ export class HomePage {
   });
   /** For a while after a prayer time (default 40 min), the card shows the time since it, like Salatuk. */
   readonly recent = computed(() => {
-    const now = this.prayer.now();
+    const now = this.clock.now();
     const yesterday = new Date(now);
     yesterday.setDate(now.getDate() - 1);
-    return recentPrayer(now, this.prayer.today(), prayerTimesFor(this.prayer.prayer(), yesterday),
+    return recentPrayer(now, prayerTimesFor(this.prayer.prayer(), now), prayerTimesFor(this.prayer.prayer(), yesterday),
       this.prayer.reminders().homeCards.afterPrayerMinutes ?? 40);
   });
 
@@ -180,15 +205,9 @@ export class HomePage {
     }).format(d);
   }
 
-  /** Hours and minutes until [d], relative to the prayer service's minute tick. */
+  /** Local live clock; both prayer and Ramadan cards use the same instant. */
   countdown(d: Date): string {
-    const mins = Math.max(0, Math.round((d.getTime() - this.prayer.now().getTime()) / 60_000));
-    const h = Math.floor(mins / 60);
-    const m = mins % 60;
-    const fmt = new Intl.NumberFormat(intlLocale(this.lang()));
-    if (h) return `${fmt.format(h)}:${String(m).padStart(2, '0')}`;
-    if (this.lang() === 'ar') return `${fmt.format(m)} د`;
-    return new Intl.NumberFormat(intlLocale(this.lang()), { style: 'unit', unit: 'minute', unitDisplay: 'short' }).format(m);
+    return formatCountdown(d, this.clock.now(), this.lang());
   }
 
   categoryName(c: Category | undefined): string {
@@ -200,7 +219,7 @@ export class HomePage {
     return this.athkar.category(p.categoryId);
   }
 
-  openReader(categoryId: string, start = 0): void {
-    void this.nav.navigateForward(['/category', categoryId], { queryParams: { start } });
+  openReader(categoryId: string, start?: number): void {
+    void this.nav.navigateForward(['/category', categoryId], { queryParams: start === undefined ? {} : { start } });
   }
 }

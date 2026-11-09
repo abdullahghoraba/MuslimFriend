@@ -24,7 +24,7 @@ export class TabsPage {
   readonly tabs = [
     { tab: 'home', icon: 'home', label: 'tabs.home' },
     { tab: 'quran', icon: 'book', label: 'tabs.quran' },
-    { tab: 'tasbih', icon: 'ellipse', label: 'tabs.tasbih' },
+    { tab: 'tasbih', icon: 'prayer-beads', label: 'tabs.tasbih' },
     { tab: 'more', icon: 'grid', label: 'tabs.more' },
     { tab: 'settings', icon: 'settings', label: 'tabs.settings' },
   ];

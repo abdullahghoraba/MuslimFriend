@@ -1,7 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { SingleViewComponent } from './single-view.component';
-import { nextDhikrCount, visibleItems } from './counting';
+import { nextDhikrCount, resumeIndex, visibleItems } from './counting';
 import { AthkarPrefsService } from '../../core/services/athkar-prefs.service';
 import { Component, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import {
@@ -38,6 +38,7 @@ import { AthkarRepository } from '../../core/services/athkar.repository';
 import { AthkarMeaningService, LocalMeaning } from '../../core/services/athkar-meaning.service';
 import { HapticsService } from '../../core/services/haptics.service';
 import { ProgressService } from '../../core/services/progress.service';
+import { dateKey } from '../../core/util/date';
 import { SettingsService } from '../../core/services/settings.service';
 import { ShareService } from '../../core/services/share.service';
 
@@ -67,6 +68,19 @@ export class CategoryPage {
   readonly prefs = this.preferences.prefs;
   readonly singleIndex = signal(0);
   private advanceTimer?: ReturnType<typeof setTimeout>;
+  private resumeTimer?: ReturnType<typeof setTimeout>;
+  private loadedDate = dateKey();
+  private loadVersion = 0;
+  private visible = false;
+  private readonly visibilityChanged = () => {
+    if (this.visible && !document.hidden) void this.load();
+  };
+
+  private remember(index: number): void {
+    const item = this.items()[index];
+    if (item) void this.progress.savePosition(this.id(), item.id, this.loadedDate);
+    void this.settings.setReaderPosition(this.id(), index);
+  }
 
   async toggleMode(): Promise<void> {
     clearTimeout(this.advanceTimer);
@@ -111,11 +125,23 @@ export class CategoryPage {
 
   moveSingle(index: number): void {
     clearTimeout(this.advanceTimer);
+    clearTimeout(this.resumeTimer);
     this.singleIndex.set(index);
-    void this.settings.setReaderPosition(this.id(), index);
+    this.remember(index);
   }
 
-  ionViewWillLeave(): void { clearTimeout(this.advanceTimer); this.showCompleted.set(false); }
+  ionViewWillLeave(): void {
+    this.visible = false;
+    ++this.loadVersion;
+    clearTimeout(this.resumeTimer);
+    clearTimeout(this.advanceTimer);
+    this.showCompleted.set(false);
+  }
+
+  ngOnDestroy(): void {
+    this.ionViewWillLeave();
+    document.removeEventListener('visibilitychange', this.visibilityChanged);
+  }
 
   /** Less frequent list actions live in one menu to keep the header calm. */
   async openListMenu(): Promise<void> {
@@ -290,6 +316,7 @@ export class CategoryPage {
   }
 
   constructor() {
+    document.addEventListener('visibilitychange', this.visibilityChanged);
     // Route inputs may bind after the first ionViewWillEnter when the page is opened directly.
     effect(() => {
       if (this.id()) untracked(() => void this.load());
@@ -297,6 +324,7 @@ export class CategoryPage {
   }
 
   ionViewWillEnter(): void {
+    this.visible = true;
     if (this.id()) void this.load();
   }
 
@@ -310,16 +338,30 @@ export class CategoryPage {
   }
 
   async load(): Promise<void> {
+    const version = ++this.loadVersion;
+    const categoryId = this.id();
+    const date = dateKey();
     clearTimeout(this.advanceTimer);
+    clearTimeout(this.resumeTimer);
     await this.preferences.ready;
-    const items = await this.athkar.byCategory(this.id());
-    this.singleIndex.update(i => Math.max(0, Math.min(i, items.length - 1)));
+    const items = await this.athkar.byCategory(categoryId);
+    const [hidden, counts, savedId] = await Promise.all([
+      this.athkar.hiddenIn(categoryId),
+      this.progress.countsFor(items.map(i => i.id), date),
+      this.progress.positionFor(categoryId, date),
+    ]);
+    if (version !== this.loadVersion || categoryId !== this.id()) return;
+    this.loadedDate = date;
     this.items.set(items);
     void this.loadMeanings(items);
-    this.hiddenItems.set(await this.athkar.hiddenIn(this.id()));
-    this.counts.set(await this.progress.countsFor(items.map((i) => i.id)));
+    this.hiddenItems.set(hidden);
+    this.counts.set(counts);
+    // Daily sets always resume today's state, even from an old Home continue link.
     const start = Number(this.start());
-    if (Number.isInteger(start) && start > 0) setTimeout(() => this.scrollTo(Math.min(start, items.length - 1)), 300);
+    const explicit = categoryId !== 'morning' && categoryId !== 'evening' && Number.isInteger(start) && start >= 0;
+    const index = explicit ? Math.min(start, Math.max(0, items.length - 1)) : resumeIndex(items, counts, savedId);
+    this.singleIndex.set(index);
+    this.resumeTimer = setTimeout(() => this.scrollTo(index), 300);
   }
 
   countOf(d: Dhikr): number {
@@ -332,6 +374,8 @@ export class CategoryPage {
   }
 
   async count(d: Dhikr, index: number): Promise<void> {
+    if (this.loadedDate !== dateKey()) await this.load();
+    clearTimeout(this.resumeTimer);
     index = this.items().findIndex(item => item.id === d.id);
     if (this.reordering() || (this.isDone(d) && !this.prefs().countPastTarget) || this.busy.has(d.id)) return;
     this.busy.add(d.id);
@@ -339,8 +383,8 @@ export class CategoryPage {
       const previous = this.counts().get(d.id) ?? 0;
       const next = nextDhikrCount(previous, d.repeatCount, this.prefs().countPastTarget);
       this.counts.update((m) => new Map(m).set(d.id, next));
-      await this.progress.increment(d.id);
-      void this.settings.setReaderPosition(this.id(), index);
+      await this.progress.increment(d.id, 1, 'app', this.loadedDate);
+      this.remember(index);
       if (previous < d.repeatCount && next >= d.repeatCount) {
         this.haptics.complete();
         const ordered = [...this.items().slice(index + 1), ...this.items().slice(0, index)];
@@ -352,7 +396,7 @@ export class CategoryPage {
             if (at >= 0 && this.prefs().autoAdvance && !this.reordering()) this.scrollTo(at);
           }, SCROLL_NEXT_MS);
         }
-        if (this.allDone()) await this.progress.categoryProgress(this.id(), this.items());
+        if (this.allDone()) await this.progress.categoryProgress(this.id(), this.items(), this.loadedDate);
       } else {
         this.haptics.tap();
       }
@@ -370,7 +414,8 @@ export class CategoryPage {
 
   async resetItem(d: Dhikr): Promise<void> {
     clearTimeout(this.advanceTimer);
-    await this.progress.resetToday(d.id);
+    if (this.loadedDate !== dateKey()) await this.load();
+    await this.progress.resetToday(d.id, this.loadedDate);
     this.counts.update((m) => {
       const copy = new Map(m);
       copy.delete(d.id);
@@ -380,8 +425,11 @@ export class CategoryPage {
 
   async resetAll(): Promise<void> {
     clearTimeout(this.advanceTimer);
+    clearTimeout(this.resumeTimer);
+    if (this.loadedDate !== dateKey()) await this.load();
+    clearTimeout(this.resumeTimer);
     this.singleIndex.set(0);
-    await this.progress.resetCategoryToday(this.items());
+    await this.progress.resetCategoryToday(this.items(), this.loadedDate);
     this.counts.set(new Map());
     this.showCompleted.set(false);
     await this.content()?.scrollToTop(300);
@@ -398,6 +446,7 @@ export class CategoryPage {
 
   private scrollTo(index: number): void {
     if (this.prefs().readingMode === 'single') { this.moveSingle(index); return; }
+    this.remember(index);
     const el = this.host.nativeElement.querySelector<HTMLElement>(`[data-index="${index}"]`);
     if (!el) return;
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });

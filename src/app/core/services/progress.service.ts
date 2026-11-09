@@ -21,6 +21,23 @@ export class ProgressService {
     this.db = db;
   }
 
+  /** One position per category, scoped to the same local day as its counts.
+   * Morning/evening windows occur once per local day (and end by midnight).
+   * Store an item id so hiding/reordering items cannot move the bookmark to another dhikr.
+   */
+  async savePosition(categoryId: string, dhikrId: string, date = dateKey()): Promise<void> {
+    await this.db.run('INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value',
+      ['reader.daily.' + categoryId, JSON.stringify({ date, dhikrId })]);
+  }
+
+  async positionFor(categoryId: string, date = dateKey()): Promise<string | undefined> {
+    const rows = await this.db.query<{ value: string }>('SELECT value FROM meta WHERE key = ?', ['reader.daily.' + categoryId]);
+    try {
+      const saved = JSON.parse(rows[0]?.value ?? 'null');
+      return saved?.date === date && typeof saved.dhikrId === 'string' ? saved.dhikrId : undefined;
+    } catch { return undefined; }
+  }
+
   /** Today's count per dhikr id (app + overlay combined). */
   async countsFor(ids: string[], date = dateKey()): Promise<Map<string, number>> {
     const result = new Map<string, number>();
@@ -55,6 +72,9 @@ export class ProgressService {
     if (!items.length) return;
     const placeholders = items.map(() => '?').join(',');
     await this.db.run(`DELETE FROM dhikr_daily WHERE date = ? AND dhikr_id IN (${placeholders})`, [date, ...items.map((i) => i.id)]);
+    for (const categoryId of new Set(items.map(i => i.categoryId))) {
+      await this.db.run('DELETE FROM meta WHERE key = ?', ['reader.daily.' + categoryId]);
+    }
     this.version.update((v) => v + 1);
   }
 

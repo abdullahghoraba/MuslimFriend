@@ -3,6 +3,8 @@ import { DatabaseService, SqlDb } from '../db/database.service';
 import { Dhikr } from '../models';
 import { createFakeDb, StatementRecordingDb } from '../../testing/fake-sql-db';
 import { ProgressService } from './progress.service';
+import { resumeIndex } from '../../pages/category/counting';
+import { dateKey } from '../util/date';
 
 const today = '2026-01-31';
 const tomorrow = '2026-02-01';
@@ -92,5 +94,33 @@ describe('ProgressService', () => {
     expect(await service.categoryProgress('empty', [], today)).toEqual({ done: 0, total: 0, completed: false });
     expect(await service.isCategoryCompleted('empty', today)).toBe(false);
     expect(await db.query('SELECT * FROM category_daily')).toEqual([]);
+  });
+
+  it('persists independent morning/evening positions across service instances', async () => {
+    await service.increment('item-1', 2, 'app', today);
+    await service.increment('item-2', 1, 'app', today);
+    await service.savePosition('morning', 'item-2', today);
+    await service.savePosition('evening', 'evening-3', today);
+    const reopened = TestBed.runInInjectionContext(() => new ProgressService());
+    expect(await reopened.positionFor('evening', today)).toBe('evening-3');
+    const counts = await reopened.countsFor(items.map(i => i.id), today);
+    expect(counts.get('item-2')).toBe(1);
+    expect(resumeIndex(items, counts, await reopened.positionFor('morning', today))).toBe(1);
+    await reopened.resetCategoryToday(items, today);
+    expect(await reopened.positionFor('morning', today)).toBeUndefined();
+    expect(await reopened.positionFor('evening', today)).toBe('evening-3');
+  });
+
+  it.each(['morning', 'evening'])('resets %s for the next local day/window', async category => {
+    // The configured windows are contained in the local date; midnight is the daily boundary.
+    const end = dateKey(new Date(2026, 0, 31, 23, 59, 59));
+    const nextWindow = dateKey(new Date(2026, 1, 1, category === 'morning' ? 6 : 18));
+    await service.increment('item-1', 2, 'app', end);
+    await service.savePosition(category, 'item-2', end);
+    expect(await service.positionFor(category, end)).toBe('item-2');
+    const counts = await service.countsFor(items.map(i => i.id), nextWindow);
+    expect(counts.size).toBe(0);
+    expect(await service.positionFor(category, nextWindow)).toBeUndefined();
+    expect(resumeIndex(items, counts, await service.positionFor(category, nextWindow))).toBe(0);
   });
 });

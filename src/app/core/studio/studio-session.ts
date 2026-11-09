@@ -1,4 +1,16 @@
-import { ChainOptions, RecitationChain, pickMimeType } from './audio-chain';
+import { ChainOptions, RecitationChain, pickMimeType, tailSeconds } from './audio-chain';
+
+/** Fade-in at the start of a recording (sound and picture), and the fade-out at the very end. */
+export const FADE_IN = 0.35;
+export const FADE_OUT = 0.6;
+/** How long the sound keeps running after pause is tapped, so the word being said is not cut. */
+export const PAUSE_TAIL = 0.35;
+
+/** Opacity of the black over the picture at [t] seconds into a fade of [seconds] ('in': from black). */
+export function fadeAlpha(direction: 'in' | 'out', t: number, seconds: number): number {
+  const p = Math.min(1, Math.max(0, t / seconds));
+  return direction === 'in' ? 1 - p : p;
+}
 
 /** Where a recording's bytes go while it is being made: a file on the phone, or memory in the browser. */
 export interface ChunkSink {
@@ -69,6 +81,9 @@ export class StudioSession {
   private startedAt = 0;
   private pausedAt = 0;
   private pausedTotal = 0;
+  private pauseTimer?: ReturnType<typeof setTimeout>;
+  /** The picture's fade (to or from black), drawn over each frame. */
+  private fade: { direction: 'in' | 'out'; start: number; seconds: number } | null = null;
 
   private constructor(
     private readonly options: SessionOptions,
@@ -161,25 +176,67 @@ export class StudioSession {
       this.recorders.push(raw);
     }
     // A chunk every second goes straight to storage, so a long recitation never sits in memory.
+    // A clean start: the sound and the picture come in softly (no click, no jump from a black frame).
+    this.chain.fadeMaster(true, FADE_IN);
+    this.chain.fadeInput(true, 0.12);
+    this.fade = { direction: 'in', start: performance.now(), seconds: FADE_IN };
     for (const r of this.recorders) r.start(1000);
     this.startedAt = performance.now();
     this.pausedAt = 0;
     this.pausedTotal = 0;
   }
 
+  /**
+   * Pauses after a short tail: the microphone is muted at once (the tap is not recorded) while the word being said
+   * and its echo finish, then the recorders pause.
+   */
   pause(): void {
-    for (const r of this.recorders) if (r.state === 'recording') r.pause();
+    if (this.pauseTimer || !this.recorders.some((r) => r.state === 'recording')) return;
+    this.chain.fadeInput(false, 0.06);
     this.pausedAt = performance.now();
+    this.pauseTimer = setTimeout(() => {
+      this.pauseTimer = undefined;
+      for (const r of this.recorders) if (r.state === 'recording') r.pause();
+    }, PAUSE_TAIL * 1000);
   }
 
   resume(): void {
+    if (this.pauseTimer) {
+      clearTimeout(this.pauseTimer);
+      this.pauseTimer = undefined;
+    }
     for (const r of this.recorders) if (r.state === 'paused') r.resume();
+    this.chain.fadeInput(true, 0.12);
     if (this.pausedAt) this.pausedTotal += performance.now() - this.pausedAt;
     this.pausedAt = 0;
   }
 
-  /** Stops the recorders; resolves with the length in seconds once the last chunks are handed over. */
+  /**
+   * Stops like an editor would end the clip: the microphone is muted at once, the last word and its reverb ring out,
+   * the sound and picture fade out, then the recorders stop (stopping at the tap cut the last second: the sound still
+   * inside the noise removal, the reverb and the encoder was lost). Resolves with the length in seconds once the last
+   * chunks are handed over.
+   */
   async stop(): Promise<number> {
+    const live = this.recorders.some((r) => r.state === 'recording') && !this.pausedAt;
+    if (this.pauseTimer) {
+      // Pause was tapped just before: its tail is already running; let it finish as the ending.
+      clearTimeout(this.pauseTimer);
+      this.pauseTimer = undefined;
+    }
+    if (live || this.pausedAt) {
+      const wasPaused = this.recorders.some((r) => r.state === 'paused');
+      if (!wasPaused) {
+        this.chain.fadeInput(false, 0.06);
+        const tail = live ? tailSeconds(this.chain.reverbPreset) : PAUSE_TAIL;
+        await wait((tail - FADE_OUT) * 1000);
+        this.chain.fadeMaster(false, FADE_OUT);
+        this.fade = { direction: 'out', start: performance.now(), seconds: FADE_OUT };
+        await wait(FADE_OUT * 1000 + 120);
+        // The recorders never paused (a pause tapped just before stop): its tail counts as recorded time.
+        this.pausedAt = 0;
+      }
+    }
     const seconds = this.elapsed();
     await Promise.all(
       this.recorders.map((r) => new Promise<void>((resolve) => {
@@ -190,12 +247,17 @@ export class StudioSession {
     );
     this.recorders = [];
     this.startedAt = 0;
+    // Ready for the next take: the preview and meter come back.
+    this.fade = null;
+    this.chain.fadeInput(true, 0.05);
+    this.chain.fadeMaster(true, 0.05);
     return seconds;
   }
 
   /** Releases the microphone and camera. */
   close(): void {
     cancelAnimationFrame(this.frame);
+    clearTimeout(this.pauseTimer);
     this.cameraRun++;
     for (const r of this.recorders) if (r.state !== 'inactive') r.stop();
     this.mic.getTracks().forEach((t) => t.stop());
@@ -236,6 +298,14 @@ export class StudioSession {
     const draw = () => {
       const t0 = performance.now();
       drawFrame(g, video, this.options.facing === 'user', overlay.get(canvas.width, canvas.height, this.caption(), this.brand), grade);
+      const f = this.fade;
+      if (f) {
+        const alpha = fadeAlpha(f.direction, (t0 - f.start) / 1000, f.seconds);
+        if (alpha > 0) {
+          g.fillStyle = `rgba(0,0,0,${alpha})`;
+          g.fillRect(0, 0, canvas.width, canvas.height);
+        } else if (f.direction === 'in') this.fade = null;
+      }
       if (grade && frames < 40) {
         spent += performance.now() - t0;
         if (++frames === 40 && spent / frames > 16) grade = false;
@@ -387,6 +457,8 @@ export function drawCaption(g: CanvasRenderingContext2D, caption: Caption): void
   g.fillText(caption.title, W / 2, top + size * 1.2 + lines.length * lineH);
   g.restore();
 }
+
+const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, Math.max(0, ms)));
 
 /** Splits [text] into lines no wider than [max] (by whole words). */
 export function wrapText(measure: (s: string) => number, text: string, max: number): string[] {

@@ -12,7 +12,7 @@ import { ShareService } from '../../core/services/share.service';
   imports: [RouterLink, TranslatePipe, IonBadge, IonButton, IonIcon],
   template: `
     <article class="card" [attr.aria-label]="reference()" [class.focused]="focused()">
-      @if (heading()) { <h2>{{ heading() | translate }}</h2> }
+      @if (heading()) { <h2><ion-icon name="chatbox-ellipses-outline" aria-hidden="true" /> {{ heading() | translate }}</h2> }
       <p class="reference">{{ reference() }}</p>
       <div class="grades">
         @for (g of hadith().grades; track $index) {

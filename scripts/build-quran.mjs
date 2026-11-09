@@ -2,6 +2,9 @@
 //   content/tanzil/quran-uthmani.txt          Uthmani text (CC BY 3.0)
 //   content/quran-sources/quran-data.xml      metadata: suras, juz, hizb quarters, 604 Madani pages, sajdas
 //   content/quran-sources/ar.muyassar.txt     Tafsir al-Muyassar (King Fahd Complex) — Tanzil, non-commercial
+//   public/assets/quran/madinah-lines.json    the 15 lines of each page of the 1421 Madinah print
+//                                             (scripts/madinah-lines); its page starts replace Tanzil's, which
+//                                             follow the older 1405 print (about 70 ayat sit on another page)
 // Output (public/assets/quran/):
 //   text.json                 string[6236] — global ayah index = sura start + ayah - 1
 //   meta.json                 suras, juz, quarters, pages, sajdas, sources
@@ -56,6 +59,22 @@ const meta = {
 };
 
 const errors = [];
+const linesFile = out('madinah-lines.json');
+try {
+  const { pages } = JSON.parse(readFileSync(linesFile, 'utf8'));
+  const at = (index) => {
+    const sura = suras.findLast((x) => x.start <= index);
+    return { sura: sura.index, aya: index - sura.start + 1 };
+  };
+  meta.pages = pages.map((lines) => {
+    const run = lines.find((l) => Array.isArray(l[0]))[0];
+    if (run[1] !== 0) errors.push(`page starts inside an ayah: ${JSON.stringify(run)}`);
+    return at(run[0]);
+  });
+  meta.sources.pages = 'Pages of the 1421 Madinah print (King Fahd Complex): Quran.com word lines, checked against KFGQPC Hafs data';
+} catch (e) {
+  errors.push(`madinah-lines.json: ${e.message}`);
+}
 const expect = (cond, msg) => { if (!cond) errors.push(msg); };
 expect(suras.length === 114, `expected 114 suras, got ${suras.length}`);
 expect(meta.juz.length === 30, `expected 30 juz, got ${meta.juz.length}`);

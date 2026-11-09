@@ -4,10 +4,10 @@ import { Preferences } from '@capacitor/preferences';
 import { KeepAwake } from '@capacitor-community/keep-awake';
 import {
   AlertController, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonLabel, IonSegment,
-  IonSegmentButton, IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToggle, IonToolbar, ToastController,
+  IonRange, IonSegmentButton, IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToggle, IonToolbar, ToastController,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Denoise, Reverb } from '../../core/studio/audio-chain';
+import { CLARITY_DB, Denoise, REVERB_AMOUNT, Reverb, VOICE_DB } from '../../core/studio/audio-chain';
 import { Caption, Facing, StudioSession } from '../../core/studio/studio-session';
 import { Recording, StudioService } from '../../core/studio/studio.service';
 import { QuranService } from '../../core/quran/quran.service';
@@ -20,9 +20,17 @@ interface StudioPrefs {
   denoise: Denoise;
   reverb: Reverb;
   captions: boolean;
+  /** Voice level (dB), clarity (presence dB) and reverb amount (1 = the preset's own). */
+  voiceDb: number;
+  clarityDb: number;
+  reverbAmount: number;
 }
 
 const PREFS_KEY = 'studioPrefs';
+
+/** A saved number when it is one and within [min, max]. */
+const inRange = (v: unknown, min: number, max: number): number | undefined =>
+  typeof v === 'number' && Number.isFinite(v) && v >= min && v <= max ? v : undefined;
 
 /**
  * The recitation studio: record your own recitation, as sound or as a video with the camera, with the noise taken
@@ -34,7 +42,7 @@ const PREFS_KEY = 'studioPrefs';
   selector: 'app-studio',
   imports: [
     TranslatePipe, LocalDatePipe, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonContent, IonSegment,
-    IonSegmentButton, IonLabel, IonIcon, IonSelect, IonSelectOption, IonToggle, IonButton, IonSpinner,
+    IonSegmentButton, IonLabel, IonIcon, IonSelect, IonSelectOption, IonToggle, IonButton, IonSpinner, IonRange,
   ],
   templateUrl: './studio.page.html',
   styleUrl: './studio.page.scss',
@@ -49,10 +57,16 @@ export class StudioPage implements OnDestroy {
   private readonly previewHost = viewChild<ElementRef<HTMLElement>>('preview');
 
   readonly lang = computed(() => this.settings.settings().language);
-  readonly prefs = signal<StudioPrefs>({ kind: 'audio', facing: 'user', denoise: 'strong', reverb: 'room', captions: true });
+  readonly prefs = signal<StudioPrefs>({
+    kind: 'audio', facing: 'user', denoise: 'strong', reverb: 'room', captions: true, voiceDb: 0, clarityDb: 3, reverbAmount: 1,
+  });
+  readonly voiceRange = VOICE_DB;
+  readonly clarityRange = CLARITY_DB;
+  /** The reverb amount slider in percent. */
+  readonly reverbRange = { min: REVERB_AMOUNT.min * 100, max: REVERB_AMOUNT.max * 100 };
   /** Off or the AI (GTCRN). RNNoise («light») removed too little of a real room's noise to offer; it is only the fallback. */
   readonly denoiseLevels: Denoise[] = ['off', 'strong'];
-  readonly reverbs: Reverb[] = ['none', 'room', 'hall', 'mosque'];
+  readonly reverbs: Reverb[] = ['none', 'room', 'hall', 'mosque', 'haram'];
 
   /** The ayat to recite (optional): shown on the screen and, in a video, over the picture. */
   readonly sura = signal(0);
@@ -133,6 +147,41 @@ export class StudioPage implements OnDestroy {
     this.session()?.chain.setReverb(reverb);
   }
 
+  /** The sliders apply live (heard in the preview), and are saved when let go. */
+  setVoice(value: unknown, save = false): void {
+    const voiceDb = Number(value) || 0;
+    this.session()?.chain.setVoice(voiceDb);
+    this.prefs.update((p) => ({ ...p, voiceDb }));
+    if (save) void this.savePrefs({ voiceDb });
+  }
+
+  setClarity(value: unknown, save = false): void {
+    const clarityDb = Number(value);
+    this.session()?.chain.setClarity(clarityDb);
+    this.prefs.update((p) => ({ ...p, clarityDb }));
+    if (save) void this.savePrefs({ clarityDb });
+  }
+
+  setReverbAmount(value: unknown, save = false): void {
+    const reverbAmount = (Number(value) || 0) / 100;
+    this.session()?.chain.setReverbAmount(reverbAmount);
+    this.prefs.update((p) => ({ ...p, reverbAmount }));
+    if (save) void this.savePrefs({ reverbAmount });
+  }
+
+  /** Back to the engineer's defaults. */
+  async resetSound(): Promise<void> {
+    await this.savePrefs({ voiceDb: 0, clarityDb: 3, reverbAmount: 1 });
+    const c = this.session()?.chain;
+    c?.setVoice(0);
+    c?.setClarity(3);
+    c?.setReverbAmount(1);
+  }
+
+  signed(db: number): string {
+    return (db > 0 ? '+' : '') + db + ' dB';
+  }
+
   async setCaptions(on: boolean): Promise<void> {
     await this.savePrefs({ captions: on });
   }
@@ -179,7 +228,10 @@ export class StudioPage implements OnDestroy {
     try {
       const p = this.prefs();
       const session = await StudioSession.open(
-        { kind: p.kind, facing: p.facing, denoise: p.denoise, reverb: p.reverb, brand: this.translate.instant('app.name') },
+        {
+          kind: p.kind, facing: p.facing, denoise: p.denoise, reverb: p.reverb, brand: this.translate.instant('app.name'),
+          voiceDb: p.voiceDb, clarityDb: p.clarityDb, reverbAmount: p.reverbAmount,
+        },
         () => (this.prefs().captions ? this.caption() : null),
       );
       this.session.set(session);
@@ -395,6 +447,9 @@ export class StudioPage implements OnDestroy {
         denoise: this.denoiseLevels.includes(v.denoise as Denoise) ? (v.denoise as Denoise) : p.denoise,
         reverb: this.reverbs.includes(v.reverb as Reverb) ? (v.reverb as Reverb) : p.reverb,
         captions: typeof v.captions === 'boolean' ? v.captions : p.captions,
+        voiceDb: inRange(v.voiceDb, VOICE_DB.min, VOICE_DB.max) ?? p.voiceDb,
+        clarityDb: inRange(v.clarityDb, CLARITY_DB.min, CLARITY_DB.max) ?? p.clarityDb,
+        reverbAmount: inRange(v.reverbAmount, REVERB_AMOUNT.min, REVERB_AMOUNT.max) ?? p.reverbAmount,
       }));
     } catch {
       /* defaults */

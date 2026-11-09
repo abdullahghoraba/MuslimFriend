@@ -273,3 +273,79 @@ ion-title { padding-inline: 4px; }
 .cover { text-align: center; padding: 30vh 16px 10vh; color: var(--m-accent, inherit); }
 .cover-title { font-family: "Amiri", serif; font-size: 2rem; margin: 0; }
 .cover-sub { font-family: "Amiri", serif; font-size: 1.1rem; opacity: 0.8; }
+
+// Only the two Madinah text editions use fixed printed rows. Ionic supplies the available
+// height after the header, settings, selection toolbar, player and safe areas are laid out.
+.page-surface.lined-page {
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding-top: 4px;
+
+  .page-footer { flex: 0 0 auto; padding: 4px 0 0; }
+}
+
+.madinah-lines {
+  flex: 1 1 0;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  color: var(--m-fg);
+  font-size: var(--line-font-size, 16px);
+  line-height: 2.15;
+  word-spacing: normal;
+  overflow: hidden;
+
+  .mushaf-line {
+    flex: 1 0 0;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .text-line { justify-content: space-between; column-gap: 0.16em; }
+  .mushaf-word, .basmala-text { flex: 0 0 auto; display: inline-block; white-space: nowrap; }
+  .basmala-line, .title-line { justify-content: center; }
+  .sura-frame {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0 6px;
+    border-width: 3px;
+    line-height: 1.2;
+    // Two title lines and the frame must occupy only one printed row.
+    font-size: min(1em, calc((var(--printed-row-height, 32px) - 6px) / 2));
+    white-space: normal;
+    .sura-name { font-size: 1em; }
+    .sura-info { font-size: 0.55em; }
+  }
+
+  &.opening-page {
+    justify-content: center;
+    .mushaf-line { flex: 0 0 var(--printed-row-height, 6.6667%); }
+    .text-line { justify-content: center; }
+    .sura-frame { width: 85%; }
+  }
+
+  &.wrap-lines {
+    overflow-y: auto;
+    overflow-x: hidden;
+    justify-content: flex-start;
+    .mushaf-line { flex: 0 0 auto; min-height: var(--printed-row-height); }
+    .text-line { flex-wrap: wrap; white-space: normal; }
+    .mushaf-word, .basmala-text { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+    .sura-frame { margin-block: 4px; }
+  }
+
+  &.measuring {
+    .text-line { flex-wrap: nowrap; }
+    .mushaf-word, .basmala-text { max-width: none; white-space: nowrap; overflow-wrap: normal; }
+  }
+}
+
+// Keep decorative initials in the reader's own paper/sepia/night palette.
+app-reciter-avatar { --reciter-avatar-size: 32px; --app-surface: var(--m-bg); --ion-text-color: var(--m-fg); vertical-align: middle; margin-inline-end: 6px; }

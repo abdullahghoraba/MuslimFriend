@@ -55,6 +55,7 @@
     "fridayLabel": "Friday (from Thursday's Maghrib)",
     "readKahf": "Read Surat al-Kahf",
     "sinceAthan": "Since the {{prayer}} athan",
+    "sinceSunrise": "Since sunrise",
     "continueReading": "Continue reading"
   },
   "category": {
@@ -1456,8 +1457,14 @@
       "none": "None",
       "room": "Room",
       "hall": "Hall",
-      "mosque": "Mosque"
+      "mosque": "Mosque",
+      "haram": "Haram"
     },
+    "voiceControl": "Voice control",
+    "voiceLevel": "Voice level",
+    "clarity": "Clarity",
+    "echoAmount": "Echo amount",
+    "resetSound": "Reset to default",
     "captions": "Show the ayat on the video",
     "captionsHint": "Choose a surah to show its ayat on the video. During recording, tap ‹ to move to the next ayah.",
     "privacy": "Recorded and processed on your phone. Nothing is uploaded unless you share it.",

@@ -55,6 +55,7 @@
     "fridayLabel": "Ijumaa (kuanzia Magharibi ya Alhamisi)",
     "readKahf": "Soma Surat al-Kahf",
     "sinceAthan": "Tangu adhana ya {{prayer}}",
+    "sinceSunrise": "Tangu macheo",
     "continueReading": "Endelea kusoma"
   },
   "category": {
@@ -1456,8 +1457,14 @@
       "none": "Hakuna",
       "room": "Chumba",
       "hall": "Ukumbi",
-      "mosque": "Msikiti"
+      "mosque": "Msikiti",
+      "haram": "Haram"
     },
+    "voiceControl": "Udhibiti wa sauti",
+    "voiceLevel": "Kiwango cha sauti",
+    "clarity": "Uwazi",
+    "echoAmount": "Kiasi cha mwangwi",
+    "resetSound": "Rudisha chaguo-msingi",
     "captions": "Onyesha aya kwenye video",
     "captionsHint": "Chagua sura ili aya zake zionekane kwenye video. Ukirekodi, gusa ‹ kwenda aya inayofuata.",
     "privacy": "Inarekodiwa na kuchakatwa kwenye simu yako. Hakuna kinachopakiwa usipokishiriki.",

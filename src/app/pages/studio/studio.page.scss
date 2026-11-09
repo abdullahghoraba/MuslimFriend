@@ -188,3 +188,8 @@ main { max-width: 760px; margin: auto; padding: 12px 12px 40px; }
 }
 
 .empty { text-align: center; color: var(--app-muted); padding: 20px; }
+
+/* Voice controls: label, slider and value on one row. */
+.slider { display: grid; grid-template-columns: minmax(84px, auto) 1fr 64px; align-items: center; gap: 8px; }
+.slider ion-range { padding: 0; --bar-height: 4px; }
+.slider output { font-variant-numeric: tabular-nums; text-align: end; color: var(--app-muted); font-size: .9rem; }

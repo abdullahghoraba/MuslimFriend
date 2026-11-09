@@ -15,7 +15,7 @@ interface Entry {
   imports: [RouterLink, TranslatePipe, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonIcon, IonLabel],
   template: `
     <ion-header>
-      <ion-toolbar><ion-title>{{ 'more.title' | translate }}</ion-title></ion-toolbar>
+      <ion-toolbar><ion-title><ion-icon name="grid-outline" aria-hidden="true" /> {{ 'more.title' | translate }}</ion-title></ion-toolbar>
     </ion-header>
     <ion-content>
       @for (g of groups; track g.title) {
@@ -31,7 +31,7 @@ interface Entry {
       }
     </ion-content>
   `,
-  styles: `ion-icon[slot='start'] { color: var(--ion-color-primary); }`,
+  styles: `ion-icon[slot='start'] { color: var(--ion-color-primary); font-size: 22px; }`,
 })
 export class MorePage {
   readonly groups: { title: string; entries: Entry[] }[] = [
@@ -69,7 +69,7 @@ export class MorePage {
         { link: '/zakat', icon: 'calculator-outline', label: 'zakat.title' },
         { link: '/mawarith', icon: 'git-network-outline', label: 'mawarith.title' },
         { link: '/names', icon: 'sparkles-outline', label: 'names.title' },
-        { link: '/qibla', icon: 'compass-outline', label: 'qibla.title' },
+        { link: '/qibla', icon: 'kaaba-outline', label: 'qibla.title' },
         { link: '/qada', icon: 'time-outline', label: 'qada.title' },
         { link: '/occasions', icon: 'calendar-outline', label: 'calendar.title' },
       ],

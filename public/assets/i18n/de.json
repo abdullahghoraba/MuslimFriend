@@ -55,6 +55,7 @@
     "fridayLabel": "Freitag (ab Maghrib am Donnerstag)",
     "readKahf": "Sure al-Kahf lesen",
     "sinceAthan": "Seit dem Adhan zum {{prayer}}",
+    "sinceSunrise": "Seit Sonnenaufgang",
     "continueReading": "Weiterlesen"
   },
   "category": {
@@ -1456,8 +1457,14 @@
       "none": "Keiner",
       "room": "Raum",
       "hall": "Saal",
-      "mosque": "Moschee"
+      "mosque": "Moschee",
+      "haram": "Haram"
     },
+    "voiceControl": "Stimmregelung",
+    "voiceLevel": "Lautstärke",
+    "clarity": "Klarheit",
+    "echoAmount": "Hallstärke",
+    "resetSound": "Standard wiederherstellen",
     "captions": "Verse im Video zeigen",
     "captionsHint": "Wähle eine Sure, um ihre Verse im Video zu zeigen. Tippe während der Aufnahme auf ‹ für den nächsten Vers.",
     "privacy": "Aufgenommen und bearbeitet auf deinem Telefon. Nichts wird hochgeladen, außer du teilst es.",

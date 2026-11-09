@@ -55,6 +55,7 @@
     "fridayLabel": "Viernes (desde el Maghrib del jueves)",
     "readKahf": "Leer la sura al-Kahf",
     "sinceAthan": "Desde el adhan de {{prayer}}",
+    "sinceSunrise": "Desde el amanecer",
     "continueReading": "Continuar leyendo"
   },
   "category": {
@@ -1456,8 +1457,14 @@
       "none": "Ninguno",
       "room": "Sala",
       "hall": "Auditorio",
-      "mosque": "Mezquita"
+      "mosque": "Mezquita",
+      "haram": "Haram"
     },
+    "voiceControl": "Control de voz",
+    "voiceLevel": "Nivel de voz",
+    "clarity": "Claridad",
+    "echoAmount": "Cantidad de eco",
+    "resetSound": "Restablecer",
     "captions": "Mostrar las aleyas en el vídeo",
     "captionsHint": "Elige una sura para mostrar sus aleyas en el vídeo. Al grabar, toca ‹ para pasar a la siguiente aleya.",
     "privacy": "Se graba y procesa en tu teléfono. No se sube nada salvo que lo compartas.",

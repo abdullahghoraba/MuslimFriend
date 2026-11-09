@@ -17,6 +17,37 @@ export interface MushafLayout {
   pieces(p: number): PagePiece[];
   /** The page where the ayah with global index [index] begins. */
   pageOf(index: number): number;
+  /** Explicit printed rows, when supplied by the edition. */
+  lines?(p: number): MadinahLine[];
+}
+
+export type MadinahRun = [index: number, from: number, to: number];
+export type MadinahLine = ['s', number] | ['b'] | MadinahRun[];
+export interface MadinahLinesData { source: unknown; pages: MadinahLine[][] }
+
+/** The verified 1421 print is the authority for both rows and page membership. */
+export function madinahLayout(data: MadinahLinesData): MushafLayout {
+  const firstPage = new Map<number, number>();
+  const pieces = data.pages.map((lines, page) => {
+    const merged = new Map<number, PagePiece>();
+    for (const line of lines) {
+      if (line[0] === 's' || line[0] === 'b') continue;
+      for (const [index, from, to] of line as MadinahRun[]) {
+        if (!firstPage.has(index)) firstPage.set(index, page + 1);
+        const piece = merged.get(index) ?? { index, from };
+        piece.to = to === -1 ? undefined : to;
+        merged.set(index, piece);
+      }
+    }
+    return [...merged.values()];
+  });
+  return {
+    id: 'madinah',
+    pages: data.pages.length,
+    pieces: (p) => pieces[p - 1] ?? [],
+    pageOf: (index) => firstPage.get(index) ?? 1,
+    lines: (p) => data.pages[p - 1] ?? [],
+  };
 }
 
 /** Pause marks (ۚ ۖ ۗ ...) written as separate "words" belong to the word before them. */

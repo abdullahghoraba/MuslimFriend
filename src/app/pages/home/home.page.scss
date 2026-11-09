@@ -120,19 +120,6 @@
   color: var(--app-header-fg);
   text-decoration: none;
   box-shadow: 0 10px 26px color-mix(in srgb, var(--ion-color-primary) 28%, transparent);
-
-  // A soft crescent in the corner.
-  &::after {
-    content: '';
-    position: absolute;
-    inset-inline-end: -26px;
-    top: -26px;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    box-shadow: inset -22px 14px 0 0 color-mix(in srgb, var(--app-header-fg) 16%, transparent);
-    pointer-events: none;
-  }
 }
 
 .prayer-label {
@@ -279,3 +266,15 @@
 .ramadan-times { display: flex; gap: 24px; font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 .ramadan-times small { display: block; font-size: .8rem; font-weight: 400; color: var(--app-muted); }
 .ramadan-next { color: var(--ion-color-primary); font-weight: 600; }
+
+// The Kaaba, faint in the card's far corner behind the text (it never takes room from the prayer).
+.prayer-card app-kaaba-art {
+  position: absolute;
+  inset-inline-end: 8px;
+  bottom: 6px;
+  width: 170px;
+  margin: 0;
+  color: inherit;
+  opacity: .3;
+}
+.prayer-card > :not(app-kaaba-art):not(ion-ripple-effect) { position: relative; }

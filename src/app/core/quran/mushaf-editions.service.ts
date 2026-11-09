@@ -5,7 +5,7 @@ import { Capacitor } from '@capacitor/core';
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { Preferences } from '@capacitor/preferences';
 import { AyahRef } from './quran-utils';
-import { MushafLayout, shamarlyLayout } from './mushaf-layout';
+import { MadinahLinesData, MushafLayout, madinahLayout, shamarlyLayout } from './mushaf-layout';
 
 /**
  * Mushaf editions:
@@ -127,6 +127,7 @@ export class MushafEditionsService {
   private shamarly?: Promise<ShamarlyMap>;
   private shamarlyAreas?: Promise<ShamarlyArea[][]>;
   private shamarlyPages_?: Promise<MushafLayout>;
+  private madinahPages?: Promise<MushafLayout>;
   private shamarlyBase?: Promise<string>;
   /** Shamarly pages saved on the device. */
   private shamarlyPages = new Set<number>();
@@ -294,6 +295,17 @@ export class MushafEditionsService {
   }
 
   // ---- Shamarly --------------------------------------------------------------------------------
+
+  /** Bundled printed rows, shared by the plain and coloured Madinah editions. */
+  madinahLayout(): Promise<MushafLayout> {
+    this.madinahPages ??= firstValueFrom(this.http.get<MadinahLinesData>('assets/quran/madinah-lines.json'))
+      .then(madinahLayout)
+      .catch((error: unknown) => {
+        this.madinahPages = undefined;
+        throw error;
+      });
+    return this.madinahPages;
+  }
 
   shamarlyMap(): Promise<ShamarlyMap> {
     this.shamarly ??= firstValueFrom(this.http.get<ShamarlyMap>('assets/quran/shamarly.json'));

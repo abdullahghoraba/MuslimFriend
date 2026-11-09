@@ -55,6 +55,7 @@
     "fridayLabel": "Jumat (sejak Magrib hari Kamis)",
     "readKahf": "Baca Surah al-Kahfi",
     "sinceAthan": "Sejak azan {{prayer}}",
+    "sinceSunrise": "Sejak terbit",
     "continueReading": "Lanjutkan membaca"
   },
   "category": {
@@ -1456,8 +1457,14 @@
       "none": "Tanpa",
       "room": "Ruangan",
       "hall": "Aula",
-      "mosque": "Masjid"
+      "mosque": "Masjid",
+      "haram": "Haram"
     },
+    "voiceControl": "Kontrol suara",
+    "voiceLevel": "Volume suara",
+    "clarity": "Kejernihan",
+    "echoAmount": "Kadar gema",
+    "resetSound": "Kembalikan ke bawaan",
     "captions": "Tampilkan ayat di video",
     "captionsHint": "Pilih surah agar ayatnya tampil di video. Saat merekam, ketuk ‹ untuk ayat berikutnya.",
     "privacy": "Direkam dan diproses di ponsel Anda. Tidak ada yang diunggah kecuali Anda membagikannya.",

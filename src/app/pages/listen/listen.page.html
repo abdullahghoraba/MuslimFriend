@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/quran" [text]="''" [attr.aria-label]="'common.back' | translate" />
     </ion-buttons>
-    <ion-title>{{ 'listen.title' | translate }}</ion-title>
+    <ion-title><ion-icon name="headset-outline" aria-hidden="true" /> {{ 'listen.title' | translate }}</ion-title>
   </ion-toolbar>
   <ion-toolbar>
     <ion-segment [value]="tab()" (ionChange)="setTab($event.detail.value)">
@@ -20,6 +20,7 @@
 </ion-header>
 
 <ion-content>
+  <app-madinah-art />
   @if (failed()) {
     <p class="empty" role="alert">{{ 'listen.loadFailed' | translate }}</p>
   } @else if (!catalog.ready()) {
@@ -52,7 +53,7 @@
         @if (lastReciter(); as last) {
           @if (!query()) {
             <button type="button" class="continue card" (click)="openReciter(last)">
-              <ion-icon name="play-forward-outline" aria-hidden="true" />
+              <app-reciter-avatar [reciterId]="last.id" [nameAr]="last.ar" [nameEn]="last.en" />
               <span class="body"><small>{{ 'listen.continue' | translate }}</small><strong>{{ catalog.reciterName(last) }}</strong></span>
             </button>
           }
@@ -92,7 +93,7 @@
   <ng-template #reciterRow let-r>
     <div class="row card">
       <button type="button" class="open" (click)="openReciter(r)">
-        <span class="avatar" aria-hidden="true">{{ catalog.reciterName(r).charAt(0) }}</span>
+        <app-reciter-avatar [reciterId]="r.id" [nameAr]="r.ar" [nameEn]="r.en" />
         <span class="body">
           <strong>{{ catalog.reciterName(r) }}</strong>
           <small>{{ recordings(r) }}</small>
@@ -108,7 +109,8 @@
   <ng-template #radioRow let-r>
     <div class="row card" [class.on]="isOn(r)">
       <button type="button" class="open" (click)="playRadio(r)"
-              [attr.aria-label]="((isOn(r) && player.playing()) ? 'listen.pause' : 'listen.play') | translate">
+              [attr.aria-label]="(((isOn(r) && player.playing()) ? 'listen.pause' : 'listen.play') | translate) + ': ' + catalog.radioName(r)">
+        <app-reciter-avatar [reciterId]="r.id" [nameAr]="r.ar" [nameEn]="r.en" />
         <span class="avatar play" aria-hidden="true">
           @if (isOn(r) && player.loading()) {
             <ion-spinner name="crescent" />

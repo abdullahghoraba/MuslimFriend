@@ -1,3 +1,4 @@
+import { ReciterAvatarComponent } from '../../shared/reciter-avatar.component';
 import { Location } from '@angular/common';
 import { Component, ElementRef, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
@@ -43,6 +44,8 @@ import { EDITIONS, MushafEditionsService } from '../../core/quran/mushaf-edition
 import { MushafLayout, ayahWords } from '../../core/quran/mushaf-layout';
 import { TajweedPart, alignTajweed } from '../../core/quran/tajweed';
 import { SelectTextsDirective } from '../../shared/select-texts.directive';
+import { madinahRows } from '../../core/quran/madinah-page';
+import { MushafLineFitDirective } from './mushaf-line-fit.directive';
 
 type MushafTheme = 'paper' | 'sepia' | 'night';
 
@@ -75,9 +78,9 @@ const READ_AFTER_MS = 3000;
  */
 @Component({
   selector: 'app-mushaf',
-  imports: [
+  imports: [ReciterAvatarComponent,
     TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonContent,
-    IonFooter, IonRange, IonSegment, IonSegmentButton, IonLabel, IonSelect, SelectTextsDirective, IonSelectOption, IonSpinner,
+    IonFooter, IonRange, IonSegment, IonSegmentButton, IonLabel, IonSelect, SelectTextsDirective, IonSelectOption, IonSpinner, MushafLineFitDirective,
   ],
   templateUrl: './mushaf.page.html',
   styleUrl: './mushaf.page.scss',
@@ -157,6 +160,11 @@ export class MushafPage {
   readonly layout = signal<MushafLayout | null>(null);
   readonly pageCount = computed(() => this.layout()?.pages ?? TOTAL_PAGES);
   readonly shamarly = computed(() => this.layout()?.id === 'shamarly');
+  readonly lined = computed(() => !!this.layout()?.lines);
+  readonly lines = computed(() => {
+    const lines = this.layout()?.lines?.(this.page());
+    return this.quran.ready() && lines ? madinahRows(lines, (index) => this.quran.ayahAt(index), this.tajweed()) : [];
+  });
 
   readonly blocks = computed<PageBlock[]>(() => {
     const layout = this.layout();
@@ -351,6 +359,7 @@ export class MushafPage {
         /* offline before the first load: the Madinah pages */
       }
     }
+    if (this.edition() === 'madinah' || this.edition() === 'tajweed') return this.editions.madinahLayout();
     return {
       id: 'madinah',
       pages: TOTAL_PAGES,
@@ -369,6 +378,8 @@ export class MushafPage {
     this.page.set(p);
     this.selected.set(null);
     this.host.nativeElement.querySelector('ion-content')?.scrollToTop(0);
+    const lines = this.host.nativeElement.querySelector('.madinah-lines');
+    if (lines) lines.scrollTop = 0;
     // Saved places (last read, khatmah) count Madinah pages, the same whichever mushaf is read.
     const pieces = this.layout()?.pieces(p) ?? [];
     const first = this.quran.ready() && pieces.length ? this.quran.ayahAt(pieces.find((x) => x.from === 0)?.index ?? pieces[0].index) : undefined;
@@ -519,6 +530,15 @@ export class MushafPage {
   }
 
   private scrollToAyah(a: AyahRef): void {
+    const lines = this.host.nativeElement.querySelector<HTMLElement>('.madinah-lines');
+    if (lines) {
+      // A fitted page is already fully visible. Never scroll its parent/header out of position.
+      if (lines.classList.contains('wrap-lines')) {
+        const word = lines.querySelector<HTMLElement>(`[data-ayah="${this.key(a)}"]`);
+        if (word) lines.scrollTo({ top: lines.scrollTop + word.getBoundingClientRect().top - lines.getBoundingClientRect().top - lines.clientHeight / 2, behavior: 'smooth' });
+      }
+      return;
+    }
     this.host.nativeElement.querySelector(`[data-ayah="${this.key(a)}"]`)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
   }
 

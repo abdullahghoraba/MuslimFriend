@@ -259,3 +259,7 @@ ion-toolbar ion-buttons ion-button.in-toolbar.in-buttons.button-has-icon-only {
   .source, .brand { text-align: center; color: var(--app-muted); font-size: 26px; margin-bottom: 8px; }
   .brand { color: var(--ion-color-primary); font-weight: 700; }
 }
+
+/* Shared decorative list/header rhythm, including RTL lists. */
+ion-item > ion-icon[slot='start'] { font-size: 22px; color: var(--ion-color-primary); flex-shrink: 0; }
+ion-title > ion-icon, h2 > ion-icon { vertical-align: middle; margin-inline-end: .35em; }

@@ -55,6 +55,7 @@
     "fridayLabel": "Cuma (Perşembe akşamından itibaren)",
     "readKahf": "Kehf suresini oku",
     "sinceAthan": "{{prayer}} ezanından beri",
+    "sinceSunrise": "Güneş doğuşundan beri",
     "continueReading": "Okumaya devam et"
   },
   "category": {
@@ -1456,8 +1457,14 @@
       "none": "Yok",
       "room": "Oda",
       "hall": "Salon",
-      "mosque": "Cami"
+      "mosque": "Cami",
+      "haram": "Harem-i Şerif"
     },
+    "voiceControl": "Ses kontrolü",
+    "voiceLevel": "Ses seviyesi",
+    "clarity": "Netlik",
+    "echoAmount": "Yankı miktarı",
+    "resetSound": "Varsayılana dön",
     "captions": "Ayetleri videoda göster",
     "captionsHint": "Ayetlerini videoda göstermek için bir sure seçin. Kayıt sırasında sonraki ayet için ‹ dokunun.",
     "privacy": "Telefonunuzda kaydedilir ve işlenir. Siz paylaşmadıkça hiçbir şey yüklenmez.",

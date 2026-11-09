@@ -150,6 +150,27 @@
             <ion-segment-button [value]="r"><ion-label>{{ 'studio.reverb.' + r | translate }}</ion-label></ion-segment-button>
           }
         </ion-segment>
+        <h2>{{ 'studio.voiceControl' | translate }}</h2>
+        <div class="slider">
+          <span>{{ 'studio.voiceLevel' | translate }}</span>
+          <ion-range [min]="voiceRange.min" [max]="voiceRange.max" [step]="1" [value]="prefs().voiceDb" [attr.aria-label]="'studio.voiceLevel' | translate"
+                     (ionInput)="setVoice($event.detail.value)" (ionChange)="setVoice($event.detail.value, true)" />
+          <output dir="ltr">{{ signed(prefs().voiceDb) }}</output>
+        </div>
+        <div class="slider">
+          <span>{{ 'studio.clarity' | translate }}</span>
+          <ion-range [min]="clarityRange.min" [max]="clarityRange.max" [step]="1" [value]="prefs().clarityDb" [attr.aria-label]="'studio.clarity' | translate"
+                     (ionInput)="setClarity($event.detail.value)" (ionChange)="setClarity($event.detail.value, true)" />
+          <output dir="ltr">{{ signed(prefs().clarityDb) }}</output>
+        </div>
+        <div class="slider">
+          <span>{{ 'studio.echoAmount' | translate }}</span>
+          <ion-range [min]="reverbRange.min" [max]="reverbRange.max" [step]="10" [value]="prefs().reverbAmount * 100" [disabled]="prefs().reverb === 'none'"
+                     [attr.aria-label]="'studio.echoAmount' | translate"
+                     (ionInput)="setReverbAmount($event.detail.value)" (ionChange)="setReverbAmount($event.detail.value, true)" />
+          <output dir="ltr">{{ (prefs().reverbAmount * 100).toFixed(0) }}%</output>
+        </div>
+        <ion-button fill="clear" size="small" (click)="resetSound()">{{ 'studio.resetSound' | translate }}</ion-button>
         @if (prefs().kind === 'video') {
           <ion-toggle [checked]="prefs().captions" (ionChange)="setCaptions($event.detail.checked)" [disabled]="!sura()">
             {{ 'studio.captions' | translate }}

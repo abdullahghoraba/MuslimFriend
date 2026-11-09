@@ -55,6 +55,7 @@
     "fridayLabel": "Juma'a (daga Magaribar Alhamis)",
     "readKahf": "Karanta Suratul Kahfi",
     "sinceAthan": "Tun bayan kiran sallar {{prayer}}",
+    "sinceSunrise": "Tun bayan fitowar rana",
     "continueReading": "Ci gaba da karatu"
   },
   "category": {
@@ -1456,8 +1457,14 @@
       "none": "Babu",
       "room": "Ɗaki",
       "hall": "Zaure",
-      "mosque": "Masallaci"
+      "mosque": "Masallaci",
+      "haram": "Haramin Makka"
     },
+    "voiceControl": "Sarrafa murya",
+    "voiceLevel": "Ƙarfin murya",
+    "clarity": "Haske",
+    "echoAmount": "Yawan amo",
+    "resetSound": "Mayar da na asali",
     "captions": "Nuna ayoyi a bidiyo",
     "captionsHint": "Zaɓi sura don nuna ayoyinta a bidiyo. Yayin rikodi, taɓa ‹ don zuwa aya ta gaba.",
     "privacy": "Ana rikodi da gyarawa a wayarka. Babu abin da ake turawa sai ka raba.",

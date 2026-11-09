@@ -55,6 +55,7 @@
     "fridayLabel": "Sexta-feira (desde o Maghrib de quinta)",
     "readKahf": "Ler a surata al-Kahf",
     "sinceAthan": "Desde o adhan do {{prayer}}",
+    "sinceSunrise": "Desde o nascer do sol",
     "continueReading": "Continuar lendo"
   },
   "category": {
@@ -1456,8 +1457,14 @@
       "none": "Nenhum",
       "room": "Sala",
       "hall": "Salão",
-      "mosque": "Mesquita"
+      "mosque": "Mesquita",
+      "haram": "Haram"
     },
+    "voiceControl": "Controle de voz",
+    "voiceLevel": "Volume da voz",
+    "clarity": "Clareza",
+    "echoAmount": "Quantidade de eco",
+    "resetSound": "Restaurar padrão",
     "captions": "Mostrar os versículos no vídeo",
     "captionsHint": "Escolha uma surata para mostrar os versículos no vídeo. Ao gravar, toque em ‹ para o próximo versículo.",
     "privacy": "Gravado e processado no seu telefone. Nada é enviado a menos que você compartilhe.",

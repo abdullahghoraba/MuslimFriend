@@ -34,7 +34,8 @@ export function nowSuggestions(now: Date, today: DayTimes | null, cards: HomeCar
   return out;
 }
 
-const PRAYERS_FOR_ELAPSED: PrayerName[] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+// Sunrise is included: the card then reads "since sunrise" (e.g. for the duha / ishraq time about 15–30 min later).
+const PRAYERS_FOR_ELAPSED: PrayerName[] = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
 
 /**
  * The prayer whose time began less than [minutes] ago (like Salatuk: "12 min since the Asr athan"),

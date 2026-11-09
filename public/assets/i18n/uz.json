@@ -55,6 +55,7 @@
     "fridayLabel": "Juma (payshanba shomidan)",
     "readKahf": "Kahf surasini o'qing",
     "sinceAthan": "{{prayer}} azonidan beri",
+    "sinceSunrise": "Quyosh chiqqanidan beri",
     "continueReading": "O'qishni davom ettirish"
   },
   "category": {
@@ -1456,8 +1457,14 @@
       "none": "Yo'q",
       "room": "Xona",
       "hall": "Zal",
-      "mosque": "Masjid"
+      "mosque": "Masjid",
+      "haram": "Haram"
     },
+    "voiceControl": "Ovoz boshqaruvi",
+    "voiceLevel": "Ovoz darajasi",
+    "clarity": "Aniqlik",
+    "echoAmount": "Aks-sado miqdori",
+    "resetSound": "Standartga qaytarish",
     "captions": "Oyatlarni videoda ko'rsatish",
     "captionsHint": "Oyatlari videoda ko'rinishi uchun sura tanlang. Yozish paytida keyingi oyat uchun ‹ ni bosing.",
     "privacy": "Telefoningizda yoziladi va ishlanadi. Siz ulashmaguningizcha hech narsa yuklanmaydi.",

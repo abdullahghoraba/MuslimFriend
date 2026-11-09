@@ -1,14 +1,15 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ 'home.title' | translate }}</ion-title>
+    <ion-title><ion-icon name="home-outline" aria-hidden="true" /> {{ 'home.title' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <app-hijri-date />
-  <a class="prayer-card ion-activatable" routerLink="/reminders">
+  <a class="prayer-card ion-activatable" aria-live="off" routerLink="/reminders">
+    <app-kaaba-art />
     @if (recent(); as r) {
-      <span class="prayer-label">{{ 'home.sinceAthan' | translate: { prayer: ('prayer.' + prayerKey(r.name, r.at) | translate) } }}</span>
+      <span class="prayer-label">{{ r.name === 'sunrise' ? ('home.sinceSunrise' | translate) : ('home.sinceAthan' | translate: { prayer: ('prayer.' + prayerKey(r.name, r.at) | translate) }) }}</span>
       <span class="prayer-name">{{ minutesLabel(r.elapsedMin) }}</span>
       @if (next(); as n) {
         <span class="prayer-time">{{ (n.name === 'sunrise' ? 'prayer.nextTime' : 'prayer.next') | translate }}: {{ 'prayer.' + prayerKey(n.name, n.at) | translate }} · {{ time(n.at) }} · {{ 'prayer.in' | translate: { time: countdown(n.at) } }}</span>
@@ -26,8 +27,8 @@
   </a>
 
   @if (ramadan(); as r) {
-    <section class="ramadan-card" [attr.aria-label]="'ramadan.day' | translate: { day: digits(r.day) }">
-      <span class="ramadan-day">{{ 'ramadan.day' | translate: { day: digits(r.day) } }}</span>
+    <section class="ramadan-card" aria-live="off" [attr.aria-label]="'ramadan.day' | translate: { day: digits(r.day) }">
+      <ion-icon name="moon-outline" aria-hidden="true" /><span class="ramadan-day">{{ 'ramadan.day' | translate: { day: digits(r.day) } }}</span>
       <div class="ramadan-times">
         <span><small>{{ 'ramadan.imsakAt' | translate }}</small>{{ time(r.imsak) }}</span>
         <span><small>{{ 'ramadan.iftarAt' | translate }}</small>{{ time(r.iftar) }}</span>
@@ -140,7 +141,7 @@
       </ion-item>
     }
     <ion-item button detail routerLink="/tasbih">
-      <ion-icon slot="start" name="ellipse-outline" aria-hidden="true" />
+      <ion-icon slot="start" name="prayer-beads-outline" aria-hidden="true" />
       <ion-label>{{ 'home.quickTasbih' | translate }}</ion-label>
     </ion-item>
   </ion-list>

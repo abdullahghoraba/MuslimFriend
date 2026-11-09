@@ -55,6 +55,7 @@
     "fridayLabel": "主麻日（自周四昏礼起）",
     "readKahf": "诵读《山洞章》",
     "sinceAthan": "{{prayer}}宣礼之后",
+    "sinceSunrise": "日出之后",
     "continueReading": "继续阅读"
   },
   "category": {
@@ -1456,8 +1457,14 @@
       "none": "无",
       "room": "房间",
       "hall": "大厅",
-      "mosque": "清真寺"
+      "mosque": "清真寺",
+      "haram": "禁寺"
     },
+    "voiceControl": "声音控制",
+    "voiceLevel": "音量",
+    "clarity": "清晰度",
+    "echoAmount": "回声强度",
+    "resetSound": "恢复默认",
     "captions": "在视频上显示经文",
     "captionsHint": "选择一章以在视频上显示经文。录制时点按 ‹ 进入下一节。",
     "privacy": "在您的手机上录制和处理。除非您分享，否则不会上传任何内容。",

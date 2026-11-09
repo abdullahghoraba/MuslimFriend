@@ -54,7 +54,7 @@
           </div>
         }
         <button type="button" class="reciter-pick" (click)="pickReciter()">
-          <span>{{ 'mushaf.reciter' | translate }}</span>
+          <app-reciter-avatar [reciterId]="recitation.reciter().id" [nameAr]="recitation.reciter().nameAr" [nameEn]="recitation.reciter().nameEn" [language]="lang()" /><span>{{ 'mushaf.reciter' | translate }}</span>
           <strong>{{ reciterName(recitation.prefs().reciterId) }}</strong>
           <ion-icon name="chevron-down" aria-hidden="true" />
         </button>
@@ -78,11 +78,11 @@
   }
 </ion-header>
 
-<ion-content [class]="'mushaf theme-' + theme()" (click)="rangeMode() ? null : selected.set(null)">
+<ion-content [class]="'mushaf theme-' + theme()" [scrollY]="!lined()" (click)="rangeMode() ? null : selected.set(null)">
   @if (!quran.ready()) {
     <div class="loading"><ion-spinner /></div>
   } @else {
-    <div class="page-surface" [class.slide-next]="slide() === 'next'" [class.slide-prev]="slide() === 'prev'"
+    <div class="page-surface" [class.lined-page]="lined()" [class.slide-next]="slide() === 'next'" [class.slide-prev]="slide() === 'prev'"
          [style.--quran-font-scale]="quranScale()">
       @for (bm of pageBookmarks(); track bm.id) {
         <span class="ribbon" [attr.data-color]="bm.color" [attr.aria-label]="bm.name" role="img"></span>
@@ -94,6 +94,41 @@
           <p class="cover-sub">بِرِوَايَةِ حَفْصٍ عَنْ عَاصِمٍ</p>
         </div>
       }
+      @if (lined()) {
+        <div class="quran-text madinah-lines" lang="ar" dir="rtl" [class.opening-page]="page() <= 2"
+             [appMushafLineFit]="quranScale()">
+          @for (line of lines(); track $index) {
+            @switch (line.kind) {
+              @case ('title') {
+                @let h = quran.sura(line.sura);
+                <div class="mushaf-line title-line">
+                  <div class="sura-frame" role="heading" aria-level="2">
+                    <span class="sura-name">{{ lang() === 'ar' ? 'سورة ' + h.name : 'Surah ' + h.tname }}</span>
+                    <span class="sura-info">{{ (h.type === 'Meccan' ? 'quran.meccan' : 'quran.medinan') | translate }} · {{ 'mushaf.ayatCount' | translate: { n: lang() === 'ar' ? ayahNumber(h.ayas) : h.ayas } }}</span>
+                  </div>
+                </div>
+              }
+              @case ('basmala') {
+                <div class="mushaf-line basmala-line"><span class="basmala-text">@if (line.parts; as parts) {@for (p of parts; track $index) {<span [class]="p.rule ? 'tj-' + p.rule : null">{{ p.text }}</span>}} @else {{{ line.text }}}</span></div>
+              }
+              @case ('text') {
+                <div class="mushaf-line text-line">
+                  @for (w of line.words; track $index) {
+                    <span class="ayah mushaf-word" role="button" tabindex="0" [attr.data-ayah]="w.ayah.sura + ':' + w.ayah.aya"
+                          [class.selected]="isSelected(w.ayah)" [class.playing]="isPlaying(w.ayah)"
+                          [style.--hl]="highlightColor(w.ayah)" [class.hl]="!!highlightColor(w.ayah)"
+                          [style.--hifz]="hifzColor(w.ayah)" [class.hifz]="!!hifzColor(w.ayah)"
+                          (click)="select(w.ayah, $event)" (keydown.enter)="select(w.ayah, $event)" (keydown.space)="$event.preventDefault(); select(w.ayah, $event)"
+                          (pointerdown)="pressStart(w.ayah, $event)" (pointermove)="pressMove($event)"
+                          (pointerup)="pressEnd()" (pointercancel)="pressEnd()" (contextmenu)="$event.preventDefault()"
+                          [attr.aria-label]="quran.sura(w.ayah.sura).name + ' ' + w.ayah.aya">@if (w.parts; as parts) {@for (p of parts; track $index) {<span [class]="p.rule ? 'tj-' + p.rule : null">{{ p.text }}</span>}} @else {{{ w.text }}}@if (w.end) {<span class="end">&nbsp;﴿{{ ayahNumber(w.ayah.aya) }}﴾</span>@if (isStarred(w.ayah)) {<span class="mark star" aria-hidden="true">★</span>}@if (hasNote(w.ayah)) {<span class="mark note" aria-hidden="true">✎</span>}}</span>
+                  }
+                </div>
+              }
+            }
+          }
+        </div>
+      } @else {
       <div class="quran-text page-text" lang="ar" dir="rtl">
         @for (b of blocks(); track b.ayah.index) {
           @if (b.suraHeader; as h) {
@@ -116,6 +151,7 @@
           {{ ' ' }}
         }
       </div>
+      }
 
       <!-- Laid out like a printed mushaf in every language: the next page is on the left. -->
       <div class="page-footer" dir="ltr">
@@ -172,7 +208,7 @@
         <div class="now">
           <strong>{{ quran.sura(cur.sura).name }} · {{ cur.aya }}</strong>
           <button type="button" class="now-reciter" (click)="pickReciter()" [attr.aria-label]="'mushaf.changeReciter' | translate">
-            {{ reciterName(recitation.prefs().reciterId) }} <ion-icon name="chevron-down" aria-hidden="true" />
+            <app-reciter-avatar [reciterId]="recitation.reciter().id" [nameAr]="recitation.reciter().nameAr" [nameEn]="recitation.reciter().nameEn" [language]="lang()" /> {{ reciterName(recitation.prefs().reciterId) }} <ion-icon name="chevron-down" aria-hidden="true" />
           </button>
         </div>
         <ion-button fill="clear" (click)="recitation.previous()" [attr.aria-label]="'mushaf.prevAyah' | translate">

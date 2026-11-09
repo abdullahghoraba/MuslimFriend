@@ -23,6 +23,7 @@
   } @else {
     <main>
       @let r = reciter()!;
+      <app-reciter-avatar [reciterId]="r.id" [nameAr]="r.ar" [nameEn]="r.en" />
       @if (r.moshaf.length > 1) {
         <ion-select class="card recording" interface="action-sheet" [label]="'listen.recording' | translate" [value]="moshaf()?.id"
                     (ionChange)="setMoshaf(+$event.detail.value)">

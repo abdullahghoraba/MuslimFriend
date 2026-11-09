@@ -1,5 +1,6 @@
 import { addIcons } from 'ionicons';
 import {
+  chatboxEllipsesOutline,
   addOutline,
   airplaneOutline,
   alarmOutline,
@@ -104,9 +105,18 @@ import {
   arrowUpCircleOutline,
 } from 'ionicons/icons';
 
+/** A hand-drawn icon, as ionicons takes custom icons: a utf8 data URL with the raw SVG (it parses the text itself). */
+const svgIcon = (svg: string) => `data:image/svg+xml;utf8,${svg}`;
+
 /** Icons are registered explicitly so the bundle only contains what the app uses. */
 export function registerIcons(): void {
   addIcons({
+    'chatbox-ellipses-outline': chatboxEllipsesOutline,
+    'prayer-beads-outline': svgIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="3" r="1.7"/><circle cx="6.5" cy="5.5" r="1.7"/><circle cx="4" cy="11" r="1.7"/><circle cx="6.5" cy="16.5" r="1.7"/><circle cx="12" cy="19" r="1.7"/><circle cx="17.5" cy="16.5" r="1.7"/><circle cx="20" cy="11" r="1.7"/><circle cx="17.5" cy="5.5" r="1.7"/><path d="M12 21v3"/></g></svg>'),
+    'prayer-beads': svgIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="3" r="1.7"/><circle cx="6.5" cy="5.5" r="1.7"/><circle cx="4" cy="11" r="1.7"/><circle cx="6.5" cy="16.5" r="1.7"/><circle cx="12" cy="19" r="1.7"/><circle cx="17.5" cy="16.5" r="1.7"/><circle cx="20" cy="11" r="1.7"/><circle cx="17.5" cy="5.5" r="1.7"/><path d="M12 21v3"/></g></svg>'),
+    'mosque-outline': svgIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22V7l2-4 2 4v15m12 0V7l2-4 2 4v15M7 12c0-3 3-4 5-7 2 3 5 4 5 7Zm0 0v10h10V12m-7 10v-5q2-3 4 0v5M12 5V2"/></g></svg>'),
+    'kaaba-outline': svgIcon('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 6 10-3 8 4v13l-10 2-8-4Zm0 0 8 4 10-3M11 10v12M3 9l8 4 10-3M16 15l3-1v5l-3 1Z"/></g></svg>'),
+
     'arrow-up-circle-outline': arrowUpCircleOutline,
     'wallet-outline': walletOutline,
     'trending-up-outline': trendingUpOutline,
