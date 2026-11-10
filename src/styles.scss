@@ -18,15 +18,23 @@
 
 @font-face {
   font-family: 'Amiri';
-  src: url('/assets/fonts/Amiri-Bold.ttf') format('truetype');
+  src: url('/assets/fonts/Amiri-Bold.woff2') format('woff2');
   font-weight: 700;
   font-display: swap;
+}
+
+/* The Madinah mushaf pages: the King Fahd Glorious Quran Printing Complex's Uthmanic Hafs font (v18), made for its
+   own text and print, with the ayah numbers drawn in their ornament. */
+@font-face {
+  font-family: 'KFGQPC Hafs';
+  src: url('/assets/fonts/KFGQPC-UthmanicHafs-18.woff2') format('woff2');
+  font-display: block;
 }
 
 /* Quran text: Amiri Quran (OFL), designed for the Quranic script and its marks. */
 @font-face {
   font-family: 'AmiriQuran';
-  src: url('/assets/fonts/AmiriQuran-Regular.ttf') format('truetype');
+  src: url('/assets/fonts/AmiriQuran-Regular.woff2') format('woff2');
   font-display: swap;
 }
 
@@ -67,19 +75,19 @@ ion-card.app-card {
 /* ---- Interface font (IBM Plex Sans Arabic, OFL) ---------------------------------------- */
 @font-face {
   font-family: 'IBM Plex Sans Arabic';
-  src: url('/assets/fonts/IBMPlexSansArabic-Regular.ttf') format('truetype');
+  src: url('/assets/fonts/IBMPlexSansArabic-Regular.woff2') format('woff2');
   font-weight: 400;
   font-display: swap;
 }
 @font-face {
   font-family: 'IBM Plex Sans Arabic';
-  src: url('/assets/fonts/IBMPlexSansArabic-SemiBold.ttf') format('truetype');
+  src: url('/assets/fonts/IBMPlexSansArabic-SemiBold.woff2') format('woff2');
   font-weight: 500 600;
   font-display: swap;
 }
 @font-face {
   font-family: 'IBM Plex Sans Arabic';
-  src: url('/assets/fonts/IBMPlexSansArabic-Bold.ttf') format('truetype');
+  src: url('/assets/fonts/IBMPlexSansArabic-Bold.woff2') format('woff2');
   font-weight: 700;
   font-display: swap;
 }

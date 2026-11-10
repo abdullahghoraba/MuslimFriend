@@ -115,6 +115,6 @@ for (const [id, perSura] of Object.entries(tafsirData)) {
   perSura.forEach((ayat, i) => writeFileSync(out(`tafsir/${id}/${String(i + 1).padStart(3, '0')}.json`), JSON.stringify(ayat)));
 }
 mkdirSync(resolve(root, 'public/assets/fonts'), { recursive: true });
-copyFileSync(src('AmiriQuran-Regular.ttf'), resolve(root, 'public/assets/fonts/AmiriQuran-Regular.ttf'));
+copyFileSync(src('AmiriQuran-Regular.woff2'), resolve(root, 'public/assets/fonts/AmiriQuran-Regular.woff2'));
 copyFileSync(src('AmiriQuran-OFL.txt'), resolve(root, 'public/assets/fonts/AmiriQuran-OFL.txt'));
 console.log(`Quran assets written: 6236 ayat, 604 pages, tafsir: ${Object.keys(tafsirs).join(', ')}`);

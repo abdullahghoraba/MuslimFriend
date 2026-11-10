@@ -1,7 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { Preferences } from '@capacitor/preferences';
-import { SettingsService } from './settings.service';
-import { AthkarPrefsService } from './athkar-prefs.service';
 vi.mock('@capacitor/preferences', () => {
   const values = new Map<string, string>();
   return { Preferences: {
@@ -10,8 +7,20 @@ vi.mock('@capacitor/preferences', () => {
     clear: async () => { values.clear(); },
   } };
 });
+// Spec files share one module graph: another file may already have loaded the service with its own mock of
+// @capacitor/preferences. Fresh copies of the modules make the service use this file's mock, as the spec does.
+let Preferences: typeof import('@capacitor/preferences').Preferences;
+let SettingsService: typeof import('./settings.service').SettingsService;
+let AthkarPrefsService: typeof import('./athkar-prefs.service').AthkarPrefsService;
 describe('AthkarPrefsService', () => {
-  beforeEach(async () => { await Preferences.clear(); TestBed.configureTestingModule({}); });
+  beforeEach(async () => {
+    vi.resetModules();
+    ({ Preferences } = await import('@capacitor/preferences'));
+    ({ SettingsService } = await import('./settings.service'));
+    ({ AthkarPrefsService } = await import('./athkar-prefs.service'));
+    await Preferences.clear();
+    TestBed.configureTestingModule({});
+  });
   it('defaults to Arabic visibility and follows language until explicitly changed', async () => {
     const service = TestBed.inject(AthkarPrefsService);
     await service.ready;

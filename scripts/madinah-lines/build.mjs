@@ -4,7 +4,13 @@
 //
 // Usage: node scripts/madinah-lines/build.mjs <cacheDir> <hafsData_v18.json> [mushafId=1]
 //
-// Output: { pages: [[line, ...] x 604] } where a line is
+// Outputs:
+//   madinah-lines.json  the lines as runs of the app's (Tanzil) words, for the coloured tajweed pages
+//   madinah-qpc.json    the same lines in the King Fahd Complex's own text (QPC Hafs, per word from the API), drawn
+//                       with its Hafs font on the Madinah pages: each text line is ["words of run 1", ...], one string
+//                       per run of madinah-lines.json (same ayah, same end; the font draws the number in its ornament)
+//
+// madinah-lines.json: { pages: [[line, ...] x 604] } where a line is
 //   ["s", sura]                      the sura's title frame
 //   ["b"]                            the basmala
 //   [[index, from, to], ...]         runs of words [from, to) of the ayah with global index `index`
@@ -48,10 +54,13 @@ const wordsOf = (sura, aya, text) => {
  */
 function align(app, qc) {
   const out = [];
+  /** For each Quran.com word, the app word it begins in. */
+  const owner = [];
   let i = 0;
   let pending = '';
   for (const w of qc) {
     const target = bare(w[3]);
+    owner.push(pending ? i - 1 : i);
     let got = pending;
     pending = '';
     while (got.length < target.length && i < app.length) {
@@ -63,7 +72,7 @@ function align(app, qc) {
     if (got.startsWith(target)) { pending = got.slice(target.length); continue; }
     return null;
   }
-  return i === app.length && !pending ? out : null;
+  return i === app.length && !pending ? { lines: out, owner } : null;
 }
 
 /** The first run [index, word] of page p in the API data. */
@@ -104,7 +113,8 @@ for (let p = 1; p <= 604; p++) {
     if (appPage[index] !== p) notes.push(`${v.key}: Tanzil page ${appPage[index]}, printed page ${p}`);
     if (k.page !== p) problems.push(`${v.key}: KFGQPC page ${k.page} != ${p}`);
     const app = wordsOf(sura, aya, texts[index]);
-    const words = align(app, qc);
+    const aligned = align(app, qc);
+    const words = aligned?.lines;
     if (!words) {
       problems.push(`${v.key}: the app's words do not match Quran.com's`);
       continue;
@@ -120,7 +130,12 @@ for (let p = 1; p <= 604; p++) {
       if (i < words.length && words[i][0] === words[from][0]) continue;
       const line = words[from][0];
       if (!lines.has(line)) lines.set(line, []);
-      lines.get(line).push([index, from, i === words.length ? -1 : i]);
+      const run = [index, from, i === words.length ? -1 : i];
+      // The QPC words that begin in this run's app words.
+      const qpc = qc.filter((_, j) => aligned.owner[j] >= from && aligned.owner[j] < i).map((w) => w[4]);
+      if (qpc.some((t) => !t)) problems.push(`${v.key}: missing QPC text`);
+      run.qpc = qpc.join(' ');
+      lines.get(line).push(run);
       from = i;
     }
   }
@@ -170,6 +185,12 @@ if (problems.length) {
   console.log(problems.slice(0, 60).join('\n'));
 }
 if (problems.length) process.exit(1);
+const isText = (line) => Array.isArray(line[0]);
 const file = new URL('public/assets/quran/madinah-lines.json', root);
 writeFileSync(file, JSON.stringify({ source: 'Quran.com API word line numbers, checked against KFGQPC Hafs v18', pages }));
 console.log('wrote', file.pathname, readFileSync(file).length, 'bytes');
+// Text lines hold only the QPC words of each run: the ayah and its end come from madinah-lines.json, line by line.
+const qpcPages = pages.map((lines) => lines.map((line) => (isText(line) ? line.map((r) => r.qpc) : line)));
+const qpcFile = new URL('public/assets/quran/madinah-qpc.json', root);
+writeFileSync(qpcFile, JSON.stringify({ source: 'QPC Hafs text (King Fahd Glorious Quran Printing Complex) per word, from the Quran.com API', pages: qpcPages }));
+console.log('wrote', qpcFile.pathname, readFileSync(qpcFile).length, 'bytes');

@@ -1,0 +1,13 @@
+King Fahd Glorious Quran Printing Complex (KFGQPC) — Madinah, Saudi Arabia
+https://qurancomplex.gov.sa/en/techquran/dev/
+
+Used in the Madinah mushaf pages of this app:
+
+- KFGQPC Uthmanic Script HAFS font, version 18 (KFGQPC-UthmanicHafs-18.woff2), distributed free of charge by the
+  Complex for displaying the Quran text.
+- QPC Hafs Quran text (assets/quran/madinah-qpc.json), the Complex's Unicode Uthmanic text, word by word as published
+  through the Quran.com API, laid out on the lines of the Complex's 1421 AH Madinah print.
+
+The words are shown as published. To fill each line as the print does, the screen adds tatweel (kashida) inside
+some words; this draws letters out and changes no letter or mark. Line positions were checked against the Complex's own Hafs data
+(page, first and last line of every ayah).

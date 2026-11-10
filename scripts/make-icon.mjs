@@ -1,10 +1,13 @@
-// Generates the app icon from one geometry so the Play Store PNG and the Android adaptive
-// icon stay identical. Original design: a sand crescent cradling a string of tasbih beads.
+// Generates the app icon from one geometry so the Play Store PNG, the Android adaptive icon, the launcher PNGs and
+// the studio's video logo stay identical. Original design: a gold mihrab arch with the mushaf's quarter star (۞, an
+// eight-pointed star of two squares) above an open mushaf, on the app's green.
 // Outputs:
-//   store-assets/icon.svg                                   (square, full bleed, for the 512px store icon)
-//   android/.../drawable/ic_launcher_foreground_vector.xml  (adaptive icon foreground, 108dp)
+//   store-assets/icon.svg, store-assets/icon-512.png        (square, full bleed: the Play Store icon)
+//   android/.../drawable/ic_launcher_foreground_vector.xml  (adaptive icon foreground and monochrome, 108dp)
 //   android/.../values/ic_launcher_background.xml           (background colour)
-// Usage: node scripts/make-icon.mjs
+//   android/.../mipmap-*/ic_launcher(_round).png            (legacy launcher PNGs)
+//   public/assets/studio/logo.png                           (the logo drawn in the corner of studio videos)
+// Usage: node scripts/make-icon.mjs   (the PNGs are drawn with Playwright: Chromium, else Edge)
 
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -12,58 +15,71 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const BG = '#0F6B5C';
-const SAND = '#E0B66A';
-const BEAD = '#F7F5F0';
+const GOLD = '#E0B66A';
+const PAGE = '#F7F5F0';
 
 // Geometry in the 108-unit adaptive-icon space (safe zone: circle of radius 33 around 54,54).
-const moon = { cx: 51, cy: 55, r: 25 };
-const cut = { cx: 60, cy: 49, r: 21 };
-const beadArc = { cx: 60, cy: 50, r: 13.5 };
-const beads = [];
-for (let i = 0; i < 9; i++) {
-  const a = ((-75 + i * 21) * Math.PI) / 180;
-  beads.push({ x: +(beadArc.cx + beadArc.r * Math.cos(a)).toFixed(2), y: +(beadArc.cy + beadArc.r * Math.sin(a)).toFixed(2), r: i === 4 ? 3.1 : 2.5 });
-}
-const imam = { x: beads[8].x - 2.5, y: beads[8].y + 6, r: 2.2 };
+const arch = 'M38,71 V53 C38,41 46,33 54,27 C62,33 70,41 70,53 V71';
+const archInner = 'M42.5,71 V54 C42.5,44.5 48,38 54,33.2 C60,38 65.5,44.5 65.5,54 V71';
+/** The eight-pointed star: a square and the same square turned 45°. */
+const star = (cx, cy, r) => {
+  const s = +(r / Math.SQRT2).toFixed(3);
+  return [
+    `M${cx - s},${cy - s} H${cx + s} V${cy + s} H${cx - s} Z`,
+    `M${cx},${cy - r} L${cx + r},${cy} L${cx},${cy + r} L${cx - r},${cy} Z`,
+  ];
+};
+const outer = star(54, 49.5, 8.2);
+const inner = star(54, 49.5, 4.1);
+const leftPage = 'M54,70.5 C49,66.6 42,65.6 34.5,67 L34.5,77.6 C42,76.2 49,77.1 54,80.6 Z';
+const rightPage = 'M54,70.5 C59,66.6 66,65.6 73.5,67 L73.5,77.6 C66,76.2 59,77.1 54,80.6 Z';
+const textLines = [
+  'M38.5,70.6 C43,69.6 47.5,70 51,71.8', 'M38.5,74 C43,73 47.5,73.4 51,75.2',
+  'M69.5,70.6 C65,69.6 60.5,70 57,71.8', 'M69.5,74 C65,73 60.5,73.4 57,75.2',
+];
 
-const circlePath = ({ cx, cy, r }) =>
-  `M${cx - r},${cy} a${r},${r} 0 1,0 ${2 * r},0 a${r},${r} 0 1,0 ${-2 * r},0 z`;
-
-// ---- SVG (store icon) ----
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="512" height="512">
+// ---- SVG ----
+const foregroundSvg = `
+    <path d="${arch}" fill="none" stroke="${GOLD}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="${archInner}" fill="none" stroke="${GOLD}" stroke-width="1" stroke-opacity="0.55" stroke-linecap="round"/>
+    ${outer.map((d) => `<path d="${d}" fill="${GOLD}"/>`).join('\n    ')}
+    ${inner.map((d) => `<path d="${d}" fill="none" stroke="${BG}" stroke-width="0.7" stroke-opacity="0.6"/>`).join('\n    ')}
+    <path d="${leftPage}" fill="${PAGE}"/>
+    <path d="${rightPage}" fill="${PAGE}"/>
+    ${textLines.map((d) => `<path d="${d}" fill="none" stroke="${BG}" stroke-width="0.8" stroke-opacity="0.45" stroke-linecap="round"/>`).join('\n    ')}`;
+/** [scale] 1.25 fills the store square; [clip] masks a launcher shape. */
+const iconSvg = (size, scale = 1.25, clip = '') => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="${size}" height="${size}">
+  ${clip ? `<clipPath id="m">${clip}</clipPath>` : ''}
+  <g${clip ? ' clip-path="url(#m)"' : ''}>
   <rect width="108" height="108" fill="${BG}"/>
-  <g transform="translate(54 54) scale(1.25) translate(-54 -54)">
-    <path d="${circlePath(moon)}" fill="${SAND}"/>
-    <path d="${circlePath(cut)}" fill="${BG}"/>
-    <path d="M${beads[0].x},${beads[0].y} A${beadArc.r},${beadArc.r} 0 0,1 ${beads[8].x},${beads[8].y}" fill="none" stroke="${BEAD}" stroke-width="0.8" stroke-opacity="0.6"/>
-    ${beads.map((b) => `<circle cx="${b.x}" cy="${b.y}" r="${b.r}" fill="${BEAD}"/>`).join('\n    ')}
-    <line x1="${beads[8].x}" y1="${beads[8].y}" x2="${imam.x}" y2="${imam.y}" stroke="${BEAD}" stroke-width="0.9"/>
-    <circle cx="${imam.x}" cy="${imam.y}" r="${imam.r}" fill="${SAND}"/>
+  <g transform="translate(54 54) scale(${scale}) translate(-54 -54)">${foregroundSvg}
+  </g>
   </g>
 </svg>
 `;
 
 // ---- Android vector drawable (foreground layer; background is a solid colour) ----
-const vp = (d, fill, extra = '') => `    <path android:fillColor="${fill}" android:pathData="${d}"${extra}/>`;
+const fill = (d, color) => `    <path android:fillColor="${color}" android:pathData="${d}"/>`;
+const stroke = (d, color, width, alpha = 1, round = true) => `    <path android:strokeColor="${color}" android:strokeWidth="${width}"${alpha < 1 ? ` android:strokeAlpha="${alpha}"` : ''}${round ? ' android:strokeLineCap="round" android:strokeLineJoin="round"' : ''}
+        android:pathData="${d}"/>`;
 const vector = `<?xml version="1.0" encoding="utf-8"?>
 <!-- Generated by scripts/make-icon.mjs — edit the script, not this file. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp"
     android:viewportWidth="108" android:viewportHeight="108">
-${vp(circlePath(moon), SAND)}
-${vp(circlePath(cut), BG)}
-    <path android:strokeColor="${BEAD}" android:strokeAlpha="0.6" android:strokeWidth="0.8"
-        android:pathData="M${beads[0].x},${beads[0].y} A${beadArc.r},${beadArc.r} 0 0,1 ${beads[8].x},${beads[8].y}"/>
-${beads.map((b) => vp(circlePath({ cx: b.x, cy: b.y, r: b.r }), BEAD)).join('\n')}
-    <path android:strokeColor="${BEAD}" android:strokeWidth="0.9"
-        android:pathData="M${beads[8].x},${beads[8].y} L${imam.x},${imam.y}"/>
-${vp(circlePath({ cx: imam.x, cy: imam.y, r: imam.r }), SAND)}
+${stroke(arch, GOLD, 3.2)}
+${stroke(archInner, GOLD, 1, 0.55)}
+${outer.map((d) => fill(d, GOLD)).join('\n')}
+${inner.map((d) => stroke(d, BG, 0.7, 0.6, false)).join('\n')}
+${fill(leftPage, PAGE)}
+${fill(rightPage, PAGE)}
+${textLines.map((d) => stroke(d, BG, 0.8, 0.45)).join('\n')}
 </vector>
 `;
 
 const res = resolve(root, 'android/app/src/main/res');
 mkdirSync(resolve(root, 'store-assets'), { recursive: true });
-writeFileSync(resolve(root, 'store-assets/icon.svg'), svg);
+writeFileSync(resolve(root, 'store-assets/icon.svg'), iconSvg(512));
 writeFileSync(resolve(res, 'drawable/ic_launcher_foreground_vector.xml'), vector);
 writeFileSync(resolve(res, 'values/ic_launcher_background.xml'),
   `<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <color name="ic_launcher_background">${BG}</color>\n</resources>\n`);
@@ -71,4 +87,23 @@ for (const name of ['ic_launcher', 'ic_launcher_round']) {
   writeFileSync(resolve(res, `mipmap-anydpi-v26/${name}.xml`),
     `<?xml version="1.0" encoding="utf-8"?>\n<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">\n    <background android:drawable="@color/ic_launcher_background"/>\n    <foreground android:drawable="@drawable/ic_launcher_foreground_vector"/>\n    <monochrome android:drawable="@drawable/ic_launcher_foreground_vector"/>\n</adaptive-icon>\n`);
 }
+
+// ---- PNGs ----
+const { chromium } = await import('playwright');
+const browser = await chromium.launch().catch(() => chromium.launch({ channel: 'msedge' }));
+const page = await browser.newPage();
+const png = async (svg, size, file) => {
+  await page.setViewportSize({ width: size, height: size });
+  await page.setContent(`<body style="margin:0;background:transparent">${svg}</body>`);
+  await page.screenshot({ path: file, omitBackground: true, clip: { x: 0, y: 0, width: size, height: size } });
+};
+await png(iconSvg(512), 512, resolve(root, 'store-assets/icon-512.png'));
+await png(iconSvg(512), 512, resolve(root, 'public/assets/studio/logo.png'));
+// Legacy launcher icons: the adaptive foreground (scale 1) on a rounded square, and on a circle.
+const densities = { mdpi: 48, hdpi: 72, xhdpi: 96, xxhdpi: 144, xxxhdpi: 192 };
+for (const [density, size] of Object.entries(densities)) {
+  await png(iconSvg(size, 1, '<rect x="18" y="18" width="72" height="72" rx="14"/>').replace('viewBox="0 0 108 108"', 'viewBox="18 18 72 72"'), size, resolve(res, `mipmap-${density}/ic_launcher.png`));
+  await png(iconSvg(size, 1, '<circle cx="54" cy="54" r="36"/>').replace('viewBox="0 0 108 108"', 'viewBox="18 18 72 72"'), size, resolve(res, `mipmap-${density}/ic_launcher_round.png`));
+}
+await browser.close();
 console.log('icon written');

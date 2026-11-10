@@ -44,7 +44,7 @@ import { EDITIONS, MushafEditionsService } from '../../core/quran/mushaf-edition
 import { MushafLayout, ayahWords } from '../../core/quran/mushaf-layout';
 import { TajweedPart, alignTajweed } from '../../core/quran/tajweed';
 import { SelectTextsDirective } from '../../shared/select-texts.directive';
-import { madinahRows } from '../../core/quran/madinah-page';
+import { MadinahQpcData, ayahMark, madinahQpcRows, madinahRows } from '../../core/quran/madinah-page';
 import { MushafLineFitDirective } from './mushaf-line-fit.directive';
 
 type MushafTheme = 'paper' | 'sepia' | 'night';
@@ -161,7 +161,17 @@ export class MushafPage {
   readonly pageCount = computed(() => this.layout()?.pages ?? TOTAL_PAGES);
   readonly shamarly = computed(() => this.layout()?.id === 'shamarly');
   readonly lined = computed(() => !!this.layout()?.lines);
+  /** The plain Madinah pages in the King Fahd Complex's text and font (the tajweed pages keep their coloured text). */
+  readonly qpc = signal<MadinahQpcData | null>(null);
+  readonly qpcPage = computed(() => this.edition() === 'madinah' && !!this.qpc() && this.lined());
+  readonly ayahMark = ayahMark;
   readonly lines = computed(() => {
+    const qpc = this.qpc();
+    if (qpc && this.qpcPage() && this.quran.ready()) {
+      const p = this.page();
+      const lines = this.layout()?.lines?.(p);
+      if (lines) return madinahQpcRows(lines, qpc.pages[p - 1] ?? [], (index) => this.quran.ayahAt(index));
+    }
     const lines = this.layout()?.lines?.(this.page());
     return this.quran.ready() && lines ? madinahRows(lines, (index) => this.quran.ayahAt(index), this.tajweed()) : [];
   });
@@ -234,6 +244,10 @@ export class MushafPage {
   async ionViewWillEnter(): Promise<void> {
     await Promise.all([this.quran.load(), this.marks.load(), this.khatmah.load(), this.recitation.loadPrefs(), this.loadView(), this.hifz.load(), this.editions.load()]);
     this.tajweed.set(this.edition() === 'tajweed' ? await this.editions.tajweedText() : null);
+    if (this.edition() === 'madinah' && !this.qpc()) {
+      // Without it (it ships with the app, so only if it cannot be read) the pages show the Tanzil text instead.
+      this.qpc.set(await this.editions.madinahQpc().catch(() => null));
+    }
     this.layout.set(await this.loadLayout());
     const sura = Number(this.sura());
     const aya = Number(this.aya());

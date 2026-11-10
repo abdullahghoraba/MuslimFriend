@@ -6,6 +6,7 @@ import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { Preferences } from '@capacitor/preferences';
 import { AyahRef } from './quran-utils';
 import { MadinahLinesData, MushafLayout, madinahLayout, shamarlyLayout } from './mushaf-layout';
+import { MadinahQpcData } from './madinah-page';
 
 /**
  * Mushaf editions:
@@ -128,6 +129,7 @@ export class MushafEditionsService {
   private shamarlyAreas?: Promise<ShamarlyArea[][]>;
   private shamarlyPages_?: Promise<MushafLayout>;
   private madinahPages?: Promise<MushafLayout>;
+  private madinahQpcPages?: Promise<MadinahQpcData>;
   private shamarlyBase?: Promise<string>;
   /** Shamarly pages saved on the device. */
   private shamarlyPages = new Set<number>();
@@ -305,6 +307,15 @@ export class MushafEditionsService {
         throw error;
       });
     return this.madinahPages;
+  }
+
+  /** The same printed lines in the King Fahd Complex's text, for the plain Madinah pages (its font draws them). */
+  madinahQpc(): Promise<MadinahQpcData> {
+    this.madinahQpcPages ??= firstValueFrom(this.http.get<MadinahQpcData>('assets/quran/madinah-qpc.json')).catch((error: unknown) => {
+      this.madinahQpcPages = undefined;
+      throw error;
+    });
+    return this.madinahQpcPages;
   }
 
   shamarlyMap(): Promise<ShamarlyMap> {

@@ -8,7 +8,7 @@ if (!dir) throw new Error('usage: fetch.mjs <cacheDir> [mushafId]');
 mkdirSync(dir, { recursive: true });
 
 const url = (p) =>
-  `https://api.qurancdn.com/api/qdc/verses/by_page/${p}?words=true&word_fields=text_uthmani,line_number,page_number&per_page=300&mushaf=${mushaf}`;
+  `https://api.qurancdn.com/api/qdc/verses/by_page/${p}?words=true&word_fields=text_uthmani,text_qpc_hafs,line_number,page_number&per_page=300&mushaf=${mushaf}`;
 
 async function page(p) {
   const file = join(dir, `${mushaf}-${p}.json`);
@@ -20,7 +20,7 @@ async function page(p) {
       const j = await r.json();
       const verses = j.verses.map((v) => ({
         key: v.verse_key,
-        words: v.words.map((w) => [w.line_number, w.page_number, w.char_type_name === 'end' ? 1 : 0, w.text_uthmani ?? w.text]),
+        words: v.words.map((w) => [w.line_number, w.page_number, w.char_type_name === 'end' ? 1 : 0, w.text_uthmani ?? w.text, w.text_qpc_hafs ?? ""]),
       }));
       writeFileSync(file, JSON.stringify(verses));
       return;

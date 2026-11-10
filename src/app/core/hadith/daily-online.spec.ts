@@ -1,7 +1,8 @@
 import { dailyCandidates, isGoodDaily } from './daily-online';
 
 describe('online hadith of the day', () => {
-  it('alternates al-Bukhari and Muslim and never repeats a hadith for decades', () => {
+  // About 15,000 days are checked: allow more than the default 5 s on a slow machine.
+  it('alternates al-Bukhari and Muslim and never repeats a hadith for decades', { timeout: 20_000 }, () => {
     const seen = new Set<string>();
     const start = 20_000;
     for (let d = start; d < start + 2 * 7563; d++) {
