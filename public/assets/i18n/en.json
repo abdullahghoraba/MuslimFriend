@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Muslim Friend"
+    "name": "Al-Uns Billah"
   },
   "tabs": {
     "home": "Home",
@@ -34,7 +34,7 @@
     "mb": "MB"
   },
   "home": {
-    "title": "Muslim Friend",
+    "title": "Al-Uns Billah",
     "today": "Today",
     "morning": "Morning athkar",
     "evening": "Evening athkar",
@@ -206,7 +206,7 @@
     "about": "About",
     "version": "Version",
     "privacy": "Privacy",
-    "privacyText": "Muslim Friend has no ads, no analytics and no tracking. Your data stays on your device. Internet is used only for what you choose to play, open or download (recitations, radio, hadith, mushafs, tafsirs, the smart corrector for tasmee') and, if you pick the Phone engine for tasmee', your phone's speech recognition.",
+    "privacyText": "Al-Uns Billah has no ads, no analytics and no tracking. Your data stays on your device. Internet is used only for what you choose to play, open or download (recitations, radio, hadith, mushafs, tafsirs, the smart corrector for tasmee') and, if you pick the Phone engine for tasmee', your phone's speech recognition.",
     "credits": "Credits and licences",
     "quranCredit": "Quran text: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Arabic font: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -218,7 +218,7 @@
     "privacyPolicy": "Privacy policy",
     "rate": "Rate the app",
     "shareApp": "Share the app",
-    "shareText": "Muslim Friend: Quran with tafsir, recitations and bookmarks, sourced athkar and prayer-time reminders. No ads.",
+    "shareText": "Al-Uns Billah: Quran with tafsir, recitations and bookmarks, sourced athkar and prayer-time reminders. No ads.",
     "tafsirLibrary": "Tafsir library (offline downloads)",
     "colorStyle": "Colour style",
     "styleCalm": "Calm green & sand",
@@ -251,7 +251,7 @@
   },
   "onboarding": {
     "setup": "Getting started",
-    "step1": "Muslim Friend",
+    "step1": "Al-Uns Billah",
     "step2": "Make room for remembrance",
     "step3": "A few permissions, at your pace",
     "promise": "A quiet place for daily remembrance: no ads, no tracking, and works offline. Every dhikr comes with its source, so you can read with confidence.",
@@ -301,7 +301,7 @@
     "navigation": "Setup navigation",
     "back": "Back",
     "next": "Next",
-    "finish": "Start using Muslim Friend",
+    "finish": "Start using Al-Uns Billah",
     "skip": "Skip remaining setup",
     "error": "This action could not be completed. Please try again, or continue with Not now."
   },
@@ -324,7 +324,7 @@
     "tryAgain": "Try again",
     "dismiss": "Dismiss",
     "permissionTitle": "Allow display over other apps",
-    "permissionText": "To show a short dhikr while you use other apps, allow Muslim Friend to appear on top in Android settings. Return here and tap Start overlay when you are done.",
+    "permissionText": "To show a short dhikr while you use other apps, allow Al-Uns Billah to appear on top in Android settings. Return here and tap Start overlay when you are done.",
     "grantPermission": "Open overlay permission settings",
     "notificationExplanation": "A persistent notification keeps the overlay service active and lets you pause or stop it. Android 13 and later may ask for notification permission when you start.",
     "notificationMissing": "Notification permission is off. Allow it when prompted to see the persistent notification and notification reminders.",
@@ -360,14 +360,14 @@
     "batterySettings": "Open battery optimisation settings",
     "settingsUnavailable": "Battery settings could not be opened. Open this app’s battery settings from Android Settings.",
     "error": "The action could not be completed. Please try again.",
-    "notificationTitle": "Muslim Friend",
+    "notificationTitle": "Al-Uns Billah",
     "notificationText": "Athkar overlay is active. Pause or stop it here.",
     "tips": {
-      "xiaomi": "Enable Autostart and set Battery saver to No restrictions for Muslim Friend.",
-      "samsung": "Go to Settings > Battery > Background usage limits > Never sleeping apps and add Muslim Friend.",
-      "oppo": "Allow Auto launch and background activity for Muslim Friend.",
-      "huawei": "Open App launch, choose Muslim Friend and manage launch manually. Allow background activity.",
-      "generic": "In your phone’s app settings, allow Muslim Friend to run in the background and remove battery restrictions."
+      "xiaomi": "Enable Autostart and set Battery saver to No restrictions for Al-Uns Billah.",
+      "samsung": "Go to Settings > Battery > Background usage limits > Never sleeping apps and add Al-Uns Billah.",
+      "oppo": "Allow Auto launch and background activity for Al-Uns Billah.",
+      "huawei": "Open App launch, choose Al-Uns Billah and manage launch manually. Allow background activity.",
+      "generic": "In your phone’s app settings, allow Al-Uns Billah to run in the background and remove battery restrictions."
     }
   },
   "privacy": {
@@ -753,7 +753,7 @@
   },
   "athan": {
     "title": "Athan settings",
-    "appName": "Muslim Friend",
+    "appName": "Al-Uns Billah",
     "locale": "en",
     "nextPrayer": "Upcoming prayers",
     "needLocation": "Choose a location to calculate prayer times.",
@@ -1477,8 +1477,8 @@
     "myRecordings": "My recordings",
     "noRecordings": "No recordings yet. Press the red button to start.",
     "saveFailed": "The recording could not be saved.",
-    "savedGallery": "Saved to the gallery (Movies/Muslim Friend).",
-    "savedMusic": "Saved to your audio files (Music/Muslim Friend).",
+    "savedGallery": "Saved to the gallery (Movies/Al-Uns Billah).",
+    "savedMusic": "Saved to your audio files (Music/Al-Uns Billah).",
     "deleteConfirm": "Delete this recording?",
     "myRecitation": "My recitation"
   },

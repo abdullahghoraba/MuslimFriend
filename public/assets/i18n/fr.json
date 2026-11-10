@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Muslim Friend"
+    "name": "Al-Uns Billah"
   },
   "tabs": {
     "home": "Accueil",
@@ -34,7 +34,7 @@
     "mb": "Mo"
   },
   "home": {
-    "title": "Muslim Friend",
+    "title": "Al-Uns Billah",
     "today": "Aujourd'hui",
     "morning": "Adhkar du matin",
     "evening": "Adhkar du soir",
@@ -206,7 +206,7 @@
     "about": "À propos",
     "version": "Version",
     "privacy": "Confidentialité",
-    "privacyText": "Muslim Friend n’a ni publicité, ni statistiques, ni pistage. Vos données restent sur votre appareil. Internet sert uniquement à ce que vous choisissez d’écouter, d’ouvrir ou de télécharger (récitations, radio, hadiths, mushafs, tafsirs, le correcteur intelligent du tasmee') et, si vous choisissez le moteur « Téléphone » pour le tasmee', à la reconnaissance vocale du téléphone.",
+    "privacyText": "Al-Uns Billah n’a ni publicité, ni statistiques, ni pistage. Vos données restent sur votre appareil. Internet sert uniquement à ce que vous choisissez d’écouter, d’ouvrir ou de télécharger (récitations, radio, hadiths, mushafs, tafsirs, le correcteur intelligent du tasmee') et, si vous choisissez le moteur « Téléphone » pour le tasmee', à la reconnaissance vocale du téléphone.",
     "credits": "Crédits et licences",
     "quranCredit": "Texte du Coran : Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Police arabe : Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -218,7 +218,7 @@
     "privacyPolicy": "Politique de confidentialité",
     "rate": "Noter l'appli",
     "shareApp": "Partager l'appli",
-    "shareText": "Muslim Friend : le Coran avec tafsir, récitations et marque-pages, des adhkar sourcés et des rappels aux heures de prière. Sans publicité.",
+    "shareText": "Al-Uns Billah : le Coran avec tafsir, récitations et marque-pages, des adhkar sourcés et des rappels aux heures de prière. Sans publicité.",
     "tafsirLibrary": "Bibliothèque de tafsir (téléchargements hors ligne)",
     "colorStyle": "Style de couleurs",
     "styleCalm": "Vert calme et sable",
@@ -251,7 +251,7 @@
   },
   "onboarding": {
     "setup": "Premiers pas",
-    "step1": "Muslim Friend",
+    "step1": "Al-Uns Billah",
     "step2": "Faites de la place au rappel d'Allah",
     "step3": "Quelques autorisations, à votre rythme",
     "promise": "Un endroit paisible pour le rappel quotidien : sans publicité, sans pistage, et fonctionne hors ligne. Chaque dhikr est accompagné de sa source, pour lire en toute confiance.",
@@ -301,7 +301,7 @@
     "navigation": "Navigation de la configuration",
     "back": "Retour",
     "next": "Suivant",
-    "finish": "Commencer à utiliser Muslim Friend",
+    "finish": "Commencer à utiliser Al-Uns Billah",
     "skip": "Passer le reste de la configuration",
     "error": "Cette action n'a pas pu aboutir. Réessayez, ou continuez avec Pas maintenant."
   },
@@ -324,7 +324,7 @@
     "tryAgain": "Réessayer",
     "dismiss": "Ignorer",
     "permissionTitle": "Autoriser l'affichage par-dessus les autres applis",
-    "permissionText": "Pour afficher un court dhikr pendant que vous utilisez d'autres applis, autorisez Muslim Friend à apparaître au premier plan dans les réglages Android. Revenez ici et touchez Démarrer la superposition une fois terminé.",
+    "permissionText": "Pour afficher un court dhikr pendant que vous utilisez d'autres applis, autorisez Al-Uns Billah à apparaître au premier plan dans les réglages Android. Revenez ici et touchez Démarrer la superposition une fois terminé.",
     "grantPermission": "Ouvrir les réglages d'autorisation de superposition",
     "notificationExplanation": "Une notification permanente garde le service de superposition actif et vous permet de le mettre en pause ou de l'arrêter. Android 13 et plus peut demander l'autorisation des notifications au démarrage.",
     "notificationMissing": "Les notifications sont désactivées. Autorisez-les quand cela vous est demandé pour voir la notification permanente et les rappels.",
@@ -360,14 +360,14 @@
     "batterySettings": "Ouvrir les réglages d'optimisation de batterie",
     "settingsUnavailable": "Les réglages de batterie n'ont pas pu s'ouvrir. Ouvrez les réglages de batterie de cette appli depuis les Paramètres Android.",
     "error": "L'action n'a pas pu aboutir. Veuillez réessayer.",
-    "notificationTitle": "Muslim Friend",
+    "notificationTitle": "Al-Uns Billah",
     "notificationText": "La superposition des adhkar est active. Mettez-la en pause ou arrêtez-la ici.",
     "tips": {
-      "xiaomi": "Activez le démarrage automatique et réglez l'économiseur de batterie sur Aucune restriction pour Muslim Friend.",
-      "samsung": "Allez dans Paramètres > Batterie > Limites d'utilisation en arrière-plan > Applis jamais en veille et ajoutez Muslim Friend.",
-      "oppo": "Autorisez le lancement automatique et l'activité en arrière-plan pour Muslim Friend.",
-      "huawei": "Ouvrez Lancement d'applis, choisissez Muslim Friend et gérez le lancement manuellement. Autorisez l'activité en arrière-plan.",
-      "generic": "Dans les réglages des applis de votre téléphone, autorisez Muslim Friend à fonctionner en arrière-plan et retirez les restrictions de batterie."
+      "xiaomi": "Activez le démarrage automatique et réglez l'économiseur de batterie sur Aucune restriction pour Al-Uns Billah.",
+      "samsung": "Allez dans Paramètres > Batterie > Limites d'utilisation en arrière-plan > Applis jamais en veille et ajoutez Al-Uns Billah.",
+      "oppo": "Autorisez le lancement automatique et l'activité en arrière-plan pour Al-Uns Billah.",
+      "huawei": "Ouvrez Lancement d'applis, choisissez Al-Uns Billah et gérez le lancement manuellement. Autorisez l'activité en arrière-plan.",
+      "generic": "Dans les réglages des applis de votre téléphone, autorisez Al-Uns Billah à fonctionner en arrière-plan et retirez les restrictions de batterie."
     }
   },
   "privacy": {
@@ -753,7 +753,7 @@
   },
   "athan": {
     "title": "Réglages de l'adhan",
-    "appName": "Muslim Friend",
+    "appName": "Al-Uns Billah",
     "locale": "fr",
     "nextPrayer": "Prochaines prières",
     "needLocation": "Choisissez une position pour calculer les horaires de prière.",
@@ -1477,8 +1477,8 @@
     "myRecordings": "Mes enregistrements",
     "noRecordings": "Aucun enregistrement. Appuyez sur le bouton rouge pour commencer.",
     "saveFailed": "L'enregistrement n'a pas pu être sauvegardé.",
-    "savedGallery": "Enregistré dans la galerie (Movies/Muslim Friend).",
-    "savedMusic": "Enregistré dans les fichiers audio (Music/Muslim Friend).",
+    "savedGallery": "Enregistré dans la galerie (Movies/Al-Uns Billah).",
+    "savedMusic": "Enregistré dans les fichiers audio (Music/Al-Uns Billah).",
     "deleteConfirm": "Supprimer cet enregistrement ?",
     "myRecitation": "Ma récitation"
   },

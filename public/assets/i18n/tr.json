@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Muslim Friend"
+    "name": "Al-Uns Billah"
   },
   "tabs": {
     "home": "Ana sayfa",
@@ -34,7 +34,7 @@
     "mb": "MB"
   },
   "home": {
-    "title": "Muslim Friend",
+    "title": "Al-Uns Billah",
     "today": "Bugün",
     "morning": "Sabah zikirleri",
     "evening": "Akşam zikirleri",
@@ -206,7 +206,7 @@
     "about": "Hakkında",
     "version": "Sürüm",
     "privacy": "Gizlilik",
-    "privacyText": "Muslim Friend'de reklam, analiz ve takip yoktur. Verileriniz cihazınızda kalır. İnternet yalnızca sizin çalmayı, açmayı veya indirmeyi seçtikleriniz için (tilavetler, radyo, hadisler, mushaflar, tefsirler, tesmî için akıllı düzeltici) ve tesmî için \"Telefon\" motorunu seçerseniz telefonun konuşma tanıması için kullanılır.",
+    "privacyText": "Al-Uns Billah'de reklam, analiz ve takip yoktur. Verileriniz cihazınızda kalır. İnternet yalnızca sizin çalmayı, açmayı veya indirmeyi seçtikleriniz için (tilavetler, radyo, hadisler, mushaflar, tefsirler, tesmî için akıllı düzeltici) ve tesmî için \"Telefon\" motorunu seçerseniz telefonun konuşma tanıması için kullanılır.",
     "credits": "Emeği geçenler ve lisanslar",
     "quranCredit": "Kuran metni: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Arapça yazı tipi: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -218,7 +218,7 @@
     "privacyPolicy": "Gizlilik politikası",
     "rate": "Uygulamayı değerlendir",
     "shareApp": "Uygulamayı paylaş",
-    "shareText": "Muslim Friend: tefsirli, tilavetli ve yer imli Kuran, kaynaklı zikirler ve namaz vakti hatırlatıcıları. Reklamsız.",
+    "shareText": "Al-Uns Billah: tefsirli, tilavetli ve yer imli Kuran, kaynaklı zikirler ve namaz vakti hatırlatıcıları. Reklamsız.",
     "tafsirLibrary": "Tefsir kütüphanesi (çevrimdışı indirmeler)",
     "colorStyle": "Renk stili",
     "styleCalm": "Sakin yeşil ve kum",
@@ -251,7 +251,7 @@
   },
   "onboarding": {
     "setup": "Başlarken",
-    "step1": "Muslim Friend",
+    "step1": "Al-Uns Billah",
     "step2": "Zikre yer açın",
     "step3": "Birkaç izin, kendi hızınızda",
     "promise": "Günlük zikir için sakin bir yer: reklam yok, takip yok ve çevrimdışı çalışır. Her zikir kaynağıyla birlikte gelir, böylece güvenle okursunuz.",
@@ -301,7 +301,7 @@
     "navigation": "Kurulum gezinmesi",
     "back": "Geri",
     "next": "İleri",
-    "finish": "Muslim Friend'i kullanmaya başla",
+    "finish": "Al-Uns Billah'i kullanmaya başla",
     "skip": "Kalan kurulumu atla",
     "error": "Bu işlem tamamlanamadı. Tekrar deneyin veya Şimdi değil ile devam edin."
   },
@@ -324,7 +324,7 @@
     "tryAgain": "Tekrar dene",
     "dismiss": "Kapat",
     "permissionTitle": "Diğer uygulamaların üzerinde göstermeye izin ver",
-    "permissionText": "Diğer uygulamaları kullanırken kısa bir zikir göstermek için Android ayarlarında Muslim Friend'in üstte görünmesine izin verin. Bitirince buraya dönüp Kaplamayı başlat'a dokunun.",
+    "permissionText": "Diğer uygulamaları kullanırken kısa bir zikir göstermek için Android ayarlarında Al-Uns Billah'in üstte görünmesine izin verin. Bitirince buraya dönüp Kaplamayı başlat'a dokunun.",
     "grantPermission": "Kaplama izni ayarlarını aç",
     "notificationExplanation": "Kalıcı bir bildirim kaplama hizmetini etkin tutar ve onu duraklatmanızı veya durdurmanızı sağlar. Android 13 ve sonrası başlatırken bildirim izni isteyebilir.",
     "notificationMissing": "Bildirim izni kapalı. Kalıcı bildirimi ve bildirim hatırlatıcılarını görmek için istendiğinde izin verin.",
@@ -360,14 +360,14 @@
     "batterySettings": "Pil optimizasyonu ayarlarını aç",
     "settingsUnavailable": "Pil ayarları açılamadı. Bu uygulamanın pil ayarlarını Android Ayarları'ndan açın.",
     "error": "İşlem tamamlanamadı. Lütfen tekrar deneyin.",
-    "notificationTitle": "Muslim Friend",
+    "notificationTitle": "Al-Uns Billah",
     "notificationText": "Zikir kaplaması etkin. Buradan duraklatın veya durdurun.",
     "tips": {
-      "xiaomi": "Muslim Friend için Otomatik başlatmayı açın ve Pil tasarrufunu Kısıtlama yok olarak ayarlayın.",
-      "samsung": "Ayarlar > Pil > Arka plan kullanım sınırları > Hiç uyumayan uygulamalar'a gidin ve Muslim Friend'i ekleyin.",
-      "oppo": "Muslim Friend için otomatik başlatmaya ve arka plan etkinliğine izin verin.",
-      "huawei": "Uygulama başlatma'yı açın, Muslim Friend'i seçin ve başlatmayı elle yönetin. Arka plan etkinliğine izin verin.",
-      "generic": "Telefonunuzun uygulama ayarlarında Muslim Friend'in arka planda çalışmasına izin verin ve pil kısıtlamalarını kaldırın."
+      "xiaomi": "Al-Uns Billah için Otomatik başlatmayı açın ve Pil tasarrufunu Kısıtlama yok olarak ayarlayın.",
+      "samsung": "Ayarlar > Pil > Arka plan kullanım sınırları > Hiç uyumayan uygulamalar'a gidin ve Al-Uns Billah'i ekleyin.",
+      "oppo": "Al-Uns Billah için otomatik başlatmaya ve arka plan etkinliğine izin verin.",
+      "huawei": "Uygulama başlatma'yı açın, Al-Uns Billah'i seçin ve başlatmayı elle yönetin. Arka plan etkinliğine izin verin.",
+      "generic": "Telefonunuzun uygulama ayarlarında Al-Uns Billah'in arka planda çalışmasına izin verin ve pil kısıtlamalarını kaldırın."
     }
   },
   "privacy": {
@@ -753,7 +753,7 @@
   },
   "athan": {
     "title": "Ezan ayarları",
-    "appName": "Muslim Friend",
+    "appName": "Al-Uns Billah",
     "locale": "tr",
     "nextPrayer": "Yaklaşan namazlar",
     "needLocation": "Namaz vakitlerini hesaplamak için bir konum seçin.",
@@ -1477,8 +1477,8 @@
     "myRecordings": "Kayıtlarım",
     "noRecordings": "Henüz kayıt yok. Başlamak için kırmızı düğmeye basın.",
     "saveFailed": "Kayıt kaydedilemedi.",
-    "savedGallery": "Galeriye kaydedildi (Movies/Muslim Friend).",
-    "savedMusic": "Ses klasörüne kaydedildi (Music/Muslim Friend).",
+    "savedGallery": "Galeriye kaydedildi (Movies/Al-Uns Billah).",
+    "savedMusic": "Ses klasörüne kaydedildi (Music/Al-Uns Billah).",
     "deleteConfirm": "Bu kayıt silinsin mi?",
     "myRecitation": "Tilavetim"
   },

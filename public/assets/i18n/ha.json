@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Muslim Friend"
+    "name": "Al-Uns Billah"
   },
   "tabs": {
     "home": "Gida",
@@ -34,7 +34,7 @@
     "mb": "MB"
   },
   "home": {
-    "title": "Muslim Friend",
+    "title": "Al-Uns Billah",
     "today": "Yau",
     "morning": "Zikirin safe",
     "evening": "Zikirin yamma",
@@ -206,7 +206,7 @@
     "about": "Game da",
     "version": "Siga",
     "privacy": "Sirri",
-    "privacyText": "Muslim Friend ba shi da talla, ba nazari kuma ba bin diddigi. Bayananka na zama a na'urarka. Ana amfani da intanet ne kawai don abin da ka zaɓa ka kunna, ka buɗe ko ka sauke (karatu, rediyo, hadisi, mushafai, tafsiri, mai gyara mai basira na tasmi'i) kuma, idan ka zaɓi injin \"Waya\" don tasmi'i, don gane magana na wayarka.",
+    "privacyText": "Al-Uns Billah ba shi da talla, ba nazari kuma ba bin diddigi. Bayananka na zama a na'urarka. Ana amfani da intanet ne kawai don abin da ka zaɓa ka kunna, ka buɗe ko ka sauke (karatu, rediyo, hadisi, mushafai, tafsiri, mai gyara mai basira na tasmi'i) kuma, idan ka zaɓi injin \"Waya\" don tasmi'i, don gane magana na wayarka.",
     "credits": "Godiya da lasisoshi",
     "quranCredit": "Rubutun Alƙur'ani: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Rubutun Larabci: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -218,7 +218,7 @@
     "privacyPolicy": "Manufar sirri",
     "rate": "Ba manhajar maki",
     "shareApp": "Raba manhajar",
-    "shareText": "Muslim Friend: Alƙur'ani tare da tafsiri, karatu da alamomin shafi, zikirai masu tushe da tunatarwar lokutan sallah. Babu talla.",
+    "shareText": "Al-Uns Billah: Alƙur'ani tare da tafsiri, karatu da alamomin shafi, zikirai masu tushe da tunatarwar lokutan sallah. Babu talla.",
     "tafsirLibrary": "Ɗakin karatu na tafsiri (saukewa don amfani ba tare da intanet ba)",
     "colorStyle": "Salon launi",
     "styleCalm": "Kore mai natsuwa da yashi",
@@ -251,7 +251,7 @@
   },
   "onboarding": {
     "setup": "Farawa",
-    "step1": "Muslim Friend",
+    "step1": "Al-Uns Billah",
     "step2": "Ba wa ambaton Allah wuri",
     "step3": "'Yan izini kaɗan, yadda ka ga dama",
     "promise": "Wuri mai natsuwa don zikirin yau da kullum: babu talla, babu bin diddigi, kuma yana aiki ba tare da intanet ba. Kowane zikiri yana tare da tushensa, don ka karanta da tabbaci.",
@@ -301,7 +301,7 @@
     "navigation": "Kewayawar saiti",
     "back": "Koma",
     "next": "Na gaba",
-    "finish": "Fara amfani da Muslim Friend",
+    "finish": "Fara amfani da Al-Uns Billah",
     "skip": "Tsallake sauran saiti",
     "error": "Ba a iya kammala wannan aikin ba. Sake gwadawa, ko ci gaba da Ba yanzu ba."
   },
@@ -324,7 +324,7 @@
     "tryAgain": "Sake gwadawa",
     "dismiss": "Cire",
     "permissionTitle": "Ba da izinin nunawa a saman sauran manhajoji",
-    "permissionText": "Don nuna ɗan zikiri yayin da kake amfani da wasu manhajoji, ba Muslim Friend izinin bayyana a sama a saitunan Android. Idan ka gama, dawo nan ka taɓa Fara nunawa.",
+    "permissionText": "Don nuna ɗan zikiri yayin da kake amfani da wasu manhajoji, ba Al-Uns Billah izinin bayyana a sama a saitunan Android. Idan ka gama, dawo nan ka taɓa Fara nunawa.",
     "grantPermission": "Buɗe saitunan izini",
     "notificationExplanation": "Sanarwa mai dorewa na sa aikin ya ci gaba kuma tana ba ka damar dakatawa ko dakatar da shi. Android 13 da sama na iya neman izinin sanarwa lokacin farawa.",
     "notificationMissing": "Izinin sanarwa a kashe yake. Ba da izini idan aka tambaye ka don ganin sanarwa mai dorewa da tunatarwa.",
@@ -360,14 +360,14 @@
     "batterySettings": "Buɗe saitunan inganta batir",
     "settingsUnavailable": "Ba a iya buɗe saitunan batir ba. Buɗe saitunan batir na wannan manhajar daga Saitunan Android.",
     "error": "Ba a iya kammala aikin ba. Da fatan za a sake gwadawa.",
-    "notificationTitle": "Muslim Friend",
+    "notificationTitle": "Al-Uns Billah",
     "notificationText": "Zikiri a saman manhajoji yana aiki. Dakata ko dakatar a nan.",
     "tips": {
-      "xiaomi": "Kunna Farawa da kanta kuma saita Mai adana batir zuwa Babu ƙuntatawa don Muslim Friend.",
-      "samsung": "Je zuwa Saituna > Batir > Iyakokin amfani a bayan fage > Manhajojin da ba sa barci ka ƙara Muslim Friend.",
-      "oppo": "Ba da izinin farawa da kanta da aiki a bayan fage don Muslim Friend.",
-      "huawei": "Buɗe Ƙaddamar da manhaja, zaɓi Muslim Friend ka sarrafa farawa da hannu. Ba da izinin aiki a bayan fage.",
-      "generic": "A saitunan manhajoji na wayarka, ba Muslim Friend izinin aiki a bayan fage kuma cire ƙuntatawar batir."
+      "xiaomi": "Kunna Farawa da kanta kuma saita Mai adana batir zuwa Babu ƙuntatawa don Al-Uns Billah.",
+      "samsung": "Je zuwa Saituna > Batir > Iyakokin amfani a bayan fage > Manhajojin da ba sa barci ka ƙara Al-Uns Billah.",
+      "oppo": "Ba da izinin farawa da kanta da aiki a bayan fage don Al-Uns Billah.",
+      "huawei": "Buɗe Ƙaddamar da manhaja, zaɓi Al-Uns Billah ka sarrafa farawa da hannu. Ba da izinin aiki a bayan fage.",
+      "generic": "A saitunan manhajoji na wayarka, ba Al-Uns Billah izinin aiki a bayan fage kuma cire ƙuntatawar batir."
     }
   },
   "privacy": {
@@ -753,7 +753,7 @@
   },
   "athan": {
     "title": "Saitunan kiran sallah",
-    "appName": "Muslim Friend",
+    "appName": "Al-Uns Billah",
     "locale": "ha",
     "nextPrayer": "Salloli masu zuwa",
     "needLocation": "Zaɓi wuri don lissafin lokutan sallah.",
@@ -1477,8 +1477,8 @@
     "myRecordings": "Rikodina",
     "noRecordings": "Babu rikodi tukuna. Danna maɓallin ja don farawa.",
     "saveFailed": "Ba a iya adana rikodin ba.",
-    "savedGallery": "An adana a hotuna (Movies/Muslim Friend).",
-    "savedMusic": "An adana a fayilolin sauti (Music/Muslim Friend).",
+    "savedGallery": "An adana a hotuna (Movies/Al-Uns Billah).",
+    "savedMusic": "An adana a fayilolin sauti (Music/Al-Uns Billah).",
     "deleteConfirm": "A goge wannan rikodi?",
     "myRecitation": "Karatuna"
   },

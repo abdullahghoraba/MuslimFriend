@@ -1,4 +1,4 @@
-# Google Play store listing — Muslim Friend / رفيق المسلم
+# Google Play store listing — Al-Uns Billah / الأُنس بالله
 
 Character limits are checked by `node scripts/check-listing.mjs` (title ≤ 30, short description ≤ 80).
 
@@ -7,14 +7,14 @@ Character limits are checked by `node scripts/check-listing.mjs` (title ≤ 30, 
 ## Arabic (ar) — default listing
 
 **App name (title)**
-رفيق المسلم: قرآن وأذكار
+الأُنس بالله: قرآن وأذكار
 
 **Short description**
 مصحف يسمع تلاوتك ويصحّحها، تفسير وتلاوات، أذكار ومواقيت الصلاة، بلا إعلانات
 
 **Full description**
 
-رفيق المسلم يرافقك طوال يومك: المصحف الشريف بالتفسير والتلاوات وخطط الحفظ، وأذكار الصباح والمساء بمصادرها، ومواقيت الصلاة مع الأذان، بلا إعلانات ولا تتبّع.
+الأُنس بالله يرافقك طوال يومك: المصحف الشريف بالتفسير والتلاوات وخطط الحفظ، وأذكار الصباح والمساء بمصادرها، ومواقيت الصلاة مع الأذان، بلا إعلانات ولا تتبّع.
 
 سمّع ويصحّح لك
 • التسميع: اقرأ من حفظك ويستمع التطبيق ويتحقق من كل كلمة، فيُظهر الكلمة الخاطئة أو المتروكة مع صوابها، ويعمل بلا إنترنت بذكاء اصطناعي مدرَّب على تلاوة القرآن.
@@ -60,14 +60,14 @@ Character limits are checked by `node scripts/check-listing.mjs` (title ≤ 30, 
 ## English (en-US)
 
 **App name (title)**
-Muslim Friend: Quran & Athkar
+Al-Uns Billah: Quran & Athkar
 
 **Short description**
 Quran that checks your recitation, tafsir, athkar & prayer times. No ads.
 
 **Full description**
 
-Muslim Friend keeps you company all day: the Holy Quran with tafsir, recitations and memorisation plans, sourced morning and evening athkar, and prayer times with the athan. No ads, no tracking.
+Al-Uns Billah keeps you company all day: the Holy Quran with tafsir, recitations and memorisation plans, sourced morning and evening athkar, and prayer times with the athan. No ads, no tracking.
 
 Recite and be corrected
 • Tasmee': recite from memory and the app listens and checks every word, showing a wrong or skipped word with the right one. Works offline with an AI trained on Quran recitation.
@@ -125,8 +125,8 @@ No accounts, no ads, no analytics. Your data stays on your phone, and everything
 | بلا إعلانات ولا تتبّع | No ads, no tracking |
 
 **Release notes 1.0.0**
-- ar: الإصدار الأول من رفيق المسلم. نسأل الله القبول.
-- en: First release of Muslim Friend.
+- ar: الإصدار الأول من الأُنس بالله. نسأل الله القبول.
+- en: First release of Al-Uns Billah.
 
 ---
 

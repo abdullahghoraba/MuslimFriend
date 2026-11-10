@@ -94,7 +94,7 @@ class TasbihBubble(
             gravity = Gravity.TOP or Gravity.LEFT
             x = if (state.x >= 0) state.x else metrics.widthPixels - sizePx - dp(16)
             y = if (state.y >= 0) state.y else (metrics.heightPixels * 0.35f).toInt()
-            title = "Muslim Friend tasbih"
+            title = "Al-Uns Billah tasbih"
         }
         attach(if (expanded) buildCard(state) else buildBubble(state), fadeIn = true)
     }
@@ -437,7 +437,7 @@ class TasbihBubble(
         ).apply {
             gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
             y = dp(48)
-            title = "Muslim Friend remove target"
+            title = "Al-Uns Billah remove target"
         }
         runCatching { wm.addView(target, lp) }.onFailure { return }
         removeView = target

@@ -61,7 +61,7 @@ export class MushafLineFitDirective implements AfterViewInit, OnDestroy {
     for (const row of el.querySelectorAll<HTMLElement>('.text-line, .basmala-line')) {
       const cells = [...row.children] as HTMLElement[];
       const natural = cells.reduce((sum, cell) => sum + cell.getBoundingClientRect().width, 0);
-      widest = Math.max(widest, natural + Math.max(0, cells.length - 1) * 32 * 0.16);
+      widest = Math.max(widest, natural + Math.max(0, cells.length - 1) * 32 * 0.08);
     }
     // Leave subpixel room at both edges and enough height for Amiri Quran's stacked marks.
     const base = Math.min(32 * (width - 2) / Math.max(1, widest), rowHeight / 2.15);
@@ -104,7 +104,7 @@ export class MushafLineFitDirective implements AfterViewInit, OnDestroy {
     probe.remove();
     if (!tatweel) return;
     const width = el.clientWidth;
-    const gap = fontSize * 0.16;
+    const gap = fontSize * 0.08;
     for (const row of el.querySelectorAll<HTMLElement>('.text-line')) {
       const words = [...row.querySelectorAll<HTMLElement>(':scope > .mushaf-word')];
       const natural = words.reduce((sum, w) => sum + w.getBoundingClientRect().width, 0) + Math.max(0, words.length - 1) * gap;

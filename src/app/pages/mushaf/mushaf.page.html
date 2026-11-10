@@ -102,14 +102,32 @@
               @case ('title') {
                 @let h = quran.sura(line.sura);
                 <div class="mushaf-line title-line">
-                  <!-- As in the print: the sura's name alone in its frame, in Arabic whatever the app's language. -->
-                  <div class="sura-frame" role="heading" aria-level="2" [attr.aria-label]="lang() === 'ar' ? 'سورة ' + h.name : 'Surah ' + h.tname">
+                  <!-- As in the print: an ornamental band with the sura's name in its cartouche, in Arabic whatever the
+                       app's language. -->
+                  <div class="sura-banner" role="heading" aria-level="2" [attr.aria-label]="lang() === 'ar' ? 'سورة ' + h.name : 'Surah ' + h.tname">
+                    <svg viewBox="0 0 400 44" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+                      <rect class="band" x="1.5" y="3.5" width="397" height="37" rx="5" />
+                      <rect class="band-inner" x="5.5" y="7.5" width="389" height="29" rx="3" />
+                      <path class="cartouche" d="M108,22 C120,9.5 132,9 146,9 H254 C268,9 280,9.5 292,22 C280,34.5 268,35 254,35 H146 C132,35 120,34.5 108,22 Z" />
+                      @for (x of [52, 348]; track x) {
+                        <circle class="medallion" [attr.cx]="x" cy="22" r="11" />
+                        <circle class="medallion-inner" [attr.cx]="x" cy="22" r="6" />
+                        <circle class="dot" [attr.cx]="x" cy="22" r="1.8" />
+                        <path class="vine" [attr.d]="'M' + (x < 200 ? x + 13 : x - 13) + ',22 H' + (x < 200 ? 104 : 296)" />
+                        <path class="vine" [attr.d]="'M' + (x < 200 ? x - 13 : x + 13) + ',22 H' + (x < 200 ? 10 : 390)" />
+                      }
+                    </svg>
                     <span class="sura-name" lang="ar">سورة {{ h.name }}</span>
                   </div>
                 </div>
               }
               @case ('basmala') {
-                <div class="mushaf-line basmala-line"><span class="basmala-text">@if (line.parts; as parts) {@for (p of parts; track $index) {<span [class]="p.rule ? 'tj-' + p.rule : null">{{ p.text }}</span>}} @else {{{ line.text }}}</span></div>
+                @if (qpcPage()) {
+                  <!-- The basmala as the print writes it: one calligraphic line (Amiri Quran's ﷽). -->
+                  <div class="mushaf-line basmala-line"><span class="basmala-text basmala-art" role="img" aria-label="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ">&#xFDFD;</span></div>
+                } @else {
+                  <div class="mushaf-line basmala-line"><span class="basmala-text">@if (line.parts; as parts) {@for (p of parts; track $index) {<span [class]="p.rule ? 'tj-' + p.rule : null">{{ p.text }}</span>}} @else {{{ line.text }}}</span></div>
+                }
               }
               @case ('text') {
                 <div class="mushaf-line text-line">

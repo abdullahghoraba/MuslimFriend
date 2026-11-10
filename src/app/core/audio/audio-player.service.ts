@@ -110,7 +110,7 @@ export class AudioPlayerService {
   async playRadio(radio: Radio): Promise<void> {
     this.now.set({ kind: 'radio', radio });
     if (this.native) {
-      const item = { url: radio.url, title: this.catalog.radioName(radio), album: 'رفيق المسلم', group: 'radio:' + radio.id };
+      const item = { url: radio.url, title: this.catalog.radioName(radio), album: 'الأُنس بالله', group: 'radio:' + radio.id };
       await this.startNative([item], 0, true);
     } else {
       await this.start(radio.url);
@@ -497,7 +497,7 @@ export class AudioPlayerService {
     const ms = navigator.mediaSession;
     ms.metadata =
       now.kind === 'radio'
-        ? new MediaMetadata({ title: this.catalog.radioName(now.radio), album: 'رفيق المسلم' })
+        ? new MediaMetadata({ title: this.catalog.radioName(now.radio), album: 'الأُنس بالله' })
         : new MediaMetadata({ title: this.quran.ready() ? this.quran.sura(now.sura).name : String(now.sura), artist: this.catalog.reciterName(now.reciter), album: this.catalog.moshafName(now.moshaf) });
     ms.setActionHandler('play', () => this.toggle());
     ms.setActionHandler('pause', () => this.toggle());

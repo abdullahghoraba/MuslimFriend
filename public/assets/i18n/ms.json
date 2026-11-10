@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Muslim Friend"
+    "name": "Al-Uns Billah"
   },
   "tabs": {
     "home": "Utama",
@@ -34,7 +34,7 @@
     "mb": "MB"
   },
   "home": {
-    "title": "Muslim Friend",
+    "title": "Al-Uns Billah",
     "today": "Hari ini",
     "morning": "Zikir pagi",
     "evening": "Zikir petang",
@@ -206,7 +206,7 @@
     "about": "Perihal",
     "version": "Versi",
     "privacy": "Privasi",
-    "privacyText": "Muslim Friend tiada iklan, tiada analitik dan tiada penjejakan. Data anda kekal pada peranti anda. Internet hanya digunakan untuk apa yang anda pilih untuk dimainkan, dibuka atau dimuat turun (tilawah, radio, hadis, mushaf, tafsir, penyemak pintar tasmik) dan, jika anda memilih enjin \"Telefon\" untuk tasmik, untuk pengecaman pertuturan telefon.",
+    "privacyText": "Al-Uns Billah tiada iklan, tiada analitik dan tiada penjejakan. Data anda kekal pada peranti anda. Internet hanya digunakan untuk apa yang anda pilih untuk dimainkan, dibuka atau dimuat turun (tilawah, radio, hadis, mushaf, tafsir, penyemak pintar tasmik) dan, jika anda memilih enjin \"Telefon\" untuk tasmik, untuk pengecaman pertuturan telefon.",
     "credits": "Kredit dan lesen",
     "quranCredit": "Teks Al-Quran: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Fon Arab: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -218,7 +218,7 @@
     "privacyPolicy": "Dasar privasi",
     "rate": "Nilai aplikasi",
     "shareApp": "Kongsi aplikasi",
-    "shareText": "Muslim Friend: Al-Quran dengan tafsir, bacaan dan penanda, zikir bersumber dan peringatan waktu solat. Tanpa iklan.",
+    "shareText": "Al-Uns Billah: Al-Quran dengan tafsir, bacaan dan penanda, zikir bersumber dan peringatan waktu solat. Tanpa iklan.",
     "tafsirLibrary": "Perpustakaan tafsir (muat turun luar talian)",
     "colorStyle": "Gaya warna",
     "styleCalm": "Hijau tenang & pasir",
@@ -251,7 +251,7 @@
   },
   "onboarding": {
     "setup": "Bermula",
-    "step1": "Muslim Friend",
+    "step1": "Al-Uns Billah",
     "step2": "Beri ruang untuk berzikir",
     "step3": "Beberapa kebenaran, mengikut kelapangan anda",
     "promise": "Tempat yang tenang untuk zikir harian: tiada iklan, tiada penjejakan dan berfungsi di luar talian. Setiap zikir disertakan sumbernya, jadi anda boleh membaca dengan yakin.",
@@ -301,7 +301,7 @@
     "navigation": "Navigasi persediaan",
     "back": "Kembali",
     "next": "Seterusnya",
-    "finish": "Mula menggunakan Muslim Friend",
+    "finish": "Mula menggunakan Al-Uns Billah",
     "skip": "Langkau baki persediaan",
     "error": "Tindakan ini tidak dapat diselesaikan. Cuba lagi, atau teruskan dengan Bukan sekarang."
   },
@@ -324,7 +324,7 @@
     "tryAgain": "Cuba lagi",
     "dismiss": "Tutup",
     "permissionTitle": "Benarkan papar di atas aplikasi lain",
-    "permissionText": "Untuk memaparkan zikir pendek semasa anda menggunakan aplikasi lain, benarkan Muslim Friend muncul di atas dalam tetapan Android. Kembali ke sini dan ketik Mulakan paparan terapung apabila selesai.",
+    "permissionText": "Untuk memaparkan zikir pendek semasa anda menggunakan aplikasi lain, benarkan Al-Uns Billah muncul di atas dalam tetapan Android. Kembali ke sini dan ketik Mulakan paparan terapung apabila selesai.",
     "grantPermission": "Buka tetapan kebenaran paparan terapung",
     "notificationExplanation": "Pemberitahuan berterusan memastikan perkhidmatan paparan terapung aktif dan membolehkan anda menjeda atau menghentikannya. Android 13 dan ke atas mungkin meminta kebenaran pemberitahuan semasa dimulakan.",
     "notificationMissing": "Kebenaran pemberitahuan dimatikan. Benarkan apabila diminta untuk melihat pemberitahuan berterusan dan peringatan.",
@@ -360,14 +360,14 @@
     "batterySettings": "Buka tetapan pengoptimuman bateri",
     "settingsUnavailable": "Tetapan bateri tidak dapat dibuka. Buka tetapan bateri aplikasi ini daripada Tetapan Android.",
     "error": "Tindakan tidak dapat diselesaikan. Sila cuba lagi.",
-    "notificationTitle": "Muslim Friend",
+    "notificationTitle": "Al-Uns Billah",
     "notificationText": "Zikir terapung aktif. Jeda atau hentikan di sini.",
     "tips": {
-      "xiaomi": "Hidupkan Mula automatik dan tetapkan Penjimat bateri kepada Tiada sekatan untuk Muslim Friend.",
-      "samsung": "Pergi ke Tetapan > Bateri > Had penggunaan latar belakang > Aplikasi yang tidak pernah tidur dan tambah Muslim Friend.",
-      "oppo": "Benarkan pelancaran automatik dan aktiviti latar belakang untuk Muslim Friend.",
-      "huawei": "Buka Pelancaran aplikasi, pilih Muslim Friend dan urus pelancaran secara manual. Benarkan aktiviti latar belakang.",
-      "generic": "Dalam tetapan aplikasi telefon anda, benarkan Muslim Friend berjalan di latar belakang dan buang sekatan bateri."
+      "xiaomi": "Hidupkan Mula automatik dan tetapkan Penjimat bateri kepada Tiada sekatan untuk Al-Uns Billah.",
+      "samsung": "Pergi ke Tetapan > Bateri > Had penggunaan latar belakang > Aplikasi yang tidak pernah tidur dan tambah Al-Uns Billah.",
+      "oppo": "Benarkan pelancaran automatik dan aktiviti latar belakang untuk Al-Uns Billah.",
+      "huawei": "Buka Pelancaran aplikasi, pilih Al-Uns Billah dan urus pelancaran secara manual. Benarkan aktiviti latar belakang.",
+      "generic": "Dalam tetapan aplikasi telefon anda, benarkan Al-Uns Billah berjalan di latar belakang dan buang sekatan bateri."
     }
   },
   "privacy": {
@@ -753,7 +753,7 @@
   },
   "athan": {
     "title": "Tetapan azan",
-    "appName": "Muslim Friend",
+    "appName": "Al-Uns Billah",
     "locale": "ms",
     "nextPrayer": "Solat akan datang",
     "needLocation": "Pilih lokasi untuk mengira waktu solat.",
@@ -1477,8 +1477,8 @@
     "myRecordings": "Rakaman saya",
     "noRecordings": "Belum ada rakaman. Tekan butang merah untuk mula.",
     "saveFailed": "Rakaman tidak dapat disimpan.",
-    "savedGallery": "Disimpan ke galeri (Movies/Muslim Friend).",
-    "savedMusic": "Disimpan ke folder audio (Music/Muslim Friend).",
+    "savedGallery": "Disimpan ke galeri (Movies/Al-Uns Billah).",
+    "savedMusic": "Disimpan ke folder audio (Music/Al-Uns Billah).",
     "deleteConfirm": "Padam rakaman ini?",
     "myRecitation": "Tilawah saya"
   },

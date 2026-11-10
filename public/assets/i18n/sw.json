@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Muslim Friend"
+    "name": "Al-Uns Billah"
   },
   "tabs": {
     "home": "Mwanzo",
@@ -34,7 +34,7 @@
     "mb": "MB"
   },
   "home": {
-    "title": "Muslim Friend",
+    "title": "Al-Uns Billah",
     "today": "Leo",
     "morning": "Adhkari za asubuhi",
     "evening": "Adhkari za jioni",
@@ -206,7 +206,7 @@
     "about": "Kuhusu",
     "version": "Toleo",
     "privacy": "Faragha",
-    "privacyText": "Muslim Friend haina matangazo, uchambuzi wala ufuatiliaji. Data yako hubaki kwenye kifaa chako. Mtandao hutumika tu kwa unachochagua kucheza, kufungua au kupakua (visomo, redio, hadithi, misahafu, tafsiri, kisahihishaji mahiri cha tasmii) na, ukichagua injini ya \"Simu\" kwa tasmii, kwa utambuzi wa usemi wa simu.",
+    "privacyText": "Al-Uns Billah haina matangazo, uchambuzi wala ufuatiliaji. Data yako hubaki kwenye kifaa chako. Mtandao hutumika tu kwa unachochagua kucheza, kufungua au kupakua (visomo, redio, hadithi, misahafu, tafsiri, kisahihishaji mahiri cha tasmii) na, ukichagua injini ya \"Simu\" kwa tasmii, kwa utambuzi wa usemi wa simu.",
     "credits": "Shukrani na leseni",
     "quranCredit": "Maandishi ya Kurani: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Fonti ya Kiarabu: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -218,7 +218,7 @@
     "privacyPolicy": "Sera ya faragha",
     "rate": "Kadiria programu",
     "shareApp": "Shiriki programu",
-    "shareText": "Muslim Friend: Kurani pamoja na tafsiri, visomo na alamisho, adhkari zenye vyanzo na vikumbusho vya nyakati za swala. Bila matangazo.",
+    "shareText": "Al-Uns Billah: Kurani pamoja na tafsiri, visomo na alamisho, adhkari zenye vyanzo na vikumbusho vya nyakati za swala. Bila matangazo.",
     "tafsirLibrary": "Maktaba ya tafsiri (kupakua kwa nje ya mtandao)",
     "colorStyle": "Mtindo wa rangi",
     "styleCalm": "Kijani tulivu na mchanga",
@@ -251,7 +251,7 @@
   },
   "onboarding": {
     "setup": "Kuanza",
-    "step1": "Muslim Friend",
+    "step1": "Al-Uns Billah",
     "step2": "Tenga nafasi ya kumkumbuka Allah",
     "step3": "Ruhusa chache, kwa mwendo wako",
     "promise": "Mahali tulivu pa dhikri ya kila siku: bila matangazo, bila ufuatiliaji, na hufanya kazi bila mtandao. Kila dhikri ina chanzo chake, ili usome kwa uhakika.",
@@ -301,7 +301,7 @@
     "navigation": "Urambazaji wa usanidi",
     "back": "Rudi",
     "next": "Inayofuata",
-    "finish": "Anza kutumia Muslim Friend",
+    "finish": "Anza kutumia Al-Uns Billah",
     "skip": "Ruka usanidi uliobaki",
     "error": "Kitendo hiki hakikuweza kukamilika. Jaribu tena, au endelea na Si sasa."
   },
@@ -324,7 +324,7 @@
     "tryAgain": "Jaribu tena",
     "dismiss": "Ondoa",
     "permissionTitle": "Ruhusu kuonyesha juu ya programu nyingine",
-    "permissionText": "Ili kuonyesha dhikri fupi ukiwa unatumia programu nyingine, ruhusu Muslim Friend ionekane juu katika mipangilio ya Android. Ukimaliza rudi hapa na uguse Anza kuonyesha.",
+    "permissionText": "Ili kuonyesha dhikri fupi ukiwa unatumia programu nyingine, ruhusu Al-Uns Billah ionekane juu katika mipangilio ya Android. Ukimaliza rudi hapa na uguse Anza kuonyesha.",
     "grantPermission": "Fungua mipangilio ya ruhusa",
     "notificationExplanation": "Arifa ya kudumu huifanya huduma iendelee kufanya kazi na hukuwezesha kuisitisha au kuisimamisha. Android 13 na matoleo ya baadaye yanaweza kuomba ruhusa ya arifa wakati wa kuanza.",
     "notificationMissing": "Ruhusa ya arifa imezimwa. Iruhusu unapoulizwa ili uone arifa ya kudumu na vikumbusho.",
@@ -360,14 +360,14 @@
     "batterySettings": "Fungua mipangilio ya uboreshaji wa betri",
     "settingsUnavailable": "Mipangilio ya betri haikuweza kufunguka. Fungua mipangilio ya betri ya programu hii kutoka Mipangilio ya Android.",
     "error": "Kitendo hakikuweza kukamilika. Tafadhali jaribu tena.",
-    "notificationTitle": "Muslim Friend",
+    "notificationTitle": "Al-Uns Billah",
     "notificationText": "Adhkari juu ya programu zimewashwa. Sitisha au simamisha hapa.",
     "tips": {
-      "xiaomi": "Washa Kuanza kiotomatiki na uweke Kiokoa betri kuwa Bila vikwazo kwa Muslim Friend.",
-      "samsung": "Nenda Mipangilio > Betri > Vikomo vya matumizi ya nyuma > Programu zisizolala kamwe na uongeze Muslim Friend.",
-      "oppo": "Ruhusu kuanza kiotomatiki na shughuli za nyuma kwa Muslim Friend.",
-      "huawei": "Fungua Uzinduzi wa programu, chagua Muslim Friend na usimamie uzinduzi mwenyewe. Ruhusu shughuli za nyuma.",
-      "generic": "Katika mipangilio ya programu ya simu yako, ruhusu Muslim Friend ifanye kazi nyuma na uondoe vikwazo vya betri."
+      "xiaomi": "Washa Kuanza kiotomatiki na uweke Kiokoa betri kuwa Bila vikwazo kwa Al-Uns Billah.",
+      "samsung": "Nenda Mipangilio > Betri > Vikomo vya matumizi ya nyuma > Programu zisizolala kamwe na uongeze Al-Uns Billah.",
+      "oppo": "Ruhusu kuanza kiotomatiki na shughuli za nyuma kwa Al-Uns Billah.",
+      "huawei": "Fungua Uzinduzi wa programu, chagua Al-Uns Billah na usimamie uzinduzi mwenyewe. Ruhusu shughuli za nyuma.",
+      "generic": "Katika mipangilio ya programu ya simu yako, ruhusu Al-Uns Billah ifanye kazi nyuma na uondoe vikwazo vya betri."
     }
   },
   "privacy": {
@@ -753,7 +753,7 @@
   },
   "athan": {
     "title": "Mipangilio ya adhana",
-    "appName": "Muslim Friend",
+    "appName": "Al-Uns Billah",
     "locale": "sw",
     "nextPrayer": "Swala zijazo",
     "needLocation": "Chagua eneo ili kukokotoa nyakati za swala.",
@@ -1477,8 +1477,8 @@
     "myRecordings": "Rekodi zangu",
     "noRecordings": "Bado hakuna rekodi. Bonyeza kitufe chekundu kuanza.",
     "saveFailed": "Rekodi haikuweza kuhifadhiwa.",
-    "savedGallery": "Imehifadhiwa kwenye picha (Movies/Muslim Friend).",
-    "savedMusic": "Imehifadhiwa kwenye faili za sauti (Music/Muslim Friend).",
+    "savedGallery": "Imehifadhiwa kwenye picha (Movies/Al-Uns Billah).",
+    "savedMusic": "Imehifadhiwa kwenye faili za sauti (Music/Al-Uns Billah).",
     "deleteConfirm": "Futa rekodi hii?",
     "myRecitation": "Kisomo changu"
   },

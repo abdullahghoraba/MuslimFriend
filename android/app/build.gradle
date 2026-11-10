@@ -14,7 +14,7 @@ android {
         applicationId "com.abdullahghoraba.muslimfriend"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 23
+        versionCode 24
         versionName "1.0.21"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // ARM phones only: x86 Android phones are no longer sold, and the two x86 copies of the SQLite library

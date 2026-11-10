@@ -14,7 +14,7 @@ import java.io.File
 
 /**
  * Copies a recitation recorded in the app (a file in the app's own storage) into the phone's gallery (videos, in
- * Movies/Muslim Friend) or music (audio, in Music/Muslim Friend) through MediaStore, which needs no storage
+ * Movies/Al-Uns Billah) or music (audio, in Music/Al-Uns Billah) through MediaStore, which needs no storage
  * permission on Android 10+. Older Android answers "unsupported" and the app offers the share sheet instead.
  */
 @CapacitorPlugin(name = "MediaSaver")
@@ -33,7 +33,7 @@ class MediaSaverPlugin : Plugin() {
         val values = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, mime)
-            put(MediaStore.MediaColumns.RELATIVE_PATH, (if (video) Environment.DIRECTORY_MOVIES else Environment.DIRECTORY_MUSIC) + "/Muslim Friend")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, (if (video) Environment.DIRECTORY_MOVIES else Environment.DIRECTORY_MUSIC) + "/Al-Uns Billah")
             put(MediaStore.MediaColumns.IS_PENDING, 1)
         }
         val collection = if (video) MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)

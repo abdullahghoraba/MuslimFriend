@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Muslim Friend"
+    "name": "Al-Uns Billah"
   },
   "tabs": {
     "home": "首页",
@@ -34,7 +34,7 @@
     "mb": "MB"
   },
   "home": {
-    "title": "Muslim Friend",
+    "title": "Al-Uns Billah",
     "today": "今天",
     "morning": "早晨记主词",
     "evening": "傍晚记主词",
@@ -206,7 +206,7 @@
     "about": "关于",
     "version": "版本",
     "privacy": "隐私",
-    "privacyText": "Muslim Friend 无广告、无分析、无跟踪。您的数据保存在您的设备上。仅在您选择播放、打开或下载内容时使用网络（诵读、电台、圣训、经本、经注、背诵检查的智能纠错），以及在背诵检查中选择“手机”引擎时用于手机的语音识别。",
+    "privacyText": "Al-Uns Billah 无广告、无分析、无跟踪。您的数据保存在您的设备上。仅在您选择播放、打开或下载内容时使用网络（诵读、电台、圣训、经本、经注、背诵检查的智能纠错），以及在背诵检查中选择“手机”引擎时用于手机的语音识别。",
     "credits": "致谢与许可",
     "quranCredit": "古兰经文本：Tanzil Quran Text (Uthmani)，© Tanzil Project，CC BY 3.0 — tanzil.net",
     "fontCredit": "阿拉伯文字体：Amiri，© The Amiri Project Authors，SIL Open Font License 1.1",
@@ -218,7 +218,7 @@
     "privacyPolicy": "隐私政策",
     "rate": "给应用评分",
     "shareApp": "分享应用",
-    "shareText": "Muslim Friend：附经注、诵读和书签的古兰经，注明出处的记主词，以及礼拜时间提醒。无广告。",
+    "shareText": "Al-Uns Billah：附经注、诵读和书签的古兰经，注明出处的记主词，以及礼拜时间提醒。无广告。",
     "tafsirLibrary": "经注库（离线下载）",
     "colorStyle": "配色风格",
     "styleCalm": "宁静绿与沙色",
@@ -251,7 +251,7 @@
   },
   "onboarding": {
     "setup": "开始使用",
-    "step1": "Muslim Friend",
+    "step1": "Al-Uns Billah",
     "step2": "为记主留出空间",
     "step3": "几项权限，按你的节奏来",
     "promise": "一个安静的每日记主之所：无广告、无跟踪，离线也能用。每条记主词都附有出处，让你安心诵读。",
@@ -301,7 +301,7 @@
     "navigation": "设置导航",
     "back": "返回",
     "next": "下一步",
-    "finish": "开始使用 Muslim Friend",
+    "finish": "开始使用 Al-Uns Billah",
     "skip": "跳过剩余设置",
     "error": "此操作未能完成。请重试，或选择“暂不”继续。"
   },
@@ -324,7 +324,7 @@
     "tryAgain": "重试",
     "dismiss": "关闭",
     "permissionTitle": "允许显示在其他应用上层",
-    "permissionText": "要在你使用其他应用时显示简短的记主词，请在 Android 设置中允许 Muslim Friend 显示在上层。完成后返回这里并点按“开始悬浮显示”。",
+    "permissionText": "要在你使用其他应用时显示简短的记主词，请在 Android 设置中允许 Al-Uns Billah 显示在上层。完成后返回这里并点按“开始悬浮显示”。",
     "grantPermission": "打开悬浮权限设置",
     "notificationExplanation": "一条常驻通知让悬浮服务保持运行，并可在其中暂停或停止。Android 13 及以上版本在启动时可能会请求通知权限。",
     "notificationMissing": "通知权限已关闭。系统询问时请允许，以便看到常驻通知和提醒。",
@@ -360,14 +360,14 @@
     "batterySettings": "打开电池优化设置",
     "settingsUnavailable": "无法打开电池设置。请在 Android 设置中打开此应用的电池设置。",
     "error": "操作未能完成，请重试。",
-    "notificationTitle": "Muslim Friend",
+    "notificationTitle": "Al-Uns Billah",
     "notificationText": "记主词悬浮显示已开启。可在此暂停或停止。",
     "tips": {
-      "xiaomi": "为 Muslim Friend 开启自启动，并将省电策略设为“无限制”。",
-      "samsung": "前往 设置 > 电池 > 后台使用限制 > 从不休眠的应用，并添加 Muslim Friend。",
-      "oppo": "允许 Muslim Friend 自动启动和后台活动。",
-      "huawei": "打开“应用启动管理”，选择 Muslim Friend 并改为手动管理。允许后台活动。",
-      "generic": "在手机的应用设置中，允许 Muslim Friend 在后台运行并取消电池限制。"
+      "xiaomi": "为 Al-Uns Billah 开启自启动，并将省电策略设为“无限制”。",
+      "samsung": "前往 设置 > 电池 > 后台使用限制 > 从不休眠的应用，并添加 Al-Uns Billah。",
+      "oppo": "允许 Al-Uns Billah 自动启动和后台活动。",
+      "huawei": "打开“应用启动管理”，选择 Al-Uns Billah 并改为手动管理。允许后台活动。",
+      "generic": "在手机的应用设置中，允许 Al-Uns Billah 在后台运行并取消电池限制。"
     }
   },
   "privacy": {
@@ -753,7 +753,7 @@
   },
   "athan": {
     "title": "宣礼设置",
-    "appName": "Muslim Friend",
+    "appName": "Al-Uns Billah",
     "locale": "zh",
     "nextPrayer": "即将到来的礼拜",
     "needLocation": "请选择位置以计算礼拜时间。",
@@ -1477,8 +1477,8 @@
     "myRecordings": "我的录音",
     "noRecordings": "还没有录音。按红色按钮开始。",
     "saveFailed": "无法保存录音。",
-    "savedGallery": "已保存到相册（Movies/Muslim Friend）。",
-    "savedMusic": "已保存到音频文件（Music/Muslim Friend）。",
+    "savedGallery": "已保存到相册（Movies/Al-Uns Billah）。",
+    "savedMusic": "已保存到音频文件（Music/Al-Uns Billah）。",
     "deleteConfirm": "删除此录音？",
     "myRecitation": "我的诵读"
   },

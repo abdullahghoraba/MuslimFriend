@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">رفيق المسلم</string>
-    <string name="title_activity_main">رفيق المسلم</string>
+    <string name="app_name">الأُنس بالله</string>
+    <string name="title_activity_main">الأُنس بالله</string>
 
     <string name="channel_overlay_service">الأذكار فوق التطبيقات</string>
     <string name="channel_overlay_service_desc">يُبقي ظهور الأذكار فوق التطبيقات يعمل. يمكنك إخفاء هذا الإشعار من هنا.</string>

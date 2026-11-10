@@ -134,7 +134,7 @@ export class RuqyahPlayerService {
       return {
         url: saved.has(name) ? `${base}/${name}` : `${AUDIO_BASE}/${reciter.id}/${name}`,
         title: `الرقية الشرعية · ${this.quran.sura(s.sura).name} ${s.aya}`,
-        artist: reciter.nameAr, album: 'رفيق المسلم', group: String(i),
+        artist: reciter.nameAr, album: 'الأُنس بالله', group: String(i),
       };
     });
   }

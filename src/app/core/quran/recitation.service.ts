@@ -310,7 +310,7 @@ export class RecitationService {
         url: saved.has(name) ? `${base}/${name}` : `${AUDIO_BASE}/${reciter.id}/${name}`,
         title: `${this.quran.sura(ref.sura).name} ${ref.aya}`,
         artist: reciter.nameAr,
-        album: 'رفيق المسلم',
+        album: 'الأُنس بالله',
         group: String(i),
       };
       for (let r = 0; r < each; r++) items.push(item);
@@ -628,7 +628,7 @@ export class RecitationService {
     navigator.mediaSession.metadata = new MediaMetadata({
       title: `${sura.name} ${ref.aya}`,
       artist: this.reciter().nameAr,
-      album: 'رفيق المسلم',
+      album: 'الأُنس بالله',
     });
     navigator.mediaSession.setActionHandler('play', () => this.toggle());
     navigator.mediaSession.setActionHandler('pause', () => this.toggle());

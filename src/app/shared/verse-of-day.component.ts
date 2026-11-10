@@ -35,7 +35,7 @@ export class VerseOfDayComponent {
   async share():Promise<void> {
     const v=this.verse(); if(!v || this.sharing()) return;
     this.sharing.set(true); this.shareFailed.set(false);
-    const app=this.lang()==='ar' ? 'رفيق المسلم' : 'Muslim Friend';
+    const app=this.lang()==='ar' ? 'الأُنس بالله' : 'Al-Uns Billah';
     const ref=this.quran.sura(v.sura).name+' · '+this.translate.instant('quran.ayah')+' '+this.digits(v.aya);
     try { await this.shares.shareText(app,v.text+'\n'+ref+'\n'+app); } catch { this.shareFailed.set(true); } finally { this.sharing.set(false); }
   }

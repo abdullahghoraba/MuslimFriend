@@ -151,7 +151,7 @@ class OverlayWindow(
                 else -> Gravity.TOP
             }
             y = if (config.position == "center") 0 else dp(56)
-            title = "Muslim Friend overlay"
+            title = "Al-Uns Billah overlay"
         }
 
         runCatching { wm.addView(card, params) }.onFailure { return }

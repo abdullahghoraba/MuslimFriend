@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Muslim Friend"
+    "name": "Al-Uns Billah"
   },
   "tabs": {
     "home": "Bosh sahifa",
@@ -34,7 +34,7 @@
     "mb": "MB"
   },
   "home": {
-    "title": "Muslim Friend",
+    "title": "Al-Uns Billah",
     "today": "Bugun",
     "morning": "Tong zikrlari",
     "evening": "Kechki zikrlar",
@@ -206,7 +206,7 @@
     "about": "Ilova haqida",
     "version": "Versiya",
     "privacy": "Maxfiylik",
-    "privacyText": "Muslim Friend’da reklama, tahlil va kuzatuv yo‘q. Ma’lumotlaringiz qurilmangizda qoladi. Internet faqat siz ijro etish, ochish yoki yuklab olishni tanlagan narsalar uchun (tilovatlar, radio, hadislar, mushaflar, tafsirlar, tasmi’ uchun aqlli tekshiruvchi) va tasmi’ uchun “Telefon” dvigatelini tanlasangiz, telefonning nutqni aniqlashi uchun ishlatiladi.",
+    "privacyText": "Al-Uns Billah’da reklama, tahlil va kuzatuv yo‘q. Ma’lumotlaringiz qurilmangizda qoladi. Internet faqat siz ijro etish, ochish yoki yuklab olishni tanlagan narsalar uchun (tilovatlar, radio, hadislar, mushaflar, tafsirlar, tasmi’ uchun aqlli tekshiruvchi) va tasmi’ uchun “Telefon” dvigatelini tanlasangiz, telefonning nutqni aniqlashi uchun ishlatiladi.",
     "credits": "Minnatdorchilik va litsenziyalar",
     "quranCredit": "Qur'on matni: Tanzil Quran Text (Uthmani), © Tanzil Project, CC BY 3.0 — tanzil.net",
     "fontCredit": "Arab shrifti: Amiri, © The Amiri Project Authors, SIL Open Font License 1.1",
@@ -218,7 +218,7 @@
     "privacyPolicy": "Maxfiylik siyosati",
     "rate": "Ilovani baholash",
     "shareApp": "Ilovani ulashish",
-    "shareText": "Muslim Friend: tafsir, tilovat va xatcho'plar bilan Qur'on, manbali zikrlar va namoz vaqti eslatmalari. Reklamasiz.",
+    "shareText": "Al-Uns Billah: tafsir, tilovat va xatcho'plar bilan Qur'on, manbali zikrlar va namoz vaqti eslatmalari. Reklamasiz.",
     "tafsirLibrary": "Tafsir kutubxonasi (oflayn yuklab olish)",
     "colorStyle": "Rang uslubi",
     "styleCalm": "Sokin yashil va qum rang",
@@ -251,7 +251,7 @@
   },
   "onboarding": {
     "setup": "Boshlash",
-    "step1": "Muslim Friend",
+    "step1": "Al-Uns Billah",
     "step2": "Zikr uchun joy ajrating",
     "step3": "Bir nechta ruxsat — o'z sur'atingizda",
     "promise": "Kundalik zikr uchun sokin joy: reklamasiz, kuzatuvsiz va internetsiz ishlaydi. Har bir zikr manbasi bilan keltirilgan, shuning uchun ishonch bilan o'qiysiz.",
@@ -301,7 +301,7 @@
     "navigation": "Sozlash navigatsiyasi",
     "back": "Orqaga",
     "next": "Keyingi",
-    "finish": "Muslim Friend'dan foydalanishni boshlash",
+    "finish": "Al-Uns Billah'dan foydalanishni boshlash",
     "skip": "Qolgan sozlashni o'tkazib yuborish",
     "error": "Bu amalni bajarib bo'lmadi. Qaytadan urinib ko'ring yoki \"Hozir emas\" bilan davom eting."
   },
@@ -324,7 +324,7 @@
     "tryAgain": "Qayta urinish",
     "dismiss": "Yopish",
     "permissionTitle": "Boshqa ilovalar ustida ko'rsatishga ruxsat berish",
-    "permissionText": "Boshqa ilovalardan foydalanayotganda qisqa zikr ko'rsatish uchun Android sozlamalarida Muslim Friend'ga yuqorida chiqishga ruxsat bering. Tugatgach, bu yerga qaytib \"Ishga tushirish\"ni bosing.",
+    "permissionText": "Boshqa ilovalardan foydalanayotganda qisqa zikr ko'rsatish uchun Android sozlamalarida Al-Uns Billah'ga yuqorida chiqishga ruxsat bering. Tugatgach, bu yerga qaytib \"Ishga tushirish\"ni bosing.",
     "grantPermission": "Ruxsat sozlamalarini ochish",
     "notificationExplanation": "Doimiy bildirishnoma xizmatni faol ushlab turadi va uni pauza qilish yoki to'xtatish imkonini beradi. Android 13 va undan keyingi versiyalar ishga tushirishda bildirishnoma ruxsatini so'rashi mumkin.",
     "notificationMissing": "Bildirishnoma ruxsati o'chiq. Doimiy bildirishnoma va eslatmalarni ko'rish uchun so'ralganda ruxsat bering.",
@@ -360,14 +360,14 @@
     "batterySettings": "Batareya optimallashtirish sozlamalarini ochish",
     "settingsUnavailable": "Batareya sozlamalarini ochib bo'lmadi. Bu ilovaning batareya sozlamalarini Android Sozlamalaridan oching.",
     "error": "Amalni bajarib bo'lmadi. Qaytadan urinib ko'ring.",
-    "notificationTitle": "Muslim Friend",
+    "notificationTitle": "Al-Uns Billah",
     "notificationText": "Ilovalar ustida zikrlar faol. Shu yerdan pauza qiling yoki to'xtating.",
     "tips": {
-      "xiaomi": "Muslim Friend uchun Avtomatik ishga tushishni yoqing va Batareya tejashni \"Cheklovsiz\"ga qo'ying.",
-      "samsung": "Sozlamalar > Batareya > Fondan foydalanish cheklovlari > Hech qachon uxlamaydigan ilovalar bo'limiga o'tib, Muslim Friend'ni qo'shing.",
-      "oppo": "Muslim Friend uchun avtomatik ishga tushish va fon faoliyatiga ruxsat bering.",
-      "huawei": "Ilovalarni ishga tushirish bo'limini oching, Muslim Friend'ni tanlang va ishga tushishni qo'lda boshqaring. Fon faoliyatiga ruxsat bering.",
-      "generic": "Telefoningiz ilova sozlamalarida Muslim Friend'ga fonda ishlashga ruxsat bering va batareya cheklovlarini olib tashlang."
+      "xiaomi": "Al-Uns Billah uchun Avtomatik ishga tushishni yoqing va Batareya tejashni \"Cheklovsiz\"ga qo'ying.",
+      "samsung": "Sozlamalar > Batareya > Fondan foydalanish cheklovlari > Hech qachon uxlamaydigan ilovalar bo'limiga o'tib, Al-Uns Billah'ni qo'shing.",
+      "oppo": "Al-Uns Billah uchun avtomatik ishga tushish va fon faoliyatiga ruxsat bering.",
+      "huawei": "Ilovalarni ishga tushirish bo'limini oching, Al-Uns Billah'ni tanlang va ishga tushishni qo'lda boshqaring. Fon faoliyatiga ruxsat bering.",
+      "generic": "Telefoningiz ilova sozlamalarida Al-Uns Billah'ga fonda ishlashga ruxsat bering va batareya cheklovlarini olib tashlang."
     }
   },
   "privacy": {
@@ -753,7 +753,7 @@
   },
   "athan": {
     "title": "Azon sozlamalari",
-    "appName": "Muslim Friend",
+    "appName": "Al-Uns Billah",
     "locale": "uz",
     "nextPrayer": "Yaqinlashayotgan namozlar",
     "needLocation": "Namoz vaqtlarini hisoblash uchun joylashuvni tanlang.",
@@ -1477,8 +1477,8 @@
     "myRecordings": "Yozuvlarim",
     "noRecordings": "Hali yozuv yo'q. Boshlash uchun qizil tugmani bosing.",
     "saveFailed": "Yozuvni saqlab bo'lmadi.",
-    "savedGallery": "Galereyaga saqlandi (Movies/Muslim Friend).",
-    "savedMusic": "Audio fayllarga saqlandi (Music/Muslim Friend).",
+    "savedGallery": "Galereyaga saqlandi (Movies/Al-Uns Billah).",
+    "savedMusic": "Audio fayllarga saqlandi (Music/Al-Uns Billah).",
     "deleteConfirm": "Bu yozuv o'chirilsinmi?",
     "myRecitation": "Tilovatim"
   },
