@@ -1,4 +1,4 @@
-# Muslim Friend · رفيق المسلم
+# Al-Uns Billah · الأُنس بالله
 
 An ad-free, tracking-free athkar, Quran and hadith app for Android (offline first), built with Ionic + Angular + Capacitor
 and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
@@ -11,7 +11,7 @@ and a native Kotlin plugin (`AthkarOverlay`) for what a WebView cannot do.
 
 ## Features
 
-- **Quran:** 604-page Madani layout (Tanzil Uthmani text, Amiri Quran font), juz/hizb/rub', paper/sepia/night themes,
+- **Quran:** 604-page Madinah mushaf on the 15 lines of the 1421 King Fahd print (KFGQPC Hafs font and text), juz/hizb/rub', paper/sepia/night themes,
   tafsir per ayah (al-Muyassar, al-Jalalayn and Saheeh International bundled; 7 more downloadable for offline use),
   word by word per ayah (each word's meaning in English, Urdu, Indonesian, Bengali, Turkish, Persian or Hindi, its
   transliteration and recitation, from quran.com; a sura opened once stays on the phone),

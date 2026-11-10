@@ -1,4 +1,4 @@
-# Play Console answers — Muslim Friend
+# Play Console answers — Al-Uns Billah
 
 Copy these into **Play Console → Policy → App content**. Everything below matches the code as shipped:
 INTERNET is used only to fetch public content over HTTPS (recitations, radio, hadith, mushafs, tafsirs), no SDKs that send data,
@@ -130,7 +130,7 @@ shows its controls → pause from the lock screen.
 
 ### Demo video script (≤ 60 s, screen recording; upload unlisted to YouTube and paste the link)
 
-1. **0–5 s** Open Muslim Friend → Settings → "Athkar over other apps". Caption: "The overlay is off by default."
+1. **0–5 s** Open Al-Uns Billah → Settings → "Athkar over other apps". Caption: "The overlay is off by default."
 2. **5–15 s** Turn on "Show athkar over other apps". Android opens "Display over other apps" → allow → return. Allow notifications when asked.
 3. **15–22 s** Show the settings: frequency (choose "Every unlock" for the demo), display duration, position, quiet hours.
 4. **22–28 s** Pull down the notification shade: show the persistent "Athkar overlay is on" notification with **Pause 1 hour** and **Stop**.

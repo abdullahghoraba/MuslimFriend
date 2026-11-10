@@ -1,4 +1,4 @@
-# طلب إذن — «في ظلال القرآن» في تطبيق «رفيق المسلم»
+# طلب إذن — «في ظلال القرآن» في تطبيق «الأُنس بالله»
 
 أرسله إلى الجهات التالية (يكفي الحصول على إذن واحد يغطي النص الذي سنستخدمه):
 
@@ -14,7 +14,7 @@
 
 السلام عليكم ورحمة الله وبركاته،
 
-أنا [اسمك]، مطوّر تطبيق «رفيق المسلم» على أندرويد، وهو تطبيق مجاني تمامًا للقرآن الكريم والأذكار، **بلا إعلانات ولا اشتراكات ولا جمع لأي بيانات** من المستخدمين، ويعمل دون إنترنت.
+أنا [اسمك]، مطوّر تطبيق «الأُنس بالله» على أندرويد، وهو تطبيق مجاني تمامًا للقرآن الكريم والأذكار، **بلا إعلانات ولا اشتراكات ولا جمع لأي بيانات** من المستخدمين، ويعمل دون إنترنت.
 
 يتضمن التطبيق مكتبة تفاسير يستطيع المستخدم تنزيل أي منها مرة واحدة ثم قراءته دون إنترنت عند الضغط على أي آية، مع نسبة كل تفسير إلى مؤلفه ومصدره بوضوح.
 
@@ -41,7 +41,7 @@ Subject: Permission request — Fi Zilal al-Quran (Sayyid Qutb) in a free, non-p
 
 Assalamu alaikum,
 
-I'm [your name], developer of "Muslim Friend" (رفيق المسلم), a completely free Android app for the Quran and daily athkar. It has **no ads, no subscriptions and collects no user data**, and works offline.
+I'm [your name], developer of "Al-Uns Billah" (الأُنس بالله), a completely free Android app for the Quran and daily athkar. It has **no ads, no subscriptions and collects no user data**, and works offline.
 
 The app has a tafsir library: the user downloads a tafsir once and then reads it offline by tapping any verse, with every tafsir clearly credited to its author and source.
 

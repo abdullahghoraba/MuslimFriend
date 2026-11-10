@@ -2,7 +2,12 @@
   <main [attr.aria-busy]="busy()" [attr.dir]="rtl() ? 'rtl' : 'ltr'">
     <div class="step"><span>{{ 'onboarding.setup' | translate }}</span><b dir="ltr">{{ step() }}/3</b></div>
     <div class="dots" aria-hidden="true">@for (n of [1, 2, 3]; track n) { <span [class.active]="step() >= n"></span> }</div>
-    <ion-icon class="hero" [name]="step() === 1 ? 'heart-outline' : step() === 2 ? 'layers-outline' : 'hand-left-outline'" aria-hidden="true" />
+    @if (step() === 1) {
+      <!-- The app's own mark (its icon) on the first step. -->
+      <img class="hero-logo" src="assets/studio/logo.png" alt="" width="88" height="88" />
+    } @else {
+      <ion-icon class="hero" [name]="step() === 2 ? 'layers-outline' : 'hand-left-outline'" aria-hidden="true" />
+    }
     <h1 #heading tabindex="-1">{{ ('onboarding.step' + step()) | translate }}</h1>
     @if (step() === 1) {
       <p>{{ 'onboarding.promise' | translate }}</p>

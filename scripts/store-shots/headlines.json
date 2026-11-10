@@ -1,18 +1,546 @@
 {
-  "ar": { "tasmee": ["سمّع ويصحّح لك", "يستمع لتلاوتك ويصحّح كل كلمة، بلا إنترنت"], "studio": ["استوديو التلاوة", "سجّل تلاوتك صوتًا أو فيديو بلا ضوضاء"], "shamarly": ["مصحف الشمرلي", "بصفحاته المطبوعة، والتفسير بلمسة على الآية"] },
-  "en": { "tasmee": ["Recite and be corrected", "It listens and checks every word, even offline"], "studio": ["Your recitation studio", "Record sound or video, the noise taken out"], "shamarly": ["The Shamarly mushaf", "Its printed pages; tap a verse for tafsir"] },
-  "fr": { "tasmee": ["Récitez, il vous corrige", "Il écoute et vérifie chaque mot, même hors ligne"], "studio": ["Votre studio de récitation", "Enregistrez en audio ou vidéo, sans bruit"], "shamarly": ["Le mushaf Shamarly", "Ses pages imprimées ; touchez un verset pour le tafsir"] },
-  "es": { "tasmee": ["Recita y te corrige", "Escucha y revisa cada palabra, incluso sin conexión"], "studio": ["Tu estudio de recitación", "Graba audio o video, sin ruido"], "shamarly": ["El mushaf Shamarly", "Sus páginas impresas; toca una aleya para el tafsir"] },
-  "de": { "tasmee": ["Vortragen und korrigiert werden", "Hört zu und prüft jedes Wort, auch offline"], "studio": ["Dein Rezitationsstudio", "Ton oder Video aufnehmen, ohne Rauschen"], "shamarly": ["Der Shamarly-Mushaf", "Seine gedruckten Seiten; Vers antippen für Tafsir"] },
-  "pt": { "tasmee": ["Recite e seja corrigido", "Ouve e confere cada palavra, mesmo offline"], "studio": ["Seu estúdio de recitação", "Grave áudio ou vídeo, sem ruído"], "shamarly": ["O mushaf Shamarly", "Suas páginas impressas; toque num versículo para o tafsir"] },
-  "tr": { "tasmee": ["Oku, düzeltsin", "Dinler ve her kelimeyi kontrol eder, internetsiz de"], "studio": ["Tilavet stüdyon", "Ses veya video kaydet, gürültüsüz"], "shamarly": ["Şemerli mushafı", "Basılı sayfalarıyla; tefsir için ayete dokun"] },
-  "id": { "tasmee": ["Setor hafalan, dikoreksi", "Mendengar dan memeriksa tiap kata, bahkan offline"], "studio": ["Studio tilawahmu", "Rekam suara atau video, tanpa bising"], "shamarly": ["Mushaf Syamarli", "Halaman cetaknya; ketuk ayat untuk tafsir"] },
-  "ms": { "tasmee": ["Baca, ia membetulkan", "Mendengar dan menyemak setiap perkataan, luar talian"], "studio": ["Studio tilawah anda", "Rakam bunyi atau video, tanpa hingar"], "shamarly": ["Mushaf Syamarli", "Halaman cetaknya; ketik ayat untuk tafsir"] },
-  "ru": { "tasmee": ["Читайте — он исправит", "Слушает и проверяет каждое слово, даже офлайн"], "studio": ["Ваша студия чтения", "Запись звука или видео без шума"], "shamarly": ["Мусхаф Шамарли", "Его печатные страницы; коснитесь аята для тафсира"] },
-  "ur": { "tasmee": ["سنائیں، یہ درست کرے", "تلاوت سن کر ہر لفظ جانچتا ہے، آف لائن بھی"], "studio": ["آپ کا تلاوت اسٹوڈیو", "آواز یا ویڈیو ریکارڈ کریں، شور کے بغیر"], "shamarly": ["مصحف شمرلی", "اپنے چھپے صفحات کے ساتھ؛ تفسیر کے لیے آیت چھوئیں"] },
-  "fa": { "tasmee": ["بخوانید، تصحیح می‌کند", "گوش می‌دهد و هر کلمه را بررسی می‌کند، حتی آفلاین"], "studio": ["استودیوی تلاوت شما", "ضبط صدا یا ویدیو، بدون نویز"], "shamarly": ["مصحف شمرلی", "با صفحات چاپی‌اش؛ برای تفسیر آیه را لمس کنید"] },
-  "bn": { "tasmee": ["শোনান, সংশোধন পান", "শুনে প্রতিটি শব্দ যাচাই করে, অফলাইনেও"], "studio": ["আপনার তিলাওয়াত স্টুডিও", "অডিও বা ভিডিও রেকর্ড, শব্দদূষণ ছাড়া"], "shamarly": ["শামারলি মুসহাফ", "ছাপা পৃষ্ঠাসহ; তাফসিরের জন্য আয়াতে ট্যাপ"] },
-  "hi": { "tasmee": ["सुनाएँ, यह सुधारे", "सुनकर हर शब्द जाँचता है, ऑफ़लाइन भी"], "studio": ["आपका तिलावत स्टूडियो", "आवाज़ या वीडियो रिकॉर्ड करें, शोर के बिना"], "shamarly": ["शमरली मुसहफ़", "छपे पन्नों के साथ; तफ़सीर के लिए आयत छुएँ"] },
-  "zh": { "tasmee": ["背诵，它来纠正", "聆听并检查每个词，离线也可用"], "studio": ["您的诵读录音室", "录制音频或视频，自动降噪"], "shamarly": ["沙马尔利版穆斯哈夫", "原版印刷页面，轻点经文查看经注"] },
-  "sw": { "tasmee": ["Soma, ikusahihishe", "Inasikiliza na kukagua kila neno, hata bila mtandao"], "studio": ["Studio yako ya kisomo", "Rekodi sauti au video, bila kelele"], "shamarly": ["Msahafu wa Shamarly", "Kurasa zake za kuchapishwa; gusa aya kwa tafsiri"] }
+  "ar": {
+    "tasmee": [
+      "سمّع ويصحّح لك",
+      "يستمع لتلاوتك ويصحّح كل كلمة، بلا إنترنت"
+    ],
+    "studio": [
+      "استوديو التلاوة",
+      "سجّل تلاوتك صوتًا أو فيديو بلا ضوضاء"
+    ],
+    "shamarly": [
+      "مصحف الشمرلي",
+      "بصفحاته المطبوعة، والتفسير بلمسة على الآية"
+    ],
+    "mushaf": [
+      "مصحف المدينة كالمطبوع",
+      "١٥ سطرًا في الصفحة بخط مجمع الملك فهد"
+    ],
+    "hifz": [
+      "احفظ بخطة يومية",
+      "كرّر كل آية حتى تثبت، مع مراجعة متباعدة"
+    ],
+    "tafsir": [
+      "كل آية بتفسيرها",
+      "التفسير الميسر وتفاسير أخرى، بلا إنترنت"
+    ],
+    "prayer-times": [
+      "مواقيت الصلاة والأذان",
+      "لموقعك، في أي مكان في العالم"
+    ],
+    "athkar": [
+      "أذكار بمصادرها",
+      "كلها في صفحة واحدة، مع عدّاد لكل ذكر"
+    ]
+  },
+  "en": {
+    "tasmee": [
+      "Recite and be corrected",
+      "It listens and checks every word, even offline"
+    ],
+    "studio": [
+      "Your recitation studio",
+      "Record sound or video, the noise taken out"
+    ],
+    "shamarly": [
+      "The Shamarly mushaf",
+      "Its printed pages; tap a verse for tafsir"
+    ],
+    "mushaf": [
+      "The Madinah Mushaf, as printed",
+      "15 lines a page in the King Fahd Complex script"
+    ],
+    "hifz": [
+      "Memorise with a daily plan",
+      "Repeat each verse until it sticks, with spaced review"
+    ],
+    "tafsir": [
+      "Every verse explained",
+      "Tafsir and the meaning in your language, offline"
+    ],
+    "prayer-times": [
+      "Prayer times & athan",
+      "For your location, anywhere in the world"
+    ],
+    "athkar": [
+      "Athkar with their sources",
+      "All on one page, with a counter for each"
+    ]
+  },
+  "fr": {
+    "tasmee": [
+      "Récitez, il vous corrige",
+      "Il écoute et vérifie chaque mot, même hors ligne"
+    ],
+    "studio": [
+      "Votre studio de récitation",
+      "Enregistrez en audio ou vidéo, sans bruit"
+    ],
+    "shamarly": [
+      "Le mushaf Shamarly",
+      "Ses pages imprimées ; touchez un verset pour le tafsir"
+    ],
+    "mushaf": [
+      "Le Mushaf de Médine, comme imprimé",
+      "15 lignes par page, écriture du Complexe du Roi Fahd"
+    ],
+    "hifz": [
+      "Mémorisez avec un plan",
+      "Répétez chaque verset, avec une révision espacée"
+    ],
+    "tafsir": [
+      "Chaque verset expliqué",
+      "Le tafsir et le sens en français, hors ligne"
+    ],
+    "prayer-times": [
+      "Horaires de prière et adhan",
+      "Pour votre position, partout dans le monde"
+    ],
+    "athkar": [
+      "Les adhkar et leurs sources",
+      "Tout sur une page, avec un compteur pour chacun"
+    ]
+  },
+  "es": {
+    "tasmee": [
+      "Recita y te corrige",
+      "Escucha y revisa cada palabra, incluso sin conexión"
+    ],
+    "studio": [
+      "Tu estudio de recitación",
+      "Graba audio o video, sin ruido"
+    ],
+    "shamarly": [
+      "El mushaf Shamarly",
+      "Sus páginas impresas; toca una aleya para el tafsir"
+    ],
+    "mushaf": [
+      "El Mus'haf de Medina, como impreso",
+      "15 líneas por página con la escritura del Complejo Rey Fahd"
+    ],
+    "hifz": [
+      "Memoriza con un plan diario",
+      "Repite cada aleya, con repaso espaciado"
+    ],
+    "tafsir": [
+      "Cada aleya explicada",
+      "Tafsir y el significado en español, sin conexión"
+    ],
+    "prayer-times": [
+      "Horarios de oración y adhan",
+      "Para tu ubicación, en cualquier lugar del mundo"
+    ],
+    "athkar": [
+      "Adhkar con sus fuentes",
+      "Todo en una página, con contador para cada uno"
+    ]
+  },
+  "de": {
+    "tasmee": [
+      "Vortragen und korrigiert werden",
+      "Hört zu und prüft jedes Wort, auch offline"
+    ],
+    "studio": [
+      "Dein Rezitationsstudio",
+      "Ton oder Video aufnehmen, ohne Rauschen"
+    ],
+    "shamarly": [
+      "Der Shamarly-Mushaf",
+      "Seine gedruckten Seiten; Vers antippen für Tafsir"
+    ],
+    "mushaf": [
+      "Der Medina-Mushaf, wie gedruckt",
+      "15 Zeilen pro Seite in der Schrift des König-Fahd-Komplexes"
+    ],
+    "hifz": [
+      "Auswendiglernen mit Plan",
+      "Jeden Vers wiederholen, mit verteilter Wiederholung"
+    ],
+    "tafsir": [
+      "Jeder Vers erklärt",
+      "Tafsir und die Bedeutung auf Deutsch, offline"
+    ],
+    "prayer-times": [
+      "Gebetszeiten und Adhan",
+      "Für deinen Standort, überall auf der Welt"
+    ],
+    "athkar": [
+      "Adhkar mit Quellen",
+      "Alles auf einer Seite, mit Zähler für jedes"
+    ]
+  },
+  "pt": {
+    "tasmee": [
+      "Recite e seja corrigido",
+      "Ouve e confere cada palavra, mesmo offline"
+    ],
+    "studio": [
+      "Seu estúdio de recitação",
+      "Grave áudio ou vídeo, sem ruído"
+    ],
+    "shamarly": [
+      "O mushaf Shamarly",
+      "Suas páginas impressas; toque num versículo para o tafsir"
+    ],
+    "mushaf": [
+      "O Mushaf de Medina, como impresso",
+      "15 linhas por página na escrita do Complexo Rei Fahd"
+    ],
+    "hifz": [
+      "Memorize com um plano diário",
+      "Repita cada versículo, com revisão espaçada"
+    ],
+    "tafsir": [
+      "Cada versículo explicado",
+      "Tafsir e o significado em português, offline"
+    ],
+    "prayer-times": [
+      "Horários de oração e adhan",
+      "Para sua localização, em qualquer lugar do mundo"
+    ],
+    "athkar": [
+      "Adhkar com suas fontes",
+      "Tudo em uma página, com contador para cada um"
+    ]
+  },
+  "tr": {
+    "tasmee": [
+      "Oku, düzeltsin",
+      "Dinler ve her kelimeyi kontrol eder, internetsiz de"
+    ],
+    "studio": [
+      "Tilavet stüdyon",
+      "Ses veya video kaydet, gürültüsüz"
+    ],
+    "shamarly": [
+      "Şemerli mushafı",
+      "Basılı sayfalarıyla; tefsir için ayete dokun"
+    ],
+    "mushaf": [
+      "Basılı gibi Medine Mushafı",
+      "Kral Fahd Kompleksi hattıyla sayfada 15 satır"
+    ],
+    "hifz": [
+      "Günlük planla ezberleyin",
+      "Her ayeti tekrarlayın, aralıklı tekrar ile"
+    ],
+    "tafsir": [
+      "Her ayetin açıklaması",
+      "Tefsir ve Türkçe meal, çevrimdışı"
+    ],
+    "prayer-times": [
+      "Namaz vakitleri ve ezan",
+      "Dünyanın her yerinde konumunuza göre"
+    ],
+    "athkar": [
+      "Kaynaklarıyla zikirler",
+      "Hepsi tek sayfada, her biri için sayaç"
+    ]
+  },
+  "id": {
+    "tasmee": [
+      "Setor hafalan, dikoreksi",
+      "Mendengar dan memeriksa tiap kata, bahkan offline"
+    ],
+    "studio": [
+      "Studio tilawahmu",
+      "Rekam suara atau video, tanpa bising"
+    ],
+    "shamarly": [
+      "Mushaf Syamarli",
+      "Halaman cetaknya; ketuk ayat untuk tafsir"
+    ],
+    "mushaf": [
+      "Mushaf Madinah seperti cetakan",
+      "15 baris per halaman dengan khat Kompleks Raja Fahd"
+    ],
+    "hifz": [
+      "Hafalan dengan rencana harian",
+      "Ulangi tiap ayat, dengan murajaah berjarak"
+    ],
+    "tafsir": [
+      "Penjelasan setiap ayat",
+      "Tafsir dan terjemahan Indonesia, luring"
+    ],
+    "prayer-times": [
+      "Jadwal salat dan azan",
+      "Untuk lokasimu, di mana saja di dunia"
+    ],
+    "athkar": [
+      "Zikir beserta sumbernya",
+      "Semua dalam satu halaman, dengan penghitung"
+    ]
+  },
+  "ms": {
+    "tasmee": [
+      "Baca, ia membetulkan",
+      "Mendengar dan menyemak setiap perkataan, luar talian"
+    ],
+    "studio": [
+      "Studio tilawah anda",
+      "Rakam bunyi atau video, tanpa hingar"
+    ],
+    "shamarly": [
+      "Mushaf Syamarli",
+      "Halaman cetaknya; ketik ayat untuk tafsir"
+    ],
+    "mushaf": [
+      "Mushaf Madinah seperti cetakan",
+      "15 baris setiap halaman dengan khat Kompleks Raja Fahd"
+    ],
+    "hifz": [
+      "Hafaz dengan pelan harian",
+      "Ulang setiap ayat, dengan ulang kaji berjarak"
+    ],
+    "tafsir": [
+      "Penjelasan setiap ayat",
+      "Tafsir dan terjemahan Melayu, luar talian"
+    ],
+    "prayer-times": [
+      "Waktu solat dan azan",
+      "Untuk lokasi anda, di mana-mana di dunia"
+    ],
+    "athkar": [
+      "Zikir bersama sumbernya",
+      "Semua dalam satu halaman, dengan pembilang"
+    ]
+  },
+  "ru": {
+    "tasmee": [
+      "Читайте — он исправит",
+      "Слушает и проверяет каждое слово, даже офлайн"
+    ],
+    "studio": [
+      "Ваша студия чтения",
+      "Запись звука или видео без шума"
+    ],
+    "shamarly": [
+      "Мусхаф Шамарли",
+      "Его печатные страницы; коснитесь аята для тафсира"
+    ],
+    "mushaf": [
+      "Мединский мусхаф, как печатный",
+      "15 строк на странице, почерк Комплекса короля Фахда"
+    ],
+    "hifz": [
+      "Заучивайте по плану",
+      "Повторяйте каждый аят, с интервальным повтором"
+    ],
+    "tafsir": [
+      "Толкование каждого аята",
+      "Тафсир и перевод смыслов на русском, офлайн"
+    ],
+    "prayer-times": [
+      "Время намаза и азан",
+      "Для вашего места, в любой точке мира"
+    ],
+    "athkar": [
+      "Азкары с источниками",
+      "Всё на одной странице, со счётчиком"
+    ]
+  },
+  "ur": {
+    "tasmee": [
+      "سنائیں، یہ درست کرے",
+      "تلاوت سن کر ہر لفظ جانچتا ہے، آف لائن بھی"
+    ],
+    "studio": [
+      "آپ کا تلاوت اسٹوڈیو",
+      "آواز یا ویڈیو ریکارڈ کریں، شور کے بغیر"
+    ],
+    "shamarly": [
+      "مصحف شمرلی",
+      "اپنے چھپے صفحات کے ساتھ؛ تفسیر کے لیے آیت چھوئیں"
+    ],
+    "mushaf": [
+      "مدینہ مصحف، چھپے ہوئے جیسا",
+      "ہر صفحے پر 15 سطریں، شاہ فہد کمپلیکس کے خط میں"
+    ],
+    "hifz": [
+      "روزانہ منصوبے سے حفظ",
+      "ہر آیت دہرائیں، وقفے وقفے سے دہرائی کے ساتھ"
+    ],
+    "tafsir": [
+      "ہر آیت کی تفسیر",
+      "تفسیر اور اردو ترجمہ، آف لائن"
+    ],
+    "prayer-times": [
+      "اوقاتِ نماز اور اذان",
+      "دنیا میں کہیں بھی آپ کے مقام کے لیے"
+    ],
+    "athkar": [
+      "حوالوں کے ساتھ اذکار",
+      "سب ایک صفحے پر، ہر ذکر کا کاؤنٹر"
+    ]
+  },
+  "fa": {
+    "tasmee": [
+      "بخوانید، تصحیح می‌کند",
+      "گوش می‌دهد و هر کلمه را بررسی می‌کند، حتی آفلاین"
+    ],
+    "studio": [
+      "استودیوی تلاوت شما",
+      "ضبط صدا یا ویدیو، بدون نویز"
+    ],
+    "shamarly": [
+      "مصحف شمرلی",
+      "با صفحات چاپی‌اش؛ برای تفسیر آیه را لمس کنید"
+    ],
+    "mushaf": [
+      "مصحف مدینه، مانند چاپی",
+      "۱۵ سطر در هر صفحه با خط مجتمع ملک فهد"
+    ],
+    "hifz": [
+      "حفظ با برنامهٔ روزانه",
+      "تکرار هر آیه، همراه با مرور فاصله‌دار"
+    ],
+    "tafsir": [
+      "تفسیر هر آیه",
+      "تفسیر و ترجمهٔ فارسی، آفلاین"
+    ],
+    "prayer-times": [
+      "اوقات نماز و اذان",
+      "برای مکان شما، هر جای جهان"
+    ],
+    "athkar": [
+      "اذکار با منابعشان",
+      "همه در یک صفحه، با شمارنده برای هر ذکر"
+    ]
+  },
+  "bn": {
+    "tasmee": [
+      "শোনান, সংশোধন পান",
+      "শুনে প্রতিটি শব্দ যাচাই করে, অফলাইনেও"
+    ],
+    "studio": [
+      "আপনার তিলাওয়াত স্টুডিও",
+      "অডিও বা ভিডিও রেকর্ড, শব্দদূষণ ছাড়া"
+    ],
+    "shamarly": [
+      "শামারলি মুসহাফ",
+      "ছাপা পৃষ্ঠাসহ; তাফসিরের জন্য আয়াতে ট্যাপ"
+    ],
+    "mushaf": [
+      "ছাপার মতো মদিনা মুসহাফ",
+      "প্রতি পৃষ্ঠায় ১৫ লাইন, বাদশাহ ফাহদ কমপ্লেক্সের লিপিতে"
+    ],
+    "hifz": [
+      "দৈনিক পরিকল্পনায় হিফজ",
+      "প্রতিটি আয়াত বারবার, ব্যবধানে পুনরাবৃত্তি"
+    ],
+    "tafsir": [
+      "প্রতিটি আয়াতের ব্যাখ্যা",
+      "তাফসির ও বাংলা অনুবাদ, অফলাইনে"
+    ],
+    "prayer-times": [
+      "নামাজের সময় ও আজান",
+      "বিশ্বের যেকোনো স্থানে আপনার অবস্থানে"
+    ],
+    "athkar": [
+      "সূত্রসহ জিকির",
+      "সব এক পৃষ্ঠায়, প্রতিটির কাউন্টারসহ"
+    ]
+  },
+  "hi": {
+    "tasmee": [
+      "सुनाएँ, यह सुधारे",
+      "सुनकर हर शब्द जाँचता है, ऑफ़लाइन भी"
+    ],
+    "studio": [
+      "आपका तिलावत स्टूडियो",
+      "आवाज़ या वीडियो रिकॉर्ड करें, शोर के बिना"
+    ],
+    "shamarly": [
+      "शमरली मुसहफ़",
+      "छपे पन्नों के साथ; तफ़सीर के लिए आयत छुएँ"
+    ],
+    "mushaf": [
+      "छपे जैसा मदीना मुसहफ़",
+      "हर पृष्ठ पर 15 पंक्तियाँ, शाह फ़हद कॉम्प्लेक्स की लिपि में"
+    ],
+    "hifz": [
+      "रोज़ाना योजना से हिफ़्ज़",
+      "हर आयत दोहराएँ, अंतराल पर दोहराने के साथ"
+    ],
+    "tafsir": [
+      "हर आयत की तफ़सीर",
+      "तफ़सीर और हिंदी अनुवाद, ऑफ़लाइन"
+    ],
+    "prayer-times": [
+      "नमाज़ के समय और अज़ान",
+      "दुनिया में कहीं भी आपके स्थान के लिए"
+    ],
+    "athkar": [
+      "स्रोत सहित अज़कार",
+      "सब एक पेज पर, हर ज़िक्र का काउंटर"
+    ]
+  },
+  "zh": {
+    "tasmee": [
+      "背诵，它来纠正",
+      "聆听并检查每个词，离线也可用"
+    ],
+    "studio": [
+      "您的诵读录音室",
+      "录制音频或视频，自动降噪"
+    ],
+    "shamarly": [
+      "沙马尔利版穆斯哈夫",
+      "原版印刷页面，轻点经文查看经注"
+    ],
+    "mushaf": [
+      "与印刷本一致的麦地那经本",
+      "每页15行，法赫德国王印刷局字体"
+    ],
+    "hifz": [
+      "按每日计划背诵",
+      "每节反复诵读，间隔复习"
+    ],
+    "tafsir": [
+      "每节经文的解释",
+      "经注与中文译文，可离线使用"
+    ],
+    "prayer-times": [
+      "礼拜时间与宣礼",
+      "全球任何地方，按你的位置计算"
+    ],
+    "athkar": [
+      "注明出处的记念",
+      "全部在一页，每条都有计数器"
+    ]
+  },
+  "sw": {
+    "tasmee": [
+      "Soma, ikusahihishe",
+      "Inasikiliza na kukagua kila neno, hata bila mtandao"
+    ],
+    "studio": [
+      "Studio yako ya kisomo",
+      "Rekodi sauti au video, bila kelele"
+    ],
+    "shamarly": [
+      "Msahafu wa Shamarly",
+      "Kurasa zake za kuchapishwa; gusa aya kwa tafsiri"
+    ],
+    "mushaf": [
+      "Msahafu wa Madina kama uliochapishwa",
+      "Mistari 15 kwa ukurasa kwa hati ya Kituo cha Mfalme Fahd"
+    ],
+    "hifz": [
+      "Hifadhi kwa mpango wa kila siku",
+      "Rudia kila aya, kwa marudio ya vipindi"
+    ],
+    "tafsir": [
+      "Maelezo ya kila aya",
+      "Tafsiri na maana kwa Kiswahili, bila mtandao"
+    ],
+    "prayer-times": [
+      "Nyakati za swala na adhana",
+      "Kwa eneo lako, popote duniani"
+    ],
+    "athkar": [
+      "Adhkari pamoja na vyanzo",
+      "Zote kwenye ukurasa mmoja, na kihesabu"
+    ]
+  }
 }
