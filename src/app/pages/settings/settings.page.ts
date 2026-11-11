@@ -90,7 +90,9 @@ export class SettingsPage {
   }
 
   async shareApp(): Promise<void> {
-    const link = 'https://play.google.com/store/apps/details?id=com.abdullahghoraba.muslimfriend';
+    // Branded page (repo abdullahghoraba/al-uns-billah on GitHub Pages) that forwards to the Play listing, so people
+    // never see the store ID left over from the app's old name. The Play ID itself can't change without a new listing.
+    const link = 'https://abdullahghoraba.github.io/al-uns-billah/';
     const text = `${this.translate.instant('settings.shareText')}\n${link}`;
     await this.share.shareText(this.translate.instant('app.name'), text);
   }
