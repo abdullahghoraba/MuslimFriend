@@ -592,7 +592,12 @@
     "reciterHint": "Makaranta {{n}}, aya bayan aya, ana haskaka ayar da ake karantawa",
     "moreReciters": "Ƙarin makaranta (cikakkun surori) da rediyo",
     "changeReciter": "Canza makaranci",
-    "wordByWord": "Kalma bayan kalma"
+    "wordByWord": "Kalma bayan kalma",
+    "viewMode": "Tsari",
+    "viewFlow": "Rubutu a jere",
+    "viewPrint": "Shafin bugu",
+    "printZoomHint": "Shafin bugu yana riƙe girmansa; babban rubutu yana nuna rubutu a jere.",
+    "printOffline": "Wannan shafin bugu yana bukatar intanet a karon farko, don haka an nuna rubutu a jere."
   },
   "quran": {
     "title": "Alƙur'ani",

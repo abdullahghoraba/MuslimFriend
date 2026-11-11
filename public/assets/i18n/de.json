@@ -592,7 +592,12 @@
     "reciterHint": "{{n}} Rezitatoren, Vers für Vers, der rezitierte Vers hervorgehoben",
     "moreReciters": "Mehr Rezitatoren (ganze Suren) und Radio",
     "changeReciter": "Rezitator wechseln",
-    "wordByWord": "Wort für Wort"
+    "wordByWord": "Wort für Wort",
+    "viewMode": "Ansicht",
+    "viewFlow": "Fließtext",
+    "viewPrint": "Gedruckte Seite",
+    "printZoomHint": "Die gedruckte Seite behält ihre Größe; größerer Text wird als Fließtext angezeigt.",
+    "printOffline": "Diese gedruckte Seite braucht beim ersten Öffnen Internet, daher wird der Fließtext angezeigt."
   },
   "quran": {
     "title": "Koran",

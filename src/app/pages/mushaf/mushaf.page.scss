@@ -274,123 +274,66 @@ ion-title { padding-inline: 4px; }
 .cover-title { font-family: "Amiri", serif; font-size: 2rem; margin: 0; }
 .cover-sub { font-family: "Amiri", serif; font-size: 1.1rem; opacity: 0.8; }
 
-// Only the two Madinah text editions use fixed printed rows. Ionic supplies the available
-// height after the header, settings, selection toolbar, player and safe areas are laid out.
-.page-surface.lined-page {
-  height: 100%;
-  min-height: 0;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  padding-top: 4px;
+// ---- The Madinah mushaf in the King Fahd Complex's text and font ----------------------------------------------------
 
-  .page-footer { flex: 0 0 auto; padding: 4px 0 0; }
-}
-
-.madinah-lines {
-  flex: 1 1 0;
-  min-height: 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  color: var(--m-fg);
-  font-size: var(--line-font-size, 16px);
-  line-height: 2.15;
+// Flowing text (the default view): the KFGQPC Hafs font, whose space is already narrow and whose digits are drawn in
+// the ayah-end ornament.
+.page-text.qpc {
+  font-family: 'KFGQPC Hafs', 'AmiriQuran', serif;
+  font-size: calc(1.6rem * var(--quran-font-scale, 1));
+  line-height: 2.1;
   word-spacing: normal;
-  overflow: hidden;
+  .end.qpc-end { color: var(--m-fg); font-family: 'KFGQPC Hafs', serif; }
+  .basmala { margin-bottom: 0; }
+}
+.flow-title { margin: 12px 0 4px; font-size: 1.45rem; }
 
-  .mushaf-line {
-    flex: 1 0 0;
-    min-height: 0;
+.view-mode { margin-top: 2px; }
+.view-hint { margin: 0; font-size: 0.8rem; color: var(--m-muted); text-align: center; }
+
+// «صفحة كالمطبوع»: each line is one printed line in the page's own font, sized to the width by QcfFitDirective.
+.print-page {
+  color: var(--m-fg);
+  font-size: var(--qcf-size, 24px);
+  // A book-like page on tablets and in landscape, rather than lines across the whole screen.
+  max-width: 600px;
+  margin-inline: auto;
+  padding: 4px 0;
+
+  // Every row (line, basmala, sura frame) is one printed row high.
+  .print-line, .print-basmala, .print-title { height: var(--qcf-row, 1.85em); }
+  .print-line {
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    line-height: 1.6;
     white-space: nowrap;
+    &.short { justify-content: center; }
   }
+  // Pages 1 and 2 are set in a framed block in the print: their lines are centred.
+  &.opening .print-line { justify-content: center; }
+  // While measuring: each line's words side by side at their own width.
+  &.measuring .print-line { justify-content: flex-start; width: max-content; }
 
-  // Words sit close, as in the print; kashida fills the rest of the line.
-  .text-line { justify-content: space-between; column-gap: 0.08em; }
-  .mushaf-word, .basmala-text { flex: 0 0 auto; display: inline-block; white-space: nowrap; }
-  // A selected ayah is one soft band over its words (an outline round every word looked like boxes).
-  .mushaf-word { border-radius: 3px; }
-  .mushaf-word.selected { outline: none; }
-  .basmala-line, .title-line { justify-content: center; }
-  .sura-frame {
-    box-sizing: border-box;
-    width: 100%;
-    margin: 0;
-    padding: 0 6px;
-    border-width: 3px;
-    line-height: 1.15;
-    // The name alone, centred in a frame one printed row high.
-    height: calc(var(--printed-row-height, 32px) - 4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: min(1.05em, calc(var(--printed-row-height, 32px) * 0.5));
-    white-space: nowrap;
-    .sura-name { font-family: 'Amiri', serif; font-size: 1em; }
-  }
-
-  // The sura's band: a frame, a cartouche with the name, a medallion at each side.
-  .sura-banner {
-    position: relative;
-    width: 100%;
-    height: calc(var(--printed-row-height, 32px) - 2px);
-    display: grid;
-    place-items: center;
-    svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-    .band { fill: color-mix(in srgb, var(--m-accent) 9%, transparent); stroke: var(--m-frame); stroke-width: 1.4; }
-    .band-inner { fill: none; stroke: var(--m-frame); stroke-width: 0.6; opacity: 0.7; }
-    .cartouche { fill: color-mix(in srgb, var(--m-accent) 16%, var(--m-bg, transparent)); stroke: var(--m-frame); stroke-width: 1.2; }
-    .medallion { fill: color-mix(in srgb, var(--m-accent) 14%, transparent); stroke: var(--m-frame); stroke-width: 1.1; }
-    .medallion-inner { fill: none; stroke: var(--m-frame); stroke-width: 0.8; }
-    .dot { fill: var(--m-frame); }
-    .vine { stroke: var(--m-frame); stroke-width: 0.8; opacity: 0.6; }
-    .sura-name {
-      position: relative;
-      font-family: 'KFGQPC Hafs', 'AmiriQuran', serif;
-      font-size: min(1.1em, calc(var(--printed-row-height, 32px) * 0.46));
-      line-height: 1;
-      color: var(--m-accent);
-      white-space: nowrap;
-    }
-  }
-  .basmala-art {
-    font-family: 'AmiriQuran', serif;
-    font-size: calc(var(--printed-row-height, 32px) * 0.44);
-    line-height: 1;
-  }
-
-  // The Madinah pages in the King Fahd Complex's font: its glyphs, its ayah-number ornaments.
-  &.qpc {
+  // A selected, playing or highlighted ayah is one band over its words (the words touch): no outline or rounding
+  // round each word, which drew a box per word.
+  .qcf-word { flex: 0 0 auto; border-radius: 0; }
+  .qcf-word.selected { outline: none; }
+  .print-title { display: grid; align-content: center; font-size: 1em; }
+  .print-basmala-line { justify-content: center; font-size: 1.3em; }
+  .print-basmala {
     font-family: 'KFGQPC Hafs', 'AmiriQuran', serif;
-    line-height: 2;
-    .basmala-text, .mushaf-word { font-family: inherit; }
-    .qpc-end { font-family: 'KFGQPC Hafs', serif; }
-  }
-
-  &.opening-page {
-    justify-content: center;
-    .mushaf-line { flex: 0 0 var(--printed-row-height, 6.6667%); }
-    .text-line { justify-content: center; }
-    .sura-frame { width: 85%; }
-  }
-
-  &.wrap-lines {
-    overflow-y: auto;
-    overflow-x: hidden;
-    justify-content: flex-start;
-    .mushaf-line { flex: 0 0 auto; min-height: var(--printed-row-height); }
-    .text-line { flex-wrap: wrap; white-space: normal; }
-    .mushaf-word, .basmala-text { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
-    .sura-frame { margin-block: 4px; }
-  }
-
-  &.measuring {
-    .text-line { flex-wrap: nowrap; }
-    .mushaf-word, .basmala-text { max-width: none; white-space: nowrap; overflow-wrap: normal; }
+    font-size: 1.15em;
+    line-height: var(--qcf-row, 1.9em);
+    text-align: center;
   }
 }
 
-// Keep decorative initials in the reader's own paper/sepia/night palette.
-app-reciter-avatar { --reciter-avatar-size: 32px; --app-surface: var(--m-bg); --ion-text-color: var(--m-fg); vertical-align: middle; margin-inline-end: 6px; }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

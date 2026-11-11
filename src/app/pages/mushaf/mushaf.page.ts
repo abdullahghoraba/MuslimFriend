@@ -1,4 +1,3 @@
-import { ReciterAvatarComponent } from '../../shared/reciter-avatar.component';
 import { Location } from '@angular/common';
 import { Component, ElementRef, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
@@ -44,8 +43,9 @@ import { EDITIONS, MushafEditionsService } from '../../core/quran/mushaf-edition
 import { MushafLayout, ayahWords } from '../../core/quran/mushaf-layout';
 import { TajweedPart, alignTajweed } from '../../core/quran/tajweed';
 import { SelectTextsDirective } from '../../shared/select-texts.directive';
-import { MadinahQpcData, ayahMark, madinahQpcRows, madinahRows } from '../../core/quran/madinah-page';
-import { MushafLineFitDirective } from './mushaf-line-fit.directive';
+import { MadinahQcfData, QPC_BASMALA, QcfRun, ayahMark, qcfBasmala, qcfFamily, surahGlyph } from '../../core/quran/madinah-page';
+import { QcfFitDirective } from './qcf-fit.directive';
+import { SuraBannerComponent } from './sura-banner.component';
 
 type MushafTheme = 'paper' | 'sepia' | 'night';
 
@@ -66,6 +66,9 @@ interface PageBlock {
   basmalaParts?: TajweedPart[];
 }
 
+/** A row of a printed page («صفحة كالمطبوع»): its sura frame, basmala or words (glyphs of the page's font). */
+type PrintRow = { kind: 'title'; sura: number } | { kind: 'basmala' } | { kind: 'text'; words: { ayah: Ayah; glyph: string }[] };
+
 const VIEW_PREFS = 'mushafView';
 /** A page counts as read for khatmah after being on screen this long. */
 const READ_AFTER_MS = 3000;
@@ -78,9 +81,9 @@ const READ_AFTER_MS = 3000;
  */
 @Component({
   selector: 'app-mushaf',
-  imports: [ReciterAvatarComponent,
+  imports: [
     TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonContent,
-    IonFooter, IonRange, IonSegment, IonSegmentButton, IonLabel, IonSelect, SelectTextsDirective, IonSelectOption, IonSpinner, MushafLineFitDirective,
+    IonFooter, IonRange, IonSegment, IonSegmentButton, IonLabel, IonSelect, SelectTextsDirective, IonSelectOption, IonSpinner, QcfFitDirective, SuraBannerComponent,
   ],
   templateUrl: './mushaf.page.html',
   styleUrl: './mushaf.page.scss',
@@ -160,36 +163,67 @@ export class MushafPage {
   readonly layout = signal<MushafLayout | null>(null);
   readonly pageCount = computed(() => this.layout()?.pages ?? TOTAL_PAGES);
   readonly shamarly = computed(() => this.layout()?.id === 'shamarly');
-  readonly lined = computed(() => !!this.layout()?.lines);
-  /** The plain Madinah pages in the King Fahd Complex's text and font (the tajweed pages keep their coloured text). */
-  readonly qpc = signal<MadinahQpcData | null>(null);
-  readonly qpcPage = computed(() => this.edition() === 'madinah' && !!this.qpc() && this.lined());
+
+  /** The plain Madinah mushaf (not the tajweed or Shamarly one): in the King Fahd Complex's text and font. */
+  readonly madinahPlain = computed(() => this.layout()?.id === 'madinah' && this.edition() === 'madinah');
+  /** «طريقة العرض» of the Madinah mushaf: flowing text (the default) or the printed page. */
+  readonly madinahView = signal<'flow' | 'print'>('flow');
+  /** Each ayah's King Fahd Complex text, once loaded, for the flowing Madinah pages. */
+  readonly qpcTexts = signal<string[] | null>(null);
+  readonly flowQpc = computed(() => this.madinahPlain() && !!this.qpcTexts());
   readonly ayahMark = ayahMark;
-  readonly lines = computed(() => {
-    const qpc = this.qpc();
-    if (qpc && this.qpcPage() && this.quran.ready()) {
-      const p = this.page();
-      const lines = this.layout()?.lines?.(p);
-      if (lines) return madinahQpcRows(lines, qpc.pages[p - 1] ?? [], (index) => this.quran.ayahAt(index));
-    }
-    const lines = this.layout()?.lines?.(this.page());
-    return this.quran.ready() && lines ? madinahRows(lines, (index) => this.quran.ayahAt(index), this.tajweed()) : [];
+  readonly qpcBasmala = QPC_BASMALA;
+  /** The printed page keeps its own size: a larger text size shows the flowing text instead. */
+  readonly printWanted = computed(() => this.madinahPlain() && this.madinahView() === 'print' && this.quranScale() <= 1);
+  private readonly qcf = signal<MadinahQcfData | null>(null);
+  /** The font of the printed page shown, once loaded. */
+  private readonly qcfFont = signal<{ page: number; family: string } | null>(null);
+  /** Printed pages whose font could not be downloaded (offline the first time): they show the flowing text. */
+  private readonly qcfFailed = signal<ReadonlySet<number>>(new Set());
+  private printOfflineToast = false;
+  readonly printFamily = computed(() => this.qcfFont()?.family ?? '');
+  /** The basmala as page 1 prints it (in page 1's font), once that font has loaded; until then the KFGQPC text. */
+  readonly printBasmala = signal<string[] | null>(null);
+  readonly basmalaFamily = qcfFamily(1);
+  /** The surah-name font («سورة …» in the print's calligraphy), once loaded; until then the banner's own lettering. */
+  readonly surahNamesFamily = signal('');
+  readonly surahGlyph = surahGlyph;
+  readonly printRows = computed<PrintRow[] | null>(() => {
+    if (!this.printWanted() || !this.quran.ready()) return null;
+    const data = this.qcf();
+    const p = this.page();
+    if (!data || this.qcfFont()?.page !== p) return null;
+    return (data.pages[p - 1] ?? []).map((line): PrintRow => {
+      if (line[0] === 's') return { kind: 'title', sura: line[1] as number };
+      if (line[0] === 'b') return { kind: 'basmala' };
+      return {
+        kind: 'text',
+        words: (line as QcfRun[]).flatMap(([index, glyphs]) => {
+          const ayah = this.quran.ayahAt(index);
+          return glyphs.map((glyph) => ({ ayah, glyph }));
+        }),
+      };
+    });
   });
+  /** Waiting for the printed page's font: a spinner, rather than the flowing text for a moment. */
+  readonly printLoading = computed(() => this.printWanted() && !this.printRows() && !this.qcfFailed().has(this.page()));
 
   readonly blocks = computed<PageBlock[]>(() => {
     const layout = this.layout();
     if (!this.quran.ready() || !layout) return [];
+    // The plain Madinah pages show the King Fahd Complex's text, which its font was drawn for.
+    const qpc = this.madinahPlain() ? this.qpcTexts() : null;
     return layout.pieces(this.page()).map(({ index, from, to }) => {
       const ayah = this.quran.ayahAt(index);
       const split = splitBasmala(ayah, ayah.text);
       const s = this.quran.sura(ayah.sura);
       const whole = from === 0 && to === undefined;
-      const text = whole ? split.text : ayahWords(split.text).slice(from, to).join(' ');
+      const text = (whole && qpc?.[index]) || (whole ? split.text : ayahWords(split.text).slice(from, to).join(' '));
       const tj = whole ? this.tajweed() : null;
       return {
         suraHeader: ayah.aya === 1 && from === 0 ? { sura: s.index, name: s.name, ayas: s.ayas, type: s.type } : undefined,
         basmala: split.basmala && from === 0,
-        basmalaText: split.basmalaText,
+        basmalaText: qpc ? QPC_BASMALA : split.basmalaText,
         ayah,
         text,
         num: to === undefined ? String(ayah.aya) : '',
@@ -228,6 +262,12 @@ export class MushafPage {
   private readTimer?: ReturnType<typeof setTimeout>;
 
   constructor() {
+    // The printed page: its font, downloaded once per page (and the pages either side, so turning does not wait).
+    effect(() => {
+      if (!this.printWanted()) return;
+      const p = this.page();
+      untracked(() => void this.loadPrintPage(p));
+    });
     // Follow the recitation onto the next page.
     effect(() => {
       const cur = this.recitation.current();
@@ -244,9 +284,9 @@ export class MushafPage {
   async ionViewWillEnter(): Promise<void> {
     await Promise.all([this.quran.load(), this.marks.load(), this.khatmah.load(), this.recitation.loadPrefs(), this.loadView(), this.hifz.load(), this.editions.load()]);
     this.tajweed.set(this.edition() === 'tajweed' ? await this.editions.tajweedText() : null);
-    if (this.edition() === 'madinah' && !this.qpc()) {
-      // Without it (it ships with the app, so only if it cannot be read) the pages show the Tanzil text instead.
-      this.qpc.set(await this.editions.madinahQpc().catch(() => null));
+    if (this.edition() === 'madinah' && !this.qpcTexts()) {
+      // It ships with the app; if it cannot be read, the pages show the Tanzil text instead.
+      this.qpcTexts.set(await this.editions.madinahQpcTexts().catch(() => null));
     }
     this.layout.set(await this.loadLayout());
     const sura = Number(this.sura());
@@ -373,7 +413,6 @@ export class MushafPage {
         /* offline before the first load: the Madinah pages */
       }
     }
-    if (this.edition() === 'madinah' || this.edition() === 'tajweed') return this.editions.madinahLayout();
     return {
       id: 'madinah',
       pages: TOTAL_PAGES,
@@ -392,8 +431,6 @@ export class MushafPage {
     this.page.set(p);
     this.selected.set(null);
     this.host.nativeElement.querySelector('ion-content')?.scrollToTop(0);
-    const lines = this.host.nativeElement.querySelector('.madinah-lines');
-    if (lines) lines.scrollTop = 0;
     // Saved places (last read, khatmah) count Madinah pages, the same whichever mushaf is read.
     const pieces = this.layout()?.pieces(p) ?? [];
     const first = this.quran.ready() && pieces.length ? this.quran.ayahAt(pieces.find((x) => x.from === 0)?.index ?? pieces[0].index) : undefined;
@@ -544,15 +581,6 @@ export class MushafPage {
   }
 
   private scrollToAyah(a: AyahRef): void {
-    const lines = this.host.nativeElement.querySelector<HTMLElement>('.madinah-lines');
-    if (lines) {
-      // A fitted page is already fully visible. Never scroll its parent/header out of position.
-      if (lines.classList.contains('wrap-lines')) {
-        const word = lines.querySelector<HTMLElement>(`[data-ayah="${this.key(a)}"]`);
-        if (word) lines.scrollTo({ top: lines.scrollTop + word.getBoundingClientRect().top - lines.getBoundingClientRect().top - lines.clientHeight / 2, behavior: 'smooth' });
-      }
-      return;
-    }
     this.host.nativeElement.querySelector(`[data-ayah="${this.key(a)}"]`)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
   }
 
@@ -844,9 +872,10 @@ export class MushafPage {
       return;
     }
     try {
-      const v = JSON.parse(value) as { theme?: MushafTheme; scale?: number };
+      const v = JSON.parse(value) as { theme?: MushafTheme; scale?: number; view?: string };
       if (v.theme) this.theme.set(v.theme);
       if (v.scale) this.quranScale.set(v.scale);
+      if (v.view === 'print') this.madinahView.set('print');
     } catch {
       /* defaults */
     }
@@ -869,8 +898,36 @@ export class MushafPage {
     await this.saveView();
   }
 
+  /** «طريقة العرض»: flowing text or the printed page (the Madinah mushaf). */
+  async setMadinahView(value: unknown): Promise<void> {
+    if (value !== 'flow' && value !== 'print') return;
+    this.madinahView.set(value);
+    await this.saveView();
+  }
+
+  private async loadPrintPage(p: number): Promise<void> {
+    try {
+      const data = this.qcf() ?? (await this.editions.madinahQcf());
+      this.qcf.set(data);
+      const family = await this.editions.qcfFont(p, data.font);
+      if (this.qcfFailed().has(p)) this.qcfFailed.update((s) => new Set([...s].filter((x) => x !== p)));
+      if (this.page() === p) this.qcfFont.set({ page: p, family });
+      for (const n of [p + 1, p - 1]) if (n >= 1 && n <= TOTAL_PAGES) void this.editions.qcfFont(n, data.font).catch(() => {});
+      if (!this.printBasmala()) {
+        void this.editions.qcfFont(1, data.font).then(() => this.printBasmala.set(qcfBasmala(data))).catch(() => {});
+      }
+      if (!this.surahNamesFamily()) void this.editions.qcfSurahNames().then((f) => this.surahNamesFamily.set(f)).catch(() => {});
+    } catch {
+      this.qcfFailed.update((s) => new Set(s).add(p));
+      if (this.page() === p && !this.printOfflineToast) {
+        this.printOfflineToast = true;
+        void this.toast('mushaf.printOffline');
+      }
+    }
+  }
+
   private saveView(): Promise<void> {
-    return Preferences.set({ key: VIEW_PREFS, value: JSON.stringify({ theme: this.theme(), scale: this.quranScale() }) });
+    return Preferences.set({ key: VIEW_PREFS, value: JSON.stringify({ theme: this.theme(), scale: this.quranScale(), view: this.madinahView() }) });
   }
 
   reciterName(id: string): string {

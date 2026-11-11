@@ -69,7 +69,7 @@ const capture: Record<Shot, (page: Page, lang: string) => Promise<void>> = {
   async mushaf(page, lang) {
     await setup(page, lang);
     await page.goto('/mushaf/50');
-    await expect(page.locator('.madinah-lines.qpc .mushaf-word').first()).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('[data-ayah]').first()).toBeVisible({ timeout: 30_000 });
     await page.waitForTimeout(1500);
     await page.locator('.mushaf-word[data-ayah="3:2"]').first().click();
     await shoot(page, lang, 'mushaf');
@@ -111,7 +111,7 @@ const capture: Record<Shot, (page: Page, lang: string) => Promise<void>> = {
   async tafsir(page, lang) {
     await setup(page, lang);
     await page.goto('/mushaf/42');
-    await expect(page.locator('.madinah-lines.qpc .mushaf-word').first()).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('[data-ayah]').first()).toBeVisible({ timeout: 30_000 });
     await page.waitForTimeout(1200);
     await page.locator('.mushaf-word[data-ayah="2:255"]').first().click();
     await page.locator('button:has(ion-icon[name="book-outline"])').first().click();

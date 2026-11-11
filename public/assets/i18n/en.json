@@ -592,7 +592,12 @@
     "reciterHint": "{{n}} reciters, ayah by ayah, with the recited ayah highlighted",
     "moreReciters": "More reciters (whole surahs) and radio",
     "changeReciter": "Change reciter",
-    "wordByWord": "Word by word"
+    "wordByWord": "Word by word",
+    "viewMode": "Layout",
+    "viewFlow": "Flowing text",
+    "viewPrint": "Printed page",
+    "printZoomHint": "The printed page keeps its own size; a larger text size shows the flowing text.",
+    "printOffline": "This printed page needs the internet the first time it opens, so the flowing text is shown."
   },
   "quran": {
     "title": "Quran",

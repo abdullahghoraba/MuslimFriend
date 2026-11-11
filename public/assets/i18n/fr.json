@@ -592,7 +592,12 @@
     "reciterHint": "{{n}} récitateurs, verset par verset, le verset récité en surbrillance",
     "moreReciters": "Plus de récitateurs (sourates complètes) et radio",
     "changeReciter": "Changer de récitateur",
-    "wordByWord": "Mot à mot"
+    "wordByWord": "Mot à mot",
+    "viewMode": "Affichage",
+    "viewFlow": "Texte continu",
+    "viewPrint": "Page imprimée",
+    "printZoomHint": "La page imprimée garde sa taille ; un texte plus grand s’affiche en texte continu.",
+    "printOffline": "Cette page imprimée a besoin d’Internet la première fois ; le texte continu est affiché."
   },
   "quran": {
     "title": "Coran",

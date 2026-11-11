@@ -592,7 +592,12 @@
     "reciterHint": "{{n}} recitadores, aleya por aleya, con la aleya recitada resaltada",
     "moreReciters": "Más recitadores (suras completas) y radio",
     "changeReciter": "Cambiar recitador",
-    "wordByWord": "Palabra por palabra"
+    "wordByWord": "Palabra por palabra",
+    "viewMode": "Vista",
+    "viewFlow": "Texto continuo",
+    "viewPrint": "Página impresa",
+    "printZoomHint": "La página impresa conserva su tamaño; con un texto más grande se muestra el texto continuo.",
+    "printOffline": "Esta página impresa necesita internet la primera vez; se muestra el texto continuo."
   },
   "quran": {
     "title": "Corán",

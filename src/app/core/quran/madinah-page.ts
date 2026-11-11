@@ -169,3 +169,46 @@ export function drawOut(word: string, count: number): string {
   for (const at of [...plan.keys()].sort((a, b) => b - a)) out = out.slice(0, at) + TATWEEL.repeat(plan.get(at)!) + out.slice(at);
   return out;
 }
+
+// ---- The flowing Madinah text (the default view) -------------------------------------------------------------------
+
+/**
+ * Each ayah's text in the King Fahd Complex's Hafs text (QPC), by global ayah index, joined from the printed lines:
+ * the text its font was drawn for, without the ayah number (the font draws [ayahMark] in its ornament).
+ */
+export function qpcAyahTexts(lines: { pages: MadinahLine[][] }, qpc: MadinahQpcData): string[] {
+  const texts: string[][] = [];
+  lines.pages.forEach((page, p) =>
+    page.forEach((line, row) => {
+      if (line[0] === 's' || line[0] === 'b') return;
+      const runs = qpc.pages[p]?.[row] as string[] | undefined;
+      (line as MadinahRun[]).forEach(([index], k) => {
+        const words = runs?.[k]?.trim();
+        if (words) (texts[index] ??= []).push(words);
+      });
+    }),
+  );
+  return Array.from({ length: texts.length }, (_, i) => (texts[i] ?? []).join(' '));
+}
+
+// ---- The printed page (QCF v2 page fonts) ---------------------------------------------------------------------------
+
+/** Words of one ayah on one printed line, as glyphs of the page's font; end = 1 when they end with the ayah's number. */
+export type QcfRun = [index: number, glyphs: string[], end: 0 | 1];
+export type QcfLine = ['s', number] | ['b'] | QcfRun[];
+/** madinah-qcf.json (scripts/madinah-qcf/build.mjs). */
+export interface MadinahQcfData { source: unknown; font: string; pages: QcfLine[][] }
+
+/** The font family of a page of the printed Madinah mushaf (one font per page). */
+export const qcfFamily = (page: number) => `qcf-p${page}`;
+
+/** The surah-name font of the same set: draws «سورة …» in the print's calligraphy from the sura's number ("003"). */
+export const QCF_SURAH_NAMES_URL = 'https://static.qurancdn.com/fonts/quran/surah-names/v2/sura_names.woff2';
+export const QCF_SURAH_NAMES_FAMILY = 'qcf-surah-names';
+export const surahGlyph = (sura: number) => String(sura).padStart(3, '0');
+
+/** The basmala as the print writes it: al-Fatihah's first ayah on page 1 without its number, in page 1's font. */
+export function qcfBasmala(data: MadinahQcfData): string[] {
+  const line = data.pages[0]?.[1] as QcfRun[] | undefined;
+  return line?.[0]?.[1].slice(0, -1) ?? [];
+}

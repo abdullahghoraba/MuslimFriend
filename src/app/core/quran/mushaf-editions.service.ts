@@ -6,7 +6,7 @@ import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { Preferences } from '@capacitor/preferences';
 import { AyahRef } from './quran-utils';
 import { MadinahLinesData, MushafLayout, madinahLayout, shamarlyLayout } from './mushaf-layout';
-import { MadinahQpcData } from './madinah-page';
+import { MadinahQcfData, MadinahQpcData, QCF_SURAH_NAMES_FAMILY, QCF_SURAH_NAMES_URL, qcfFamily, qpcAyahTexts } from './madinah-page';
 
 /**
  * Mushaf editions:
@@ -130,6 +130,10 @@ export class MushafEditionsService {
   private shamarlyPages_?: Promise<MushafLayout>;
   private madinahPages?: Promise<MushafLayout>;
   private madinahQpcPages?: Promise<MadinahQpcData>;
+  private qpcTexts?: Promise<string[]>;
+  private madinahQcfPages?: Promise<MadinahQcfData>;
+  /** Fonts of the printed pages (and their surah names), by family, once requested. */
+  private readonly qcfFonts = new Map<string, Promise<string>>();
   private shamarlyBase?: Promise<string>;
   /** Shamarly pages saved on the device. */
   private shamarlyPages = new Set<number>();
@@ -316,6 +320,77 @@ export class MushafEditionsService {
       throw error;
     });
     return this.madinahQpcPages;
+  }
+
+  /** Each ayah's text in the King Fahd Complex's Hafs text (by global index), for the flowing Madinah pages. */
+  madinahQpcTexts(): Promise<string[]> {
+    this.qpcTexts ??= Promise.all([
+      firstValueFrom(this.http.get<MadinahLinesData>('assets/quran/madinah-lines.json')),
+      this.madinahQpc(),
+    ])
+      .then(([lines, qpc]) => qpcAyahTexts(lines, qpc))
+      .catch((error: unknown) => {
+        this.qpcTexts = undefined;
+        throw error;
+      });
+    return this.qpcTexts;
+  }
+
+  /** The printed Madinah pages as glyphs of the King Fahd Complex's page fonts («صفحة كالمطبوع»). */
+  madinahQcf(): Promise<MadinahQcfData> {
+    this.madinahQcfPages ??= firstValueFrom(this.http.get<MadinahQcfData>('assets/quran/madinah-qcf.json')).catch((error: unknown) => {
+      this.madinahQcfPages = undefined;
+      throw error;
+    });
+    return this.madinahQcfPages;
+  }
+
+  /**
+   * Registers the font of printed page [page] (once) and returns its CSS family. Downloaded the first time (about
+   * 120 KB) and kept on the device, so a page that was opened once opens again offline.
+   */
+  qcfFont(page: number, url: string): Promise<string> {
+    return this.savedFont(qcfFamily(page), url.replace('{page}', String(page)), `${DIR}/qcf/p${page}.woff2`);
+  }
+
+  /** The font that writes «سورة …» in the print's calligraphy (about 210 KB, kept like the page fonts). */
+  qcfSurahNames(): Promise<string> {
+    return this.savedFont(QCF_SURAH_NAMES_FAMILY, QCF_SURAH_NAMES_URL, `${DIR}/qcf/surah-names.woff2`);
+  }
+
+  private savedFont(family: string, url: string, path: string): Promise<string> {
+    let font = this.qcfFonts.get(family);
+    if (!font) {
+      font = this.loadSavedFont(family, url, path).catch((error: unknown) => {
+        this.qcfFonts.delete(family);
+        throw error;
+      });
+      this.qcfFonts.set(family, font);
+    }
+    return font;
+  }
+
+  private async loadSavedFont(family: string, url: string, path: string): Promise<string> {
+    const native = Capacitor.isNativePlatform();
+    let bytes: ArrayBuffer | null = null;
+    if (native) {
+      try {
+        const { data } = await Filesystem.readFile({ path, directory: Directory.Data });
+        bytes = typeof data === 'string' ? fromBase64(data) : await data.arrayBuffer();
+      } catch {
+        /* not saved yet */
+      }
+    }
+    if (!bytes) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(String(res.status));
+      bytes = await res.arrayBuffer();
+      if (native) await Filesystem.writeFile({ path, data: toBase64(bytes), directory: Directory.Data, recursive: true }).catch(() => {});
+    }
+    const face = new FontFace(family, bytes);
+    await face.load();
+    document.fonts.add(face);
+    return family;
   }
 
   shamarlyMap(): Promise<ShamarlyMap> {

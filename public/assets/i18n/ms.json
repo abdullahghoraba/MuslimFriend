@@ -592,7 +592,12 @@
     "reciterHint": "{{n}} qari, ayat demi ayat, ayat yang dibaca diserlahkan",
     "moreReciters": "Lebih ramai qari (surah penuh) dan radio",
     "changeReciter": "Tukar qari",
-    "wordByWord": "Perkataan demi perkataan"
+    "wordByWord": "Perkataan demi perkataan",
+    "viewMode": "Paparan",
+    "viewFlow": "Teks berterusan",
+    "viewPrint": "Halaman bercetak",
+    "printZoomHint": "Halaman bercetak kekal pada saiznya; saiz teks lebih besar memaparkan teks berterusan.",
+    "printOffline": "Halaman bercetak ini memerlukan internet kali pertama dibuka, jadi teks berterusan dipaparkan."
   },
   "quran": {
     "title": "Al-Quran",

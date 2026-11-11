@@ -3,7 +3,9 @@ import texts from '../../../../public/assets/quran/text.json';
 import metaJson from '../../../../public/assets/quran/meta.json';
 import { MadinahLinesData, MadinahRun, ayahWords, madinahLayout } from './mushaf-layout';
 import { QuranMeta, globalIndex, refAt, splitBasmala } from './quran-utils';
-import { madinahRows, sliceTajweed } from './madinah-page';
+import qpcJson from '../../../../public/assets/quran/madinah-qpc.json';
+import qcfJson from '../../../../public/assets/quran/madinah-qcf.json';
+import { MadinahQcfData, MadinahQpcData, QcfRun, madinahRows, qpcAyahTexts, sliceTajweed } from './madinah-page';
 import { alignTajweed } from './tajweed';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
@@ -107,5 +109,41 @@ describe('Madinah printed line layout', () => {
     const result = await first;
     expect(await service.madinahLayout()).toBe(result);
     http.verify();
+  });
+  it('gives every ayah its King Fahd Complex text for the flowing Madinah pages', () => {
+    const qpc = qpcAyahTexts(linesJson as unknown as MadinahLinesData, qpcJson as unknown as MadinahQpcData);
+    expect(qpc.length).toBe(6236);
+    expect(qpc.every((t) => t.trim().length > 0)).toBe(true);
+    // al-Fatihah 1 is the basmala (compared normalised: the data writes shadda before fatha)
+    expect(qpc[0].normalize('NFC')).toBe('بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ'.normalize('NFC'));
+    expect(qpc[7].startsWith('الٓمٓ')).toBe(true); // al-Baqarah 1, without the basmala before it
+    // The words are the Tanzil ayah's words (the same count), only in the Complex's spelling.
+    const meta = metaJson as unknown as QuranMeta;
+    for (const index of [0, 7, 293, 2000, 6235]) {
+      const { sura, aya } = refAt(meta, index);
+      const tanzil = ayahWords(splitBasmala({ sura, aya }, (texts as string[])[index]).text);
+      expect(ayahWords(qpc[index]).length, `${sura}:${aya}`).toBe(tanzil.length);
+    }
+  });
+
+  it('has every word of the 604 printed pages for «صفحة كالمطبوع», each ayah once with its number', () => {
+    const qcf = qcfJson as unknown as MadinahQcfData;
+    expect(qcf.pages.length).toBe(604);
+    const ends = new Set<number>();
+    let last = -1;
+    qcf.pages.forEach((page, p) => {
+      expect(page.length).toBe(p < 2 ? 8 : 15);
+      for (const line of page) {
+        if (line[0] === 's' || line[0] === 'b') continue;
+        for (const [index, glyphs, end] of line as QcfRun[]) {
+          // In reading order, never skipping an ayah.
+          expect(index === last || index === last + 1, `page ${p + 1}: ${last} then ${index}`).toBe(true);
+          last = index;
+          expect(glyphs.length).toBeGreaterThan(0);
+          if (end) ends.add(index);
+        }
+      }
+    });
+    expect(ends.size).toBe(6236);
   });
 });

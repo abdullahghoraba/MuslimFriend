@@ -48,13 +48,23 @@
           <strong>{{ editionName() }}</strong>
           <ion-icon name="chevron-down" aria-hidden="true" />
         </button>
+        @if (madinahPlain()) {
+          <ion-segment class="view-mode" [value]="madinahView()" (ionChange)="setMadinahView($event.detail.value)"
+                       [attr.aria-label]="'mushaf.viewMode' | translate">
+            <ion-segment-button value="flow"><ion-label>{{ 'mushaf.viewFlow' | translate }}</ion-label></ion-segment-button>
+            <ion-segment-button value="print"><ion-label>{{ 'mushaf.viewPrint' | translate }}</ion-label></ion-segment-button>
+          </ion-segment>
+          @if (madinahView() === 'print' && quranScale() > 1) {
+            <p class="view-hint">{{ 'mushaf.printZoomHint' | translate }}</p>
+          }
+        }
         @if (tajweed()) {
           <div class="tj-legend" lang="ar" dir="rtl">
             @for (r of tajweedLegend; track r.rule) { <span [class]="'tj-' + r.rule">● {{ r.ar }}</span> }
           </div>
         }
         <button type="button" class="reciter-pick" (click)="pickReciter()">
-          <app-reciter-avatar [reciterId]="recitation.reciter().id" [nameAr]="recitation.reciter().nameAr" [nameEn]="recitation.reciter().nameEn" [language]="lang()" /><span>{{ 'mushaf.reciter' | translate }}</span>
+          <span>{{ 'mushaf.reciter' | translate }}</span>
           <strong>{{ reciterName(recitation.prefs().reciterId) }}</strong>
           <ion-icon name="chevron-down" aria-hidden="true" />
         </button>
@@ -78,82 +88,67 @@
   }
 </ion-header>
 
-<ion-content [class]="'mushaf theme-' + theme()" [scrollY]="!lined()" (click)="rangeMode() ? null : selected.set(null)">
+<ion-content [class]="'mushaf theme-' + theme()" (click)="rangeMode() ? null : selected.set(null)">
   @if (!quran.ready()) {
     <div class="loading"><ion-spinner /></div>
   } @else {
-    <div class="page-surface" [class.lined-page]="lined()" [class.slide-next]="slide() === 'next'" [class.slide-prev]="slide() === 'prev'"
+    <div class="page-surface" [class.slide-next]="slide() === 'next'" [class.slide-prev]="slide() === 'prev'"
          [style.--quran-font-scale]="quranScale()">
       @for (bm of pageBookmarks(); track bm.id) {
         <span class="ribbon" [attr.data-color]="bm.color" [attr.aria-label]="bm.name" role="img"></span>
       }
 
+      @if (printRows(); as rows) {
+        <!-- «صفحة كالمطبوع»: the page set in the King Fahd Complex's font for this page, line for line as printed. -->
+        <div class="print-page" [class.opening]="page() <= 2" [style.font-family]="printFamily()" [appQcfFit]="printFamily()"
+             lang="ar" dir="rtl">
+          @for (row of rows; track $index) {
+            @if (row.kind === 'title') {
+              <app-sura-banner class="print-title" [name]="quran.sura(row.sura).name"
+                               [label]="lang() === 'ar' ? 'سورة ' + quran.sura(row.sura).name : 'Surah ' + quran.sura(row.sura).tname"
+                               [calligraphy]="surahNamesFamily()" [glyph]="surahGlyph(row.sura)" />
+            } @else if (row.kind === 'basmala') {
+              @if (printBasmala(); as glyphs) {
+                <!-- As the print writes it: al-Fatihah's first ayah from page 1, in page 1's font. -->
+                <div class="print-line print-basmala-line" [style.font-family]="basmalaFamily" role="img" aria-label="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ">@for (g of glyphs; track $index) {<span>{{ g }}</span>}</div>
+              } @else {
+                <div class="print-basmala" role="img" aria-label="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ">{{ qpcBasmala }}</div>
+              }
+            } @else {
+              <div class="print-line">@for (w of row.words; track $index) {<span class="ayah qcf-word" [attr.data-ayah]="w.ayah.sura + ':' + w.ayah.aya"
+                    [class.selected]="isSelected(w.ayah)" [class.playing]="isPlaying(w.ayah)"
+                    [style.--hl]="highlightColor(w.ayah)" [class.hl]="!!highlightColor(w.ayah)"
+                    [style.--hifz]="hifzColor(w.ayah)" [class.hifz]="!!hifzColor(w.ayah)"
+                    (click)="select(w.ayah, $event)"
+                    (pointerdown)="pressStart(w.ayah, $event)" (pointermove)="pressMove($event)"
+                    (pointerup)="pressEnd()" (pointercancel)="pressEnd()" (contextmenu)="$event.preventDefault()"
+                    aria-hidden="true">{{ w.glyph }}</span>}</div>
+            }
+          }
+          <!-- The glyphs are pictures of words: screen readers get the ayat as text. -->
+          <div class="sr-only">@for (b of blocks(); track b.ayah.index) {<span role="button" tabindex="0" [attr.aria-label]="quran.sura(b.ayah.sura).name + ' ' + b.ayah.aya"
+               (click)="select(b.ayah, $event)" (keydown.enter)="select(b.ayah, $event)">{{ b.text }}</span>}</div>
+        </div>
+      } @else if (printLoading()) {
+        <div class="loading"><ion-spinner /></div>
+      } @else {
       @if (!blocks().length && shamarly()) {
         <div class="cover" lang="ar" dir="rtl">
           <p class="cover-title">مصحف الشمرلي</p>
           <p class="cover-sub">بِرِوَايَةِ حَفْصٍ عَنْ عَاصِمٍ</p>
         </div>
       }
-      @if (lined()) {
-        <div class="quran-text madinah-lines" lang="ar" dir="rtl" [class.opening-page]="page() <= 2" [class.qpc]="qpcPage()"
-             [appMushafLineFit]="quranScale()">
-          @for (line of lines(); track $index) {
-            @switch (line.kind) {
-              @case ('title') {
-                @let h = quran.sura(line.sura);
-                <div class="mushaf-line title-line">
-                  <!-- As in the print: an ornamental band with the sura's name in its cartouche, in Arabic whatever the
-                       app's language. -->
-                  <div class="sura-banner" role="heading" aria-level="2" [attr.aria-label]="lang() === 'ar' ? 'سورة ' + h.name : 'Surah ' + h.tname">
-                    <svg viewBox="0 0 400 44" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
-                      <rect class="band" x="1.5" y="3.5" width="397" height="37" rx="5" />
-                      <rect class="band-inner" x="5.5" y="7.5" width="389" height="29" rx="3" />
-                      <path class="cartouche" d="M108,22 C120,9.5 132,9 146,9 H254 C268,9 280,9.5 292,22 C280,34.5 268,35 254,35 H146 C132,35 120,34.5 108,22 Z" />
-                      @for (x of [52, 348]; track x) {
-                        <circle class="medallion" [attr.cx]="x" cy="22" r="11" />
-                        <circle class="medallion-inner" [attr.cx]="x" cy="22" r="6" />
-                        <circle class="dot" [attr.cx]="x" cy="22" r="1.8" />
-                        <path class="vine" [attr.d]="'M' + (x < 200 ? x + 13 : x - 13) + ',22 H' + (x < 200 ? 104 : 296)" />
-                        <path class="vine" [attr.d]="'M' + (x < 200 ? x - 13 : x + 13) + ',22 H' + (x < 200 ? 10 : 390)" />
-                      }
-                    </svg>
-                    <span class="sura-name" lang="ar">سورة {{ h.name }}</span>
-                  </div>
-                </div>
-              }
-              @case ('basmala') {
-                @if (qpcPage()) {
-                  <!-- The basmala as the print writes it: one calligraphic line (Amiri Quran's ﷽). -->
-                  <div class="mushaf-line basmala-line"><span class="basmala-text basmala-art" role="img" aria-label="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ">&#xFDFD;</span></div>
-                } @else {
-                  <div class="mushaf-line basmala-line"><span class="basmala-text">@if (line.parts; as parts) {@for (p of parts; track $index) {<span [class]="p.rule ? 'tj-' + p.rule : null">{{ p.text }}</span>}} @else {{{ line.text }}}</span></div>
-                }
-              }
-              @case ('text') {
-                <div class="mushaf-line text-line">
-                  @for (w of line.words; track $index) {
-                    <span class="ayah mushaf-word" role="button" tabindex="0" [attr.data-ayah]="w.ayah.sura + ':' + w.ayah.aya"
-                          [class.selected]="isSelected(w.ayah)" [class.playing]="isPlaying(w.ayah)"
-                          [style.--hl]="highlightColor(w.ayah)" [class.hl]="!!highlightColor(w.ayah)"
-                          [style.--hifz]="hifzColor(w.ayah)" [class.hifz]="!!hifzColor(w.ayah)"
-                          (click)="select(w.ayah, $event)" (keydown.enter)="select(w.ayah, $event)" (keydown.space)="$event.preventDefault(); select(w.ayah, $event)"
-                          (pointerdown)="pressStart(w.ayah, $event)" (pointermove)="pressMove($event)"
-                          (pointerup)="pressEnd()" (pointercancel)="pressEnd()" (contextmenu)="$event.preventDefault()"
-                          [attr.aria-label]="quran.sura(w.ayah.sura).name + ' ' + w.ayah.aya">@if (w.parts; as parts) {@for (p of parts; track $index) {<span [class]="p.rule ? 'tj-' + p.rule : null">{{ p.text }}</span>}} @else {{{ w.text }}}@if (w.end) {@if (qpcPage()) {<span class="end qpc-end">&nbsp;{{ ayahMark(w.ayah.aya) }}</span>} @else {<span class="end">&nbsp;﴿{{ ayahNumber(w.ayah.aya) }}﴾</span>}@if (isStarred(w.ayah)) {<span class="mark star" aria-hidden="true">★</span>}@if (hasNote(w.ayah)) {<span class="mark note" aria-hidden="true">✎</span>}}</span>
-                  }
-                </div>
-              }
-            }
-          }
-        </div>
-      } @else {
-      <div class="quran-text page-text" lang="ar" dir="rtl">
+      <div class="quran-text page-text" [class.qpc]="flowQpc()" lang="ar" dir="rtl">
         @for (b of blocks(); track b.ayah.index) {
           @if (b.suraHeader; as h) {
-            <div class="sura-frame" role="heading" aria-level="2">
-              <span class="sura-name">{{ lang() === 'ar' ? 'سورة ' + h.name : 'Surah ' + quran.sura(h.sura).tname }}</span>
-              <span class="sura-info">{{ (h.type === 'Meccan' ? 'quran.meccan' : 'quran.medinan') | translate }} · {{ 'mushaf.ayatCount' | translate: { n: lang() === 'ar' ? ayahNumber(h.ayas) : h.ayas } }}</span>
-            </div>
+            @if (flowQpc()) {
+              <app-sura-banner class="flow-title" [name]="h.name" [label]="lang() === 'ar' ? 'سورة ' + h.name : 'Surah ' + quran.sura(h.sura).tname" />
+            } @else {
+              <div class="sura-frame" role="heading" aria-level="2">
+                <span class="sura-name">{{ lang() === 'ar' ? 'سورة ' + h.name : 'Surah ' + quran.sura(h.sura).tname }}</span>
+                <span class="sura-info">{{ (h.type === 'Meccan' ? 'quran.meccan' : 'quran.medinan') | translate }} · {{ 'mushaf.ayatCount' | translate: { n: lang() === 'ar' ? ayahNumber(h.ayas) : h.ayas } }}</span>
+              </div>
+            }
             @if (b.basmala) {
               <div class="basmala">@if (b.basmalaParts; as bp) {@for (p of bp; track $index) {<span [class]="p.rule ? 'tj-' + p.rule : null">{{ p.text }}</span>}} @else {<ng-container>{{ b.basmalaText }}</ng-container>}</div>
             }
@@ -165,7 +160,7 @@
                 (click)="select(b.ayah, $event)" (keydown.enter)="select(b.ayah, $event)"
                 (pointerdown)="pressStart(b.ayah, $event)" (pointermove)="pressMove($event)"
                 (pointerup)="pressEnd()" (pointercancel)="pressEnd()" (contextmenu)="$event.preventDefault()"
-                [attr.aria-label]="quran.sura(b.ayah.sura).name + ' ' + b.ayah.aya">@if (b.parts; as parts) {@for (p of parts; track $index) {<span [class]="p.rule ? 'tj-' + p.rule : null">{{ p.text }}</span>}} @else {<ng-container>{{ b.text }}</ng-container>}@if (b.num) {<span class="end">&nbsp;﴿{{ b.num }}﴾</span>}@if (isStarred(b.ayah)) {<span class="mark star" aria-hidden="true">★</span>}@if (hasNote(b.ayah)) {<span class="mark note" aria-hidden="true">✎</span>}</span>
+                [attr.aria-label]="quran.sura(b.ayah.sura).name + ' ' + b.ayah.aya">@if (b.parts; as parts) {@for (p of parts; track $index) {<span [class]="p.rule ? 'tj-' + p.rule : null">{{ p.text }}</span>}} @else {<ng-container>{{ b.text }}</ng-container>}@if (b.num) {@if (flowQpc()) {<span class="end qpc-end">&nbsp;{{ ayahMark(b.ayah.aya) }}</span>} @else {<span class="end">&nbsp;﴿{{ b.num }}﴾</span>}}@if (isStarred(b.ayah)) {<span class="mark star" aria-hidden="true">★</span>}@if (hasNote(b.ayah)) {<span class="mark note" aria-hidden="true">✎</span>}</span>
           {{ ' ' }}
         }
       </div>
@@ -226,7 +221,7 @@
         <div class="now">
           <strong>{{ quran.sura(cur.sura).name }} · {{ cur.aya }}</strong>
           <button type="button" class="now-reciter" (click)="pickReciter()" [attr.aria-label]="'mushaf.changeReciter' | translate">
-            <app-reciter-avatar [reciterId]="recitation.reciter().id" [nameAr]="recitation.reciter().nameAr" [nameEn]="recitation.reciter().nameEn" [language]="lang()" /> {{ reciterName(recitation.prefs().reciterId) }} <ion-icon name="chevron-down" aria-hidden="true" />
+            {{ reciterName(recitation.prefs().reciterId) }} <ion-icon name="chevron-down" aria-hidden="true" />
           </button>
         </div>
         <ion-button fill="clear" (click)="recitation.previous()" [attr.aria-label]="'mushaf.prevAyah' | translate">

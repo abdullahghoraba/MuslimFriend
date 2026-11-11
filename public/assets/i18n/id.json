@@ -592,7 +592,12 @@
     "reciterHint": "{{n}} qari, ayat demi ayat, ayat yang dibaca disorot",
     "moreReciters": "Qari lainnya (surah lengkap) dan radio",
     "changeReciter": "Ganti qari",
-    "wordByWord": "Kata per kata"
+    "wordByWord": "Kata per kata",
+    "viewMode": "Tampilan",
+    "viewFlow": "Teks mengalir",
+    "viewPrint": "Halaman cetak",
+    "printZoomHint": "Halaman cetak tetap pada ukurannya; ukuran teks lebih besar menampilkan teks mengalir.",
+    "printOffline": "Halaman cetak ini butuh internet saat pertama dibuka, jadi teks mengalir ditampilkan."
   },
   "quran": {
     "title": "Al-Qur'an",

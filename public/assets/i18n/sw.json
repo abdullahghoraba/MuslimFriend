@@ -592,7 +592,12 @@
     "reciterHint": "Wasomaji {{n}}, aya kwa aya, aya inayosomwa ikiangaziwa",
     "moreReciters": "Wasomaji zaidi (sura kamili) na redio",
     "changeReciter": "Badilisha msomaji",
-    "wordByWord": "Neno kwa neno"
+    "wordByWord": "Neno kwa neno",
+    "viewMode": "Mpangilio",
+    "viewFlow": "Maandishi mfululizo",
+    "viewPrint": "Ukurasa uliochapishwa",
+    "printZoomHint": "Ukurasa uliochapishwa hubaki na ukubwa wake; herufi kubwa zaidi huonyesha maandishi mfululizo.",
+    "printOffline": "Ukurasa huu uliochapishwa unahitaji intaneti mara ya kwanza, hivyo maandishi mfululizo yanaonyeshwa."
   },
   "quran": {
     "title": "Kurani",

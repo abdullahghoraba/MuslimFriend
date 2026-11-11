@@ -592,7 +592,12 @@
     "reciterHint": "{{n}} qori, oyatma-oyat, o'qilayotgan oyat ajratiladi",
     "moreReciters": "Ko'proq qorilar (to'liq suralar) va radio",
     "changeReciter": "Qorini almashtirish",
-    "wordByWord": "So'zma-so'z"
+    "wordByWord": "So'zma-so'z",
+    "viewMode": "Koʻrinish",
+    "viewFlow": "Uzluksiz matn",
+    "viewPrint": "Bosma sahifa",
+    "printZoomHint": "Bosma sahifa oʻz oʻlchamida qoladi; katta shriftda uzluksiz matn koʻrsatiladi.",
+    "printOffline": "Bu bosma sahifa birinchi marta ochilganda internet talab qiladi, shuning uchun uzluksiz matn koʻrsatildi."
   },
   "quran": {
     "title": "Qur'on",

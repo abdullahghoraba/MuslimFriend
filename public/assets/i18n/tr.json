@@ -592,7 +592,12 @@
     "reciterHint": "{{n}} kâri, ayet ayet, okunan ayet vurgulanır",
     "moreReciters": "Daha fazla kâri (tam sureler) ve radyo",
     "changeReciter": "Kâriyi değiştir",
-    "wordByWord": "Kelime kelime"
+    "wordByWord": "Kelime kelime",
+    "viewMode": "Görünüm",
+    "viewFlow": "Akan metin",
+    "viewPrint": "Basılı sayfa",
+    "printZoomHint": "Basılı sayfa kendi boyutunda kalır; büyük yazı boyutunda akan metin gösterilir.",
+    "printOffline": "Bu basılı sayfa ilk açılışta internet gerektirir; akan metin gösteriliyor."
   },
   "quran": {
     "title": "Kuran",

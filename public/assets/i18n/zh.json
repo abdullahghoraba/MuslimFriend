@@ -592,7 +592,12 @@
     "reciterHint": "{{n}} 位诵读者，逐节播放并高亮正在诵读的经文",
     "moreReciters": "更多诵读者（完整章节）和电台",
     "changeReciter": "更换诵读者",
-    "wordByWord": "逐词"
+    "wordByWord": "逐词",
+    "viewMode": "显示方式",
+    "viewFlow": "连续文本",
+    "viewPrint": "印刷页面",
+    "printZoomHint": "印刷页面保持原有大小；放大字体时显示连续文本。",
+    "printOffline": "此印刷页面首次打开需要联网，因此显示连续文本。"
   },
   "quran": {
     "title": "古兰经",
