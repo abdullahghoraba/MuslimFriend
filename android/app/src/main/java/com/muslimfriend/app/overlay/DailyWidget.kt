@@ -1,4 +1,8 @@
+// Kept at the old Muslim Friend package on purpose: home-screen widgets are bound to the provider class name,
+// so moving these classes would delete every widget users already placed. Everything else lives in com.alunsbillah.app.
 package com.muslimfriend.app.overlay
+
+import com.alunsbillah.app.overlay.*
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -8,8 +12,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import com.muslimfriend.app.MainActivity
-import com.muslimfriend.app.R
+import com.alunsbillah.app.MainActivity
+import com.alunsbillah.app.R
 import org.json.JSONArray
 import org.json.JSONObject
 import java.time.LocalDate

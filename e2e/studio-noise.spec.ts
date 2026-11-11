@@ -8,7 +8,7 @@ import ar from '../public/assets/i18n/ar.json';
 // microphone; the enhanced recording must have far less noise between the ayat than the original, relative to the
 // voice (signal-to-noise ratio of the 90th / 10th percentile of 50 ms loudness).
 // STUDIO_WAV: another microphone file (e.g. phone recordings with real room noise).
-const WAV_NOISY = process.env.STUDIO_WAV ?? join(tmpdir(), 'muslim-friend-fatiha-husary-noisy.wav');
+const WAV_NOISY = process.env.STUDIO_WAV ?? join(tmpdir(), 'al-uns-billah-fatiha-husary-noisy.wav');
 const BASE = 'http://localhost:4321';
 
 test.describe.configure({ timeout: 180_000 });

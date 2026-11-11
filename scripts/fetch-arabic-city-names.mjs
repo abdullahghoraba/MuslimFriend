@@ -17,7 +17,7 @@ async function query(ids) {
   for (let attempt = 1; ; attempt++) {
     const res = await fetch('https://query.wikidata.org/sparql', {
       method: 'POST',
-      headers: { 'content-type': 'application/x-www-form-urlencoded', accept: 'application/sparql-results+json', 'user-agent': 'MuslimFriendCityNames/1.0 (https://github.com/abdullahghoraba/MuslimFriend)' },
+      headers: { 'content-type': 'application/x-www-form-urlencoded', accept: 'application/sparql-results+json', 'user-agent': 'AlUnsBillahCityNames/1.0 (https://github.com/abdullahghoraba/MuslimFriend)' },
       body: new URLSearchParams({ query: sparql }),
     });
     if (res.ok) return (await res.json()).results.bindings;

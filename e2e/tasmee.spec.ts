@@ -8,11 +8,11 @@ import ar from '../public/assets/i18n/ar.json';
 // the offline Quran model (downloaded from Hugging Face, 36 MB) must follow it word by word, also with the noise of a
 // room mixed in. Needs the network; slow.
 // Kept outside test-results, which Playwright empties at the start of every run.
-const WAV = join(tmpdir(), 'muslim-friend-fatiha-husary.wav');
+const WAV = join(tmpdir(), 'al-uns-billah-fatiha-husary.wav');
 /** The same recitation with ayah 4 («مالك يوم الدين») left out: a skipped ayah to catch. */
-const WAV_SKIP = join(tmpdir(), 'muslim-friend-fatiha-husary-no4.wav');
+const WAV_SKIP = join(tmpdir(), 'al-uns-billah-fatiha-husary-no4.wav');
 /** The full recitation, quieter, through a phone-like band and with room noise at about 10 dB below the voice. */
-const WAV_NOISY = join(tmpdir(), 'muslim-friend-fatiha-husary-noisy.wav');
+const WAV_NOISY = join(tmpdir(), 'al-uns-billah-fatiha-husary-noisy.wav');
 const BASE = 'http://localhost:4321';
 
 function makeNoisy(src: string, dst: string): void {

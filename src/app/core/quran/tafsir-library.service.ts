@@ -72,7 +72,7 @@ const DISMISSED_KEY = 'dismissedBundledTafsirs';
 
 /**
  * File format for «استيراد تفسير من ملف» (JSON):
- * { "type": "muslim-friend-tafsir", "name": "…", "nameEn": "…", "author": "…", "lang": "ar", "source": "…",
+ * { "type": "al-uns-billah-tafsir" (or the older "muslim-friend-tafsir"), "name": "…", "nameEn": "…", "author": "…", "lang": "ar", "source": "…",
  *   "ayahs": { "1:1": "text", "1:2": "text", … } }
  * A bare { "1:1": "text" | { "text": "…" } } map (e.g. a QUL tafsir JSON) is accepted too. Values that are
  * another verse key ("2:5") or empty mean "explained together with an earlier verse".
@@ -87,6 +87,8 @@ export interface ParsedTafsir {
   filled: number;
 }
 
+const TAFSIR_TYPES = ['al-uns-billah-tafsir', 'muslim-friend-tafsir'];
+
 export function parseTafsirFile(raw: string, ayahCounts: number[], fileName = ''): ParsedTafsir {
   let json: unknown;
   try {
@@ -96,7 +98,7 @@ export function parseTafsirFile(raw: string, ayahCounts: number[], fileName = ''
   }
   if (!json || typeof json !== 'object' || Array.isArray(json)) throw new Error('bad-format');
   const o = json as Record<string, unknown>;
-  const ayahs = (o['type'] === 'muslim-friend-tafsir' ? o['ayahs'] : o) as Record<string, unknown> | undefined;
+  const ayahs = (TAFSIR_TYPES.includes(o['type'] as string) ? o['ayahs'] : o) as Record<string, unknown> | undefined;
   if (!ayahs || typeof ayahs !== 'object') throw new Error('bad-format');
   const suras = ayahCounts.map((n) => Array.from({ length: n }, () => ''));
   let filled = 0;

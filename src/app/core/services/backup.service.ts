@@ -11,7 +11,7 @@ import { SettingsService } from './settings.service';
 
 type Row = Record<string, string | number | null>;
 export interface BackupFile {
-  app: 'muslim-friend' | 'muslim-athkar';
+  app: 'al-uns-billah' | 'muslim-friend' | 'muslim-athkar';
   formatVersion: 1;
   exportedAt: string;
   settings: AppSettings;
@@ -192,8 +192,8 @@ function fields(value: unknown, schema: Record<string, Check>): boolean {
 }
 function validate(value: unknown): asserts value is BackupFile {
   if (!record(value)) throw new BackupError('invalid');
-  // 'muslim-athkar' = backups made before the app was renamed.
-  if (value['app'] !== 'muslim-friend' && value['app'] !== 'muslim-athkar') throw new BackupError('app');
+  // 'muslim-friend' and 'muslim-athkar' = backups made under the app's earlier names.
+  if (!['al-uns-billah', 'muslim-friend', 'muslim-athkar'].includes(value['app'] as string)) throw new BackupError('app');
   if (value['formatVersion'] !== 1) throw new BackupError('version');
   if (
     !fields(value, {
@@ -244,7 +244,7 @@ export class BackupService {
       if (value !== null) extraPreferences[key] = value;
     }
     return {
-      app: 'muslim-friend',
+      app: 'al-uns-billah',
       formatVersion: 1,
       exportedAt: new Date().toISOString(),
       settings: { ...this.settings.settings() },
@@ -358,7 +358,7 @@ export class BackupService {
 
   async exportToFile(): Promise<void> {
     const data = JSON.stringify(await this.buildBackup(), null, 2);
-    const name = 'muslim-friend-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    const name = 'al-uns-billah-backup-' + new Date().toISOString().slice(0, 10) + '.json';
     if (Capacitor.isNativePlatform()) {
       const { uri } = await Filesystem.writeFile({
         path: name,

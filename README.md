@@ -203,7 +203,7 @@ src/app/core/prayer/        adhan wrapper, next prayer, 30-day reminder planner 
 src/app/native/             TypeScript API of the AthkarOverlay and QuranAudio plugins (+ browser stand-in)
 src/app/pages/              home, category (all athkar on one page with counters), tasbih, my-athkar,
                             overlay, reminders, stats, onboarding, settings, privacy
-android/app/src/main/java/com/muslimfriend/app/overlay/
+android/app/src/main/java/com/alunsbillah/app/overlay/
   AthkarOverlayPlugin.kt    Capacitor bridge (permissions, start/stop, pool, counters, reminders, location)
   OverlayService.kt         foreground service (specialUse): screen on/off/unlock receiver + coroutine timer
   OverlayWindow.kt          TYPE_APPLICATION_OVERLAY card (not focusable, not touch-modal), Amiri font, RTL
@@ -211,7 +211,7 @@ android/app/src/main/java/com/muslimfriend/app/overlay/
   ReminderScheduler.kt      next reminder as an inexact alarm (setAndAllowWhileIdle); re-sent on each app start
   Receivers.kt              boot / package-replaced restore, reminder + fallback receivers
   OverlayStore.kt           native storage so the service works without the WebView
-android/app/src/main/java/com/muslimfriend/app/audio/
+android/app/src/main/java/com/alunsbillah/app/audio/
   AudioEngine.kt            Media3 ExoPlayer: queue, repeats, speed, stream retries, radio reconnect, sleep timer
   PlaybackService.kt        MediaSessionService (mediaPlayback): notification, lock screen, headphones, Bluetooth
   QuranAudioPlugin.kt       Capacitor bridge used by Listen and the mushaf on Android (the web build plays in the page)

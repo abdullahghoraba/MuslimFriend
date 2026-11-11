@@ -25,7 +25,7 @@ for (const f of files) {
   const path = resolve(source, f);
   try {
     const head = JSON.parse(readFileSync(path, 'utf8'));
-    if (head.type !== 'muslim-friend-tafsir') continue;
+    if (head.type !== 'al-uns-billah-tafsir' && head.type !== 'muslim-friend-tafsir') continue;
     mkdirSync(target, { recursive: true });
     copyFileSync(path, resolve(target, basename(f)));
     index.push({ file: basename(f), name: head.name ?? basename(f) });

@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "muslim-friend": {
+    "al-uns-billah": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -81,10 +81,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "muslim-friend:build:production"
+              "buildTarget": "al-uns-billah:build:production"
             },
             "development": {
-              "buildTarget": "muslim-friend:build:development"
+              "buildTarget": "al-uns-billah:build:development"
             }
           },
           "defaultConfiguration": "development"

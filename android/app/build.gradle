@@ -8,7 +8,7 @@ def keystoreProps = new Properties()
 if (keystorePropsFile.exists()) keystorePropsFile.withInputStream { keystoreProps.load(it) }
 
 android {
-    namespace = "com.muslimfriend.app"
+    namespace = "com.alunsbillah.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.abdullahghoraba.muslimfriend"
