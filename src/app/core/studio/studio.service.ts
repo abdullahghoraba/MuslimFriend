@@ -88,7 +88,8 @@ export class StudioService {
   begin(kind: 'audio' | 'video', mime: string, rawMime?: string): { id: string; file: string; raw?: string; sink: ChunkSink; rawSink?: ChunkSink } {
     const id = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
     const file = `${DIR}/${id}.${extensionFor(mime)}`;
-    const raw = kind === 'audio' ? `${DIR}/${id}-original.${extensionFor(rawMime || mime)}` : undefined;
+    // The untouched sound, for before/after: asked for (with its type) only for the microphone, never for an imported file.
+    const raw = kind === 'audio' && rawMime ? `${DIR}/${id}-original.${extensionFor(rawMime)}` : undefined;
     const make = (path: string): ChunkSink => {
       if (this.native) return new FileSink(path);
       const sink = new MemorySink();

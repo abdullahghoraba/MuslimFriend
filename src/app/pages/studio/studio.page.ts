@@ -55,6 +55,7 @@ export class StudioPage implements OnDestroy {
   private readonly alerts = inject(AlertController);
   private readonly toasts = inject(ToastController);
   private readonly previewHost = viewChild<ElementRef<HTMLElement>>('preview');
+  private readonly importInput = viewChild<ElementRef<HTMLInputElement>>('importInput');
 
   readonly lang = computed(() => this.settings.settings().language);
   readonly prefs = signal<StudioPrefs>({
@@ -76,7 +77,12 @@ export class StudioPage implements OnDestroy {
 
   readonly session = signal<StudioSession | null>(null);
   readonly opening = signal(false);
-  readonly error = signal<'denied' | 'unsupported' | 'failed' | null>(null);
+  readonly error = signal<'denied' | 'unsupported' | 'failed' | 'unreadable' | null>(null);
+  /** An imported video or recording is open (instead of the camera or microphone). */
+  readonly imported = computed(() => !!this.session()?.imported);
+  /** How far the imported file has been processed, 0..1. */
+  readonly progress = signal(0);
+  readonly total = computed(() => formatTime(this.session()?.mediaDuration ?? 0));
   readonly state = signal<'idle' | 'recording' | 'paused' | 'saving'>('idle');
   readonly elapsed = signal(0);
   readonly level = signal(0);
@@ -246,6 +252,58 @@ export class StudioPage implements OnDestroy {
     }
   }
 
+  /** «استيراد من الهاتف»: choose a video (or, for sound, a recording or a video's sound) from the phone. */
+  pickFile(): void {
+    if (this.state() !== 'idle') return;
+    this.importInput()?.nativeElement.click();
+  }
+
+  /**
+   * Opens the chosen file in place of the camera or microphone. Pressing record then plays it once through the same
+   * sound and picture (noise removal, echo, caption, logo), recording it as it plays.
+   */
+  async onFile(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file || this.state() !== 'idle') return;
+    if (typeof MediaRecorder === 'undefined') {
+      this.error.set('unsupported');
+      return;
+    }
+    await this.closeSession();
+    this.closeReview();
+    this.opening.set(true);
+    this.error.set(null);
+    try {
+      const p = this.prefs();
+      const session = await StudioSession.openFile(
+        file,
+        p.kind,
+        {
+          kind: p.kind, facing: p.facing, denoise: p.denoise, reverb: p.reverb, brand: this.translate.instant('app.name'),
+          voiceDb: p.voiceDb, clarityDb: p.clarityDb, reverbAmount: p.reverbAmount,
+        },
+        () => (this.prefs().captions ? this.caption() : null),
+      );
+      // Played to its end: stopped and saved like the stop button (the last ayah's echo rings out first).
+      session.onEnded = () => void this.stop();
+      this.session.set(session);
+      this.activeDenoise.set(session.chain.denoise);
+      this.mountPreview();
+      this.startTicker();
+    } catch {
+      this.error.set('unreadable');
+    } finally {
+      this.opening.set(false);
+    }
+  }
+
+  /** Leaves the imported file (the studio is back to the camera or microphone). */
+  async cancelImport(): Promise<void> {
+    if (this.state() === 'idle') await this.closeSession();
+  }
+
   async flipCamera(): Promise<void> {
     const s = this.session();
     if (!s || s.kind !== 'video') return;
@@ -258,7 +316,8 @@ export class StudioPage implements OnDestroy {
     const s = this.session();
     if (!s) return;
     this.closeReview();
-    this.pending = this.studio.begin(s.kind, s.mime, s.kind === 'audio' ? s.mime : undefined);
+    // The untouched sound is kept for before/after only for the microphone (an imported file is still on the phone).
+    this.pending = this.studio.begin(s.kind, s.mime, s.kind === 'audio' && !s.imported ? s.mime : undefined);
     s.start(this.pending.sink, this.pending.rawSink);
     this.current.set(this.from());
     this.state.set('recording');
@@ -304,6 +363,8 @@ export class StudioPage implements OnDestroy {
         reverb: p.reverb,
       };
       await this.studio.commit(rec);
+      // An import is done once saved: the studio goes back to the camera or microphone.
+      if (s.imported) await this.closeSession();
       await this.openReview(rec);
     } catch {
       await this.studio.discard([pending.file, pending.raw]);
@@ -423,6 +484,7 @@ export class StudioPage implements OnDestroy {
       if (!s) return;
       this.level.set(s.chain.level());
       this.elapsed.set(s.elapsed());
+      this.progress.set(s.progress());
     }, 100);
   }
 
@@ -435,6 +497,7 @@ export class StudioPage implements OnDestroy {
     this.session.set(null);
     this.previewHost()?.nativeElement.replaceChildren();
     this.level.set(0);
+    this.progress.set(0);
   }
 
   private async loadPrefs(): Promise<void> {

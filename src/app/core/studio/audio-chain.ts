@@ -129,7 +129,8 @@ export class RecitationChain {
   private reverbAmount = 1;
 
   private constructor(private readonly ctx: AudioContext, source: AudioNode) {
-    this.input = new GainNode(ctx, { gain: 1 });
+    // One channel in: a microphone is mono already; a video's stereo sound is mixed down (the noise removal works on one).
+    this.input = new GainNode(ctx, { gain: 1, channelCount: 1, channelCountMode: 'explicit', channelInterpretation: 'speakers' });
     const highpass = new BiquadFilterNode(ctx, { type: 'highpass', frequency: 80, Q: 0.7 });
     // Voice EQ: a little less boom, a little more presence and air, as engineers do for recitation.
     const mud = new BiquadFilterNode(ctx, { type: 'peaking', frequency: 250, Q: 1, gain: -2 });
@@ -288,6 +289,15 @@ export class RecitationChain {
     const wet = this.reverb === 'none' ? 0 : REVERBS[this.reverb].wet * this.reverbAmount;
     this.wet.gain.setTargetAtTime(wet, now, 0.05);
     this.echoWet.gain.setTargetAtTime(this.reverb === 'haram' ? HARAM_ECHO.wet * this.reverbAmount : 0, now, 0.05);
+  }
+
+  /**
+   * Also plays the processed sound on the speaker (an imported file, so the reader hears the result while it is made).
+   * Never for a live microphone: the speaker would feed back into it.
+   */
+  listen(on: boolean): void {
+    if (on) this.master.connect(this.ctx.destination);
+    else this.master.disconnect(this.ctx.destination);
   }
 
   /** Current level 0..1 (RMS of the last few milliseconds), for the meter. */

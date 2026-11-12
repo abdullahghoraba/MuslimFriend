@@ -1439,7 +1439,8 @@
     "errors": {
       "denied": "Yozib olish uchun telefon sozlamalarida mikrofonga (video uchun kameraga) ruxsat bering.",
       "unsupported": "Bu telefon bu yerda yozib ololmaydi.",
-      "failed": "Mikrofon yoki kamerani yoqib bo'lmadi."
+      "failed": "Mikrofon yoki kamerani yoqib bo'lmadi.",
+      "unreadable": "Bu faylni bu yerda ochib bo‘lmadi. Boshqa videoni (MP4) sinab ko‘ring."
     },
     "prevAyah": "Oldingi oyat",
     "nextAyah": "Keyingi oyat",
@@ -1485,7 +1486,13 @@
     "savedGallery": "Galereyaga saqlandi (Movies/Al-Uns Billah).",
     "savedMusic": "Audio fayllarga saqlandi (Music/Al-Uns Billah).",
     "deleteConfirm": "Bu yozuv o'chirilsinmi?",
-    "myRecitation": "Tilovatim"
+    "myRecitation": "Tilovatim",
+    "importVideo": "Telefondan video olib kirish",
+    "importAudio": "Yozuv yoki videoni olib kirish",
+    "importHint": "Effektlar va oyatlarni sozlab, yozib olishni bosing: video ijro etiladi va xuddi shu yerda yozilgandek ishlanadi. Ijro paytida oyatlarni o‘qlar bilan oldinga suring; tugagach o‘zi saqlanadi.",
+    "importCancel": "Olib kirishni bekor qilish",
+    "importStart": "Ishlashni boshlash",
+    "importProgress": "Ishlash jarayoni"
   },
   "tasmee": {
     "title": "Tasmi (o‘qib tekshirtirish)",

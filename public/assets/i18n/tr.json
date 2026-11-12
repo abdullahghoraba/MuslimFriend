@@ -1439,7 +1439,8 @@
     "errors": {
       "denied": "Kayıt için telefon ayarlarından mikrofona (video için kameraya) izin verin.",
       "unsupported": "Bu telefon burada kayıt yapamıyor.",
-      "failed": "Mikrofon veya kamera başlatılamadı."
+      "failed": "Mikrofon veya kamera başlatılamadı.",
+      "unreadable": "Bu dosya burada açılamıyor. Başka bir video deneyin (MP4)."
     },
     "prevAyah": "Önceki ayet",
     "nextAyah": "Sonraki ayet",
@@ -1485,7 +1486,13 @@
     "savedGallery": "Galeriye kaydedildi (Movies/Al-Uns Billah).",
     "savedMusic": "Ses klasörüne kaydedildi (Music/Al-Uns Billah).",
     "deleteConfirm": "Bu kayıt silinsin mi?",
-    "myRecitation": "Tilavetim"
+    "myRecitation": "Tilavetim",
+    "importVideo": "Telefondan video içe aktar",
+    "importAudio": "Kayıt veya video içe aktar",
+    "importHint": "Efektleri ve ayetleri ayarlayıp kayda basın: videonuz oynatılır ve burada kaydedilmiş gibi işlenir. Oynarken ayetleri oklarla ilerletin; bitince kendiliğinden kaydedilir.",
+    "importCancel": "İçe aktarmayı iptal et",
+    "importStart": "İşlemeyi başlat",
+    "importProgress": "İşleme ilerlemesi"
   },
   "tasmee": {
     "title": "Tesmî (okuyup kontrol ettir)",

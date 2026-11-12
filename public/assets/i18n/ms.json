@@ -1439,7 +1439,8 @@
     "errors": {
       "denied": "Benarkan mikrofon (dan kamera untuk video) dalam tetapan telefon untuk merakam.",
       "unsupported": "Telefon ini tidak boleh merakam di sini.",
-      "failed": "Mikrofon atau kamera tidak dapat dimulakan."
+      "failed": "Mikrofon atau kamera tidak dapat dimulakan.",
+      "unreadable": "Fail ini tidak dapat dibuka di sini. Cuba video lain (MP4)."
     },
     "prevAyah": "Ayat sebelumnya",
     "nextAyah": "Ayat seterusnya",
@@ -1485,7 +1486,13 @@
     "savedGallery": "Disimpan ke galeri (Movies/Al-Uns Billah).",
     "savedMusic": "Disimpan ke folder audio (Music/Al-Uns Billah).",
     "deleteConfirm": "Padam rakaman ini?",
-    "myRecitation": "Tilawah saya"
+    "myRecitation": "Tilawah saya",
+    "importVideo": "Import video dari telefon",
+    "importAudio": "Import rakaman atau video",
+    "importHint": "Tetapkan kesan dan ayat, kemudian tekan rakam: video anda dimainkan dan diproses seolah-olah dirakam di sini. Majukan ayat dengan anak panah; ia disimpan sendiri apabila tamat.",
+    "importCancel": "Batalkan import",
+    "importStart": "Mula memproses",
+    "importProgress": "Kemajuan pemprosesan"
   },
   "tasmee": {
     "title": "Tasmi' (bacakan untuk disemak)",

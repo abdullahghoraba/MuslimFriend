@@ -58,12 +58,43 @@ export const VIDEO_H = 1280;
 export const VIDEO_W_HD = 1080;
 export const VIDEO_H_HD = 1920;
 
+/**
+ * Makes sure [media] knows its length: a WebM made by another app's recorder often has none (Infinity) until the
+ * browser has read to its end, which a seek far past the end makes it do.
+ */
+async function knownDuration(media: HTMLMediaElement): Promise<void> {
+  if (Number.isFinite(media.duration)) return;
+  await new Promise<void>((resolve) => {
+    const done = () => {
+      if (!Number.isFinite(media.duration)) return;
+      media.removeEventListener('durationchange', done);
+      resolve();
+    };
+    media.addEventListener('durationchange', done);
+    media.currentTime = 1e101;
+    setTimeout(() => {
+      media.removeEventListener('durationchange', done);
+      resolve();
+    }, 5000);
+  });
+  // Back to the first frame (the preview shows it) before going on.
+  await new Promise<void>((resolve) => {
+    media.addEventListener('seeked', () => resolve(), { once: true });
+    media.currentTime = 0;
+    setTimeout(resolve, 3000);
+  });
+}
+
 /** Bit rate for a frame size: enough for a sharp picture of a face and a room (what phones' own cameras use). */
 export const videoBitrate = (width: number) => (width >= VIDEO_W_HD ? 10_000_000 : 6_000_000);
 
 /**
  * One recording session: the microphone (and camera) with the sound chain, a live preview, and the recorders.
  * Audio sessions also keep the untouched microphone sound so the reader can compare before and after.
+ *
+ * An import session ([openFile]) does the same with a video or recording from the phone instead of the microphone
+ * and camera: the file plays once through the same chain and picture (caption, logo, fades), in real time, and is
+ * recorded as it plays, so it comes out exactly like a recitation recorded in the studio.
  */
 export class StudioSession {
   readonly ctx: AudioContext;
@@ -74,6 +105,11 @@ export class StudioSession {
   rawMime = '';
 
   private camera?: MediaStream;
+  /** The imported file playing (an import session). */
+  private readonly media?: HTMLMediaElement;
+  private mediaUrl = '';
+  /** Called when an imported file has played to its end (the page then stops and saves, like the stop button). */
+  onEnded?: () => void;
   private brand: Brand | null = null;
   private readonly video?: HTMLVideoElement;
   private frame = 0;
@@ -87,22 +123,79 @@ export class StudioSession {
 
   private constructor(
     private readonly options: SessionOptions,
-    private readonly mic: MediaStream,
+    private readonly mic: MediaStream | null,
     ctx: AudioContext,
     chain: RecitationChain,
     private readonly caption: () => Caption | null,
+    media?: HTMLMediaElement,
   ) {
     this.ctx = ctx;
     this.chain = chain;
+    this.media = media;
     this.mime = pickMimeType(options.kind, (t) => MediaRecorder.isTypeSupported(t));
     if (options.kind === 'video') {
       this.canvas = document.createElement('canvas');
       this.canvas.width = VIDEO_W;
       this.canvas.height = VIDEO_H;
-      this.video = document.createElement('video');
-      this.video.muted = true;
-      this.video.playsInline = true;
+      if (media instanceof HTMLVideoElement) this.video = media;
+      else {
+        this.video = document.createElement('video');
+        this.video.muted = true;
+        this.video.playsInline = true;
+      }
     }
+  }
+
+  /**
+   * Opens a video (or recording) from the phone: [kind] is 'video' for a video file, 'audio' for a recording or for
+   * only the sound of a video. Throws when the file cannot be played here.
+   */
+  static async openFile(file: Blob, kind: 'audio' | 'video', options: SessionOptions, caption: () => Caption | null): Promise<StudioSession> {
+    const url = URL.createObjectURL(file);
+    const media = document.createElement(kind === 'video' ? 'video' : 'audio');
+    media.preload = 'auto';
+    if (media instanceof HTMLVideoElement) media.playsInline = true;
+    media.src = url;
+    try {
+      await new Promise<void>((resolve, reject) => {
+        media.addEventListener('loadeddata', () => resolve(), { once: true });
+        media.addEventListener('error', () => reject(new Error('unreadable')), { once: true });
+      });
+      if (media instanceof HTMLVideoElement && !media.videoWidth) throw new Error('unreadable');
+      await knownDuration(media);
+      if (!Number.isFinite(media.duration) || media.duration <= 0) throw new Error('unreadable');
+      const ctx = new AudioContext({ sampleRate: 48000, latencyHint: 'playback' });
+      // The element's sound goes only through the chain (and from it to the speaker, so the reader hears the result).
+      const chain = await RecitationChain.create(ctx, ctx.createMediaElementSource(media), options);
+      chain.listen(true);
+      const session = new StudioSession({ ...options, kind }, null, ctx, chain, caption, media);
+      session.mediaUrl = url;
+      media.addEventListener('ended', () => session.onEnded?.());
+      if (kind === 'video') {
+        session.brand = options.brand ? await loadBrand(options.brand) : null;
+        session.startPicture(false);
+      }
+      return session;
+    } catch (e) {
+      URL.revokeObjectURL(url);
+      throw e;
+    }
+  }
+
+  /** An import session: a file from the phone rather than the microphone. */
+  get imported(): boolean {
+    return !!this.media;
+  }
+
+  /** How far the imported file has played, 0..1 (0 for a live session). */
+  progress(): number {
+    const m = this.media;
+    return m && m.duration ? Math.min(1, m.currentTime / m.duration) : 0;
+  }
+
+  /** The imported file's length in seconds (0 for a live session). */
+  get mediaDuration(): number {
+    return this.media?.duration || 0;
   }
 
   /** Asks for the microphone (and camera); throws the browser's error when the reader refuses. */
@@ -169,7 +262,7 @@ export class StudioSession {
     });
     this.recorders = [main];
     main.ondataavailable = (e) => e.data.size && sink.write(e.data);
-    if (rawSink && this.options.kind === 'audio') {
+    if (rawSink && this.options.kind === 'audio' && this.mic) {
       this.rawMime = pickMimeType('audio', (t) => MediaRecorder.isTypeSupported(t));
       const raw = new MediaRecorder(this.mic, { mimeType: this.rawMime || undefined, audioBitsPerSecond: 128_000 });
       raw.ondataavailable = (e) => e.data.size && rawSink.write(e.data);
@@ -181,6 +274,10 @@ export class StudioSession {
     this.chain.fadeInput(true, 0.12);
     this.fade = { direction: 'in', start: performance.now(), seconds: FADE_IN };
     for (const r of this.recorders) r.start(1000);
+    if (this.media) {
+      this.media.currentTime = 0;
+      void this.media.play();
+    }
     this.startedAt = performance.now();
     this.pausedAt = 0;
     this.pausedTotal = 0;
@@ -194,6 +291,7 @@ export class StudioSession {
     if (this.pauseTimer || !this.recorders.some((r) => r.state === 'recording')) return;
     this.chain.fadeInput(false, 0.06);
     this.pausedAt = performance.now();
+    this.media?.pause();
     this.pauseTimer = setTimeout(() => {
       this.pauseTimer = undefined;
       for (const r of this.recorders) if (r.state === 'recording') r.pause();
@@ -206,6 +304,7 @@ export class StudioSession {
       this.pauseTimer = undefined;
     }
     for (const r of this.recorders) if (r.state === 'paused') r.resume();
+    if (this.media) void this.media.play();
     this.chain.fadeInput(true, 0.12);
     if (this.pausedAt) this.pausedTotal += performance.now() - this.pausedAt;
     this.pausedAt = 0;
@@ -237,6 +336,7 @@ export class StudioSession {
         this.pausedAt = 0;
       }
     }
+    this.media?.pause();
     const seconds = this.elapsed();
     await Promise.all(
       this.recorders.map((r) => new Promise<void>((resolve) => {
@@ -260,8 +360,14 @@ export class StudioSession {
     clearTimeout(this.pauseTimer);
     this.cameraRun++;
     for (const r of this.recorders) if (r.state !== 'inactive') r.stop();
-    this.mic.getTracks().forEach((t) => t.stop());
+    this.mic?.getTracks().forEach((t) => t.stop());
     this.camera?.getTracks().forEach((t) => t.stop());
+    if (this.media) {
+      this.media.pause();
+      this.media.removeAttribute('src');
+      this.media.load();
+      URL.revokeObjectURL(this.mediaUrl);
+    }
     this.chain.dispose();
     void this.ctx.close();
   }
@@ -281,6 +387,12 @@ export class StudioSession {
     const video = this.video!;
     video.srcObject = this.camera;
     await video.play();
+    this.startPicture(this.options.facing === 'user');
+  }
+
+  /** Draws the picture (camera or imported video) with its caption, logo and fades onto the canvas, frame by frame. */
+  private startPicture(mirror: boolean): void {
+    const video = this.video!;
     // 1080p output when the picture has the detail for it; otherwise 720p (no empty upscaling).
     const canvas = this.canvas!;
     const hd = Math.min(video.videoWidth, video.videoHeight) >= 1000;
@@ -297,7 +409,7 @@ export class StudioSession {
     const overlay = new Overlay();
     const draw = () => {
       const t0 = performance.now();
-      drawFrame(g, video, this.options.facing === 'user', overlay.get(canvas.width, canvas.height, this.caption(), this.brand), grade);
+      drawFrame(g, video, mirror, overlay.get(canvas.width, canvas.height, this.caption(), this.brand), grade);
       const f = this.fade;
       if (f) {
         const alpha = fadeAlpha(f.direction, (t0 - f.start) / 1000, f.seconds);
@@ -329,6 +441,17 @@ export class StudioSession {
       };
       loop();
     }
+    // An imported video sends no more frames once it has ended: keep drawing its last frame, so the closing fade to
+    // black (while the last ayah's echo rings out) is in the video, as in a studio recording.
+    this.media?.addEventListener('ended', () => {
+      if (!v.requestVideoFrameCallback) return;
+      const hold = () => {
+        if (mine !== this.cameraRun) return;
+        draw();
+        this.frame = requestAnimationFrame(hold);
+      };
+      hold();
+    });
   }
 
   /** Bumped when the camera restarts, so the previous frame loop stops. */

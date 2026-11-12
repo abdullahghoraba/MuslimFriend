@@ -1439,7 +1439,8 @@
     "errors": {
       "denied": "请在手机设置中允许麦克风（视频还需相机）以进行录制。",
       "unsupported": "此手机无法在此录制。",
-      "failed": "无法启动麦克风或相机。"
+      "failed": "无法启动麦克风或相机。",
+      "unreadable": "此处无法打开该文件。请换一个视频（MP4）。"
     },
     "prevAyah": "上一节",
     "nextAyah": "下一节",
@@ -1485,7 +1486,13 @@
     "savedGallery": "已保存到相册（Movies/Al-Uns Billah）。",
     "savedMusic": "已保存到音频文件（Music/Al-Uns Billah）。",
     "deleteConfirm": "删除此录音？",
-    "myRecitation": "我的诵读"
+    "myRecitation": "我的诵读",
+    "importVideo": "从手机导入视频",
+    "importAudio": "导入录音或视频",
+    "importHint": "设置效果和经文后按录制：视频会播放，并像在这里录制一样处理。播放时用箭头切换经文；结束后自动保存。",
+    "importCancel": "取消导入",
+    "importStart": "开始处理",
+    "importProgress": "处理进度"
   },
   "tasmee": {
     "title": "背诵检查（背给应用听）",

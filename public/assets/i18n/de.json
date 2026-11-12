@@ -1439,7 +1439,8 @@
     "errors": {
       "denied": "Erlaube das Mikrofon (und für Video die Kamera) in den Telefoneinstellungen.",
       "unsupported": "Auf diesem Telefon kann hier nicht aufgenommen werden.",
-      "failed": "Mikrofon oder Kamera konnten nicht gestartet werden."
+      "failed": "Mikrofon oder Kamera konnten nicht gestartet werden.",
+      "unreadable": "Diese Datei lässt sich hier nicht öffnen. Versuchen Sie ein anderes Video (MP4)."
     },
     "prevAyah": "Vorheriger Vers",
     "nextAyah": "Nächster Vers",
@@ -1485,7 +1486,13 @@
     "savedGallery": "In der Galerie gespeichert (Movies/Al-Uns Billah).",
     "savedMusic": "In Audiodateien gespeichert (Music/Al-Uns Billah).",
     "deleteConfirm": "Diese Aufnahme löschen?",
-    "myRecitation": "Meine Rezitation"
+    "myRecitation": "Meine Rezitation",
+    "importVideo": "Video vom Handy importieren",
+    "importAudio": "Aufnahme oder Video importieren",
+    "importHint": "Effekte und Verse einstellen, dann Aufnahme drücken: Ihr Video wird abgespielt und bearbeitet, als hätten Sie es hier aufgenommen. Verse mit den Pfeilen weiterschalten; am Ende wird es gespeichert.",
+    "importCancel": "Import abbrechen",
+    "importStart": "Bearbeitung starten",
+    "importProgress": "Fortschritt der Bearbeitung"
   },
   "tasmee": {
     "title": "Tasmee' (vortragen und prüfen lassen)",

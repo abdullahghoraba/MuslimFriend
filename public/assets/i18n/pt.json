@@ -1439,7 +1439,8 @@
     "errors": {
       "denied": "Permita o microfone (e a câmera para vídeo) nas configurações do telefone para gravar.",
       "unsupported": "Este telefone não pode gravar aqui.",
-      "failed": "Não foi possível iniciar o microfone ou a câmera."
+      "failed": "Não foi possível iniciar o microfone ou a câmera.",
+      "unreadable": "Não foi possível abrir este arquivo aqui. Tente outro vídeo (MP4)."
     },
     "prevAyah": "Versículo anterior",
     "nextAyah": "Próximo versículo",
@@ -1485,7 +1486,13 @@
     "savedGallery": "Salvo na galeria (Movies/Al-Uns Billah).",
     "savedMusic": "Salvo nos arquivos de áudio (Music/Al-Uns Billah).",
     "deleteConfirm": "Excluir esta gravação?",
-    "myRecitation": "Minha recitação"
+    "myRecitation": "Minha recitação",
+    "importVideo": "Importar um vídeo do telefone",
+    "importAudio": "Importar uma gravação ou vídeo",
+    "importHint": "Ajuste os efeitos e os versículos e toque em gravar: seu vídeo é reproduzido e processado como se tivesse sido gravado aqui. Avance os versículos com as setas; ele é salvo ao terminar.",
+    "importCancel": "Cancelar importação",
+    "importStart": "Iniciar processamento",
+    "importProgress": "Progresso do processamento"
   },
   "tasmee": {
     "title": "Tasmee' (recitar para ser corrigido)",

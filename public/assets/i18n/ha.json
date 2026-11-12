@@ -1439,7 +1439,8 @@
     "errors": {
       "denied": "Ba da izinin makirofo (da kyamara don bidiyo) a saitunan waya don yin rikodi.",
       "unsupported": "Wannan waya ba za ta iya rikodi a nan ba.",
-      "failed": "Ba a iya kunna makirofo ko kyamara ba."
+      "failed": "Ba a iya kunna makirofo ko kyamara ba.",
+      "unreadable": "Ba a iya buɗe wannan fayil a nan ba. Gwada wani bidiyo (MP4)."
     },
     "prevAyah": "Ayar da ta gabata",
     "nextAyah": "Aya ta gaba",
@@ -1485,7 +1486,13 @@
     "savedGallery": "An adana a hotuna (Movies/Al-Uns Billah).",
     "savedMusic": "An adana a fayilolin sauti (Music/Al-Uns Billah).",
     "deleteConfirm": "A goge wannan rikodi?",
-    "myRecitation": "Karatuna"
+    "myRecitation": "Karatuna",
+    "importVideo": "Shigo da bidiyo daga waya",
+    "importAudio": "Shigo da rikodi ko bidiyo",
+    "importHint": "Saita tasiri da ayoyi, sa'an nan danna rikodi: bidiyonka zai kunna kuma a shirya shi kamar an yi rikodinsa a nan. Ciyar da ayoyi gaba da kibiyoyi; zai adana kansa idan ya ƙare.",
+    "importCancel": "Soke shigowa",
+    "importStart": "Fara shiryawa",
+    "importProgress": "Ci gaban shiryawa"
   },
   "tasmee": {
     "title": "Tasmi'i (karanta don a gyara)",

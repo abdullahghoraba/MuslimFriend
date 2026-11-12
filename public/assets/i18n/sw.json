@@ -1439,7 +1439,8 @@
     "errors": {
       "denied": "Ruhusu maikrofoni (na kamera kwa video) katika mipangilio ya simu ili kurekodi.",
       "unsupported": "Simu hii haiwezi kurekodi hapa.",
-      "failed": "Maikrofoni au kamera haikuweza kuanza."
+      "failed": "Maikrofoni au kamera haikuweza kuanza.",
+      "unreadable": "Faili hii haiwezi kufunguliwa hapa. Jaribu video nyingine (MP4)."
     },
     "prevAyah": "Aya iliyotangulia",
     "nextAyah": "Aya inayofuata",
@@ -1485,7 +1486,13 @@
     "savedGallery": "Imehifadhiwa kwenye picha (Movies/Al-Uns Billah).",
     "savedMusic": "Imehifadhiwa kwenye faili za sauti (Music/Al-Uns Billah).",
     "deleteConfirm": "Futa rekodi hii?",
-    "myRecitation": "Kisomo changu"
+    "myRecitation": "Kisomo changu",
+    "importVideo": "Leta video kutoka kwenye simu",
+    "importAudio": "Leta rekodi au video",
+    "importHint": "Weka athari na aya, kisha bonyeza rekodi: video yako itachezwa na kuandaliwa kana kwamba umeirekodi hapa. Songesha aya kwa mishale inapocheza; itahifadhiwa yenyewe ikiisha.",
+    "importCancel": "Ghairi kuleta",
+    "importStart": "Anza kuandaa",
+    "importProgress": "Maendeleo ya kuandaa"
   },
   "tasmee": {
     "title": "Tasmi' (somea ili kusahihishwa)",

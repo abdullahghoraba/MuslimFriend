@@ -1439,7 +1439,8 @@
     "errors": {
       "denied": "Allow the microphone (and the camera for video) in the phone settings to record.",
       "unsupported": "This phone cannot record here.",
-      "failed": "The microphone or camera could not be started."
+      "failed": "The microphone or camera could not be started.",
+      "unreadable": "This file can’t be opened here. Try another video (MP4)."
     },
     "prevAyah": "Previous ayah",
     "nextAyah": "Next ayah",
@@ -1485,7 +1486,13 @@
     "savedGallery": "Saved to the gallery (Movies/Al-Uns Billah).",
     "savedMusic": "Saved to your audio files (Music/Al-Uns Billah).",
     "deleteConfirm": "Delete this recording?",
-    "myRecitation": "My recitation"
+    "myRecitation": "My recitation",
+    "importVideo": "Import a video from the phone",
+    "importAudio": "Import a recording or video",
+    "importHint": "Set the effects and ayat, then press record: your video plays and is processed as if you recorded it here. Move the ayat on with the arrows as it plays; it saves itself when it ends.",
+    "importCancel": "Cancel import",
+    "importStart": "Start processing",
+    "importProgress": "Processing progress"
   },
   "tasmee": {
     "title": "Tasmee' (recite to be checked)",

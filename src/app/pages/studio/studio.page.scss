@@ -193,3 +193,30 @@ main { max-width: 760px; margin: auto; padding: 12px 12px 40px; }
 .slider { display: grid; grid-template-columns: minmax(84px, auto) 1fr 64px; align-items: center; gap: 8px; }
 .slider ion-range { padding: 0; --bar-height: 4px; }
 .slider output { font-variant-numeric: tabular-nums; text-align: end; color: var(--app-muted); font-size: .9rem; }
+
+// The two ways in, side by side at the foot of the stage: the camera/microphone, or a file from the phone.
+.starts {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 32px;
+  padding-bottom: 22px;
+  .start { position: static; inset: auto; padding: 0; max-width: 40%; text-align: center; }
+}
+
+// How far an imported file has been processed, just above the level meter.
+.import-progress {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 24px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  span { display: block; height: 100%; background: #fff; transition: width 0.1s linear; }
+}
+
+.import-hint { margin: 8px 16px 0; font-size: 0.85rem; color: var(--ion-color-medium); text-align: center; }

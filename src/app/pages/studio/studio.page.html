@@ -63,12 +63,29 @@
       }
       @if (opening()) { <div class="overlay"><ion-spinner /></div> }
       @if (!session() && !opening()) {
-        <button type="button" class="start" (click)="openSession()">
-          <ion-icon [name]="prefs().kind === 'video' ? 'videocam-outline' : 'mic-outline'" aria-hidden="true" />
-          <span>{{ (prefs().kind === 'video' ? 'studio.openCamera' : 'studio.openMic') | translate }}</span>
-        </button>
+        <div class="starts">
+          <button type="button" class="start" (click)="openSession()">
+            <ion-icon [name]="prefs().kind === 'video' ? 'videocam-outline' : 'mic-outline'" aria-hidden="true" />
+            <span>{{ (prefs().kind === 'video' ? 'studio.openCamera' : 'studio.openMic') | translate }}</span>
+          </button>
+          <!-- A video (or recording) made with the phone's own camera app, given the studio's sound and picture. -->
+          <button type="button" class="start import" (click)="pickFile()">
+            <ion-icon name="folder-open-outline" aria-hidden="true" />
+            <span>{{ (prefs().kind === 'video' ? 'studio.importVideo' : 'studio.importAudio') | translate }}</span>
+          </button>
+        </div>
+      }
+      @if (imported()) {
+        <div class="import-progress" role="progressbar" [attr.aria-label]="'studio.importProgress' | translate"
+             aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="(progress() * 100).toFixed(0)">
+          <span [style.width.%]="progress() * 100"></span>
+        </div>
       }
     </section>
+    <input #importInput type="file" hidden [accept]="prefs().kind === 'video' ? 'video/*' : 'audio/*,video/*'" (change)="onFile($event)" />
+    @if (imported() && state() === 'idle') {
+      <p class="import-hint">{{ 'studio.importHint' | translate }}</p>
+    }
 
     @if (error(); as e) {
       <p class="error" role="alert">{{ 'studio.errors.' + e | translate }}</p>
@@ -80,6 +97,10 @@
         <button type="button" class="round small" (click)="prevAyah()" [attr.aria-label]="'studio.prevAyah' | translate">
           <ion-icon name="chevron-forward" aria-hidden="true" />
         </button>
+      } @else if (imported() && state() === 'idle') {
+        <button type="button" class="round small" (click)="cancelImport()" [attr.aria-label]="'studio.importCancel' | translate">
+          <ion-icon name="close-outline" aria-hidden="true" />
+        </button>
       } @else if (session()?.kind === 'video' && state() === 'idle') {
         <button type="button" class="round small" (click)="flipCamera()" [attr.aria-label]="'studio.flipCamera' | translate">
           <ion-icon name="camera-reverse-outline" aria-hidden="true" />
@@ -89,7 +110,8 @@
       }
 
       @if (state() === 'idle') {
-        <button type="button" class="record" (click)="record()" [disabled]="opening()" [attr.aria-label]="'studio.record' | translate">
+        <button type="button" class="record" (click)="record()" [disabled]="opening()"
+                [attr.aria-label]="(imported() ? 'studio.importStart' : 'studio.record') | translate">
           <span class="dot"></span>
         </button>
       } @else if (state() === 'saving') {
@@ -117,7 +139,7 @@
     </section>
     <p class="timer" [class.rec]="state() === 'recording'" role="timer" aria-live="off">
       @if (state() === 'recording') { <span class="blink" aria-hidden="true">●</span> }
-      {{ state() === 'idle' ? '' : time() }}
+      {{ state() === 'idle' ? '' : time() }}@if (imported() && state() !== 'idle') { / {{ total() }} }
       @if (state() === 'paused') { · {{ 'studio.paused' | translate }} }
     </p>
     @if (sura() && (state() === 'recording' || state() === 'paused')) {

@@ -1439,7 +1439,8 @@
     "errors": {
       "denied": "Autorisez le micro (et la caméra pour la vidéo) dans les réglages du téléphone pour enregistrer.",
       "unsupported": "Ce téléphone ne peut pas enregistrer ici.",
-      "failed": "Impossible de démarrer le micro ou la caméra."
+      "failed": "Impossible de démarrer le micro ou la caméra.",
+      "unreadable": "Impossible d’ouvrir ce fichier ici. Essayez une autre vidéo (MP4)."
     },
     "prevAyah": "Verset précédent",
     "nextAyah": "Verset suivant",
@@ -1485,7 +1486,13 @@
     "savedGallery": "Enregistré dans la galerie (Movies/Al-Uns Billah).",
     "savedMusic": "Enregistré dans les fichiers audio (Music/Al-Uns Billah).",
     "deleteConfirm": "Supprimer cet enregistrement ?",
-    "myRecitation": "Ma récitation"
+    "myRecitation": "Ma récitation",
+    "importVideo": "Importer une vidéo du téléphone",
+    "importAudio": "Importer un enregistrement ou une vidéo",
+    "importHint": "Réglez les effets et les versets, puis appuyez sur enregistrer : votre vidéo est lue et traitée comme si vous l’aviez enregistrée ici. Faites avancer les versets avec les flèches ; elle s’enregistre à la fin.",
+    "importCancel": "Annuler l’import",
+    "importStart": "Lancer le traitement",
+    "importProgress": "Progression du traitement"
   },
   "tasmee": {
     "title": "Tasmee' (réciter pour être corrigé)",
