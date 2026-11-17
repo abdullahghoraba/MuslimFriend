@@ -346,7 +346,7 @@ export class StudioPage implements OnDestroy {
       await pending.sink.close();
       await pending.rawSink?.close();
       const p = this.prefs();
-      const rec: Recording = {
+      let rec: Recording = {
         id: pending.id,
         kind: s.kind,
         created: Date.now(),
@@ -362,6 +362,8 @@ export class StudioPage implements OnDestroy {
         denoise: s.chain.denoise,
         reverb: p.reverb,
       };
+      // A standard file with its length, so the gallery and WhatsApp see the whole recitation (not 3 s, not empty).
+      rec = await this.studio.finalize(rec);
       await this.studio.commit(rec);
       // An import is done once saved: the studio goes back to the camera or microphone.
       if (s.imported) await this.closeSession();
@@ -398,7 +400,12 @@ export class StudioPage implements OnDestroy {
   }
 
   async share(rec: Recording): Promise<void> {
-    await this.studio.share(rec, this.translate.instant('studio.title')).catch(() => undefined);
+    try {
+      await this.studio.share(rec, this.translate.instant('studio.title'));
+    } catch (e) {
+      // Closing the share sheet is not an error.
+      if (!/cancel/i.test(String((e as Error)?.message ?? e))) await this.toast('studio.shareFailed');
+    }
   }
 
   async saveToDevice(rec: Recording): Promise<void> {

@@ -1,9 +1,9 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { Preferences } from '@capacitor/preferences';
 import { Share } from '@capacitor/share';
-import { MediaSaver } from '../../native/media-saver';
+import { MEDIA_SAVER } from '../../native/media-saver';
 import { Denoise, Reverb, extensionFor } from './audio-chain';
 import { ChunkSink } from './studio-session';
 
@@ -27,6 +27,8 @@ export interface Recording {
   to?: number;
   denoise: Denoise;
   reverb: Reverb;
+  /** Rewritten as a standard file with its length (see [StudioService.finalize]); older recordings are on first share. */
+  fixed?: boolean;
 }
 
 const KEY = 'studioRecordings';
@@ -70,6 +72,7 @@ export class StudioService {
   /** Browser only: recordings by path, as blobs. */
   private readonly memory = new Map<string, Blob>();
   private readonly native = Capacitor.isNativePlatform();
+  private readonly saver = inject(MEDIA_SAVER);
 
   load(): Promise<void> {
     this.loaded ??= (async () => {
@@ -146,8 +149,36 @@ export class StudioService {
     return Capacitor.convertFileSrc(uri);
   }
 
-  /** The share sheet (WhatsApp, Telegram, Drive, "save to files"...). */
+  /**
+   * On the phone, rewrites a finished recording as a standard file with its length in the header: the WebView's
+   * recorder leaves the length out (a fragmented MP4), and the gallery then shows a few seconds and WhatsApp an empty
+   * video. The recording is returned with [fixed] set (and its exact length); unchanged when the phone cannot.
+   */
+  async finalize(rec: Recording): Promise<Recording> {
+    if (!this.native || rec.fixed) return rec;
+    try {
+      const { uri } = await Filesystem.getUri({ path: rec.file, directory: Directory.Data });
+      const { duration } = await this.saver.finalize({ path: uri });
+      return { ...rec, fixed: true, duration: duration > 0.5 ? duration : rec.duration };
+    } catch {
+      return rec;
+    }
+  }
+
+  /** A recording made before [finalize] existed is fixed (and remembered as fixed) before it leaves the app. */
+  private async ready(rec: Recording): Promise<Recording> {
+    if (!this.native || rec.fixed) return rec;
+    const fixed = await this.finalize(rec);
+    if (fixed.fixed) {
+      this.recordings.update((list) => list.map((r) => (r.id === rec.id ? fixed : r)));
+      await this.persist();
+    }
+    return fixed;
+  }
+
+  /** The share sheet (WhatsApp, Telegram, Drive, "save to files"...). Throws when the phone cannot share the file. */
   async share(rec: Recording, title: string): Promise<void> {
+    rec = await this.ready(rec);
     if (!this.native) {
       const blob = this.memory.get(rec.file);
       if (!blob) return;
@@ -162,6 +193,7 @@ export class StudioService {
 
   /** Copies the recording into the gallery (video) or music (audio). 'unsupported' before Android 10. */
   async saveToDevice(rec: Recording): Promise<'saved' | 'unsupported' | 'failed'> {
+    rec = await this.ready(rec);
     if (!this.native) {
       const blob = this.memory.get(rec.file);
       if (blob) downloadBlob(blob, fileName(rec));
@@ -169,7 +201,7 @@ export class StudioService {
     }
     try {
       const { uri } = await Filesystem.getUri({ path: rec.file, directory: Directory.Data });
-      await MediaSaver.save({ path: uri, name: fileName(rec), mime: rec.mime.split(';')[0] });
+      await this.saver.save({ path: uri, name: fileName(rec), mime: rec.mime.split(';')[0] });
       return 'saved';
     } catch (e) {
       return (e as { code?: string })?.code === 'UNSUPPORTED' ? 'unsupported' : 'failed';

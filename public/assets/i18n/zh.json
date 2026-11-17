@@ -1492,7 +1492,8 @@
     "importHint": "设置效果和经文后按录制：视频会播放，并像在这里录制一样处理。播放时用箭头切换经文；结束后自动保存。",
     "importCancel": "取消导入",
     "importStart": "开始处理",
-    "importProgress": "处理进度"
+    "importProgress": "处理进度",
+    "shareFailed": "无法分享录音，请重试。"
   },
   "tasmee": {
     "title": "背诵检查（背给应用听）",

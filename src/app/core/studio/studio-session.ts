@@ -155,12 +155,25 @@ export class StudioSession {
     const media = document.createElement(kind === 'video' ? 'video' : 'audio');
     media.preload = 'auto';
     if (media instanceof HTMLVideoElement) media.playsInline = true;
+    // In the page (invisible): Android's WebView may not load or decode a video that is not, so it never got ready.
+    media.setAttribute('aria-hidden', 'true');
+    media.style.cssText = 'position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none;z-index:-1';
+    document.body.appendChild(media);
     media.src = url;
+    media.load();
     try {
-      await new Promise<void>((resolve, reject) => {
-        media.addEventListener('loadeddata', () => resolve(), { once: true });
-        media.addEventListener('error', () => reject(new Error('unreadable')), { once: true });
-      });
+      // Its size and length first (a phone may hold back the first picture until it plays), never waiting forever.
+      await untilEvent(media, 'loadedmetadata', 20_000);
+      if (media.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+        const firstFrame = untilEvent(media, 'loadeddata', 8000).catch(() => undefined);
+        // A silent play and pause makes such a phone load the first picture (the preview shows it).
+        media.muted = true;
+        await media.play().catch(() => undefined);
+        media.pause();
+        await firstFrame;
+        media.muted = false;
+        media.currentTime = 0;
+      }
       if (media instanceof HTMLVideoElement && !media.videoWidth) throw new Error('unreadable');
       await knownDuration(media);
       if (!Number.isFinite(media.duration) || media.duration <= 0) throw new Error('unreadable');
@@ -177,6 +190,8 @@ export class StudioSession {
       }
       return session;
     } catch (e) {
+      media.removeAttribute('src');
+      media.remove();
       URL.revokeObjectURL(url);
       throw e;
     }
@@ -366,6 +381,7 @@ export class StudioSession {
       this.media.pause();
       this.media.removeAttribute('src');
       this.media.load();
+      this.media.remove();
       URL.revokeObjectURL(this.mediaUrl);
     }
     this.chain.dispose();
@@ -582,6 +598,24 @@ export function drawCaption(g: CanvasRenderingContext2D, caption: Caption): void
 }
 
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, Math.max(0, ms)));
+
+/** Resolves on [media]'s [event]; rejects on an error, or when it has not come after [ms]. */
+function untilEvent(media: HTMLMediaElement, event: string, ms: number): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    const done = (ok: boolean) => {
+      clearTimeout(timer);
+      media.removeEventListener(event, onEvent);
+      media.removeEventListener('error', onError);
+      if (ok) resolve();
+      else reject(new Error('unreadable'));
+    };
+    const onEvent = () => done(true);
+    const onError = () => done(false);
+    const timer = setTimeout(() => done(false), ms);
+    media.addEventListener(event, onEvent);
+    media.addEventListener('error', onError);
+  });
+}
 
 /** Splits [text] into lines no wider than [max] (by whole words). */
 export function wrapText(measure: (s: string) => number, text: string, max: number): string[] {

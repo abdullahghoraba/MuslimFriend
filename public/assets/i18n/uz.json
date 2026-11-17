@@ -1492,7 +1492,8 @@
     "importHint": "Effektlar va oyatlarni sozlab, yozib olishni bosing: video ijro etiladi va xuddi shu yerda yozilgandek ishlanadi. Ijro paytida oyatlarni o‘qlar bilan oldinga suring; tugagach o‘zi saqlanadi.",
     "importCancel": "Olib kirishni bekor qilish",
     "importStart": "Ishlashni boshlash",
-    "importProgress": "Ishlash jarayoni"
+    "importProgress": "Ishlash jarayoni",
+    "shareFailed": "Yozuvni ulashib bo‘lmadi. Qayta urinib ko‘ring."
   },
   "tasmee": {
     "title": "Tasmi (o‘qib tekshirtirish)",

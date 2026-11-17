@@ -1492,7 +1492,8 @@
     "importHint": "Atur efek dan ayat, lalu tekan rekam: video Anda diputar dan diproses seolah direkam di sini. Majukan ayat dengan panah saat diputar; tersimpan sendiri saat selesai.",
     "importCancel": "Batalkan impor",
     "importStart": "Mulai proses",
-    "importProgress": "Kemajuan proses"
+    "importProgress": "Kemajuan proses",
+    "shareFailed": "Rekaman tidak dapat dibagikan. Coba lagi."
   },
   "tasmee": {
     "title": "Tasmi' (setor hafalan untuk dikoreksi)",

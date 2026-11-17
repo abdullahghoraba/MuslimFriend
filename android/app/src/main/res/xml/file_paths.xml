@@ -2,4 +2,6 @@
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <external-path name="my_images" path="." />
     <cache-path name="my_cache_images" path="." />
+    <!-- The studio's recordings (Directory.Data/studio), so the share sheet can hand them to WhatsApp and others. -->
+    <files-path name="studio" path="studio/" />
 </paths>

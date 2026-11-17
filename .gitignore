@@ -62,3 +62,6 @@ bugs/
 # Per-language raw captures (regenerable)
 store-assets/screenshots/raw/*/
 store-assets/upload/
+
+# Ad images and videos (kept locally, not in the repository)
+store-assets/ads/

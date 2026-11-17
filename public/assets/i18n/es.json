@@ -1492,7 +1492,8 @@
     "importHint": "Ajusta los efectos y las aleyas y pulsa grabar: tu video se reproduce y se procesa como si lo hubieras grabado aquí. Avanza las aleyas con las flechas; se guarda solo al terminar.",
     "importCancel": "Cancelar importación",
     "importStart": "Iniciar procesamiento",
-    "importProgress": "Progreso del procesamiento"
+    "importProgress": "Progreso del procesamiento",
+    "shareFailed": "No se pudo compartir la grabación. Inténtalo de nuevo."
   },
   "tasmee": {
     "title": "Tasmee' (recitar para ser corregido)",

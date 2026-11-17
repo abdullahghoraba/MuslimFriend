@@ -1492,7 +1492,8 @@
     "importHint": "Réglez les effets et les versets, puis appuyez sur enregistrer : votre vidéo est lue et traitée comme si vous l’aviez enregistrée ici. Faites avancer les versets avec les flèches ; elle s’enregistre à la fin.",
     "importCancel": "Annuler l’import",
     "importStart": "Lancer le traitement",
-    "importProgress": "Progression du traitement"
+    "importProgress": "Progression du traitement",
+    "shareFailed": "Impossible de partager l’enregistrement. Réessayez."
   },
   "tasmee": {
     "title": "Tasmee' (réciter pour être corrigé)",

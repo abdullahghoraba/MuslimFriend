@@ -1492,7 +1492,8 @@
     "importHint": "Efektleri ve ayetleri ayarlayıp kayda basın: videonuz oynatılır ve burada kaydedilmiş gibi işlenir. Oynarken ayetleri oklarla ilerletin; bitince kendiliğinden kaydedilir.",
     "importCancel": "İçe aktarmayı iptal et",
     "importStart": "İşlemeyi başlat",
-    "importProgress": "İşleme ilerlemesi"
+    "importProgress": "İşleme ilerlemesi",
+    "shareFailed": "Kayıt paylaşılamadı. Lütfen tekrar deneyin."
   },
   "tasmee": {
     "title": "Tesmî (okuyup kontrol ettir)",

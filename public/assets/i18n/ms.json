@@ -1492,7 +1492,8 @@
     "importHint": "Tetapkan kesan dan ayat, kemudian tekan rakam: video anda dimainkan dan diproses seolah-olah dirakam di sini. Majukan ayat dengan anak panah; ia disimpan sendiri apabila tamat.",
     "importCancel": "Batalkan import",
     "importStart": "Mula memproses",
-    "importProgress": "Kemajuan pemprosesan"
+    "importProgress": "Kemajuan pemprosesan",
+    "shareFailed": "Rakaman tidak dapat dikongsi. Cuba lagi."
   },
   "tasmee": {
     "title": "Tasmi' (bacakan untuk disemak)",

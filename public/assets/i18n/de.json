@@ -1492,7 +1492,8 @@
     "importHint": "Effekte und Verse einstellen, dann Aufnahme drücken: Ihr Video wird abgespielt und bearbeitet, als hätten Sie es hier aufgenommen. Verse mit den Pfeilen weiterschalten; am Ende wird es gespeichert.",
     "importCancel": "Import abbrechen",
     "importStart": "Bearbeitung starten",
-    "importProgress": "Fortschritt der Bearbeitung"
+    "importProgress": "Fortschritt der Bearbeitung",
+    "shareFailed": "Die Aufnahme konnte nicht geteilt werden. Bitte erneut versuchen."
   },
   "tasmee": {
     "title": "Tasmee' (vortragen und prüfen lassen)",

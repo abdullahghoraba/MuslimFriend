@@ -1492,7 +1492,8 @@
     "importHint": "Set the effects and ayat, then press record: your video plays and is processed as if you recorded it here. Move the ayat on with the arrows as it plays; it saves itself when it ends.",
     "importCancel": "Cancel import",
     "importStart": "Start processing",
-    "importProgress": "Processing progress"
+    "importProgress": "Processing progress",
+    "shareFailed": "Couldn’t share the recording. Please try again."
   },
   "tasmee": {
     "title": "Tasmee' (recite to be checked)",

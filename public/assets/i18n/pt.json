@@ -1492,7 +1492,8 @@
     "importHint": "Ajuste os efeitos e os versículos e toque em gravar: seu vídeo é reproduzido e processado como se tivesse sido gravado aqui. Avance os versículos com as setas; ele é salvo ao terminar.",
     "importCancel": "Cancelar importação",
     "importStart": "Iniciar processamento",
-    "importProgress": "Progresso do processamento"
+    "importProgress": "Progresso do processamento",
+    "shareFailed": "Não foi possível compartilhar a gravação. Tente novamente."
   },
   "tasmee": {
     "title": "Tasmee' (recitar para ser corrigido)",

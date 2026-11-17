@@ -1492,7 +1492,8 @@
     "importHint": "Saita tasiri da ayoyi, sa'an nan danna rikodi: bidiyonka zai kunna kuma a shirya shi kamar an yi rikodinsa a nan. Ciyar da ayoyi gaba da kibiyoyi; zai adana kansa idan ya ƙare.",
     "importCancel": "Soke shigowa",
     "importStart": "Fara shiryawa",
-    "importProgress": "Ci gaban shiryawa"
+    "importProgress": "Ci gaban shiryawa",
+    "shareFailed": "Ba a iya raba rikodin ba. Sake gwadawa."
   },
   "tasmee": {
     "title": "Tasmi'i (karanta don a gyara)",

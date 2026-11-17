@@ -1492,7 +1492,8 @@
     "importHint": "Weka athari na aya, kisha bonyeza rekodi: video yako itachezwa na kuandaliwa kana kwamba umeirekodi hapa. Songesha aya kwa mishale inapocheza; itahifadhiwa yenyewe ikiisha.",
     "importCancel": "Ghairi kuleta",
     "importStart": "Anza kuandaa",
-    "importProgress": "Maendeleo ya kuandaa"
+    "importProgress": "Maendeleo ya kuandaa",
+    "shareFailed": "Imeshindikana kushiriki rekodi. Jaribu tena."
   },
   "tasmee": {
     "title": "Tasmi' (somea ili kusahihishwa)",
