@@ -228,10 +228,13 @@ describe('AthkarRepository', () => {
   it('deletes removed bundled items and retains custom items across reseeding', async () => {
     await repository.seed(dataset());
     const custom = await repository.addCustom(customInput);
+    // Today's count of the item that goes away, so it no longer counts towards the day's progress.
+    await db.run("INSERT INTO dhikr_daily (date, dhikr_id, count) VALUES ('2026-11-16', 'first', 100)");
     const updated = dataset(2);
     updated.items = updated.items.slice(1);
     await repository.seed(updated);
     expect(await repository.byId('first')).toBeUndefined();
+    expect(await db.query('SELECT * FROM dhikr_daily WHERE dhikr_id = ?', ['first'])).toHaveLength(0);
     expect(await repository.byId('second')).toBeDefined();
     expect(await repository.byId(custom.id)).toEqual(custom);
   });

@@ -1,10 +1,12 @@
-// Snapshot of the mp3quran.net catalogue (full-sura reciters and live Quran radios) bundled with the app,
+// Snapshot of the mp3quran.net catalogue (full-sura reciters and live Quran radios, plus a few reciters from
+// archive.org: see audio-extra-reciters.mjs) bundled with the app,
 // so the Listen page has its lists on first open and offline; the app refreshes it in the reader's language.
 // Usage: node scripts/fetch-audio-catalog.mjs   (writes public/assets/audio/catalog.json)
 
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { extraReciters } from './audio-extra-reciters.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const API = 'https://mp3quran.net/api/v3';
@@ -52,7 +54,9 @@ const reciters = recAr.reciters
         })),
     };
   })
-  .filter((r) => r.moshaf.length);
+  .filter((r) => r.moshaf.length)
+  // Reciters mp3quran does not have (archive.org).
+  .concat(await extraReciters());
 
 const radios = radAr.radios
   // radiojar.com redirects every stream to plain http, which the app does not load (no cleartext traffic).

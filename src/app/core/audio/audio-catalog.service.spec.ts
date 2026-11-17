@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { TestBed } from '@angular/core/testing';
-import { AudioCatalogService, Moshaf } from './audio-catalog.service';
+import { AudioCatalogService, Moshaf, moshafStyle } from './audio-catalog.service';
 import { AudioFocusService } from './audio-focus.service';
 import { RECITERS } from '../quran/recitation.service';
 
@@ -31,16 +31,47 @@ describe('bundled audio catalogue', () => {
   it('has hundreds of reciters and radios, all over https (the app allows no cleartext)', () => {
     expect(data.reciters.length).toBeGreaterThan(150);
     expect(data.radios.length).toBeGreaterThan(100);
-    for (const r of data.reciters) for (const m of r.moshaf) expect(m.server).toMatch(/^https:\/\/[a-z0-9.]+\.mp3quran\.net\/.+\/$/);
+    for (const r of data.reciters) {
+      for (const m of r.moshaf) expect(m.server).toMatch(/^https:\/\/([a-z0-9.]+\.mp3quran\.net\/.+|archive\.org\/download\/[a-z0-9-]+)\/$/);
+    }
     for (const r of data.radios) expect(r.url).toMatch(/^https:\/\/backup\.qurango\.net\//);
   });
 
   it('has hosts the page CSP lets play', () => {
     const csp = readFileSync('src/index.html', 'utf8');
-    expect(csp).toContain('https://*.mp3quran.net');
-    expect(csp).toContain('https://backup.qurango.net');
-    expect(csp.match(/connect-src[^;]*/)?.[0]).toContain('https://*.mp3quran.net');
+    const media = csp.match(/media-src[^;]*/)?.[0];
+    const connect = csp.match(/connect-src[^;]*/)?.[0];
+    expect(media).toContain('https://*.mp3quran.net');
+    expect(media).toContain('https://backup.qurango.net');
+    expect(connect).toContain('https://*.mp3quran.net');
+    // archive.org answers with a redirect to one of its servers (ia800….us.archive.org, dn7….ca.archive.org).
+    for (const src of [media, connect]) {
+      expect(src).toContain('https://archive.org');
+      expect(src).toContain('https://*.archive.org');
+    }
     expect(csp).toContain('https://dorar.net');
+  });
+
+  it('has Abdel Nasser Harak and Ragheb Mustafa Ghalwash (archive.org), with ids apart from mp3quran\'s', () => {
+    for (const name of ['عبد الناصر حرك', 'راغب مصطفى غلوش']) {
+      const r = data.reciters.find((x) => x.ar === name);
+      expect(r, name).toBeTruthy();
+      expect(r!.moshaf).toHaveLength(1);
+      expect(r!.moshaf[0].server).toMatch(/^https:\/\/archive\.org\/download\//);
+      expect(r!.moshaf[0].suras.split(',').length).toBeGreaterThan(20);
+      expect(r!.id).toBeGreaterThanOrEqual(900000);
+    }
+    const ids = data.reciters.flatMap((r) => r.moshaf.map((m) => m.id));
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(new Set(data.reciters.map((r) => r.id)).size).toBe(data.reciters.length);
+  });
+
+  it('counts the archive.org tilawat as mujawwad, so the mujawwad filter finds them', () => {
+    const r = data.reciters.find((x) => x.ar === 'راغب مصطفى غلوش')!;
+    expect(moshafStyle(r.moshaf[0])).toBe('mujawwad');
+    expect(moshafStyle({ ar: 'حفص عن عاصم - المصحف المجود' })).toBe('mujawwad');
+    expect(moshafStyle({ ar: 'حفص عن عاصم - مرتل' })).toBe('murattal');
+    expect(moshafStyle({ ar: 'حفص عن عاصم - المصحف المعلم' })).toBe('muallim');
   });
 });
 

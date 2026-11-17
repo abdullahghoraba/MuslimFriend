@@ -19,7 +19,7 @@ export interface Moshaf {
 export type MoshafStyle = 'murattal' | 'mujawwad' | 'muallim';
 
 export function moshafStyle(m: Pick<Moshaf, 'ar'>): MoshafStyle {
-  if (m.ar.includes('المجود')) return 'mujawwad';
+  if (m.ar.includes('مجود')) return 'mujawwad';
   if (m.ar.includes('المعلم')) return 'muallim';
   return 'murattal';
 }

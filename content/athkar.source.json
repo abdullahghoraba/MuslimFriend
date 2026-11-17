@@ -1,5 +1,5 @@
 {
-  "contentVersion": 5,
+  "contentVersion": 6,
   "notes": "Source file for the bundled dataset. Quran items reference Tanzil Uthmani text by surah/ayah (and optional 1-based word range); scripts/build-content.mjs copies the text verbatim. Every item ships with reviewed=false until a qualified reviewer signs it off in content/review.csv. Virtue fields are summaries of meaning, not hadith wording.",
   "items": [
     {
@@ -332,9 +332,9 @@
       "repeatCount": 10,
       "textAr": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
       "transliteration": "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa 'ala kulli shay'in qadir.",
-      "meaningEn": "There is no god but Allah alone, without partner. His is the dominion and His is the praise, and He has power over all things. (Ten times in the morning.)",
-      "virtueAr": "ورد أن من قالها عشر مرات حين يصبح كُتبت له عشر حسنات، ومُحيت عنه عشر سيئات، ورُفعت له عشر درجات، وكانت له عدل عشر رقاب، وحُفظ بها من الشيطان حتى يمسي. ومن قالها حين يمسي فله مثل ذلك حتى يصبح.",
-      "virtueEn": "It is reported that whoever says it ten times in the morning has ten good deeds recorded, ten sins erased, is raised ten degrees, receives the reward of freeing ten slaves, and is protected from Shaytan until evening.",
+      "meaningEn": "There is no god but Allah alone, without partner. His is the dominion and His is the praise, and He has power over all things. (Ten times in the morning and ten in the evening.)",
+      "virtueAr": "ورد أن من قالها عشر مرات حين يصبح كُتبت له عشر حسنات، ومُحيت عنه عشر سيئات، ورُفعت له عشر درجات، وكانت له عدل عشر رقاب، وحُفظ بها من الشيطان حتى يمسي. ومن قالها حين يمسي فله مثل ذلك حتى يصبح. ومن زاد فقالها في يومه مائة مرة كانت له عدل عشر رقاب، وكُتبت له مائة حسنة، ومُحيت عنه مائة سيئة، وكانت له حرزًا من الشيطان يومه ذلك حتى يمسي (البخاري ومسلم).",
+      "virtueEn": "It is reported that whoever says it ten times in the morning has ten good deeds recorded, ten sins erased, is raised ten degrees, receives the reward of freeing ten slaves, and is protected from Shaytan until evening; and whoever says it in the evening has the same until morning. Whoever says it a hundred times in a day receives the reward of freeing ten slaves, a hundred good deeds are recorded, a hundred sins erased, and it is a protection from Shaytan that day until evening (al-Bukhari and Muslim).",
       "sourceRef": "Musnad Ahmad (from Abu Ayyash az-Zuraqi); an-Nasa'i, as-Sunan al-Kubra; Ibn Hibban",
       "grade": "Sahih (al-Albani, as-Silsilah as-Sahihah)",
       "reviewNote": "Add exact hadith numbers for the edition used."
@@ -373,18 +373,6 @@
       "virtueAr": "كان النبي ﷺ يستغفر الله ويتوب إليه في اليوم أكثر من سبعين مرة، وفي رواية: مائة مرة.",
       "virtueEn": "The Prophet ﷺ sought Allah's forgiveness and repented to Him more than seventy times a day; in another narration, a hundred times.",
       "sourceRef": "Sahih al-Bukhari 6307; Sahih Muslim 2702",
-      "grade": "Sahih"
-    },
-    {
-      "id": "morning-la-ilaha-illallah-100",
-      "categoryId": "morning",
-      "textAr": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
-      "transliteration": "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa 'ala kulli shay'in qadir.",
-      "meaningEn": "There is no god but Allah alone, without partner. His is the dominion and His is the praise, and He has power over all things.",
-      "repeatCount": 100,
-      "virtueAr": "ورد أن من قالها في يوم مائة مرة كانت له عدل عشر رقاب، وكتبت له مائة حسنة، ومحيت عنه مائة سيئة، وكانت له حرزًا من الشيطان يومه ذلك حتى يمسي.",
-      "virtueEn": "It is reported that whoever says it a hundred times in a day receives the reward of freeing ten slaves, a hundred good deeds are recorded for him, a hundred sins are erased, and it is a protection from Shaytan that day until evening.",
-      "sourceRef": "Sahih al-Bukhari 3293; Sahih Muslim 2691",
       "grade": "Sahih"
     },
     {

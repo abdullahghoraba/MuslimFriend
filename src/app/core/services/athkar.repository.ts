@@ -160,8 +160,10 @@ export class AthkarRepository {
       }
     });
     for (const id of existing) {
-      if (!bundledIds.has(id))
+      if (!bundledIds.has(id)) {
+        statements.push({ sql: 'DELETE FROM dhikr_daily WHERE dhikr_id = ?', params: [id] });
         statements.push({ sql: 'DELETE FROM athkar WHERE id = ?', params: [id] });
+      }
     }
     statements.push({
       sql: 'INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)',
