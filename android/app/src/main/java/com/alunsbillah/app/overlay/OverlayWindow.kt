@@ -98,8 +98,8 @@ class OverlayWindow(
                 performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING)
                 val arabicDigits = config.language == "ar" || config.language == "fa" || config.language == "ur"
                 val num = { n: Int -> if (arabicDigits) n.toString().map { "٠١٢٣٤٥٦٧٨٩"[it - '0'] }.joinToString("") else n.toString() }
-                text = if (taps >= target) "✓" else if (target > 1) "${num(taps)} / ${num(target)}" else "✓"
-                announceForAccessibility(text)
+                this.text = if (taps >= target) "✓" else if (target > 1) "${num(taps)} / ${num(target)}" else "✓"
+                announceForAccessibility(this.text)
                 animate().scaleX(1.15f).scaleY(1.15f).setDuration(90).withEndAction {
                     animate().scaleX(1f).scaleY(1f).setDuration(90).start()
                 }.start()
