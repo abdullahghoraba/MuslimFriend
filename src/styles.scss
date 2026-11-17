@@ -125,6 +125,14 @@ ion-tab-bar {
   border-radius: 22px 22px 0 0;
   padding-top: 4px;
 }
+/* Room around the tabs: the end tabs (Home, Settings) away from the screen's rounded corners, and the labels away
+   from its bottom edge even where the system reports no inset (3-button navigation). */
+// (Ionic forces the bar to content-box, so the side room is on the end tabs, not the bar's padding.)
+ion-tab-bar[slot='bottom'] {
+  padding-bottom: max(10px, var(--ion-safe-area-bottom, 0px));
+  ion-tab-button:first-of-type { margin-inline-start: 14px; }
+  ion-tab-button:last-of-type { margin-inline-end: 14px; }
+}
 /* Material-style tabs: every icon sits in the same pill-sized box (so nothing moves when the tab changes); the
    selected tab's pill is tinted and its icon filled. No rectangular tap flash or ripple over the whole button. */
 ion-tab-button {
@@ -134,14 +142,17 @@ ion-tab-button {
   --background-focused: transparent;
   -webkit-tap-highlight-color: transparent;
   font-weight: 600;
+  // Five tabs share the width evenly and may shrink (they overflowed a phone's width, cutting off «الإعدادات»).
+  flex: 1 1 0;
+  min-width: 0;
   ion-icon {
     font-size: 1.35rem;
-    padding: 4px 20px;
+    padding: 4px clamp(10px, 4vw, 20px);
     border-radius: 999px;
     background: transparent;
     transition: background-color 0.2s ease, transform 0.15s ease;
   }
-  ion-label { margin-top: 4px; font-size: 0.72rem; }
+  ion-label { margin-top: 4px; font-size: 0.72rem; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   &:active ion-icon { transform: scale(0.92); }
 }
 ion-tab-button.tab-selected ion-icon {

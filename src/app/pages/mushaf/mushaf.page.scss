@@ -35,8 +35,30 @@ ion-title { padding-inline: 4px; }
 
 .loading { display: flex; justify-content: center; padding-top: 30vh; }
 
+// The page lies on the one it turns to (shown only while a finger drags it): the top page is opaque paper, with
+// a shadow along its edge as it lifts, like a printed mushaf's page.
+.page-stack { position: relative; min-height: 100%; overflow-x: clip; }
+.page-under {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  padding: 12px 18px calc(8px + var(--ion-safe-area-bottom, 0px));
+  background: var(--m-bg);
+  color: var(--m-fg);
+  .under-text { opacity: 0.92; }
+  .page-footer { justify-content: center; }
+}
+.page-surface.dragging {
+  z-index: 1;
+  background: var(--m-bg);
+  box-shadow: 0 0 28px rgba(0, 0, 0, 0.22), 0 0 4px rgba(0, 0, 0, 0.12);
+  will-change: transform;
+}
 .page-surface {
   position: relative;
+  z-index: 1;
+  background: var(--m-bg);
   min-height: 100%;
   // The last page-turn arrows must stay above the phone's navigation buttons (edge-to-edge since API 35).
   padding: 12px 18px calc(8px + var(--ion-safe-area-bottom, 0px));

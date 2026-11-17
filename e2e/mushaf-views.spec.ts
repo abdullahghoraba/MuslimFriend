@@ -129,6 +129,39 @@ test('on the printed page, tapping a word selects its whole ayah and turning the
   await expect(page.locator('.print-page .qcf-word').first()).toBeVisible();
 });
 
+test('turning the printed page with the finger: it follows, the next page lies underneath, and it turns or falls back', async ({ page }) => {
+  await openMushaf(page, 50, { view: 'print' });
+  await expect(page.locator('.page-surface .print-page .qcf-word').first()).toBeVisible();
+  await page.waitForTimeout(1500); // the pages either side load their fonts
+  const box = (await page.locator('.page-surface').boundingBox())!;
+  const y = box.y + box.height / 2;
+  // A short drag right: the next page (51) shows underneath, then the page falls back.
+  await page.mouse.move(box.x + box.width * 0.3, y);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * 0.3 + 40, y, { steps: 5 });
+  await expect(page.locator('.page-under .page-num')).toHaveText('51');
+  await expect(page.locator('.page-under .print-page .qcf-word').first()).toBeVisible();
+  const moved = await page.locator('.page-surface').evaluate((el) => getComputedStyle(el).transform);
+  expect(moved).not.toBe('none');
+  await page.mouse.up();
+  await expect(page.locator('.page-under')).toHaveCount(0);
+  await expect(page).toHaveURL(/\/mushaf\/50$/);
+  // A long drag right turns to the next page, as in a printed mushaf.
+  await page.mouse.move(box.x + box.width * 0.2, y);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * 0.8, y, { steps: 12 });
+  await page.mouse.up();
+  await expect(page).toHaveURL(/\/mushaf\/51$/);
+  await expect(page.locator('.page-surface .print-page .qcf-word').first()).toBeVisible();
+  await expect(page.locator('.page-under')).toHaveCount(0);
+  // And left goes back.
+  await page.mouse.move(box.x + box.width * 0.8, y);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * 0.2, y, { steps: 12 });
+  await page.mouse.up();
+  await expect(page).toHaveURL(/\/mushaf\/50$/);
+});
+
 test('the printed page in the night theme and on a tablet', async ({ page }) => {
   await openMushaf(page, 50, { view: 'print', theme: 'night' });
   await expect(page.locator('.print-page .qcf-word').first()).toBeVisible();

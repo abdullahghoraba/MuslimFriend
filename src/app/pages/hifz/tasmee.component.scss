@@ -62,6 +62,38 @@ ion-progress-bar.top { position: sticky; top: 0; z-index: 2; border-radius: 4px;
 .row-buttons, .controls { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 .controls { flex-direction: row; margin-top: 12px; }
 
+// A long range (up to a whole sura): the ayat scroll in their own card, which follows the reciter (the component
+// keeps the next word in view), and the controls stay within reach at the bottom of the screen.
+.recital.long {
+  position: relative;
+  max-height: min(56vh, 600px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-top: 0;
+  .where-now {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin: 0 -16px 6px;
+    padding: 6px 12px;
+    font-family: 'Amiri', serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--ion-color-primary);
+    background: color-mix(in srgb, var(--app-surface) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--app-border);
+  }
+}
+:host:has(.recital.long) .controls {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  margin-top: 8px;
+  padding: 10px 0 calc(10px + var(--ion-safe-area-bottom, 0px));
+  background: var(--ion-background-color);
+}
+
 .mic {
   width: 84px;
   height: 84px;

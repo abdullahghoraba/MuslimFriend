@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, ElementRef, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import { Component, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import {
   ActionSheetController,
@@ -193,6 +193,11 @@ export class MushafPage {
     const data = this.qcf();
     const p = this.page();
     if (!data || this.qcfFont()?.page !== p) return null;
+    return this.rowsOf(data, p);
+  });
+
+  /** The printed page [p]'s lines: titles, the basmala, and each ayah's words as glyphs of that page's font. */
+  private rowsOf(data: MadinahQcfData, p: number): PrintRow[] {
     return (data.pages[p - 1] ?? []).map((line): PrintRow => {
       if (line[0] === 's') return { kind: 'title', sura: line[1] as number };
       if (line[0] === 'b') return { kind: 'basmala' };
@@ -204,7 +209,28 @@ export class MushafPage {
         }),
       };
     });
+  }
+
+  // ---- turning the page with the finger -------------------------------------------------------------------------
+  /** Printed pages whose font is loaded (this page and the ones either side, loaded ahead). */
+  private readonly fontsReady = signal<ReadonlySet<number>>(new Set());
+  /** While a finger drags the page: the page it is turning to, drawn underneath. */
+  readonly under = signal<number | null>(null);
+  readonly underRows = computed<PrintRow[] | null>(() => {
+    const p = this.under();
+    const data = this.qcf();
+    if (!p || !data || !this.printWanted() || !this.quran.ready() || !this.fontsReady().has(p)) return null;
+    return this.rowsOf(data, p);
   });
+  readonly underFamily = computed(() => (this.under() ? qcfFamily(this.under()!) : ''));
+  /** The flowing text of the page underneath (the other views). */
+  readonly underText = computed(() => {
+    const p = this.under();
+    const layout = this.layout();
+    if (!p || !layout || !this.quran.ready() || this.underRows()) return '';
+    return layout.pieces(p).map((x) => this.quran.ayahAt(x.index).text).join(' ');
+  });
+  readonly underLabel = computed(() => String(this.under() ?? ''));
   /** Waiting for the printed page's font: a spinner, rather than the flowing text for a moment. */
   readonly printLoading = computed(() => this.printWanted() && !this.printRows() && !this.qcfFailed().has(this.page()));
 
@@ -356,19 +382,62 @@ export class MushafPage {
     await sheet.present();
   }
 
-  ionViewDidEnter(): void {
-    const el = this.host.nativeElement.querySelector<HTMLElement>('.page-surface');
-    if (!el) return;
+  /** The page, once drawn (after the Quran's text has loaded): the finger can turn it from then on. */
+  private readonly surface = viewChild<ElementRef<HTMLElement>>('surface');
+  private gestureOn?: HTMLElement;
+  private readonly turnWithFinger = effect(() => {
+    const el = this.surface()?.nativeElement;
+    if (el && el !== this.gestureOn) {
+      this.gestureOn = el;
+      this.enablePageTurn(el);
+    }
+  });
+
+  private enablePageTurn(el: HTMLElement): void {
+    // Like turning a printed mushaf's page: the page follows the finger, the one it turns to lies underneath, and
+    // letting go past a quarter of the width (or with a flick) turns it; otherwise it falls back. Dragging right
+    // reaches the next page, as in a printed mushaf. Set on the element directly: no change detection per frame.
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const target = (dx: number) => (dx > 0 ? this.page() + 1 : this.page() - 1);
+    const settle = (to: string, after: () => void) => {
+      el.style.transition = reduced ? 'none' : 'transform 0.22s cubic-bezier(0.2, 0.7, 0.3, 1)';
+      el.style.transform = to;
+      setTimeout(() => {
+        el.style.transition = '';
+        el.style.transform = '';
+        el.classList.remove('dragging');
+        after();
+      }, reduced ? 0 : 230);
+    };
     const gesture = createGesture({
       el,
       gestureName: 'mushaf-swipe',
-      threshold: 15,
+      threshold: 12,
       direction: 'x',
+      onStart: () => {
+        el.style.transition = 'none';
+      },
+      onMove: (d) => {
+        const p = target(d.deltaX);
+        const turnable = p >= 1 && p <= this.pageCount();
+        if (turnable && this.under() !== p) this.under.set(p);
+        el.classList.add('dragging');
+        // At the first or last page the page only gives a little (nothing to turn to).
+        el.style.transform = `translateX(${turnable ? d.deltaX : d.deltaX * 0.2}px)`;
+      },
       onEnd: (d) => {
-        if (Math.abs(d.deltaX) < 60 || Math.abs(d.deltaY) > Math.abs(d.deltaX)) return;
-        // Like a printed mushaf: drag right to reach the next page.
-        if (d.deltaX > 0) this.next();
-        else this.prev();
+        const width = el.clientWidth || window.innerWidth;
+        const p = target(d.deltaX);
+        const turn = p >= 1 && p <= this.pageCount() && (Math.abs(d.deltaX) > width * 0.25 || (Math.abs(d.velocityX) > 0.35 && Math.abs(d.deltaX) > 30));
+        if (!turn) {
+          settle('translateX(0)', () => this.under.set(null));
+          return;
+        }
+        settle(`translateX(${Math.sign(d.deltaX) * width}px)`, () => {
+          // The page underneath becomes the page: no second slide.
+          this.goTo(p, 'none');
+          this.under.set(null);
+        });
       },
     });
     gesture.enable(true);
@@ -912,7 +981,10 @@ export class MushafPage {
       const family = await this.editions.qcfFont(p, data.font);
       if (this.qcfFailed().has(p)) this.qcfFailed.update((s) => new Set([...s].filter((x) => x !== p)));
       if (this.page() === p) this.qcfFont.set({ page: p, family });
-      for (const n of [p + 1, p - 1]) if (n >= 1 && n <= TOTAL_PAGES) void this.editions.qcfFont(n, data.font).catch(() => {});
+      const ready = (n: number) => this.fontsReady.update((s) => (s.has(n) ? s : new Set(s).add(n)));
+      ready(p);
+      // The pages either side, ahead of time: a page turned with the finger shows the next one underneath.
+      for (const n of [p + 1, p - 1]) if (n >= 1 && n <= TOTAL_PAGES) void this.editions.qcfFont(n, data.font).then(() => ready(n)).catch(() => {});
       if (!this.printBasmala()) {
         void this.editions.qcfFont(1, data.font).then(() => this.printBasmala.set(qcfBasmala(data))).catch(() => {});
       }

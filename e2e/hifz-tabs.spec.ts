@@ -52,7 +52,16 @@ test('the tab bar keeps every icon in the same place and fills the selected one'
     }),
   );
   expect(new Set(boxes.map((b) => `${b.w}x${b.h}@${b.top}/${b.label}`)).size).toBe(1);
-  expect(boxes.find((b) => b.tab === 'tasbih')?.name).toBe('ellipse');
+  expect(boxes.find((b) => b.tab === 'tasbih')?.name).toBe('prayer-beads');
   expect(boxes.find((b) => b.tab === 'home')?.name).toBe('home-outline');
+  // Room around the bar: the end tabs (Home, Settings) away from the screen's corners, the labels off its bottom edge.
+  const room = await page.locator('ion-tab-bar').evaluate((bar) => {
+    const tabs = [...bar.querySelectorAll('ion-tab-button')].map((t) => t.getBoundingClientRect());
+    const labels = [...bar.querySelectorAll('ion-label')].map((l) => l.getBoundingClientRect().bottom);
+    return { left: Math.min(...tabs.map((t) => t.left)), right: innerWidth - Math.max(...tabs.map((t) => t.right)), bottom: innerHeight - Math.max(...labels) };
+  });
+  expect(room.left).toBeGreaterThanOrEqual(12);
+  expect(room.right).toBeGreaterThanOrEqual(12);
+  expect(room.bottom).toBeGreaterThanOrEqual(10);
   await page.screenshot({ path: 'test-results/tabbar-tasbih.png' });
 });

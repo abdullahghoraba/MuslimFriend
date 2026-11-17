@@ -92,7 +92,35 @@
   @if (!quran.ready()) {
     <div class="loading"><ion-spinner /></div>
   } @else {
-    <div class="page-surface" [class.slide-next]="slide() === 'next'" [class.slide-prev]="slide() === 'prev'"
+    <div class="page-stack">
+    @if (under(); as u) {
+      <!-- The page the finger is turning to, lying under this one (as in a printed mushaf); drawn only while dragging. -->
+      <div class="page-under" aria-hidden="true" [style.--quran-font-scale]="quranScale()">
+        @if (underRows(); as rows) {
+          <div class="print-page" [class.opening]="u <= 2" [style.font-family]="underFamily()" [appQcfFit]="underFamily()" lang="ar" dir="rtl">
+            @for (row of rows; track $index) {
+              @if (row.kind === 'title') {
+                <app-sura-banner class="print-title" [name]="quran.sura(row.sura).name"
+                                 [label]="lang() === 'ar' ? 'سورة ' + quran.sura(row.sura).name : 'Surah ' + quran.sura(row.sura).tname"
+                                 [calligraphy]="surahNamesFamily()" [glyph]="surahGlyph(row.sura)" />
+              } @else if (row.kind === 'basmala') {
+                @if (printBasmala(); as glyphs) {
+                  <div class="print-line print-basmala-line" [style.font-family]="basmalaFamily">@for (g of glyphs; track $index) {<span>{{ g }}</span>}</div>
+                } @else {
+                  <div class="print-basmala">{{ qpcBasmala }}</div>
+                }
+              } @else {
+                <div class="print-line">@for (w of row.words; track $index) {<span class="qcf-word">{{ w.glyph }}</span>}</div>
+              }
+            }
+          </div>
+        } @else {
+          <div class="quran-text page-text under-text" lang="ar" dir="rtl">{{ underText() }}</div>
+        }
+        <div class="page-footer" dir="ltr"><span class="page-num">{{ underLabel() }}</span></div>
+      </div>
+    }
+    <div #surface class="page-surface" [class.slide-next]="slide() === 'next'" [class.slide-prev]="slide() === 'prev'"
          [style.--quran-font-scale]="quranScale()">
       @for (bm of pageBookmarks(); track bm.id) {
         <span class="ribbon" [attr.data-color]="bm.color" [attr.aria-label]="bm.name" role="img"></span>
@@ -174,6 +202,7 @@
         <button type="button" class="turn" (click)="prev(); $event.stopPropagation()" [disabled]="page() <= 1"
                 [attr.aria-label]="'mushaf.prevPage' | translate">›</button>
       </div>
+    </div>
     </div>
   }
 </ion-content>

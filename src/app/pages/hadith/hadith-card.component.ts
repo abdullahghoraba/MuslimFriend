@@ -51,7 +51,10 @@ import { ShareService } from '../../core/services/share.service';
     p { overflow-wrap:anywhere; } .grades,.actions { display:flex; flex-wrap:wrap; gap:4px; }
     ion-badge { white-space:normal; text-align:start; line-height:1.6; }
     ion-button { min-width:44px; min-height:44px; margin:0; }
-    .ruling-button,.explain-button { white-space:normal; height:auto; --padding-top:12px; --padding-bottom:12px; line-height:1.7; margin-block:14px; }
+    .ruling-button,.explain-button { white-space:normal; height:auto; --padding-top:14px; --padding-bottom:14px; line-height:1.7; margin-block:16px; }
+    /* «من روى الحديث؟ وهل هو صحيح أم ضعيف؟ ولماذا؟» wraps: Ionic draws a button's label at line-height 1, so its
+       lines touched; spaced like the text around it. */
+    .ruling-button::part(native),.explain-button::part(native) { line-height:1.8; white-space:normal; }
     .explain-button { margin-block:14px 0; font-weight:700; }
     .tappable { cursor:pointer; -webkit-tap-highlight-color:transparent; border-radius:12px; }
     .tappable:active { background:color-mix(in srgb,var(--ion-color-primary) 8%,transparent); }

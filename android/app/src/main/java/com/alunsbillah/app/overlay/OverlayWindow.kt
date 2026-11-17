@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
@@ -76,20 +77,38 @@ class OverlayWindow(
         }
         card.addView(text, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
+        // Counts shown on the button itself ("١ / ٣"), with a short vibration, so each tap is seen and felt; at the
+        // dhikr's number it shows ✓ and the card goes away (the counts reach the app's athkar when it opens).
+        val target = dhikr.repeatCount.coerceAtLeast(1)
+        var taps = 0
         val plusOne = Button(context).apply {
             this.text = "+1"
             setTextColor(accentOn)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 17f)
+            typeface = Typeface.DEFAULT_BOLD
             isAllCaps = false
             minHeight = dp(48)
-            minWidth = dp(72)
+            minWidth = dp(88)
             background = GradientDrawable().apply { cornerRadius = dp(24).toFloat(); setColor(accent) }
             contentDescription = NativeLabels.get(config.labels, config.language, "addOne", "زيادة العداد بواحد", "Add one to the counter")
             setOnClickListener {
+                if (taps >= target) return@setOnClickListener
+                taps++
                 onCount(dhikr)
+                performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING)
+                val arabicDigits = config.language == "ar" || config.language == "fa" || config.language == "ur"
+                val num = { n: Int -> if (arabicDigits) n.toString().map { "٠١٢٣٤٥٦٧٨٩"[it - '0'] }.joinToString("") else n.toString() }
+                text = if (taps >= target) "✓" else if (target > 1) "${num(taps)} / ${num(target)}" else "✓"
+                announceForAccessibility(text)
                 animate().scaleX(1.15f).scaleY(1.15f).setDuration(90).withEndAction {
                     animate().scaleX(1f).scaleY(1f).setDuration(90).start()
                 }.start()
-                restartTimer(config)
+                if (taps >= target) {
+                    handler.removeCallbacks(dismissRunnable)
+                    handler.postDelayed(dismissRunnable, 700)
+                } else {
+                    restartTimer(config)
+                }
             }
         }
         val close = TextView(context).apply {

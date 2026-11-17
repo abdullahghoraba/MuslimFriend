@@ -51,10 +51,14 @@
     }
 
     <!-- The ayat: words appear as they are recited; mistakes in colour. -->
-    <section class="card recital" lang="ar" dir="rtl" aria-live="polite">
+    <section class="card recital" [class.long]="long()" lang="ar" dir="rtl" aria-live="polite">
+      @if (long() && (words()[position()] ?? words()[words().length - 1]); as cur) {
+        <!-- A long range scrolls inside this card, following the word to recite: where it is, at a glance. -->
+        <div class="where-now">{{ quran.ready() ? quran.sura(cur.ref.sura).name : '' }} · ﴿{{ ayahNumber(cur.ref.aya) }}﴾ / {{ ayahNumber(to()) }}</div>
+      }
       @for (w of words(); track $index; let i = $index) {
         @let r = results()[i];
-        <span class="w" [class]="'w ' + (r?.status ?? 'pending')" [class.next]="i === position() && state() === 'listening'" [class.corrected]="!!r?.corrected" [class.tajweed]="tajweedIssues().has(i)"
+        <span class="w" [attr.data-i]="i" [class]="'w ' + (r?.status ?? 'pending')" [class.next]="i === position() && state() === 'listening'" [class.corrected]="!!r?.corrected" [class.tajweed]="tajweedIssues().has(i)"
               [class.hidden]="!shown(i)" [attr.title]="r?.heard ? ('tasmee.heard' | translate: { word: r.heard }) : null">{{ shown(i) ? w.text : '' }}@if (r?.status === 'wrong' && r?.heard) {<small class="heard">{{ r.heard }}</small>}</span>
         @if (w.end) { <span class="num">﴿{{ ayahNumber(w.ref.aya) }}﴾</span> }
         {{ ' ' }}

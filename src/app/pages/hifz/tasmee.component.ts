@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { LocalDatePipe } from '../../shared/local-date.pipe';
 import { KeepAwake } from '@capacitor-community/keep-awake';
 import {
@@ -64,6 +64,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
   private readonly haptics = inject(HapticsService);
   private readonly settings = inject(SettingsService);
   readonly nav = inject(NavController);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly lang = computed(() => this.settings.settings().language);
   readonly sura = signal(1);
@@ -175,6 +176,11 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     return last + 1;
   });
   readonly progress = computed(() => (this.words().length ? this.position() / this.words().length : 0));
+  /**
+   * A long range (a page or more, up to a whole sura): the ayat scroll inside their own card, which follows the word
+   * to recite, and the controls stay at the bottom, instead of one page several screens tall.
+   */
+  readonly long = computed(() => this.words().length > 120);
   readonly mistakes = computed(() =>
     this.results()
       .map((r, i) => ({ r, w: this.words()[i], i }))
@@ -184,6 +190,18 @@ export class TasmeeComponent implements OnInit, OnDestroy {
   readonly best = computed(() => this.tasmee.best(this.sura(), this.from(), this.to()));
 
   constructor() {
+    // A long range follows the reciter: the word to say next is kept about a third of the way down its card.
+    effect(() => {
+      const i = this.position();
+      if (!this.long()) return;
+      requestAnimationFrame(() => {
+        const card = this.host.nativeElement.querySelector<HTMLElement>('.recital.long');
+        const word = card?.querySelector<HTMLElement>(`[data-i="${Math.min(i, this.words().length - 1)}"]`);
+        if (!card || !word) return;
+        const top = word.offsetTop - card.clientHeight / 3;
+        if (Math.abs(card.scrollTop - top) > word.offsetHeight) card.scrollTo({ top: Math.max(0, top), behavior: i ? 'smooth' : 'auto' });
+      });
+    });
     // A new range from the host (another plan's portion): show it, unless a recitation is going on.
     effect(() => {
       const s = Number(this.startSura());

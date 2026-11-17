@@ -11,7 +11,8 @@ const noiseLib = () => import('@sapphi-red/web-noise-suppressor');
  * ("light"), both open source (github.com/sapphi-red/web-noise-suppressor, MIT). After it, a gate (our own
  * worklet, assets/studio/gate-processor.js) turns down by 24 dB what is left of the noise between words and ayat,
  * before the compressor would bring it back up: real rooms leave some noise even after the network. The reverb is
- * generated here (no samples to download): a short room, a hall, the long tail of a large mosque, or "haram": the
+ * generated here from each space's acoustics (no samples to download): a small room, a hall, a large domed mosque
+ * (with its loudspeakers' light echo), or "haram": the
  * Masjid al-Haram sound, a very large space whose distant loudspeakers send the voice back as soft delayed echoes.
  * The input and master fades make clean starts and endings: a recording fades in, and on stop the microphone is
  * muted (no tap of the button) while the last word and its reverb ring out before the sound fades away.
@@ -36,16 +37,42 @@ export const REVERB_AMOUNT = { min: 0, max: 1.5 };
 export const CLARITY_DB = { min: 0, max: 6 };
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
-/** Length (s), decay and wet level of each reverb. */
-export const REVERBS: Record<Exclude<Reverb, 'none'>, { seconds: number; decay: number; wet: number; preDelay: number }> = {
-  room: { seconds: 0.8, decay: 4, wet: 0.16, preDelay: 0.008 },
-  hall: { seconds: 2.0, decay: 3, wet: 0.22, preDelay: 0.02 },
-  mosque: { seconds: 3.6, decay: 2.4, wet: 0.3, preDelay: 0.035 },
+/**
+ * A space, as an acoustician describes it: how long its low and high sounds take to die away by 60 dB ([rtLow],
+ * [rtHigh]: carpet, people and air soak up the highs first, which is the warmth of a mosque), the first reflections
+ * off walls and dome ([early]: seconds after the voice, level), how soon the reverb is dense ([buildUp]) and how
+ * dark its tail is ([tone], Hz). [seconds] is the impulse's length, [wet] its level in the mix, [preDelay] the gap
+ * before the space answers (bigger rooms answer later). "haram" keeps its original sound ([decay]: the older model).
+ */
+export interface ReverbSpec {
+  seconds: number;
+  wet: number;
+  preDelay: number;
+  decay?: number;
+  rtLow?: number;
+  rtHigh?: number;
+  tone?: number;
+  buildUp?: number;
+  early?: [number, number][];
+}
+
+export const REVERBS: Record<Exclude<Reverb, 'none'>, ReverbSpec> = {
+  // A small furnished room: close, dense early reflections and a short, soft tail; the voice just sounds less dry.
+  room: { seconds: 0.7, wet: 0.13, preDelay: 0.004, rtLow: 0.5, rtHigh: 0.32, tone: 8500, buildUp: 0.008,
+    early: [[0.004, 0.55], [0.007, 0.45], [0.011, 0.38], [0.015, 0.3], [0.021, 0.24], [0.028, 0.18]] },
+  // A lecture hall: reflections from far walls, then a smooth tail of about two seconds.
+  hall: { seconds: 2.4, wet: 0.19, preDelay: 0.018, rtLow: 2.1, rtHigh: 1.4, tone: 7000, buildUp: 0.03,
+    early: [[0.019, 0.42], [0.031, 0.35], [0.046, 0.3], [0.063, 0.24], [0.082, 0.18]] },
+  // A large domed mosque: marble and the dome return the voice, carpet takes the highs; the dome's echoes come late.
+  mosque: { seconds: 4, wet: 0.27, preDelay: 0.03, rtLow: 3.4, rtHigh: 2.1, tone: 5200, buildUp: 0.06,
+    early: [[0.032, 0.36], [0.051, 0.3], [0.078, 0.26], [0.108, 0.22], [0.146, 0.2], [0.19, 0.14]] },
   haram: { seconds: 5, decay: 2.2, wet: 0.32, preDelay: 0.06 },
 };
 
 /** The loudspeaker echo of "haram": a soft repeat a little over a quarter second later, darker each time. */
 export const HARAM_ECHO = { delay: 0.27, feedback: 0.28, wet: 0.14, lowpass: 3200 };
+/** A mosque's own loudspeakers: a lighter, nearer repeat than the Haram's. */
+export const MOSQUE_ECHO = { delay: 0.16, feedback: 0.16, wet: 0.07, lowpass: 3800 };
 
 /** How long the sound keeps running after stop: the chain's own delay plus most of the reverb's tail, at most 3.5 s. */
 export function tailSeconds(reverb: Reverb): number {
@@ -65,8 +92,48 @@ const once = (key: string, load: () => Promise<ArrayBuffer>) => {
 };
 
 /**
+ * A stereo impulse response of the space [spec] (see [ReverbSpec]): silence for the pre-delay, the early
+ * reflections (alternating sides, a little smeared, as off real walls), then a diffuse tail that builds up and dies
+ * away exponentially, its lows and highs at their own rates (split at 1.2 kHz), darkened by [tone]. Each side has its
+ * own noise, so the space is wide. "haram" (no [rtLow]) keeps the original impulse. [random] is injectable for tests.
+ */
+export function spaceImpulse(rate: number, spec: ReverbSpec, random = Math.random): Float32Array<ArrayBuffer>[] {
+  if (spec.rtLow === undefined) return makeImpulse(rate, spec.seconds, spec.decay ?? 2.2, spec.preDelay, random);
+  const length = Math.max(1, Math.round(rate * spec.seconds));
+  const start = Math.round(rate * spec.preDelay);
+  const rtLow = spec.rtLow, rtHigh = spec.rtHigh ?? rtLow;
+  const buildUp = spec.buildUp ?? 0.02;
+  // One-pole low-pass coefficients: the 1.2 kHz band split, and the tail's tone.
+  const pole = (hz: number) => Math.exp((-2 * Math.PI * hz) / rate);
+  const split = pole(1200);
+  const tone = pole(spec.tone ?? 8000);
+  return [0, 1].map((ch) => {
+    const data = new Float32Array(length);
+    let low = 0, out = 0;
+    for (let i = start; i < length; i++) {
+      const t = (i - start) / rate;
+      const n = random() * 2 - 1;
+      low = (1 - split) * n + split * low;
+      const high = n - low;
+      // -60 dB at rt seconds: amplitude 10^(-3t/rt).
+      const tail = low * Math.pow(10, (-3 * t) / rtLow) + high * Math.pow(10, (-3 * t) / rtHigh);
+      out = (1 - tone) * tail + tone * out;
+      data[i] = out * (1 - Math.exp(-t / buildUp));
+    }
+    // Early reflections, each smeared over ~1 ms; odd ones louder on the left, even on the right.
+    (spec.early ?? []).forEach(([at, gain], k) => {
+      const i0 = start + Math.round(rate * at);
+      const side = (k % 2 === ch ? 1 : 0.6) * gain;
+      const spread = Math.max(1, Math.round(rate * 0.0012));
+      for (let j = 0; j < spread && i0 + j < length; j++) data[i0 + j] += side * (1 - j / spread) * (random() * 0.6 + 0.7);
+    });
+    return data;
+  });
+}
+
+/**
  * A stereo impulse response: [preDelay] of silence, a few early reflections, then noise fading out exponentially
- * ([decay] higher = shorter tail). [random] is injectable for tests.
+ * ([decay] higher = shorter tail). The original model, kept for "haram". [random] is injectable for tests.
  */
 export function makeImpulse(rate: number, seconds: number, decay: number, preDelay: number, random = Math.random): Float32Array<ArrayBuffer>[] {
   const length = Math.max(1, Math.round(rate * seconds));
@@ -121,6 +188,8 @@ export class RecitationChain {
   private readonly makeup: GainNode;
   private readonly presence: BiquadFilterNode;
   private readonly echoWet: GainNode;
+  /** The loudspeaker echo's delay, tone and feedback (the Haram's, or a mosque's nearer one). */
+  private readonly echo: { delay: DelayNode; dark: BiquadFilterNode; feedback: GainNode };
   private reverb: Reverb = 'none';
   /** The reverb in use (it sets how long a recording rings out after stop). */
   get reverbPreset(): Reverb {
@@ -149,6 +218,7 @@ export class RecitationChain {
     const delay = new DelayNode(ctx, { delayTime: HARAM_ECHO.delay, maxDelayTime: 1 });
     const dark = new BiquadFilterNode(ctx, { type: 'lowpass', frequency: HARAM_ECHO.lowpass, Q: 0.5 });
     const feedback = new GainNode(ctx, { gain: HARAM_ECHO.feedback });
+    this.echo = { delay, dark, feedback };
     this.echoWet = new GainNode(ctx, { gain: 0 });
     this.output = new MediaStreamAudioDestinationNode(ctx, { channelCount: 2 });
     this.meter = new AnalyserNode(ctx, { fftSize: 1024 });
@@ -239,13 +309,17 @@ export class RecitationChain {
 
   setReverb(reverb: Reverb): void {
     if (reverb !== 'none' && reverb !== this.reverb) {
-      const r = REVERBS[reverb];
-      const channels = makeImpulse(this.ctx.sampleRate, r.seconds, r.decay, r.preDelay);
+      const channels = spaceImpulse(this.ctx.sampleRate, REVERBS[reverb]);
       const buffer = this.ctx.createBuffer(2, channels[0].length, this.ctx.sampleRate);
       channels.forEach((data, ch) => buffer.copyToChannel(data, ch));
       this.convolver.buffer = buffer;
     }
     this.reverb = reverb;
+    const echo = reverb === 'mosque' ? MOSQUE_ECHO : HARAM_ECHO;
+    const now = this.ctx.currentTime;
+    this.echo.delay.delayTime.setValueAtTime(echo.delay, now);
+    this.echo.dark.frequency.setValueAtTime(echo.lowpass, now);
+    this.echo.feedback.gain.setValueAtTime(echo.feedback, now);
     this.applyWet();
   }
 
@@ -288,7 +362,8 @@ export class RecitationChain {
     const now = this.ctx.currentTime;
     const wet = this.reverb === 'none' ? 0 : REVERBS[this.reverb].wet * this.reverbAmount;
     this.wet.gain.setTargetAtTime(wet, now, 0.05);
-    this.echoWet.gain.setTargetAtTime(this.reverb === 'haram' ? HARAM_ECHO.wet * this.reverbAmount : 0, now, 0.05);
+    const echoWet = this.reverb === 'haram' ? HARAM_ECHO.wet : this.reverb === 'mosque' ? MOSQUE_ECHO.wet : 0;
+    this.echoWet.gain.setTargetAtTime(echoWet * this.reverbAmount, now, 0.05);
   }
 
   /**
