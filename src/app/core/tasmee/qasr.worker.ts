@@ -75,7 +75,7 @@ async function cachedFile(url: string, size: number, sha: string, part: keyof ty
 function load(): Promise<ort.InferenceSession> {
   session ??= (async () => {
     // The runtime's loader comes with the app; its WebAssembly is downloaded with the model.
-    ort.env.wasm.wasmPaths = new URL('/assets/ort/', self.location.origin).href;
+    ort.env.wasm.wasmPaths = new URL('assets/ort/', self.location.href).href;
     // One thread: the app is not cross-origin isolated (no SharedArrayBuffer). Fast enough: a phrase in well under a second.
     ort.env.wasm.numThreads = 1;
     const [bytes, wasm] = await Promise.all([

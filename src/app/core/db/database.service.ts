@@ -27,11 +27,14 @@ export class DatabaseService implements SqlDb {
 
   private async open(): Promise<void> {
     if (Capacitor.getPlatform() === 'web') {
-      // Browser dev mode only: jeep-sqlite keeps the DB in IndexedDB.
+      // The web version (and browser dev mode): jeep-sqlite keeps the DB in IndexedDB.
       const { defineCustomElements } = await import('jeep-sqlite/loader');
       await defineCustomElements(window);
       if (!document.querySelector('jeep-sqlite')) {
-        document.body.appendChild(document.createElement('jeep-sqlite'));
+        const el = document.createElement('jeep-sqlite');
+        // Its engine (sql-wasm.wasm) is in the app's assets, which follow <base href> (the web version is under a sub-path).
+        el.setAttribute('wasmpath', new URL('assets', document.baseURI).pathname);
+        document.body.appendChild(el);
       }
       await customElements.whenDefined('jeep-sqlite');
       await this.sqlite.initWebStore();
