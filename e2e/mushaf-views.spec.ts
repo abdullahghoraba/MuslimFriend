@@ -129,20 +129,32 @@ test('on the printed page, tapping a word selects its whole ayah and turning the
   await expect(page.locator('.print-page .qcf-word').first()).toBeVisible();
 });
 
-test('turning the printed page with the finger: it follows, the next page lies underneath, and it turns or falls back', async ({ page }) => {
+test('turning the printed page with the finger: the next page slides in beside it, and it turns or falls back', async ({ page }) => {
   await openMushaf(page, 50, { view: 'print' });
   await expect(page.locator('.page-surface .print-page .qcf-word').first()).toBeVisible();
   await page.waitForTimeout(1500); // the pages either side load their fonts
   const box = (await page.locator('.page-surface').boundingBox())!;
   const y = box.y + box.height / 2;
-  // A short drag right: the next page (51) shows underneath, then the page falls back.
+  // Scrolling up and down, drifting a little sideways, never turns the page.
+  await page.mouse.move(box.x + box.width * 0.5, y);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * 0.5 + 30, y - 120, { steps: 10 });
+  await page.mouse.up();
+  await expect(page.locator('.page-under')).toHaveCount(0);
+  await expect(page).toHaveURL(/\/mushaf\/50$/);
+  // A short drag right: the next page (51) comes in beside it from the left, the two edge to edge; then both slide back.
   await page.mouse.move(box.x + box.width * 0.3, y);
   await page.mouse.down();
-  await page.mouse.move(box.x + box.width * 0.3 + 40, y, { steps: 5 });
+  await page.mouse.move(box.x + box.width * 0.3 + 80, y, { steps: 8 });
   await expect(page.locator('.page-under .page-num')).toHaveText('51');
   await expect(page.locator('.page-under .print-page .qcf-word').first()).toBeVisible();
-  const moved = await page.locator('.page-surface').evaluate((el) => getComputedStyle(el).transform);
-  expect(moved).not.toBe('none');
+  const [surface, beside] = await Promise.all([page.locator('.page-surface').boundingBox(), page.locator('.page-under').boundingBox()]);
+  expect(surface!.x).toBeGreaterThan(box.x + 40);
+  expect(Math.abs(beside!.x + beside!.width - surface!.x)).toBeLessThan(3);
+  await page.mouse.move(box.x + box.width * 0.3 + 160, y, { steps: 4 });
+  await page.screenshot({ path: 'test-results/mushaf-turning.png' });
+  await page.mouse.move(box.x + box.width * 0.3 + 40, y, { steps: 20 });
+  await page.waitForTimeout(300); // let the finger rest: no flick
   await page.mouse.up();
   await expect(page.locator('.page-under')).toHaveCount(0);
   await expect(page).toHaveURL(/\/mushaf\/50$/);

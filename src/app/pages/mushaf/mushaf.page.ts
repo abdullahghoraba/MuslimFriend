@@ -394,48 +394,65 @@ export class MushafPage {
   });
 
   private enablePageTurn(el: HTMLElement): void {
-    // Like turning a printed mushaf's page: the page follows the finger, the one it turns to lies underneath, and
-    // letting go past a quarter of the width (or with a flick) turns it; otherwise it falls back. Dragging right
-    // reaches the next page, as in a printed mushaf. Set on the element directly: no change detection per frame.
+    // Turning pages like a book (and like the Ayah app): the page it turns to lies beside this one and both slide
+    // together with the finger; letting go past a quarter of the width (or with a flick) turns it, otherwise both
+    // slide back. Dragging right reaches the next page, as in a printed mushaf. Only a clearly sideways movement
+    // turns the page (an up-and-down scroll that drifts a little never does), and the page does not scroll while
+    // it turns. Styles are set on the elements directly: no change detection per frame.
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const target = (dx: number) => (dx > 0 ? this.page() + 1 : this.page() - 1);
-    const settle = (to: string, after: () => void) => {
-      el.style.transition = reduced ? 'none' : 'transform 0.22s cubic-bezier(0.2, 0.7, 0.3, 1)';
-      el.style.transform = to;
+    const beside = () => this.host.nativeElement.querySelector<HTMLElement>('.page-under');
+    const width = () => el.clientWidth || window.innerWidth;
+    // Where the neighbouring page sits while the page is moved by dx: just off the edge it comes in from.
+    const besideAt = (dx: number) => `translateX(${dx > 0 ? dx - width() : dx + width()}px)`;
+    const move = (dx: number, turnable: boolean) => {
+      el.style.transform = `translateX(${turnable ? dx : dx * 0.2}px)`;
+      const b = beside();
+      if (b) {
+        b.style.transition = 'none';
+        b.style.transform = turnable ? besideAt(dx) : 'translateX(100%)';
+      }
+    };
+    const settle = (dx: number, turn: boolean, after: () => void) => {
+      const ease = reduced ? 'none' : 'transform 0.26s cubic-bezier(0.22, 0.8, 0.3, 1)';
+      const b = beside();
+      el.style.transition = ease;
+      el.style.transform = turn ? `translateX(${Math.sign(dx) * width()}px)` : 'translateX(0)';
+      if (b) {
+        b.style.transition = ease;
+        // Turned: it takes the page's place. Not turned: back off the edge it came in from.
+        b.style.transform = turn ? 'translateX(0)' : `translateX(${dx > 0 ? -width() : width()}px)`;
+      }
       setTimeout(() => {
         el.style.transition = '';
         el.style.transform = '';
         el.classList.remove('dragging');
         after();
-      }, reduced ? 0 : 230);
+      }, reduced ? 0 : 270);
     };
     const gesture = createGesture({
       el,
       gestureName: 'mushaf-swipe',
-      threshold: 12,
+      threshold: 18,
+      maxAngle: 25,
       direction: 'x',
+      disableScroll: true,
       onStart: () => {
         el.style.transition = 'none';
+        el.classList.add('dragging');
       },
       onMove: (d) => {
         const p = target(d.deltaX);
         const turnable = p >= 1 && p <= this.pageCount();
         if (turnable && this.under() !== p) this.under.set(p);
-        el.classList.add('dragging');
-        // At the first or last page the page only gives a little (nothing to turn to).
-        el.style.transform = `translateX(${turnable ? d.deltaX : d.deltaX * 0.2}px)`;
+        move(d.deltaX, turnable);
       },
       onEnd: (d) => {
-        const width = el.clientWidth || window.innerWidth;
         const p = target(d.deltaX);
-        const turn = p >= 1 && p <= this.pageCount() && (Math.abs(d.deltaX) > width * 0.25 || (Math.abs(d.velocityX) > 0.35 && Math.abs(d.deltaX) > 30));
-        if (!turn) {
-          settle('translateX(0)', () => this.under.set(null));
-          return;
-        }
-        settle(`translateX(${Math.sign(d.deltaX) * width}px)`, () => {
-          // The page underneath becomes the page: no second slide.
-          this.goTo(p, 'none');
+        const turn = p >= 1 && p <= this.pageCount() && (Math.abs(d.deltaX) > width() * 0.25 || (Math.abs(d.velocityX) > 0.35 && Math.abs(d.deltaX) > 30));
+        settle(d.deltaX, turn, () => {
+          // The neighbouring page, now in place, becomes the page: no second slide.
+          if (turn) this.goTo(p, 'none');
           this.under.set(null);
         });
       },
