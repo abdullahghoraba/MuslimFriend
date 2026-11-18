@@ -1,7 +1,7 @@
 /* Offline support for the web version (iPhone home-screen app). Not used by the Android app.
  * Pages: the network first, the saved copy offline. The app's own files: the saved copy at once, refreshed in the
  * background. Other sites (recitations, tafsir downloads) are left to the browser: audio needs its range requests. */
-const CACHE = 'uns-web-v1';
+const CACHE = 'uns-web-v2';
 const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {
