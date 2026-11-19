@@ -1530,7 +1530,14 @@
     "offlineAbout": "Kur’an tilavetiyle, telefonuna okuyan sıradan insanlar dahil, eğitilmiş bir model telefonunuzda çalışır: 40 MB’lık tek bir indirmeden sonra internet gerekmez.",
     "offlineReady": "Akıllı düzeltici hazır, çevrimdışı çalışır.",
     "noVoice": "Mikrofon hiçbir şey duymuyor: kapalı olmadığını ve uygulamanın izni olduğunu kontrol edin.",
-    "mic": "Mikrofon seviyesi"
+    "mic": "Mikrofon seviyesi",
+    "checkLevel": "Neler kontrol edilsin",
+    "checkWords": "Kelimeler",
+    "checkTashkeel": "Kelimeler + harekeler",
+    "checkTajweed": "Harekeler + tecvid",
+    "checkHint": "Harekeler (ve tecvid) ezber kontrolü bitince yapay zekâ ile kontrol edilir; internet gerekir. Hataları puana sayılır.",
+    "checkNeedsSmart": "Hareke ve tecvid kontrolü yalnızca okumanızın sesini saklayan akıllı düzeltici ile çalışır.",
+    "tashkeelTitle": "Harekeler"
   },
   "ruqyah": {
     "title": "Rukye",

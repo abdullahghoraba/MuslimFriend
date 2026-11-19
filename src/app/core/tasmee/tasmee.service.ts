@@ -23,7 +23,14 @@ export interface TasmeePrefs {
   hideText: boolean;
   /** Stop at a mistake and show the right word. */
   stopOnMistake: boolean;
+  /**
+   * What counts as a mistake: the words only (checked live, offline), or also the harakat, or the harakat and the
+   * tajweed (both checked by the tajweed server when the tasmee' ends; they need the Quran AI, which keeps the audio).
+   */
+  check: TasmeeCheck;
 }
+
+export type TasmeeCheck = 'words' | 'tashkeel' | 'tajweed';
 
 const HISTORY_KEY = 'tasmeeHistory';
 const PREFS_KEY = 'tasmeePrefs';
@@ -53,7 +60,7 @@ export function dropOpenings(heard: string[], expectedFirst: string[]): string[]
 export class TasmeeService {
   readonly history = signal<TasmeeSession[]>([]);
   /** The Quran AI by default: it hears the Quran much better (until it is downloaded, the phone's recogniser is used). */
-  readonly prefs = signal<TasmeePrefs>({ engine: 'offline', hideText: true, stopOnMistake: false });
+  readonly prefs = signal<TasmeePrefs>({ engine: 'offline', hideText: true, stopOnMistake: false, check: 'words' });
   private loaded?: Promise<void>;
 
   load(): Promise<void> {
@@ -71,6 +78,7 @@ export class TasmeeService {
           engine: v.engine === 'phone' ? 'phone' : d.engine,
           hideText: typeof v.hideText === 'boolean' ? v.hideText : d.hideText,
           stopOnMistake: typeof v.stopOnMistake === 'boolean' ? v.stopOnMistake : d.stopOnMistake,
+          check: v.check === 'tashkeel' || v.check === 'tajweed' ? v.check : d.check,
         }));
       } catch {
         /* defaults */

@@ -40,6 +40,17 @@
         } @else {
           <p class="hint">{{ 'tasmee.phoneAbout' | translate }}</p>
         }
+
+        <!-- What counts as a mistake: the words, or also the harakat, or the harakat and tajweed. -->
+        <h2>{{ 'tasmee.checkLevel' | translate }}</h2>
+        <ion-segment class="check-level" [value]="tasmee.prefs().check" (ionChange)="tasmee.setPrefs({ check: $any($event.detail.value) })">
+          <ion-segment-button value="words"><ion-label>{{ 'tasmee.checkWords' | translate }}</ion-label></ion-segment-button>
+          <ion-segment-button value="tashkeel"><ion-label>{{ 'tasmee.checkTashkeel' | translate }}</ion-label></ion-segment-button>
+          <ion-segment-button value="tajweed"><ion-label>{{ 'tasmee.checkTajweed' | translate }}</ion-label></ion-segment-button>
+        </ion-segment>
+        @if (tasmee.prefs().check !== 'words') {
+          <p class="hint">{{ (tasmee.prefs().engine === 'offline' ? 'tasmee.checkHint' : 'tasmee.checkNeedsSmart') | translate }}</p>
+        }
         @if (best() !== null) {
           <p class="hint">{{ 'tasmee.best' | translate: { pct: ((best() ?? 0) * 100).toFixed(0) } }}</p>
         }
@@ -131,7 +142,7 @@
     <!-- Tajweed: the phrases' audio checked by the tajweed server (AI), after the words. -->
     @if (state() === 'done' && tajweedPhrases().length) {
       <section class="card tajweed-card">
-        <h2><ion-icon name="sparkles-outline" aria-hidden="true" /> {{ 'tajweed.title' | translate }}</h2>
+        <h2><ion-icon name="sparkles-outline" aria-hidden="true" /> {{ (tasmee.prefs().check === 'tashkeel' ? 'tasmee.tashkeelTitle' : 'tajweed.title') | translate }}</h2>
         @switch (tajweedState()) {
           @case ('idle') {
             <p class="hint">{{ 'tajweed.hint' | translate }}</p>

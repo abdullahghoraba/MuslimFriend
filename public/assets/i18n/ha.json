@@ -1530,7 +1530,14 @@
     "offlineAbout": "Wani samfuri da aka horar da shi kan karatun Alƙur’ani, har da na mutane talakawa suna karatu a wayarsu, yana aiki a wayarka: babu buƙatar intanet bayan saukewa ɗaya ta 40 MB.",
     "offlineReady": "Mai gyara mai basira ya shirya, yana aiki ba tare da intanet ba.",
     "noVoice": "Makirufo ba ya jin komai: duba cewa ba a rufe shi ba kuma manhajar tana da izinin amfani da shi.",
-    "mic": "Ƙarfin makirufo"
+    "mic": "Ƙarfin makirufo",
+    "checkLevel": "Abin da za a duba",
+    "checkWords": "Kalmomi",
+    "checkTashkeel": "Kalmomi + wasali",
+    "checkTajweed": "Wasali + tajwidi",
+    "checkHint": "Ana duba wasali (da tajwidi) da AI bayan an gama tasmi‘; yana bukatar intanet. Kurakuransu suna ƙirguwa a maki.",
+    "checkNeedsSmart": "Duba wasali da tajwidi yana aiki ne kawai da mai gyara mai wayo, wanda ke ajiye sautin karatunka.",
+    "tashkeelTitle": "Wasali (harakat)"
   },
   "ruqyah": {
     "title": "Ruƙiyya ta shari'a",

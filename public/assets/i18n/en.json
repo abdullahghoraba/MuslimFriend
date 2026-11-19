@@ -1530,7 +1530,14 @@
     "offlineAbout": "A model trained on Quran recitation, including ordinary people reciting into their phones, runs on your phone: no internet needed after one 40 MB download.",
     "offlineReady": "The smart corrector is ready and works offline.",
     "noVoice": "The microphone hears nothing: check it is not covered and that the app may use it.",
-    "mic": "Microphone level"
+    "mic": "Microphone level",
+    "checkLevel": "What to check",
+    "checkWords": "Words",
+    "checkTashkeel": "Words + harakat",
+    "checkTajweed": "Harakat + tajweed",
+    "checkHint": "Harakat (and tajweed) are checked by AI when the tasmee' ends; this needs internet. Their mistakes count in the score.",
+    "checkNeedsSmart": "The harakat and tajweed check works with the smart corrector only, which keeps your recitation's audio.",
+    "tashkeelTitle": "Harakat"
   },
   "ruqyah": {
     "title": "Ruqyah",

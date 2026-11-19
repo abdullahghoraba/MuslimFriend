@@ -1530,7 +1530,14 @@
     "offlineAbout": "Model yang dilatih dengan bacaan Al-Qur’an, termasuk orang biasa yang membaca ke ponselnya, berjalan di ponsel Anda: tanpa internet setelah sekali unduh 40 MB.",
     "offlineReady": "Korektor pintar siap dan bekerja offline.",
     "noVoice": "Mikrofon tidak mendengar apa pun: pastikan tidak tertutup dan aplikasi diizinkan memakainya.",
-    "mic": "Level mikrofon"
+    "mic": "Level mikrofon",
+    "checkLevel": "Yang diperiksa",
+    "checkWords": "Kata",
+    "checkTashkeel": "Kata + harakat",
+    "checkTajweed": "Harakat + tajwid",
+    "checkHint": "Harakat (dan tajwid) diperiksa AI saat setoran selesai; perlu internet. Kesalahannya dihitung dalam nilai.",
+    "checkNeedsSmart": "Pemeriksaan harakat dan tajwid hanya bekerja dengan korektor pintar, yang menyimpan suara bacaan Anda.",
+    "tashkeelTitle": "Harakat"
   },
   "ruqyah": {
     "title": "Ruqyah",

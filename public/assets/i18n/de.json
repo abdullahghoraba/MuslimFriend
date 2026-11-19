@@ -1530,7 +1530,14 @@
     "offlineAbout": "Ein auf Koranrezitation trainiertes Modell – auch auf ganz normale Menschen, die ins Handy rezitieren – läuft auf deinem Telefon: nach einem Download von 40 MB ohne Internet.",
     "offlineReady": "Der intelligente Prüfer ist bereit und funktioniert offline.",
     "noVoice": "Das Mikrofon hört nichts: Prüfe, dass es nicht verdeckt ist und die App es nutzen darf.",
-    "mic": "Mikrofonpegel"
+    "mic": "Mikrofonpegel",
+    "checkLevel": "Was geprüft wird",
+    "checkWords": "Wörter",
+    "checkTashkeel": "Wörter + Harakat",
+    "checkTajweed": "Harakat + Tadschwid",
+    "checkHint": "Harakat (und Tadschwid) werden am Ende des Tasmee von KI geprüft; dafür braucht es Internet. Ihre Fehler zählen zur Bewertung.",
+    "checkNeedsSmart": "Die Prüfung von Harakat und Tadschwid funktioniert nur mit dem intelligenten Korrektor, der den Ton deiner Rezitation behält.",
+    "tashkeelTitle": "Harakat"
   },
   "ruqyah": {
     "title": "Ruqya",

@@ -1530,7 +1530,14 @@
     "offlineAbout": "Un modèle entraîné sur la récitation du Coran, y compris celle de personnes ordinaires récitant dans leur téléphone, tourne sur votre téléphone : plus besoin d’internet après un téléchargement de 40 Mo.",
     "offlineReady": "Le correcteur intelligent est prêt et fonctionne hors ligne.",
     "noVoice": "Le micro n’entend rien : vérifiez qu’il n’est pas couvert et que l’appli peut l’utiliser.",
-    "mic": "Niveau du micro"
+    "mic": "Niveau du micro",
+    "checkLevel": "Ce qui est vérifié",
+    "checkWords": "Mots",
+    "checkTashkeel": "Mots + voyelles",
+    "checkTajweed": "Voyelles + tajwid",
+    "checkHint": "Les voyelles (et le tajwid) sont vérifiées par IA à la fin du tasmî‘ ; il faut Internet. Leurs erreurs comptent dans le score.",
+    "checkNeedsSmart": "La vérification des voyelles et du tajwid fonctionne seulement avec le correcteur intelligent, qui garde l’audio de votre récitation.",
+    "tashkeelTitle": "Voyelles (harakat)"
   },
   "ruqyah": {
     "title": "Roqya",

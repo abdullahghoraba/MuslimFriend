@@ -186,7 +186,19 @@ export class TasmeeComponent implements OnInit, OnDestroy {
       .map((r, i) => ({ r, w: this.words()[i], i }))
       .filter((x) => x.r.status === 'wrong' || x.r.status === 'skipped'),
   );
-  readonly scorePct = computed(() => Math.round(score(this.results()) * 100));
+  /**
+   * The score: the words, and when the reader chose to be checked on harakat (or harakat and tajweed), a word said
+   * right but with such a mistake counts as a mistake too.
+   */
+  readonly scorePct = computed(() => {
+    const results = this.results();
+    let s = score(results);
+    if (this.tasmee.prefs().check !== 'words' && results.length) {
+      const marked = [...this.tajweedIssues().keys()].filter((i) => results[i]?.status === 'correct').length;
+      s = Math.max(0, s - marked / results.length);
+    }
+    return Math.round(s * 100);
+  });
   readonly best = computed(() => this.tasmee.best(this.sura(), this.from(), this.to()));
 
   constructor() {
@@ -386,6 +398,8 @@ export class TasmeeComponent implements OnInit, OnDestroy {
         .filter((m) => m.i < reached)
         .map((m) => ({ aya: m.w.ref.aya, word: m.w.text, heard: m.r.heard, kind: m.r.status as 'wrong' | 'skipped' })),
     });
+    // Checked on harakat (or harakat and tajweed): the check starts by itself.
+    if (this.tasmee.prefs().check !== 'words' && this.tajweedPhrases().length) void this.checkTajweed();
   }
 
   reset(): void {
@@ -473,6 +487,8 @@ export class TasmeeComponent implements OnInit, OnDestroy {
         // A letter said wrongly is shown only if the word check heard a wrong word too: when the word was recognised
         // as said right, a changed letter is most often the tajweed model mishearing (madd, ghunnah, harakat stay).
         if (e.type === 'normal' && results[k]?.status === 'correct') continue;
+        // Checked on harakat only: the tajweed rules (madd, ghunnah, qalqalah...) are not shown.
+        if (this.tasmee.prefs().check === 'tashkeel' && e.type === 'tajweed') continue;
         issues.set(k, [...(issues.get(k) ?? []), e]);
       }
     });

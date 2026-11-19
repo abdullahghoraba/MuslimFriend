@@ -40,6 +40,21 @@ test('Hifz has its plans, tasmee\' and «test yourself» as three tabs, and «te
   await page.screenshot({ path: 'test-results/hifz-tasmee-tab.png' });
 });
 
+test('tasmee\' can check the harakat, or the harakat and tajweed, and remembers the choice', async ({ page }) => {
+  await onboard(page);
+  await page.goto('/hifz?tab=tasmee');
+  const tasmee = page.locator('app-hifz:not(.ion-page-hidden) app-tasmee');
+  const level = tasmee.locator('ion-segment.check-level ion-segment-button');
+  await expect(level).toHaveCount(3);
+  await expect(level.first()).toHaveClass(/segment-button-checked/); // the words only, by default
+  await expect(tasmee.getByText(ar.tasmee.checkHint)).toHaveCount(0);
+  await tasmee.locator('ion-segment.check-level ion-segment-button[value=tashkeel]').click();
+  await expect(tasmee.getByText(ar.tasmee.checkHint)).toBeVisible();
+  await page.screenshot({ path: 'test-results/tasmee-check-level.png' });
+  await page.reload();
+  await expect(page.locator('app-hifz:not(.ion-page-hidden) app-tasmee ion-segment.check-level ion-segment-button[value=tashkeel]')).toHaveClass(/segment-button-checked/);
+});
+
 test('the tab bar keeps every icon in the same place and fills the selected one', async ({ page }) => {
   await onboard(page);
   await page.goto('/tasbih');

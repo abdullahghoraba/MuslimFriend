@@ -1530,7 +1530,14 @@
     "offlineAbout": "Muundo uliofunzwa kwa usomaji wa Qur’ani, pamoja na watu wa kawaida wakisoma kwenye simu zao, unafanya kazi kwenye simu yako: hakuna mtandao baada ya kupakua mara moja MB 40.",
     "offlineReady": "Kisahihishaji mahiri kiko tayari na kinafanya kazi bila mtandao.",
     "noVoice": "Maikrofoni haisikii chochote: hakikisha haijafunikwa na programu ina ruhusa ya kuitumia.",
-    "mic": "Kiwango cha maikrofoni"
+    "mic": "Kiwango cha maikrofoni",
+    "checkLevel": "Kinachokaguliwa",
+    "checkWords": "Maneno",
+    "checkTashkeel": "Maneno + harakati",
+    "checkTajweed": "Harakati + tajwidi",
+    "checkHint": "Harakati (na tajwidi) hukaguliwa na AI tasmi‘ ikiisha; inahitaji mtandao. Makosa yake yanahesabiwa kwenye alama.",
+    "checkNeedsSmart": "Ukaguzi wa harakati na tajwidi hufanya kazi na kisahihishaji mahiri pekee, kinachohifadhi sauti ya kisomo chako.",
+    "tashkeelTitle": "Harakati"
   },
   "ruqyah": {
     "title": "Ruqya ya kisheria",

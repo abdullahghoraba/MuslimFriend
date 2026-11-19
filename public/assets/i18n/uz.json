@@ -1530,7 +1530,14 @@
     "offlineAbout": "Qur’on tilovatida, jumladan oddiy odamlarning telefonga qilgan tilovatida o‘qitilgan model telefoningizda ishlaydi: 40 MB bir marta yuklangach internet kerak emas.",
     "offlineReady": "Aqlli tekshiruvchi tayyor, oflayn ishlaydi.",
     "noVoice": "Mikrofon hech narsani eshitmayapti: yopilmaganini va ilovaga ruxsat berilganini tekshiring.",
-    "mic": "Mikrofon darajasi"
+    "mic": "Mikrofon darajasi",
+    "checkLevel": "Nima tekshiriladi",
+    "checkWords": "So‘zlar",
+    "checkTashkeel": "So‘zlar + harakatlar",
+    "checkTajweed": "Harakatlar + tajvid",
+    "checkHint": "Tasmi‘ tugagach harakatlar (va tajvid) sun’iy intellekt bilan tekshiriladi; internet kerak. Xatolari ballga hisoblanadi.",
+    "checkNeedsSmart": "Harakat va tajvid tekshiruvi faqat tilovatingiz ovozini saqlaydigan aqlli tuzatuvchi bilan ishlaydi.",
+    "tashkeelTitle": "Harakatlar"
   },
   "ruqyah": {
     "title": "Shar'iy ruqya",

@@ -1530,7 +1530,14 @@
     "offlineAbout": "一个用古兰经诵读训练的模型（包括普通人对着手机诵读）在你的手机上运行：下载一次 40 MB 后无需联网。",
     "offlineReady": "智能纠错已就绪，可离线使用。",
     "noVoice": "麦克风听不到声音：请确认它没有被遮挡，并且应用有权使用它。",
-    "mic": "麦克风音量"
+    "mic": "麦克风音量",
+    "checkLevel": "检查内容",
+    "checkWords": "词语",
+    "checkTashkeel": "词语 + 符号",
+    "checkTajweed": "符号 + 诵读规则",
+    "checkHint": "诵读结束后由 AI 检查元音符号（及诵读规则），需要联网；其错误计入得分。",
+    "checkNeedsSmart": "元音符号与诵读规则检查只适用于智能纠错（它会保留您的诵读音频）。",
+    "tashkeelTitle": "元音符号"
   },
   "ruqyah": {
     "title": "合法的鲁格耶（诵经祈护）",

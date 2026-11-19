@@ -1530,7 +1530,14 @@
     "offlineAbout": "Model yang dilatih dengan bacaan al-Quran, termasuk orang biasa membaca ke telefon mereka, berjalan pada telefon anda: tanpa internet selepas sekali muat turun 40 MB.",
     "offlineReady": "Penyemak pintar sedia dan berfungsi luar talian.",
     "noVoice": "Mikrofon tidak mendengar apa-apa: pastikan ia tidak ditutup dan aplikasi dibenarkan menggunakannya.",
-    "mic": "Tahap mikrofon"
+    "mic": "Tahap mikrofon",
+    "checkLevel": "Apa yang disemak",
+    "checkWords": "Perkataan",
+    "checkTashkeel": "Perkataan + baris",
+    "checkTajweed": "Baris + tajwid",
+    "checkHint": "Baris (dan tajwid) disemak oleh AI apabila semakan hafazan tamat; perlukan internet. Kesilapannya dikira dalam markah.",
+    "checkNeedsSmart": "Semakan baris dan tajwid hanya berfungsi dengan pembetul pintar, yang menyimpan audio bacaan anda.",
+    "tashkeelTitle": "Baris (harakat)"
   },
   "ruqyah": {
     "title": "Ruqyah",

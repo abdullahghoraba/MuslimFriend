@@ -1530,7 +1530,14 @@
     "offlineAbout": "Un modelo entrenado con recitación del Corán, incluida la de personas corrientes que recitan al teléfono, funciona en tu móvil: sin internet tras una única descarga de 40 MB.",
     "offlineReady": "El corrector inteligente está listo y funciona sin conexión.",
     "noVoice": "El micrófono no oye nada: comprueba que no esté tapado y que la app pueda usarlo.",
-    "mic": "Nivel del micrófono"
+    "mic": "Nivel del micrófono",
+    "checkLevel": "Qué se revisa",
+    "checkWords": "Palabras",
+    "checkTashkeel": "Palabras + harakat",
+    "checkTajweed": "Harakat + tajwid",
+    "checkHint": "Las harakat (y el tajwid) se revisan con IA al terminar el tasmee; necesita internet. Sus errores cuentan en la puntuación.",
+    "checkNeedsSmart": "La revisión de harakat y tajwid solo funciona con el corrector inteligente, que guarda el audio de tu recitación.",
+    "tashkeelTitle": "Harakat"
   },
   "ruqyah": {
     "title": "Ruqya",
