@@ -71,6 +71,76 @@ export function parseEvents(text: string): { results?: ({ errors?: TajweedError[
   throw new Error('tajweed: no result');
 }
 
+/**
+ * Cuts a phrase where the reciter paused between two words (a gap of at least [minGap] seconds), so each part ends
+ * at a stop and the tajweed server reads its last word as a waqf. [words] are the phrase's words in order with
+ * their frames in the recogniser's output ([frames] for the whole phrase, [samples] of audio). Returns, per part,
+ * the words' positions in [words] and the part's audio range in samples.
+ */
+export function splitAtPauses(
+  words: { start: number; end: number }[], frames: number, samples: number, minGap = 0.3,
+): { from: number; to: number; first: number; last: number }[] {
+  if (!words.length || frames <= 0) return [];
+  const spf = samples / frames;
+  const parts: { from: number; to: number; first: number; last: number }[] = [];
+  let from = 0;
+  let first = 0;
+  for (let i = 1; i < words.length; i++) {
+    const gap = ((words[i].start - words[i - 1].end) * spf) / 16000;
+    if (gap >= minGap) {
+      const cut = Math.round(((words[i - 1].end + words[i].start) / 2) * spf);
+      parts.push({ from, to: cut, first, last: i - 1 });
+      from = cut;
+      first = i;
+    }
+  }
+  parts.push({ from, to: samples, first, last: words.length - 1 });
+  return parts;
+}
+
+/** A word's letters only: no harakat or Quranic marks, one form of alif and ya. */
+function letters(s: string): string {
+  return s
+    .replace(/[ً-ٰٟۖ-ۭـۦۥڇ]/g, '')
+    .replace(/[ٱأإآ]/g, 'ا')
+    .replace(/ى/g, 'ي')
+    .replace(/ں/g, 'ن')
+    .replace(/\s+/g, '');
+}
+
+/** Has a vowel (haraka or tanween) on it. */
+const voweled = (s: string) => /[ً-ِ]/.test(s);
+
+/**
+ * A finding that is only how a reciter pauses (waqf) in the middle of a phrase, which the server, reading the
+ * phrase as one breath, counts as a mistake: the last letter said with sukun (or qalqalah) instead of its vowel,
+ * a madd lengthened at the stop ('arid), a ghunnah or idgham with the next word not made across the pause, or the
+ * next word's first letter heard at the end of this one. Real mistakes are kept: a different vowel, an added vowel,
+ * a missing madd. Checked on recitations by Husary, Minshawi and Alafasy (no false mistakes left) and a Warsh
+ * recitation (its differences from Hafs still found).
+ */
+export function pauseArtifact(e: TajweedError, word: string, next?: string): boolean {
+  const w = letters(word);
+  const n = next ? letters(next) : '';
+  const exp = letters(e.expected ?? '');
+  const heard = letters(e.heard ?? '');
+  if (e.type === 'tashkeel') {
+    // The last letter: its vowel dropped (sukun, or qalqalah on a qalqalah letter) at a stop.
+    if (exp.length === 1 && exp === heard && exp === w.slice(-1) && voweled(e.expected) && !voweled(e.heard)) return true;
+    // A doubled letter (idgham / ghunnah into the next word) said once: the reciter stopped before that word.
+    if (exp.length >= 2 && new Set(exp).size === 1 && heard === exp[0] && (exp[0] === w[0] || exp[0] === n[0])) return true;
+    // The next word's first letter heard as part of this word's ending.
+    if (e.kind === 'insert' && n && heard.length === exp.length + 1 && heard.startsWith(exp) && heard.slice(-1) === n[0]) return true;
+  }
+  if (e.type === 'tajweed') {
+    const madd = (s: string) => (s.match(/[ۦۥا]/g) ?? []).length;
+    const natural = e.rules?.some((r) => /المد الطبيعي/.test(r.ar)) ?? false;
+    // A natural madd made longer on the word's last syllable: madd 'arid at a stop (2, 4 or 6 counts are all right).
+    if (natural && madd(e.heard ?? '') > madd(e.expected ?? '') && /[اوي][^اوي]$/.test(w)) return true;
+  }
+  return false;
+}
+
 /** 16-bit PCM WAV (mono) of 16 kHz samples, base64. */
 export function wavBase64(samples: Float32Array, rate = 16000): string {
   const bytes = new Uint8Array(44 + samples.length * 2);

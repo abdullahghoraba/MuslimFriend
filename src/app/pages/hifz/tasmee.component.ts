@@ -9,7 +9,7 @@ import { HeardSource, WordResult, alignRecitation, alignWithCost, bestAlternativ
 import { forcedGap, modelLetters } from '../../core/tasmee/ctc-score';
 import { TasmeeEngine, TasmeeService, dropOpenings } from '../../core/tasmee/tasmee.service';
 import { QuranSpeech } from '../../core/tasmee/quran-speech';
-import { TajweedError, TajweedPart, TajweedPrefs, TajweedService } from '../../core/tasmee/tajweed.service';
+import { TajweedError, TajweedPart, TajweedPrefs, TajweedService, pauseArtifact, splitAtPauses } from '../../core/tasmee/tajweed.service';
 
 import { PhoneSpeech, PhraseReading, SpeechCallbacks } from '../../native/speech';
 import { QuranService } from '../../core/quran/quran.service';
@@ -431,21 +431,32 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     });
     const out: { audio: Float32Array; parts: TajweedPart[] }[] = [];
     for (const [phrase, list] of [...byPhrase.entries()].sort((a, b) => a[0] - b[0])) {
-      const audio = this.finals()[phrase]?.reading?.audio;
-      if (!audio || audio.length > 20 * 16000 || audio.length < 0.3 * 16000) continue;
+      const reading = this.finals()[phrase]?.reading;
+      const audio = reading?.audio;
+      if (!reading || !audio || audio.length < 0.3 * 16000) continue;
       list.sort((a, b) => a - b);
       if (list[list.length - 1] - list[0] + 1 !== list.length) continue;
       // Every word heard in the phrase must be one of these (no isti'adha or basmala before them, nothing said twice).
-      const heardHere = this.finals()[phrase]?.reading?.words.length ?? 0;
-      if (heardHere > list.length + 1) continue;
-      const parts: TajweedPart[] = [];
-      for (const k of list) {
-        const w = words[k];
-        const last = parts[parts.length - 1];
-        if (last && last[1] === w.ref.aya) last[3] = w.n;
-        else parts.push([w.ref.sura, w.ref.aya, w.n, w.n]);
+      if (reading.words.length > list.length + 1) continue;
+      // Cut where the reciter paused (waqf) inside the phrase: each part then ends at a stop, as the server expects;
+      // read as one breath, a stop's sukun or longer madd would be counted as mistakes.
+      const spans = list.map((k) => {
+        const h = results[k].h ?? [];
+        const first = h.length ? sources[h[0]] : undefined;
+        const last = h.length ? sources[h[h.length - 1]] : undefined;
+        return { start: first?.start ?? 0, end: last?.end ?? 0 };
+      });
+      for (const p of splitAtPauses(spans, reading.frames, audio.length)) {
+        if (p.to - p.from > 20 * 16000 || p.to - p.from < 0.3 * 16000) continue;
+        const parts: TajweedPart[] = [];
+        for (const k of list.slice(p.first, p.last + 1)) {
+          const w = words[k];
+          const last = parts[parts.length - 1];
+          if (last && last[1] === w.ref.aya) last[3] = w.n;
+          else parts.push([w.ref.sura, w.ref.aya, w.n, w.n]);
+        }
+        out.push({ audio: audio.subarray(p.from, p.to), parts });
       }
-      out.push({ audio, parts });
     }
     return out;
   }
@@ -487,6 +498,8 @@ export class TasmeeComponent implements OnInit, OnDestroy {
         // A letter said wrongly is shown only if the word check heard a wrong word too: when the word was recognised
         // as said right, a changed letter is most often the tajweed model mishearing (madd, ghunnah, harakat stay).
         if (e.type === 'normal' && results[k]?.status === 'correct') continue;
+        // How a reciter pauses mid-phrase (sukun at a stop, madd 'arid...) is not a mistake.
+        if (e.type !== 'normal' && pauseArtifact(e, words[k].text, words[k + 1]?.text)) continue;
         // Checked on harakat only: the tajweed rules (madd, ghunnah, qalqalah...) are not shown.
         if (this.tasmee.prefs().check === 'tashkeel' && e.type === 'tajweed') continue;
         issues.set(k, [...(issues.get(k) ?? []), e]);
