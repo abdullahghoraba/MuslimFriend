@@ -596,7 +596,7 @@
     "viewMode": "显示方式",
     "viewFlow": "连续文本",
     "viewPrint": "印刷页面",
-    "printZoomHint": "印刷页面保持原有大小；放大字体时显示连续文本。",
+    "printZoomHint": "印刷页始终像纸质经本一样铺满屏幕，经文位置不变。字体大小适用于连续文本视图。",
     "printOffline": "此印刷页面首次打开需要联网，因此显示连续文本。"
   },
   "quran": {

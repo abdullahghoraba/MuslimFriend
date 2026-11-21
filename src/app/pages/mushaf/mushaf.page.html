@@ -54,7 +54,7 @@
             <ion-segment-button value="flow"><ion-label>{{ 'mushaf.viewFlow' | translate }}</ion-label></ion-segment-button>
             <ion-segment-button value="print"><ion-label>{{ 'mushaf.viewPrint' | translate }}</ion-label></ion-segment-button>
           </ion-segment>
-          @if (madinahView() === 'print' && quranScale() > 1) {
+          @if (madinahView() === 'print') {
             <p class="view-hint">{{ 'mushaf.printZoomHint' | translate }}</p>
           }
         }
@@ -88,7 +88,8 @@
   }
 </ion-header>
 
-<ion-content [class]="'mushaf theme-' + theme()" (click)="rangeMode() ? null : selected.set(null)">
+<!-- The printed page always fits the screen: it never scrolls. -->
+<ion-content [class]="'mushaf theme-' + theme()" [scrollY]="!printRows()" (click)="rangeMode() ? null : selected.set(null)">
   @if (!quran.ready()) {
     <div class="loading"><ion-spinner /></div>
   } @else {

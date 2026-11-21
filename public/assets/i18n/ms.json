@@ -596,7 +596,7 @@
     "viewMode": "Paparan",
     "viewFlow": "Teks berterusan",
     "viewPrint": "Halaman bercetak",
-    "printZoomHint": "Halaman bercetak kekal pada saiznya; saiz teks lebih besar memaparkan teks berterusan.",
+    "printZoomHint": "Halaman bercetak sentiasa memenuhi skrin seperti mushaf kertas, dan ayatnya tidak beralih. Saiz teks digunakan untuk teks bersambung.",
     "printOffline": "Halaman bercetak ini memerlukan internet kali pertama dibuka, jadi teks berterusan dipaparkan."
   },
   "quran": {

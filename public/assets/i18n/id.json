@@ -596,7 +596,7 @@
     "viewMode": "Tampilan",
     "viewFlow": "Teks mengalir",
     "viewPrint": "Halaman cetak",
-    "printZoomHint": "Halaman cetak tetap pada ukurannya; ukuran teks lebih besar menampilkan teks mengalir.",
+    "printZoomHint": "Halaman cetak selalu memenuhi layar seperti mushaf kertas, dan ayat-ayatnya tidak berpindah. Ukuran teks berlaku untuk teks bersambung.",
     "printOffline": "Halaman cetak ini butuh internet saat pertama dibuka, jadi teks mengalir ditampilkan."
   },
   "quran": {

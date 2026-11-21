@@ -596,7 +596,7 @@
     "viewMode": "Koʻrinish",
     "viewFlow": "Uzluksiz matn",
     "viewPrint": "Bosma sahifa",
-    "printZoomHint": "Bosma sahifa oʻz oʻlchamida qoladi; katta shriftda uzluksiz matn koʻrsatiladi.",
+    "printZoomHint": "Bosma sahifa qog‘oz mushafdek har doim ekranni to‘ldiradi, oyatlari joyidan siljimaydi. Matn o‘lchami uzluksiz matnga tegishli.",
     "printOffline": "Bu bosma sahifa birinchi marta ochilganda internet talab qiladi, shuning uchun uzluksiz matn koʻrsatildi."
   },
   "quran": {

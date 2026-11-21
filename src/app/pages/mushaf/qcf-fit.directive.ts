@@ -63,14 +63,24 @@ export class QcfFitDirective implements AfterViewInit, OnDestroy {
     const widest = Math.max(0, ...widths);
     el.classList.remove('measuring');
     if (!widest) return;
-    const size = Math.max(8, (REF * (width - 2)) / widest);
-    el.style.setProperty('--qcf-size', `${size}px`);
-    // Rows spaced as the print spaces them: the page's rows (15, or 8 on pages 1 and 2) share the screen's height
-    // below the toolbar and above the page-turn buttons, within 1.7 and 2.6 times the type size.
+    // The whole page on the screen, as a printed page (and as Quran for Android and Ayah show it): the type is as
+    // large as both the width and the height allow, so the page never scrolls and every ayah keeps its place. The
+    // page's rows (15, or 8 on pages 1 and 2) share the height between the toolbar and the page number.
     const rows = el.querySelectorAll(':scope > .print-line, :scope > .print-basmala, :scope > .print-title').length;
-    const top = el.closest('ion-content')?.getBoundingClientRect().top ?? 0;
-    const free = window.innerHeight - top - PAGE_FOOTER;
-    if (rows) el.style.setProperty('--qcf-row', `${Math.min(size * 2.6, Math.max(size * 1.7, free / rows))}px`);
+    const content = el.closest('ion-content') as HTMLElement | null;
+    const footer = el.parentElement?.querySelector<HTMLElement>(':scope > .page-footer');
+    const surface = el.parentElement;
+    const pad = surface ? parseFloat(getComputedStyle(surface).paddingTop) + parseFloat(getComputedStyle(surface).paddingBottom) : 0;
+    const free = (content?.clientHeight || window.innerHeight) - (footer?.offsetHeight ?? PAGE_FOOTER) - pad - 8;
+    const byWidth = (REF * (width - 2)) / widest;
+    // Rows at least 1.7 times the type size (the print's spacing; less and the marks of two lines touch).
+    const byHeight = rows ? free / rows / 1.7 : byWidth;
+    const size = Math.max(8, Math.min(byWidth, byHeight));
+    el.style.setProperty('--qcf-size', `${size}px`);
+    if (rows) el.style.setProperty('--qcf-row', `${Math.min(size * 2.6, free / rows)}px`);
+    // Held by the height: a narrower page, centred, its lines as wide as the widest line at this size.
+    if (size < byWidth) el.style.setProperty('--qcf-width', `${Math.ceil((widest * size) / REF) + 2}px`);
+    else el.style.removeProperty('--qcf-width');
     // A sura's short closing line is centred in the print (its glyphs are not drawn to fill the line): every other line
     // is within about 4% of the widest and is spread across the page.
     lines.forEach((line, i) => line.classList.toggle('short', widths[i] < widest * 0.92));

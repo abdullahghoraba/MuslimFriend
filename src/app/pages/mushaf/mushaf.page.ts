@@ -174,7 +174,9 @@ export class MushafPage {
   readonly ayahMark = ayahMark;
   readonly qpcBasmala = QPC_BASMALA;
   /** The printed page keeps its own size: a larger text size shows the flowing text instead. */
-  readonly printWanted = computed(() => this.madinahPlain() && this.madinahView() === 'print' && this.quranScale() <= 1);
+  // The printed page stays the printed page at any text size (it is always fitted to the screen, as in Quran for
+  // Android); the text size applies to the flowing view.
+  readonly printWanted = computed(() => this.madinahPlain() && this.madinahView() === 'print');
   private readonly qcf = signal<MadinahQcfData | null>(null);
   /** The font of the printed page shown, once loaded. */
   private readonly qcfFont = signal<{ page: number; family: string } | null>(null);

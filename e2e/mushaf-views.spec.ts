@@ -79,6 +79,12 @@ for (const p of [1, 2, 3, 27, 50, 106, 187, 255, 300, 377, 420, 512, 590, 602, 6
     await page.waitForTimeout(400);
     const lines = await printLines(page);
     expect(lines.length).toBe(textLines(p));
+    // The whole page on the screen: nothing to scroll.
+    const [scrollH, clientH] = await page.locator('app-mushaf:not(.ion-page-hidden) ion-content').evaluate(async (c: HTMLElement & { getScrollElement(): Promise<HTMLElement> }) => {
+      const s = await c.getScrollElement();
+      return [s.scrollHeight, s.clientHeight];
+    });
+    expect(scrollH, 'the printed page scrolls').toBeLessThanOrEqual(clientH + 1);
     const closing = closingLines(p);
     lines.forEach((l, i) => {
       expect(l.overflow, `line ${i + 1} overflows`).toBeLessThanOrEqual(1);
@@ -91,12 +97,28 @@ for (const p of [1, 2, 3, 27, 50, 106, 187, 255, 300, 377, 420, 512, 590, 602, 6
   });
 }
 
-test('the printed page keeps its size: a larger text size shows the flowing text, with a note', async ({ page }) => {
+test('a larger text size keeps the printed page as printed (as in Quran for Android), with a note', async ({ page }) => {
   await openMushaf(page, 50, { view: 'print', scale: 1.3 });
-  await expect(page.locator('.page-text.qpc [data-ayah]').first()).toBeVisible();
-  await expect(page.locator('.print-page')).toHaveCount(0);
+  await expect(page.locator('.print-page .qcf-word').first()).toBeVisible();
   await page.getByRole('button', { name: ar.mushaf.viewSettings }).click();
   await expect(page.getByText(ar.mushaf.printZoomHint)).toBeVisible();
+});
+
+test('on a short phone the printed page is smaller and centred, never scrolled', async ({ page }) => {
+  await page.setViewportSize({ width: 412, height: 640 });
+  await openMushaf(page, 50, { view: 'print' });
+  await expect(page.locator('.print-page .qcf-word').first()).toBeVisible();
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForTimeout(500);
+  const r = await page.locator('app-mushaf:not(.ion-page-hidden)').evaluate(async (host) => {
+    const c = host.querySelector('ion-content') as HTMLElement & { getScrollElement(): Promise<HTMLElement> };
+    const s = await c.getScrollElement();
+    const pg = host.querySelector('.print-page')!.getBoundingClientRect();
+    return { scrollH: s.scrollHeight, clientH: s.clientHeight, left: pg.left, right: innerWidth - pg.right };
+  });
+  expect(r.scrollH).toBeLessThanOrEqual(r.clientH + 1);
+  expect(Math.abs(r.left - r.right)).toBeLessThan(4);
+  await page.screenshot({ path: 'test-results/print-short-phone.png' });
 });
 
 test('offline the first time, a printed page falls back to the flowing text and says why', async ({ page }) => {

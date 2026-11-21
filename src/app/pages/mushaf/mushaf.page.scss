@@ -317,6 +317,8 @@ ion-title { padding-inline: 4px; }
 .print-page {
   color: var(--m-fg);
   font-size: var(--qcf-size, 24px);
+  // Narrower than the screen when the screen's height sets the size (see QcfFitDirective).
+  width: var(--qcf-width, auto);
   // A book-like page on tablets and in landscape, rather than lines across the whole screen.
   max-width: 600px;
   margin-inline: auto;
