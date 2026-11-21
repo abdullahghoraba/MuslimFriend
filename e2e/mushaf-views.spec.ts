@@ -147,8 +147,13 @@ test('on the printed page (as in Ayah): a tap shows the toolbar and the page sli
   await expect(page.locator('app-mushaf:not(.ion-page-hidden) ion-header')).toBeHidden();
   await expect(page.locator('.page-surface > .print-head')).toContainText('الجزء الثالث');
   await expect(page.locator('.page-surface > .folio')).toContainText('٥٠');
+  const size = () => page.locator('.page-surface .print-page').evaluate((e) => (e as HTMLElement).style.getPropertyValue('--qcf-size'));
+  const before = await size();
   await word.click();
   await expect(page.getByRole('button', { name: ar.mushaf.viewSettings })).toBeVisible();
+  // The bars float over the page: it keeps its size (nothing moves).
+  await page.waitForTimeout(300);
+  expect(await size()).toBe(before);
   await expect(page.locator('ion-footer.page-slider ion-range')).toBeVisible();
   await page.screenshot({ path: 'test-results/print-toolbar.png' });
   await word.click();
@@ -160,6 +165,8 @@ test('on the printed page (as in Ayah): a tap shows the toolbar and the page sli
   await page.waitForTimeout(700);
   await page.mouse.up();
   await expect(page.locator('.ayah-actions')).toBeVisible();
+  await page.waitForTimeout(300);
+  expect(await size()).toBe(before);
   const ayah = page.locator('.print-page .qcf-word[data-ayah="3:2"]');
   const n = await ayah.count();
   expect(n).toBeGreaterThan(3);

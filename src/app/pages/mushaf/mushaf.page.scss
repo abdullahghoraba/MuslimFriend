@@ -365,7 +365,13 @@ ion-title { padding-inline: 4px; }
 // ---- The printed page's frame and full-screen reading (as Ayah and Quran for Android) ----
 ion-header.hidden-chrome { display: none; }
 // Full screen: the page starts under the status bar, its own header taking the toolbar's place.
-:host:has(ion-header.hidden-chrome) :is(.page-surface, .page-under) { padding-top: max(10px, var(--ion-safe-area-top, 0px)); }
+// On the printed page the toolbar and the bars below float over the page (as in Ayah): the page keeps one size
+// whatever is shown, so nothing moves when they show or hide (a selection's bar shrank the page, and it grew back).
+:host:has(ion-content.print) {
+  ion-header { position: absolute; inset: 0 0 auto; z-index: 10; }
+  ion-footer { position: absolute; inset: auto 0 0; z-index: 10; }
+  :is(.page-surface, .page-under) { padding-top: max(10px, var(--ion-safe-area-top, 0px)); }
+}
 
 .print-head {
   display: flex;

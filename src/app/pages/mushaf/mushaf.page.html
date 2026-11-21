@@ -89,7 +89,7 @@
 </ion-header>
 
 <!-- The printed page always fits the screen: it never scrolls. -->
-<ion-content [class]="'mushaf theme-' + theme()" [scrollY]="!printRows()" (click)="contentTap()">
+<ion-content [class]="'mushaf theme-' + theme()" [class.print]="!!printRows()" [scrollY]="!printRows()" (click)="contentTap()">
   @if (!quran.ready()) {
     <div class="loading"><ion-spinner /></div>
   } @else {
