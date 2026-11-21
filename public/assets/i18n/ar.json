@@ -1540,7 +1540,11 @@
     "checkNeedsSmart": "فحص التشكيل والتجويد يعمل مع «المصحِّح الذكي» فقط، لأنه يحتفظ بصوت تلاوتك.",
     "tashkeelTitle": "التشكيل",
     "modeMemory": "من حفظي",
-    "modeReading": "قراءة من المصحف"
+    "modeReading": "قراءة من المصحف",
+    "tjHaraka": "حركة",
+    "tjLetter": "حرف",
+    "tjRule": "تجويد",
+    "tjMadd": "مد"
   },
   "ruqyah": {
     "title": "الرقية الشرعية",

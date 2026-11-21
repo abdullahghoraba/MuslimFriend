@@ -1540,7 +1540,11 @@
     "checkNeedsSmart": "元音符号与诵读规则检查只适用于智能纠错（它会保留您的诵读音频）。",
     "tashkeelTitle": "元音符号",
     "modeMemory": "背诵",
-    "modeReading": "看经本诵读"
+    "modeReading": "看经本诵读",
+    "tjHaraka": "元音符号",
+    "tjLetter": "字母",
+    "tjRule": "诵读规则",
+    "tjMadd": "延长音"
   },
   "ruqyah": {
     "title": "合法的鲁格耶（诵经祈护）",

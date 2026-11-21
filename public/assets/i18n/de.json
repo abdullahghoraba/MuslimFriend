@@ -1540,7 +1540,11 @@
     "checkNeedsSmart": "Die Prüfung von Harakat und Tadschwid funktioniert nur mit dem intelligenten Korrektor, der den Ton deiner Rezitation behält.",
     "tashkeelTitle": "Harakat",
     "modeMemory": "Auswendig",
-    "modeReading": "Aus dem Mushaf lesen"
+    "modeReading": "Aus dem Mushaf lesen",
+    "tjHaraka": "Vokal",
+    "tjLetter": "Buchstabe",
+    "tjRule": "Tadschwid",
+    "tjMadd": "Madd"
   },
   "ruqyah": {
     "title": "Ruqya",

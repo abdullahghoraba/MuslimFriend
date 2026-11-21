@@ -1540,7 +1540,11 @@
     "checkNeedsSmart": "Pemeriksaan harakat dan tajwid hanya bekerja dengan korektor pintar, yang menyimpan suara bacaan Anda.",
     "tashkeelTitle": "Harakat",
     "modeMemory": "Dari hafalan",
-    "modeReading": "Membaca mushaf"
+    "modeReading": "Membaca mushaf",
+    "tjHaraka": "Harakat",
+    "tjLetter": "Huruf",
+    "tjRule": "Tajwid",
+    "tjMadd": "Mad"
   },
   "ruqyah": {
     "title": "Ruqyah",

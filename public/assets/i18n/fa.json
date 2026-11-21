@@ -1540,7 +1540,11 @@
     "checkNeedsSmart": "بررسی اعراب و تجوید فقط با «تصحیح‌گر هوشمند» کار می‌کند که صدای تلاوت شما را نگه می‌دارد.",
     "tashkeelTitle": "اعراب",
     "modeMemory": "از حفظ",
-    "modeReading": "خواندن از مصحف"
+    "modeReading": "خواندن از مصحف",
+    "tjHaraka": "اعراب",
+    "tjLetter": "حرف",
+    "tjRule": "تجوید",
+    "tjMadd": "مد"
   },
   "ruqyah": {
     "title": "رقیهٔ شرعی",

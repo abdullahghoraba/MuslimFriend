@@ -1540,7 +1540,11 @@
     "checkNeedsSmart": "The harakat and tajweed check works with the smart corrector only, which keeps your recitation's audio.",
     "tashkeelTitle": "Harakat",
     "modeMemory": "From memory",
-    "modeReading": "Reading from the mushaf"
+    "modeReading": "Reading from the mushaf",
+    "tjHaraka": "Haraka",
+    "tjLetter": "Letter",
+    "tjRule": "Tajweed",
+    "tjMadd": "Madd"
   },
   "ruqyah": {
     "title": "Ruqyah",

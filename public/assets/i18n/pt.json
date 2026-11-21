@@ -1540,7 +1540,11 @@
     "checkNeedsSmart": "A verificação de harakat e tajwid só funciona com o corretor inteligente, que guarda o áudio da sua recitação.",
     "tashkeelTitle": "Harakat",
     "modeMemory": "De memória",
-    "modeReading": "Lendo o mushaf"
+    "modeReading": "Lendo o mushaf",
+    "tjHaraka": "Haraka",
+    "tjLetter": "Letra",
+    "tjRule": "Tajwid",
+    "tjMadd": "Madd"
   },
   "ruqyah": {
     "title": "Ruqya",

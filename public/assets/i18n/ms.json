@@ -1540,7 +1540,11 @@
     "checkNeedsSmart": "Semakan baris dan tajwid hanya berfungsi dengan pembetul pintar, yang menyimpan audio bacaan anda.",
     "tashkeelTitle": "Baris (harakat)",
     "modeMemory": "Dari hafazan",
-    "modeReading": "Membaca mushaf"
+    "modeReading": "Membaca mushaf",
+    "tjHaraka": "Baris",
+    "tjLetter": "Huruf",
+    "tjRule": "Tajwid",
+    "tjMadd": "Mad"
   },
   "ruqyah": {
     "title": "Ruqyah",

@@ -1540,7 +1540,11 @@
     "checkNeedsSmart": "Hareke ve tecvid kontrolü yalnızca okumanızın sesini saklayan akıllı düzeltici ile çalışır.",
     "tashkeelTitle": "Harekeler",
     "modeMemory": "Ezberden",
-    "modeReading": "Mushaftan okuma"
+    "modeReading": "Mushaftan okuma",
+    "tjHaraka": "Hareke",
+    "tjLetter": "Harf",
+    "tjRule": "Tecvid",
+    "tjMadd": "Med"
   },
   "ruqyah": {
     "title": "Rukye",

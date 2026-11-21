@@ -9,7 +9,7 @@ import { HeardSource, WordResult, alignRecitation, alignWithCost, bestAlternativ
 import { forcedGap, modelLetters } from '../../core/tasmee/ctc-score';
 import { TasmeeCheck, TasmeeEngine, TasmeeService, dropOpenings } from '../../core/tasmee/tasmee.service';
 import { QuranSpeech } from '../../core/tasmee/quran-speech';
-import { TajweedError, TajweedPart, TajweedPrefs, TajweedService, pauseArtifact, splitAtPauses } from '../../core/tasmee/tajweed.service';
+import { TajweedError, TajweedPart, TajweedPrefs, TajweedReply, TajweedService, pauseArtifact, splitAtPauses } from '../../core/tasmee/tajweed.service';
 
 import { PhoneSpeech, PhraseReading, SpeechCallbacks } from '../../native/speech';
 import { QuranService } from '../../core/quran/quran.service';
@@ -399,13 +399,17 @@ export class TasmeeComponent implements OnInit, OnDestroy {
         .filter((m) => m.i < reached)
         .map((m) => ({ aya: m.w.ref.aya, word: m.w.text, heard: m.r.heard, kind: m.r.status as 'wrong' | 'skipped' })),
     });
-    // Checked on harakat (or harakat and tajweed): the check starts by itself.
-    if (this.tasmee.prefs().check !== 'words' && this.tajweedPhrases().length) void this.checkTajweed();
+    // Checked on harakat (or harakat and tajweed): what was not checked while reciting is checked now.
+    if (this.tasmee.prefs().check !== 'words' && (this.tajweedPhrases().length || this.tajweedSent.size)) void this.checkTajweed();
   }
 
   reset(): void {
     this.tajweedState.set('idle');
     this.tajweedIssues.set(new Map());
+    this.tajweedSent.clear();
+    this.tajweedTotal.set(0);
+    this.tajweedDone.set(0);
+    this.tajweedFailed.set(0);
     this.finals.set([]);
     this.partial.set('');
     this.correction.set(null);
@@ -417,7 +421,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
    * Each finished phrase with its audio and the words it covers ([sura, aya, first, last] parts), when its words were
    * read once and in order (a phrase where the reciter went back has no single reference to compare with).
    */
-  private phrasesForTajweed(): { audio: Float32Array; parts: TajweedPart[] }[] {
+  private phrasesForTajweed(): { audio: Float32Array; parts: TajweedPart[]; open: boolean }[] {
     const results = this.results();
     const words = this.words();
     const { sources } = this.heard(false);
@@ -430,7 +434,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
       if (!list.includes(k)) list.push(k);
       byPhrase.set(src.phrase, list);
     });
-    const out: { audio: Float32Array; parts: TajweedPart[] }[] = [];
+    const out: { audio: Float32Array; parts: TajweedPart[]; open: boolean }[] = [];
     const finals = this.finals();
     // A phrase cut for its length (a long ayah read without a pause) goes on in the next one, maybe in the middle of a
     // word: the two are put back together as recited, so the check hears whole words.
@@ -483,38 +487,67 @@ export class TasmeeComponent implements OnInit, OnDestroy {
           if (last && last[1] === w.ref.aya) last[3] = w.n;
           else parts.push([w.ref.sura, w.ref.aya, w.n, w.n]);
         }
-        out.push({ audio: audio.subarray(p.from, p.to), parts });
+        out.push({ audio: audio.subarray(p.from, p.to), parts, open: !!readings[readings.length - 1]?.cut });
       }
     }
     return out;
   }
 
-  async checkTajweed(): Promise<void> {
-    const prefs = await this.tajweed.prefs();
-    this.tajweedPrefs.set(prefs);
-    // The model's licence: the reader is told it is AI (and can be wrong) before the first use.
-    if (!prefs.noticeSeen) {
-      this.tajweedState.set('notice');
-      return;
+  /** Phrases already sent to the tajweed server in this tasmee' (by the words they cover). */
+  private readonly tajweedSent = new Set<string>();
+  private tajweedSending: Promise<void> | null = null;
+  private tajweedAgain = false;
+  private tajweedAwake: Promise<boolean> | null = null;
+
+  /**
+   * While reciting, with harakat (or harakat and tajweed) chosen: each phrase is checked as soon as it has ended (the
+   * reader paused), and its findings show above its words while the reader goes on.
+   */
+  private readonly liveTajweed = effect(() => {
+    if (this.state() !== 'listening' || this.tasmee.prefs().check === 'words' || !this.tajweedPrefs()?.noticeSeen) return;
+    this.tajweedPhrases();
+    untracked(() => void this.sendTajweed(false));
+  });
+
+  /** Sends the phrases not checked yet (while reciting, not one that goes on in the next phrase); merges what comes back. */
+  private sendTajweed(final: boolean): Promise<void> {
+    if (this.tajweedSending) {
+      this.tajweedAgain = true;
+      return this.tajweedSending;
     }
-    const phrases = this.tajweedPhrases();
-    if (!phrases.length) return;
-    this.tajweedIssues.set(new Map());
-    this.tajweedDone.set(0);
-    this.tajweedTotal.set(phrases.length);
-    this.tajweedState.set('waking');
-    if (!(await this.tajweed.wake())) {
-      this.tajweedState.set('failed');
-      return;
-    }
-    this.tajweedState.set('checking');
+    this.tajweedSending = (async () => {
+      do {
+        this.tajweedAgain = false;
+        const key = (x: { parts: TajweedPart[] }) => JSON.stringify(x.parts);
+        const phrases = this.tajweedPhrases().filter((x) => !this.tajweedSent.has(key(x)) && (final || !x.open));
+        if (!phrases.length) continue;
+        this.tajweedAwake ??= this.tajweed.wake();
+        if (!(await this.tajweedAwake)) {
+          this.tajweedAwake = null;
+          this.tajweedFailed.update((n) => n + phrases.length);
+          return;
+        }
+        phrases.forEach((x) => this.tajweedSent.add(key(x)));
+        this.tajweedTotal.update((n) => n + phrases.length);
+        const replies = await this.tajweed.check(phrases);
+        this.tajweedDone.update((n) => n + phrases.length);
+        this.applyTajweed(phrases, replies);
+      } while (this.tajweedAgain);
+    })().finally(() => (this.tajweedSending = null));
+    return this.tajweedSending;
+  }
+
+  /** The server's findings for [phrases], on the words they cover (replacing earlier findings on those words). */
+  private applyTajweed(phrases: { parts: TajweedPart[] }[], replies: (TajweedReply | null)[]): void {
     const words = this.words();
     const results = this.results();
-    this.tajweed.progress = (done) => this.tajweedDone.set(done);
-    const replies = await this.tajweed.check(phrases);
-    const issues = new Map<number, TajweedError[]>();
+    const issues = new Map(this.tajweedIssues());
     let failed = 0;
     replies.forEach((reply, n) => {
+      const covered = words
+        .map((w, k) => ({ w, k }))
+        .filter(({ w }) => phrases[n].parts.some(([s, a, f, l]) => w.ref.sura === s && w.ref.aya === a && w.n >= f && w.n <= l));
+      covered.forEach(({ k }) => issues.delete(k));
       if (!reply) {
         failed++;
         return;
@@ -534,8 +567,35 @@ export class TasmeeComponent implements OnInit, OnDestroy {
       }
     });
     this.tajweedIssues.set(issues);
-    this.tajweedFailed.set(failed);
-    this.tajweedState.set(failed === phrases.length ? 'failed' : 'done');
+    this.tajweedFailed.update((n) => n + failed);
+  }
+
+  /** A word's findings in a few words, written above it in the ayat (the rule's name, or «حركة» / «حرف»). */
+  tajweedShort(errors: TajweedError[]): string {
+    const ar = this.lang() === 'ar';
+    const labels = errors.map((e) =>
+      e.type === 'tajweed'
+        ? (ar ? e.rules[0]?.ar : e.rules[0]?.en) || this.translate.instant(/[ۦۥ]|اا/.test((e.expected ?? '') + (e.heard ?? '')) ? 'tasmee.tjMadd' : 'tasmee.tjRule')
+        : e.type === 'tashkeel' ? this.translate.instant('tasmee.tjHaraka') : this.translate.instant('tasmee.tjLetter'));
+    return [...new Set(labels)].slice(0, 2).join(' · ');
+  }
+
+  async checkTajweed(): Promise<void> {
+    const prefs = await this.tajweed.prefs();
+    this.tajweedPrefs.set(prefs);
+    // The model's licence: the reader is told it is AI (and can be wrong) before the first use.
+    if (!prefs.noticeSeen) {
+      this.tajweedState.set('notice');
+      return;
+    }
+    if (!this.tajweedPhrases().length && !this.tajweedSent.size) return;
+    this.tajweedState.set(this.tajweedAwake ? 'checking' : 'waking');
+    this.tajweed.progress = undefined;
+    // What was checked while reciting stays; what is left is checked now.
+    await this.sendTajweed(true);
+    if (this.tajweedSending) await this.tajweedSending;
+    const total = this.tajweedTotal();
+    this.tajweedState.set(total && this.tajweedFailed() >= total ? 'failed' : 'done');
   }
 
   async acceptTajweedNotice(): Promise<void> {
@@ -590,9 +650,10 @@ export class TasmeeComponent implements OnInit, OnDestroy {
 
   /** Visible text of a word: hidden until reached in memorisation mode. */
   /**
-   * In memorisation mode a word appears once it is recited. A word counted as skipped appears only when the reader
-   * went on past it, two words said right in a row after it: one word matched further on (a word the ayat repeat,
-   * such as «الله») must not uncover the ayat in between before they are recited.
+   * In memorisation mode a word appears once it is recited. While reciting, a word counted as skipped stays hidden
+   * (it shows at the end, with the mistakes), and after a jump (two or more words skipped) the words heard further on
+   * appear only once four in a row were said there: the ayat repeat phrases (al-Baqarah 3 and 4 both begin «الذين
+   * يؤمنون»), and a phrase matched one ayah too far must not uncover that ayah before it is recited.
    */
   shown(i: number): boolean {
     if (!this.tasmee.prefs().hideText) return true;
@@ -600,13 +661,16 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     if (this.state() === 'done') return i < this.reachedAt();
     const results = this.results();
     const status = results[i]?.status;
-    if (!status || status === 'pending') return false;
-    if (status !== 'skipped') return true;
-    for (let k = i + 1; k < results.length; k++) {
-      if (results[k].status === 'skipped') continue;
-      return results[k].status === 'correct' && results[k + 1]?.status === 'correct';
-    }
-    return false;
+    if (!status || status === 'pending' || status === 'skipped') return false;
+    // The run of heard words this one belongs to, and the skipped words before that run.
+    let start = i;
+    while (start > 0 && results[start - 1].status !== 'skipped' && results[start - 1].status !== 'pending') start--;
+    let skipped = 0;
+    for (let k = start - 1; k >= 0 && results[k].status === 'skipped'; k--) skipped++;
+    if (skipped < 2) return true;
+    let run = 0;
+    for (let k = start; k < results.length && (results[k].status === 'correct' || results[k].status === 'wrong'); k++) run++;
+    return run >= 4;
   }
 
   /** Where the reader had got to when the tasmee' ended. */

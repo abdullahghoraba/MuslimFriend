@@ -1540,7 +1540,11 @@
     "checkNeedsSmart": "La vérification des voyelles et du tajwid fonctionne seulement avec le correcteur intelligent, qui garde l’audio de votre récitation.",
     "tashkeelTitle": "Voyelles (harakat)",
     "modeMemory": "De mémoire",
-    "modeReading": "Lecture du moushaf"
+    "modeReading": "Lecture du moushaf",
+    "tjHaraka": "Voyelle",
+    "tjLetter": "Lettre",
+    "tjRule": "Tajwid",
+    "tjMadd": "Madd"
   },
   "ruqyah": {
     "title": "Roqya",

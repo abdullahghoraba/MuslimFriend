@@ -1540,7 +1540,11 @@
     "checkNeedsSmart": "Ukaguzi wa harakati na tajwidi hufanya kazi na kisahihishaji mahiri pekee, kinachohifadhi sauti ya kisomo chako.",
     "tashkeelTitle": "Harakati",
     "modeMemory": "Kwa kuhifadhi",
-    "modeReading": "Kusoma msahafu"
+    "modeReading": "Kusoma msahafu",
+    "tjHaraka": "Harakati",
+    "tjLetter": "Herufi",
+    "tjRule": "Tajwidi",
+    "tjMadd": "Madd"
   },
   "ruqyah": {
     "title": "Ruqya ya kisheria",

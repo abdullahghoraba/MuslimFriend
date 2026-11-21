@@ -1540,7 +1540,11 @@
     "checkNeedsSmart": "اعراب اور تجوید کی جانچ صرف اسمارٹ مصحح کے ساتھ ہوتی ہے، جو آپ کی تلاوت کی آواز محفوظ رکھتا ہے۔",
     "tashkeelTitle": "اعراب",
     "modeMemory": "حفظ سے",
-    "modeReading": "مصحف سے پڑھنا"
+    "modeReading": "مصحف سے پڑھنا",
+    "tjHaraka": "اعراب",
+    "tjLetter": "حرف",
+    "tjRule": "تجوید",
+    "tjMadd": "مد"
   },
   "ruqyah": {
     "title": "شرعی رقیہ",

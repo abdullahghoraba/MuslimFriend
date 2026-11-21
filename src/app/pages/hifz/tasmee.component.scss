@@ -150,3 +150,27 @@ ion-progress-bar.top { position: sticky; top: 0; z-index: 2; border-radius: 4px;
   .madd { margin-top: 10px; summary { cursor: pointer; font-weight: 600; padding: 6px 0; } }
   .credit { font-size: 0.8rem; opacity: 0.65; margin-top: 10px; }
 }
+
+// A harakat or tajweed finding, written above its word in the ayat (found while reciting, or at the end).
+.recital .w { position: relative; }
+.recital .w.tajweed {
+  background: color-mix(in srgb, var(--ion-color-warning) 22%, transparent);
+  border-radius: 6px;
+  text-decoration: underline wavy var(--ion-color-warning-shade);
+  text-underline-offset: 6px;
+}
+.recital .tj-above {
+  position: absolute;
+  bottom: calc(100% - 0.35em);
+  inset-inline-start: 50%;
+  transform: translateX(50%);
+  font-family: system-ui, sans-serif;
+  font-size: 0.42em;
+  line-height: 1.2;
+  white-space: nowrap;
+  padding: 1px 6px;
+  border-radius: 999px;
+  color: var(--ion-color-warning-contrast);
+  background: var(--ion-color-warning-shade);
+  pointer-events: none;
+}

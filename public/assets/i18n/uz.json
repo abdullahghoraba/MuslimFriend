@@ -1540,7 +1540,11 @@
     "checkNeedsSmart": "Harakat va tajvid tekshiruvi faqat tilovatingiz ovozini saqlaydigan aqlli tuzatuvchi bilan ishlaydi.",
     "tashkeelTitle": "Harakatlar",
     "modeMemory": "Yoddan",
-    "modeReading": "Mushafdan o‘qish"
+    "modeReading": "Mushafdan o‘qish",
+    "tjHaraka": "Harakat",
+    "tjLetter": "Harf",
+    "tjRule": "Tajvid",
+    "tjMadd": "Madd"
   },
   "ruqyah": {
     "title": "Shar'iy ruqya",

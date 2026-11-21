@@ -76,7 +76,7 @@
       @for (w of words(); track $index; let i = $index) {
         @let r = results()[i];
         <span class="w" [attr.data-i]="i" [class]="'w ' + (r?.status ?? 'pending')" [class.next]="i === position() && state() === 'listening'" [class.corrected]="!!r?.corrected" [class.tajweed]="tajweedIssues().has(i)"
-              [class.hidden]="!shown(i)" [attr.title]="r?.heard ? ('tasmee.heard' | translate: { word: r.heard }) : null">{{ shown(i) ? w.text : '' }}@if (r?.status === 'wrong' && r?.heard) {<small class="heard">{{ r.heard }}</small>}</span>
+              [class.hidden]="!shown(i)" [attr.title]="r?.heard ? ('tasmee.heard' | translate: { word: r.heard }) : null">{{ shown(i) ? w.text : '' }}@if (r?.status === 'wrong' && r?.heard) {<small class="heard">{{ r.heard }}</small>}@if (shown(i) && tajweedIssues().get(i); as errs) {<small class="tj-above">{{ tajweedShort(errs) }}</small>}</span>
         @if (w.end) { <span class="num">﴿{{ ayahNumber(w.ref.aya) }}﴾</span> }
         {{ ' ' }}
       }
