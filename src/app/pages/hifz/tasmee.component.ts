@@ -385,6 +385,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     // Let the last phrases come back from the offline recogniser (up to ~10 s).
     for (let i = 0; i < 50 && engine instanceof QuranSpeech && engine.busy; i++) await new Promise((r) => setTimeout(r, 200));
     const reached = this.position();
+    this.reachedAt.set(Math.max(reached, 1));
     this.state.set('done');
     const r = this.results().slice(0, Math.max(reached, 1));
     await this.tasmee.save({
@@ -594,7 +595,9 @@ export class TasmeeComponent implements OnInit, OnDestroy {
    * such as «الله») must not uncover the ayat in between before they are recited.
    */
   shown(i: number): boolean {
-    if (!this.tasmee.prefs().hideText || this.state() === 'done') return true;
+    if (!this.tasmee.prefs().hideText) return true;
+    // Finished: what was recited is shown (to see the mistakes), not the ayat after where the reader stopped.
+    if (this.state() === 'done') return i < this.reachedAt();
     const results = this.results();
     const status = results[i]?.status;
     if (!status || status === 'pending') return false;
@@ -605,6 +608,9 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     }
     return false;
   }
+
+  /** Where the reader had got to when the tasmee' ended. */
+  readonly reachedAt = signal(0);
 
   /** What counts as a mistake. Choosing harakat or tajweed shows that they are checked by AI (the line under it). */
   async setCheck(check: TasmeeCheck): Promise<void> {

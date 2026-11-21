@@ -355,7 +355,7 @@ export class QuranSpeech {
     };
     this.stream = await navigator.mediaDevices.getUserMedia({
       // The phone's own noise suppression and gain help in a noisy room; echo cancellation can cut a reciter's voice.
-      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 },
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true, channelCount: 1 },
     });
     this.ctx = new AudioContext();
     await this.ctx.resume().catch(() => undefined);
