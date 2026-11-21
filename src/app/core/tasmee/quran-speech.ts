@@ -10,8 +10,8 @@ const DOWNLOADED_KEY = 'tasmeeQasrReady';
  * recited (for live words). The recogniser needs this: it was trained on one ayah at a time, so it reads a phrase
  * best, writes words said twice in one stretch of audio only once, and loses words in very long stretches.
  *
- * Voice detection works on 20 ms frames against the room's background level, measured as the quietest tenth of the
- * last 8 seconds (so speech from the very first moment, a fan or traffic do not raise it), with a fixed level for the
+ * Voice detection works on 20 ms frames against the room's background level, measured as the quietest twentieth of
+ * the last 30 seconds (so speech from the very first moment, a fan or traffic do not raise it), with a fixed level for the
  * first moments. A breath is not voice: it is a hiss (the signal crosses zero thousands of times a second, where a
  * recited vowel crosses it a few hundred times) and softer than the recitation, so a breath between two ayat leaves
  * the pause a pause (two ayat in one phrase would lose words). A pause of [pauseSec] ends a phrase; a phrase longer
@@ -28,7 +28,9 @@ export class PhraseSplitter {
   private voicedSec = 0;
   private sinceUpdate = 0;
   /** Energies of the last 8 s of 20 ms frames (background level). */
-  private readonly history = new Float32Array(400);
+  // 30 s: a long ayah read without a pause fills 8 s with voice, whose quietest tenth (a soft madd) then passed for
+  // the background, and the end of the ayah for a pause (its last seconds were lost). 30 s hold the pauses between ayat.
+  private readonly history = new Float32Array(1500);
   private historyCount = 0;
   private floorValue = 0;
   private sinceFloor = 0;
@@ -45,7 +47,8 @@ export class PhraseSplitter {
   level = 0;
 
   constructor(
-    private readonly onPhrase: (audio: Float32Array, final: boolean) => void,
+    /** [cut]: the phrase was cut for its length (no pause): the recitation goes on, maybe mid-word, in the next one. */
+    private readonly onPhrase: (audio: Float32Array, final: boolean, cut?: boolean) => void,
     private readonly rate = SAMPLE_RATE,
     private readonly pauseSec = 0.55,
     private readonly maxSec = 14,
@@ -80,7 +83,7 @@ export class PhraseSplitter {
     if (this.sinceFloor++ % 10 === 0) {
       const n = Math.min(this.historyCount, this.history.length);
       const sorted = Float32Array.from(this.history.subarray(0, n)).sort();
-      this.floorValue = sorted[Math.floor(n * 0.1)];
+      this.floorValue = sorted[Math.floor(n * 0.05)];
     }
     return this.floorValue;
   }
@@ -158,9 +161,13 @@ export class PhraseSplitter {
     this.length += x.length;
   }
 
-  /** A long phrase without a pause: sends it up to its quietest 100 ms in the last 4 s, and keeps the rest. */
+  /**
+   * A long phrase without a pause: sends it up to its quietest 250 ms in the last 4 s, and keeps the rest. A quarter
+   * of a second is a gap between two words: a shorter window found the silence inside a stop consonant (the closure of
+   * «ض», «ت», «ب») and cut a word in two, whose halves the tajweed check then heard as a missing shadda or madd.
+   */
   private cutLong(): void {
-    const win = Math.round(this.rate * 0.1);
+    const win = Math.round(this.rate * 0.25);
     const hop = win >> 2;
     const from = Math.max(win, this.length - Math.round(this.rate * 4));
     let at = this.length - win;
@@ -173,12 +180,17 @@ export class PhraseSplitter {
         at = i + (win >> 1);
       }
     }
-    this.onPhrase(this.buf.slice(0, at), true);
+    this.onPhrase(this.buf.slice(0, at), true, true);
     const rest = this.buf.slice(at, this.length);
     this.length = 0;
     this.append(rest);
     this.voicedSec = rest.length / this.rate;
     this.sinceUpdate = 0;
+  }
+
+  /** The reader is in the middle of a phrase (no pause since it began). */
+  get active(): boolean {
+    return this.speaking;
   }
 
   /** Sends the phrase (a pause, or the reader pressed stop). A click or a cough (under 0.25 s of voice) is dropped. */
@@ -216,8 +228,8 @@ export class QuranSpeech {
   private phrase = 0;
   private partialPhrase = -1;
   /** The last phrases kept as one reading (joined, or the last phrase alone), with their audio. */
-  private group: { phrases: number[]; audio: Float32Array } | null = null;
-  private readonly joins = new Map<number, { phrases: number[]; audio: Float32Array }>();
+  private group: { phrases: number[]; audio: Float32Array; cut?: boolean } | null = null;
+  private readonly joins = new Map<number, { phrases: number[]; audio: Float32Array; cut?: boolean }>();
   /** Up to this much audio is read as one (the recogniser was trained on single ayat, up to about 15 s). */
   static readonly JOIN_SECONDS = 14;
 
@@ -306,8 +318,9 @@ export class QuranSpeech {
     const joins = this.joins;
     joins.clear();
     const audioOf = new Map<number, Float32Array>(); // id -> the audio read (kept for the tajweed check)
-    const reading = (d: WorkerOut, phrase?: number, audio?: Float32Array) => ({
-      phrase, words: d.words ?? [], lp: d.lp ?? new Float32Array(0), frames: d.frames ?? 0, vocab: d.vocab ?? 0, audio,
+    const cutOf = new Map<number, boolean>(); // id -> the phrase was cut for its length
+    const reading = (d: WorkerOut, phrase?: number, audio?: Float32Array, cut?: boolean) => ({
+      phrase, words: d.words ?? [], lp: d.lp ?? new Float32Array(0), frames: d.frames ?? 0, vocab: d.vocab ?? 0, audio, cut,
     });
     worker.onmessage = (e: MessageEvent<WorkerOut>) => {
       const id = e.data.id ?? 0;
@@ -317,7 +330,7 @@ export class QuranSpeech {
         this.pendingFinals.delete(id);
         const last = join.phrases[join.phrases.length - 1];
         // Kept: the next phrase may be joined to the whole group (if no newer phrase came in the meantime).
-        if (e.data.type === 'text' && e.data.text && cb.onJoin?.(e.data.text, reading(e.data, last, join.audio), join.phrases)) {
+        if (e.data.type === 'text' && e.data.text && cb.onJoin?.(e.data.text, reading(e.data, last, join.audio, join.cut), join.phrases)) {
           if (this.group?.phrases[0] === last && this.group.phrases.length === 1) this.group = join;
         }
         if (!this.pendingFinals.size) cb.onPartial('');
@@ -327,7 +340,9 @@ export class QuranSpeech {
         this.pendingFinals.delete(id);
         const audio = audioOf.get(id);
         audioOf.delete(id);
-        if (e.data.type === 'text' && e.data.text && e.data.words && e.data.lp) cb.onFinal(e.data.text, undefined, reading(e.data, phrase, audio));
+        const cut = cutOf.get(id);
+        cutOf.delete(id);
+        if (e.data.type === 'text' && e.data.text && e.data.words && e.data.lp) cb.onFinal(e.data.text, undefined, reading(e.data, phrase, audio, cut));
         else if (e.data.type === 'error') cb.onError(e.data.message ?? 'error');
         if (!this.pendingFinals.size) cb.onPartial('');
       } else if (partials.has(id)) {
@@ -340,32 +355,34 @@ export class QuranSpeech {
     };
     this.stream = await navigator.mediaDevices.getUserMedia({
       // The phone's own noise suppression and gain help in a noisy room; echo cancellation can cut a reciter's voice.
-      audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: true, channelCount: 1 },
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 },
     });
     this.ctx = new AudioContext();
     await this.ctx.resume().catch(() => undefined);
     const source = this.ctx.createMediaStreamSource(this.stream);
     // The microphone (48 kHz on most phones) to the recogniser's 16 kHz as it comes, with a proper low-pass.
     const resampler = new StreamResampler(this.ctx.sampleRate, SAMPLE_RATE);
-    this.splitter = new PhraseSplitter((pcm, final) => {
+    this.splitter = new PhraseSplitter((pcm, final, cut) => {
       if (final) {
         const id = this.nextId++;
         const phrase = this.phrase;
         finals.set(id, phrase);
         audioOf.set(id, pcm.slice());
+        if (cut) cutOf.set(id, true);
         this.pendingFinals.add(id);
         this.partialPhrase = phrase; // its live reads are now out of date
         this.phrase++;
         // Also read with the phrases before it, when together they are short enough (see onJoin).
-        const gap = Math.round(SAMPLE_RATE * 0.25);
         const before = this.group;
-        this.group = { phrases: [phrase], audio: pcm.slice() };
+        // Silence between two phrases read as one, except where one was cut mid-speech (it may be mid-word).
+        const gap = before?.cut ? 0 : Math.round(SAMPLE_RATE * 0.25);
+        this.group = { phrases: [phrase], audio: pcm.slice(), cut };
         if (cb.onJoin && before && before.audio.length + gap + pcm.length <= QuranSpeech.JOIN_SECONDS * SAMPLE_RATE) {
           const audio = new Float32Array(before.audio.length + gap + pcm.length);
           audio.set(before.audio);
           audio.set(pcm, before.audio.length + gap);
           const jid = this.nextId++;
-          joins.set(jid, { phrases: [...before.phrases, phrase], audio });
+          joins.set(jid, { phrases: [...before.phrases, phrase], audio, cut });
           this.pendingFinals.add(jid);
           worker.postMessage({ type: 'transcribe', id, audio: pcm }, [pcm.buffer]);
           worker.postMessage({ type: 'transcribe', id: jid, audio: audio.slice() });
@@ -385,6 +402,11 @@ export class QuranSpeech {
     source.connect(this.node);
     this.node.connect(this.ctx.destination);
     if (cb.onLevel) this.meter = setInterval(() => cb.onLevel?.(this.splitter?.level ?? 0), 120);
+  }
+
+  /** The reader is reciting right now (no pause yet): the phrase is not complete. */
+  get speaking(): boolean {
+    return this.splitter?.active ?? false;
   }
 
   async stop(): Promise<void> {

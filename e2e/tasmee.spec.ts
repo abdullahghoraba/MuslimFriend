@@ -13,6 +13,8 @@ const WAV = join(tmpdir(), 'al-uns-billah-fatiha-husary.wav');
 const WAV_SKIP = join(tmpdir(), 'al-uns-billah-fatiha-husary-no4.wav');
 /** The full recitation, quieter, through a phone-like band and with room noise at about 10 dB below the voice. */
 const WAV_NOISY = join(tmpdir(), 'al-uns-billah-fatiha-husary-noisy.wav');
+/** Al-Fatihah read in Warsh (Ibrahim al-Dosary): it differs from Hafs in harakat and madd, which the check must find. */
+const WAV_WARSH = join(tmpdir(), 'al-uns-billah-fatiha-warsh.wav');
 const BASE = 'http://localhost:4321';
 
 function makeNoisy(src: string, dst: string): void {
@@ -63,11 +65,11 @@ async function openTasmee(wav: string) {
 
 test.describe.configure({ mode: 'serial', timeout: 600_000 });
 
-async function makeWav(path: string, ayat: number[]): Promise<void> {
+async function makeWav(path: string, ayat: number[], reciter = 'Husary_128kbps'): Promise<void> {
   if (existsSync(path)) return;
   const parts: string[] = [];
   for (const aya of ayat) {
-    const res = await fetch(`https://everyayah.com/data/Husary_128kbps/001${String(aya).padStart(3, '0')}.mp3`);
+    const res = await fetch(`https://everyayah.com/data/${reciter}/001${String(aya).padStart(3, '0')}.mp3`);
     expect(res.ok).toBe(true);
     parts.push(Buffer.from(await res.arrayBuffer()).toString('base64'));
   }
@@ -111,6 +113,7 @@ test('prepares recitations of al-Fatihah as the microphone', async () => {
   await makeWav(WAV, [1, 2, 3, 4, 5, 6, 7]);
   await makeWav(WAV_SKIP, [1, 2, 3, 5, 6, 7]);
   makeNoisy(WAV, WAV_NOISY);
+  await makeWav(WAV_WARSH, [1, 2, 3, 4, 5, 6, 7], 'warsh/warsh_ibrahim_aldosary_128kbps');
 });
 
 for (const [name, wav] of [['clean', WAV], ['noisy', WAV_NOISY]] as const) {
@@ -143,3 +146,25 @@ test('tasmee stops at a skipped ayah and shows the right words', async () => {
   await expect(page.locator('.controls')).toHaveCount(0);
   await browser.close();
 });
+
+// The whole chain on the real tajweed server: microphone -> offline words -> phrases cut at the pauses -> the
+// server -> the mistakes shown and counted.
+for (const [name, wav, expectMistakes] of [['Hafs (Husary), correct', WAV, false], ['Warsh (al-Dosary), differs from Hafs', WAV_WARSH, true]] as const) {
+  test(`harakat and tajweed are checked by themselves at the end: ${name}`, async () => {
+    const { browser, page } = await openTasmee(wav);
+    await page.locator('ion-segment.check-level ion-segment-button[value=tajweed]').click();
+    await page.getByRole('button', { name: ar.tasmee.start }).click();
+    await expect(page.locator('.summary .score')).toBeVisible({ timeout: 120_000 });
+    // The check runs without a tap: it ends with no mistakes, or with their list.
+    const card = page.locator('.tajweed-card');
+    await expect(card.getByText(ar.tajweed.none).or(card.locator('.tj').first()).or(card.getByText(ar.tajweed.failed))).toBeVisible({ timeout: 240_000 });
+    await page.screenshot({ path: `test-results/tasmee-tajweed-${expectMistakes ? 'warsh' : 'hafs'}.png`, fullPage: true });
+    expect(await card.getByText(ar.tajweed.failed).count(), 'the tajweed server did not answer').toBe(0);
+    const none = await card.getByText(ar.tajweed.none).count();
+    const text = (await card.locator('.tj').allInnerTexts()).join(' || ').replace(/\s+/g, ' ').slice(0, 900);
+    console.log('tajweed', name, none ? 'no mistakes' : text);
+    if (expectMistakes) expect(none, 'the Warsh reading should be caught').toBe(0);
+    else expect(none, 'a correct reading should have no harakat/tajweed mistakes: ' + text).toBe(1);
+    await browser.close();
+  });
+}

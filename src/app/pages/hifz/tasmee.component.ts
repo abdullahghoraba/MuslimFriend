@@ -430,23 +430,50 @@ export class TasmeeComponent implements OnInit, OnDestroy {
       byPhrase.set(src.phrase, list);
     });
     const out: { audio: Float32Array; parts: TajweedPart[] }[] = [];
-    for (const [phrase, list] of [...byPhrase.entries()].sort((a, b) => a[0] - b[0])) {
-      const reading = this.finals()[phrase]?.reading;
-      const audio = reading?.audio;
-      if (!reading || !audio || audio.length < 0.3 * 16000) continue;
-      list.sort((a, b) => a - b);
-      if (list[list.length - 1] - list[0] + 1 !== list.length) continue;
-      // Every word heard in the phrase must be one of these (no isti'adha or basmala before them, nothing said twice).
-      if (reading.words.length > list.length + 1) continue;
-      // Cut where the reciter paused (waqf) inside the phrase: each part then ends at a stop, as the server expects;
-      // read as one breath, a stop's sukun or longer madd would be counted as mistakes.
+    const finals = this.finals();
+    // A phrase cut for its length (a long ayah read without a pause) goes on in the next one, maybe in the middle of a
+    // word: the two are put back together as recited, so the check hears whole words.
+    const groups: number[][] = [];
+    for (const ph of [...byPhrase.keys()].sort((a, b) => a - b)) {
+      const prev = groups[groups.length - 1];
+      if (prev?.includes(ph)) continue;
+      const last = prev?.[prev.length - 1];
+      if (prev && last === ph - 1 && finals[last]?.reading?.cut) prev.push(ph);
+      else groups.push([ph]);
+      // Its continuation belongs to it even when no word was heard in it (the rest of a word, its madd...).
+      const g = groups[groups.length - 1];
+      while (finals[g[g.length - 1]]?.reading?.cut && finals[g[g.length - 1] + 1]?.reading?.audio) g.push(g[g.length - 1] + 1);
+    }
+    for (const group of groups) {
+      const readings = group.map((ph) => finals[ph]?.reading);
+      if (readings.some((r) => !r?.audio || !r.frames)) continue;
+      const list = [...new Set(group.flatMap((ph) => byPhrase.get(ph) ?? []))].sort((a, b) => a - b);
+      if (!list.length || list[list.length - 1] - list[0] + 1 !== list.length) continue;
+      // Every word heard must be one of these (no isti'adha or basmala before them, nothing said twice).
+      if (readings.reduce((n, r) => n + r!.words.length, 0) > list.length + group.length) continue;
+      const offsets: number[] = [];
+      let total = 0;
+      for (const r of readings) {
+        offsets.push(total);
+        total += r!.audio!.length;
+      }
+      if (total < 0.3 * 16000) continue;
+      const audio = new Float32Array(total);
+      readings.forEach((r, i) => audio.set(r!.audio!, offsets[i]));
+      // Each word's place in that audio, in samples.
+      const at = (src: { phrase: number; start: number; end: number } | undefined, edge: 'start' | 'end') => {
+        const i = src ? group.indexOf(src.phrase) : -1;
+        if (!src || i < 0) return 0;
+        const r = readings[i]!;
+        return offsets[i] + (src[edge] * r.audio!.length) / r.frames;
+      };
       const spans = list.map((k) => {
         const h = results[k].h ?? [];
-        const first = h.length ? sources[h[0]] : undefined;
-        const last = h.length ? sources[h[h.length - 1]] : undefined;
-        return { start: first?.start ?? 0, end: last?.end ?? 0 };
+        return { start: at(h.length ? sources[h[0]] : undefined, 'start'), end: at(h.length ? sources[h[h.length - 1]] : undefined, 'end') };
       });
-      for (const p of splitAtPauses(spans, reading.frames, audio.length)) {
+      // Cut where the reciter paused (waqf): each part then ends at a stop, as the server expects; read as one breath,
+      // a stop's sukun or longer madd would be counted as mistakes.
+      for (const p of splitAtPauses(spans, total, total)) {
         if (p.to - p.from > 20 * 16000 || p.to - p.from < 0.3 * 16000) continue;
         const parts: TajweedPart[] = [];
         for (const k of list.slice(p.first, p.last + 1)) {
@@ -630,7 +657,11 @@ export class TasmeeComponent implements OnInit, OnDestroy {
         break;
       }
     }
-    // Whole range recited: finish by itself.
-    if (this.state() === 'listening' && r.length && r[r.length - 1].status !== 'pending') void this.finish();
+    // Whole range recited: finish by itself, once the phrase with the last word has ended (the reader paused). The
+    // live words show the last word while it is still being said: stopping then cut its end off the audio, and the
+    // harakat/tajweed check found its shadda or madd missing.
+    // With the Quran AI: until the reader pauses (a word seen early may still be going on, its end not yet recorded).
+    const reciting = this.partial().replace('…', '').trim().length > 0 || (this.engine instanceof QuranSpeech && this.engine.speaking);
+    if (this.state() === 'listening' && r.length && r[r.length - 1].status !== 'pending' && !reciting) void this.finish();
   }
 }

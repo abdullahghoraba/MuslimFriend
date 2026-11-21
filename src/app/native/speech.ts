@@ -24,6 +24,8 @@ export interface PhraseReading {
   vocab: number;
   /** The phrase's audio (16 kHz mono), for the tajweed check. */
   audio?: Float32Array;
+  /** Cut for its length, not at a pause: the next phrase goes on from it (maybe mid-word). */
+  cut?: boolean;
 }
 
 export interface SpeechCallbacks {
