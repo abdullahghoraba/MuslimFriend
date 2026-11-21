@@ -1538,7 +1538,9 @@
     "checkTajweed": "Voyelles + tajwid",
     "checkHint": "Les voyelles (et le tajwid) sont vérifiées par IA à la fin du tasmî‘ ; il faut Internet. Leurs erreurs comptent dans le score.",
     "checkNeedsSmart": "La vérification des voyelles et du tajwid fonctionne seulement avec le correcteur intelligent, qui garde l’audio de votre récitation.",
-    "tashkeelTitle": "Voyelles (harakat)"
+    "tashkeelTitle": "Voyelles (harakat)",
+    "modeMemory": "De mémoire",
+    "modeReading": "Lecture du moushaf"
   },
   "ruqyah": {
     "title": "Roqya",

@@ -1538,7 +1538,9 @@
     "checkTajweed": "Harakat + tajwid",
     "checkHint": "Las harakat (y el tajwid) se revisan con IA al terminar el tasmee; necesita internet. Sus errores cuentan en la puntuación.",
     "checkNeedsSmart": "La revisión de harakat y tajwid solo funciona con el corrector inteligente, que guarda el audio de tu recitación.",
-    "tashkeelTitle": "Harakat"
+    "tashkeelTitle": "Harakat",
+    "modeMemory": "De memoria",
+    "modeReading": "Leyendo el mus’haf"
   },
   "ruqyah": {
     "title": "Ruqya",

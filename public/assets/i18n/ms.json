@@ -1538,7 +1538,9 @@
     "checkTajweed": "Baris + tajwid",
     "checkHint": "Baris (dan tajwid) disemak oleh AI apabila semakan hafazan tamat; perlukan internet. Kesilapannya dikira dalam markah.",
     "checkNeedsSmart": "Semakan baris dan tajwid hanya berfungsi dengan pembetul pintar, yang menyimpan audio bacaan anda.",
-    "tashkeelTitle": "Baris (harakat)"
+    "tashkeelTitle": "Baris (harakat)",
+    "modeMemory": "Dari hafazan",
+    "modeReading": "Membaca mushaf"
   },
   "ruqyah": {
     "title": "Ruqyah",

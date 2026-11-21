@@ -1538,7 +1538,9 @@
     "checkTajweed": "Harakat + Tadschwid",
     "checkHint": "Harakat (und Tadschwid) werden am Ende des Tasmee von KI geprüft; dafür braucht es Internet. Ihre Fehler zählen zur Bewertung.",
     "checkNeedsSmart": "Die Prüfung von Harakat und Tadschwid funktioniert nur mit dem intelligenten Korrektor, der den Ton deiner Rezitation behält.",
-    "tashkeelTitle": "Harakat"
+    "tashkeelTitle": "Harakat",
+    "modeMemory": "Auswendig",
+    "modeReading": "Aus dem Mushaf lesen"
   },
   "ruqyah": {
     "title": "Ruqya",

@@ -1538,7 +1538,9 @@
     "checkTajweed": "Harakat + tajwid",
     "checkHint": "Harakat (dan tajwid) diperiksa AI saat setoran selesai; perlu internet. Kesalahannya dihitung dalam nilai.",
     "checkNeedsSmart": "Pemeriksaan harakat dan tajwid hanya bekerja dengan korektor pintar, yang menyimpan suara bacaan Anda.",
-    "tashkeelTitle": "Harakat"
+    "tashkeelTitle": "Harakat",
+    "modeMemory": "Dari hafalan",
+    "modeReading": "Membaca mushaf"
   },
   "ruqyah": {
     "title": "Ruqyah",

@@ -17,7 +17,13 @@
             @for (n of ayahNumbers(); track n) { <ion-select-option [value]="n">{{ n }}</ion-select-option> }
           </ion-select>
         </div>
-        <ion-toggle [checked]="tasmee.prefs().hideText" (ionChange)="tasmee.setPrefs({ hideText: $event.detail.checked })">{{ 'tasmee.hideText' | translate }}</ion-toggle>
+        <!-- Two ways: from memory (the words appear as they are recited) or reading from the mushaf (the text shown);
+             both are checked the same way, words and (if chosen) harakat and tajweed. -->
+        <ion-segment class="read-mode" [value]="tasmee.prefs().hideText ? 'memory' : 'reading'"
+                     (ionChange)="tasmee.setPrefs({ hideText: $event.detail.value === 'memory' })">
+          <ion-segment-button value="memory"><ion-label>{{ 'tasmee.modeMemory' | translate }}</ion-label></ion-segment-button>
+          <ion-segment-button value="reading"><ion-label>{{ 'tasmee.modeReading' | translate }}</ion-label></ion-segment-button>
+        </ion-segment>
         <ion-toggle [checked]="tasmee.prefs().stopOnMistake" (ionChange)="tasmee.setPrefs({ stopOnMistake: $event.detail.checked })">{{ 'tasmee.stopOnMistake' | translate }}</ion-toggle>
 
         <h2>{{ 'tasmee.engine' | translate }}</h2>

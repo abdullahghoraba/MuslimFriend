@@ -1538,7 +1538,9 @@
     "checkTajweed": "Harekeler + tecvid",
     "checkHint": "Harekeler (ve tecvid) ezber kontrolü bitince yapay zekâ ile kontrol edilir; internet gerekir. Hataları puana sayılır.",
     "checkNeedsSmart": "Hareke ve tecvid kontrolü yalnızca okumanızın sesini saklayan akıllı düzeltici ile çalışır.",
-    "tashkeelTitle": "Harekeler"
+    "tashkeelTitle": "Harekeler",
+    "modeMemory": "Ezberden",
+    "modeReading": "Mushaftan okuma"
   },
   "ruqyah": {
     "title": "Rukye",

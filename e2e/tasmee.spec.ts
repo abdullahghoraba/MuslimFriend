@@ -134,7 +134,7 @@ for (const [name, wav] of [['clean', WAV], ['noisy', WAV_NOISY]] as const) {
 
 test('tasmee stops at a skipped ayah and shows the right words', async () => {
   const { browser, page } = await openTasmee(WAV_SKIP);
-  await page.locator('ion-toggle').nth(1).click(); // stop at a mistake
+  await page.locator('ion-toggle').filter({ hasText: ar.tasmee.stopOnMistake }).click(); // stop at a mistake
   await page.getByRole('button', { name: ar.tasmee.start }).click();
   const correction = page.locator('.correction');
   await expect(correction).toBeVisible({ timeout: 120_000 });

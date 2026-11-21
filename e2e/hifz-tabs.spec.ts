@@ -34,8 +34,10 @@ test('Hifz has its plans, tasmee\' and «test yourself» as three tabs, and «te
   await page.screenshot({ path: 'test-results/hifz-test-tab.png' });
 
   await hifz.locator('ion-segment-button[value=tasmee]').click();
-  const engines = hifz.locator('app-tasmee ion-segment-button');
-  await expect(engines.first()).toHaveAttribute('value', 'offline'); // the Quran AI first, and chosen by default
+  // From memory or reading from the mushaf, then the engine: the Quran AI first, and chosen by default.
+  await expect(hifz.locator('app-tasmee ion-segment.read-mode ion-segment-button')).toHaveCount(2);
+  const engines = hifz.locator('app-tasmee ion-segment-button[value=offline], app-tasmee ion-segment-button[value=phone]');
+  await expect(engines.first()).toHaveAttribute('value', 'offline');
   await expect(engines.first()).toHaveClass(/segment-button-checked/);
   await page.screenshot({ path: 'test-results/hifz-tasmee-tab.png' });
 });

@@ -1538,7 +1538,9 @@
     "checkTajweed": "Harakati + tajwidi",
     "checkHint": "Harakati (na tajwidi) hukaguliwa na AI tasmi‘ ikiisha; inahitaji mtandao. Makosa yake yanahesabiwa kwenye alama.",
     "checkNeedsSmart": "Ukaguzi wa harakati na tajwidi hufanya kazi na kisahihishaji mahiri pekee, kinachohifadhi sauti ya kisomo chako.",
-    "tashkeelTitle": "Harakati"
+    "tashkeelTitle": "Harakati",
+    "modeMemory": "Kwa kuhifadhi",
+    "modeReading": "Kusoma msahafu"
   },
   "ruqyah": {
     "title": "Ruqya ya kisheria",

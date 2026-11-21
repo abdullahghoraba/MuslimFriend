@@ -1538,7 +1538,9 @@
     "checkTajweed": "符号 + 诵读规则",
     "checkHint": "诵读结束后由 AI 检查元音符号（及诵读规则），需要联网；其错误计入得分。",
     "checkNeedsSmart": "元音符号与诵读规则检查只适用于智能纠错（它会保留您的诵读音频）。",
-    "tashkeelTitle": "元音符号"
+    "tashkeelTitle": "元音符号",
+    "modeMemory": "背诵",
+    "modeReading": "看经本诵读"
   },
   "ruqyah": {
     "title": "合法的鲁格耶（诵经祈护）",

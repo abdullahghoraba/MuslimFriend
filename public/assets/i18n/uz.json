@@ -1538,7 +1538,9 @@
     "checkTajweed": "Harakatlar + tajvid",
     "checkHint": "Tasmi‘ tugagach harakatlar (va tajvid) sun’iy intellekt bilan tekshiriladi; internet kerak. Xatolari ballga hisoblanadi.",
     "checkNeedsSmart": "Harakat va tajvid tekshiruvi faqat tilovatingiz ovozini saqlaydigan aqlli tuzatuvchi bilan ishlaydi.",
-    "tashkeelTitle": "Harakatlar"
+    "tashkeelTitle": "Harakatlar",
+    "modeMemory": "Yoddan",
+    "modeReading": "Mushafdan o‘qish"
   },
   "ruqyah": {
     "title": "Shar'iy ruqya",

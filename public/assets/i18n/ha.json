@@ -1538,7 +1538,9 @@
     "checkTajweed": "Wasali + tajwidi",
     "checkHint": "Ana duba wasali (da tajwidi) da AI bayan an gama tasmi‘; yana bukatar intanet. Kurakuransu suna ƙirguwa a maki.",
     "checkNeedsSmart": "Duba wasali da tajwidi yana aiki ne kawai da mai gyara mai wayo, wanda ke ajiye sautin karatunka.",
-    "tashkeelTitle": "Wasali (harakat)"
+    "tashkeelTitle": "Wasali (harakat)",
+    "modeMemory": "Daga haddace",
+    "modeReading": "Karatu daga Alƙur’ani"
   },
   "ruqyah": {
     "title": "Ruƙiyya ta shari'a",
