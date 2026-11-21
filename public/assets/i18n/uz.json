@@ -597,7 +597,8 @@
     "viewFlow": "Uzluksiz matn",
     "viewPrint": "Bosma sahifa",
     "printZoomHint": "Bosma sahifa qog‘oz mushafdek har doim ekranni to‘ldiradi, oyatlari joyidan siljimaydi. Matn o‘lchami uzluksiz matnga tegishli.",
-    "printOffline": "Bu bosma sahifa birinchi marta ochilganda internet talab qiladi, shuning uchun uzluksiz matn koʻrsatildi."
+    "printOffline": "Bu bosma sahifa birinchi marta ochilganda internet talab qiladi, shuning uchun uzluksiz matn koʻrsatildi.",
+    "backTo": "{{page}}-sahifaga qaytish"
   },
   "quran": {
     "title": "Qur'on",

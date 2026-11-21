@@ -18,6 +18,13 @@ async function openMushaf(page: Page, p: number, prefs: View = {}) {
 }
 
 /** Per line of the printed page: overflow, the widest gap between two words (in em), and whether it is centred. */
+/** Opens the reading settings (on the printed page the toolbar shows on a tap first). */
+async function openSettings(page: Page) {
+  const button = page.getByRole('button', { name: ar.mushaf.viewSettings });
+  if (!(await button.isVisible())) await page.locator('app-mushaf:not(.ion-page-hidden) .page-surface').click({ position: { x: 30, y: 200 } });
+  await button.click();
+}
+
 async function printLines(page: Page) {
   return page.locator('.print-page').evaluate((pg) => {
     const size = parseFloat(getComputedStyle(pg).getPropertyValue('--qcf-size'));
@@ -59,13 +66,13 @@ test('the Madinah mushaf opens in the flowing view, in the King Fahd Complex fon
 
 test('«صفحة كالمطبوع» is chosen in the reading settings and kept', async ({ page }) => {
   await openMushaf(page, 50);
-  await page.getByRole('button', { name: ar.mushaf.viewSettings }).click();
+  await openSettings(page);
   await expect(page.locator('ion-segment.view-mode')).toContainText(ar.mushaf.viewPrint);
   await page.locator('ion-segment.view-mode ion-segment-button[value="print"]').click();
   await expect(page.locator('.print-page .qcf-word').first()).toBeVisible();
   await page.reload();
   await expect(page.locator('.print-page .qcf-word').first()).toBeVisible();
-  await page.getByRole('button', { name: ar.mushaf.viewSettings }).click();
+  await openSettings(page);
   await page.locator('ion-segment.view-mode ion-segment-button[value="flow"]').click();
   await expect(page.locator('.page-text.qpc [data-ayah]').first()).toBeVisible();
   await expect(page.locator('.print-page')).toHaveCount(0);
@@ -100,7 +107,7 @@ for (const p of [1, 2, 3, 27, 50, 106, 187, 255, 300, 377, 420, 512, 590, 602, 6
 test('a larger text size keeps the printed page as printed (as in Quran for Android), with a note', async ({ page }) => {
   await openMushaf(page, 50, { view: 'print', scale: 1.3 });
   await expect(page.locator('.print-page .qcf-word').first()).toBeVisible();
-  await page.getByRole('button', { name: ar.mushaf.viewSettings }).click();
+  await openSettings(page);
   await expect(page.getByText(ar.mushaf.printZoomHint)).toBeVisible();
 });
 
@@ -132,11 +139,26 @@ test('offline the first time, a printed page falls back to the flowing text and 
   await expect(page.locator('.print-page .qcf-word').first()).toBeVisible();
 });
 
-test('on the printed page, tapping a word selects its whole ayah and turning the page loads the next one', async ({ page }) => {
+test('on the printed page (as in Ayah): a tap shows the toolbar and the page slider, a long press selects the whole ayah', async ({ page }) => {
   await openMushaf(page, 50, { view: 'print' });
   const word = page.locator('.print-page .qcf-word[data-ayah="3:2"]').first();
   await expect(word).toBeVisible();
+  // Full screen: no toolbar; the page's head (juz, sura) and its ornament (hizb, page) as the print sets them.
+  await expect(page.locator('app-mushaf:not(.ion-page-hidden) ion-header')).toBeHidden();
+  await expect(page.locator('.page-surface > .print-head')).toContainText('الجزء الثالث');
+  await expect(page.locator('.page-surface > .folio')).toContainText('٥٠');
   await word.click();
+  await expect(page.getByRole('button', { name: ar.mushaf.viewSettings })).toBeVisible();
+  await expect(page.locator('ion-footer.page-slider ion-range')).toBeVisible();
+  await page.screenshot({ path: 'test-results/print-toolbar.png' });
+  await word.click();
+  await expect(page.locator('app-mushaf:not(.ion-page-hidden) ion-header')).toBeHidden();
+  // A long press selects.
+  const box = (await word.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.waitForTimeout(700);
+  await page.mouse.up();
   await expect(page.locator('.ayah-actions')).toBeVisible();
   const ayah = page.locator('.print-page .qcf-word[data-ayah="3:2"]');
   const n = await ayah.count();
@@ -146,7 +168,8 @@ test('on the printed page, tapping a word selects its whole ayah and turning the
   // One band over the ayah, not a box round each word.
   const outlines = await ayah.evaluateAll((els) => els.map((e) => getComputedStyle(e).outlineStyle));
   expect(outlines.every((o) => o === 'none')).toBe(true);
-  await page.getByRole('button', { name: ar.mushaf.nextPage }).click();
+  // The page-turn buttons stay for screen readers (the finger turns the page).
+  await page.getByRole('button', { name: ar.mushaf.nextPage }).evaluate((b: HTMLElement) => b.click());
   await expect(page).toHaveURL(/\/mushaf\/51$/);
   await expect(page.locator('.print-page .qcf-word').first()).toBeVisible();
 });
@@ -168,7 +191,7 @@ test('turning the printed page with the finger: the next page slides in beside i
   await page.mouse.move(box.x + box.width * 0.3, y);
   await page.mouse.down();
   await page.mouse.move(box.x + box.width * 0.3 + 80, y, { steps: 8 });
-  await expect(page.locator('.page-under .page-num')).toHaveText('51');
+  await expect(page.locator('.page-under .folio')).toContainText('٥١');
   await expect(page.locator('.page-under .print-page .qcf-word').first()).toBeVisible();
   const [surface, beside] = await Promise.all([page.locator('.page-surface').boundingBox(), page.locator('.page-under').boundingBox()]);
   expect(surface!.x).toBeGreaterThan(box.x + 40);

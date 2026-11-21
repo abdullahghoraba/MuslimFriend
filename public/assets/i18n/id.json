@@ -597,7 +597,8 @@
     "viewFlow": "Teks mengalir",
     "viewPrint": "Halaman cetak",
     "printZoomHint": "Halaman cetak selalu memenuhi layar seperti mushaf kertas, dan ayat-ayatnya tidak berpindah. Ukuran teks berlaku untuk teks bersambung.",
-    "printOffline": "Halaman cetak ini butuh internet saat pertama dibuka, jadi teks mengalir ditampilkan."
+    "printOffline": "Halaman cetak ini butuh internet saat pertama dibuka, jadi teks mengalir ditampilkan.",
+    "backTo": "Kembali ke halaman {{page}}"
   },
   "quran": {
     "title": "Al-Qur'an",

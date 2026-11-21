@@ -597,7 +597,8 @@
     "viewFlow": "Texto continuo",
     "viewPrint": "Página impresa",
     "printZoomHint": "La página impresa siempre llena la pantalla, como un mus’haf de papel, y sus aleyas no se mueven. El tamaño del texto se aplica al texto continuo.",
-    "printOffline": "Esta página impresa necesita internet la primera vez; se muestra el texto continuo."
+    "printOffline": "Esta página impresa necesita internet la primera vez; se muestra el texto continuo.",
+    "backTo": "Volver a la página {{page}}"
   },
   "quran": {
     "title": "Corán",

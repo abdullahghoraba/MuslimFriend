@@ -597,7 +597,8 @@
     "viewFlow": "Akan metin",
     "viewPrint": "Basılı sayfa",
     "printZoomHint": "Basılı sayfa, kâğıt mushaftaki gibi her zaman ekranı doldurur ve ayetleri yer değiştirmez. Yazı boyutu akan metinde geçerlidir.",
-    "printOffline": "Bu basılı sayfa ilk açılışta internet gerektirir; akan metin gösteriliyor."
+    "printOffline": "Bu basılı sayfa ilk açılışta internet gerektirir; akan metin gösteriliyor.",
+    "backTo": "{{page}}. sayfaya dön"
   },
   "quran": {
     "title": "Kuran",

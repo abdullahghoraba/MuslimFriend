@@ -597,7 +597,8 @@
     "viewFlow": "Teks berterusan",
     "viewPrint": "Halaman bercetak",
     "printZoomHint": "Halaman bercetak sentiasa memenuhi skrin seperti mushaf kertas, dan ayatnya tidak beralih. Saiz teks digunakan untuk teks bersambung.",
-    "printOffline": "Halaman bercetak ini memerlukan internet kali pertama dibuka, jadi teks berterusan dipaparkan."
+    "printOffline": "Halaman bercetak ini memerlukan internet kali pertama dibuka, jadi teks berterusan dipaparkan.",
+    "backTo": "Kembali ke halaman {{page}}"
   },
   "quran": {
     "title": "Al-Quran",

@@ -1,4 +1,4 @@
-<ion-header [class]="'theme-' + theme()">
+<ion-header [class]="'theme-' + theme()" [class.hidden-chrome]="immersive()">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/quran" [text]="''" [attr.aria-label]="'common.back' | translate" />
@@ -89,7 +89,7 @@
 </ion-header>
 
 <!-- The printed page always fits the screen: it never scrolls. -->
-<ion-content [class]="'mushaf theme-' + theme()" [scrollY]="!printRows()" (click)="rangeMode() ? null : selected.set(null)">
+<ion-content [class]="'mushaf theme-' + theme()" [scrollY]="!printRows()" (click)="contentTap()">
   @if (!quran.ready()) {
     <div class="loading"><ion-spinner /></div>
   } @else {
@@ -97,6 +97,9 @@
     @if (under(); as u) {
       <!-- The page the finger is turning to, lying under this one (as in a printed mushaf); drawn only while dragging. -->
       <div class="page-under" aria-hidden="true" [style.--quran-font-scale]="quranScale()">
+        @if (printWanted() && underFrame(); as f) {
+          <div class="print-head" dir="rtl"><span>{{ f.juz }}</span><span>{{ f.sura }}</span></div>
+        }
         @if (underRows(); as rows) {
           <div class="print-page" [class.opening]="u <= 2" [style.font-family]="underFamily()" [appQcfFit]="underFamily()" lang="ar" dir="rtl">
             @for (row of rows; track $index) {
@@ -118,7 +121,11 @@
         } @else {
           <div class="quran-text page-text under-text" lang="ar" dir="rtl">{{ underText() }}</div>
         }
-        <div class="page-footer" dir="ltr"><span class="page-num">{{ underLabel() }}</span></div>
+        @if (printWanted() && underFrame(); as f) {
+          <div class="folio" dir="rtl"><span>{{ f.hizb }}</span><i></i><span>{{ f.page }}</span></div>
+        } @else {
+          <div class="page-footer" dir="ltr"><span class="page-num">{{ underLabel() }}</span></div>
+        }
       </div>
     }
     <div #surface class="page-surface" [class.slide-next]="slide() === 'next'" [class.slide-prev]="slide() === 'prev'"
@@ -127,6 +134,10 @@
         <span class="ribbon" [attr.data-color]="bm.color" [attr.aria-label]="bm.name" role="img"></span>
       }
 
+      @if (printWanted() && frame(); as f) {
+        <!-- As the print heads its pages (and Ayah): the juz in words, and the sura. -->
+        <div class="print-head" dir="rtl" aria-hidden="true"><span>{{ f.juz }}</span><span>{{ f.sura }}</span></div>
+      }
       @if (printRows(); as rows) {
         <!-- «صفحة كالمطبوع»: the page set in the King Fahd Complex's font for this page, line for line as printed. -->
         <div class="print-page" [class.opening]="page() <= 2" [style.font-family]="printFamily()" [appQcfFit]="printFamily()"
@@ -195,8 +206,13 @@
       </div>
       }
 
-      <!-- Laid out like a printed mushaf in every language: the next page is on the left. -->
-      <div class="page-footer" dir="ltr">
+      @if (printWanted() && frame(); as f) {
+        <!-- The hizb and the page number in one ornament, as Ayah shows them. -->
+        <div class="folio" dir="rtl"><span>{{ f.hizb }}</span><i aria-hidden="true"></i><span>{{ f.page }}</span></div>
+      }
+      <!-- Laid out like a printed mushaf in every language: the next page is on the left. (On the printed page the
+           finger turns the pages: the buttons stay for screen readers.) -->
+      <div class="page-footer" dir="ltr" [class.sr-only]="!!printRows()">
         <button type="button" class="turn" (click)="next(); $event.stopPropagation()" [disabled]="page() >= pageCount()"
                 [attr.aria-label]="'mushaf.nextPage' | translate">‹</button>
         <span class="page-num">{{ pageLabel() }}</span>
@@ -288,5 +304,18 @@
         </ion-button>
       </div>
     }
+  </ion-footer>
+} @else if (chrome() && printRows()) {
+  <!-- Toolbar shown on the printed page: a slider over the whole mushaf, and back to where the reader was. -->
+  <ion-footer [class]="'theme-' + theme()" class="page-slider">
+    <div class="slider-row">
+      @if (slidFrom(); as from) {
+        <button type="button" class="back-to" (click)="backToSlidFrom()" [attr.aria-label]="'mushaf.backTo' | translate: { page: from }">
+          <ion-icon name="return-up-back-outline" aria-hidden="true" /><span>{{ from }}</span>
+        </button>
+      }
+      <ion-range [min]="1" [max]="pageCount()" [step]="1" [value]="page()" dir="rtl" (ionChange)="slideTo($event.detail.value)"
+                 [attr.aria-label]="'mushaf.goTo' | translate" />
+    </div>
   </ion-footer>
 }

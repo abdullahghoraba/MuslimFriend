@@ -597,7 +597,8 @@
     "viewFlow": "Texto contínuo",
     "viewPrint": "Página impressa",
     "printZoomHint": "A página impressa sempre preenche a tela, como um mushaf de papel, e seus versículos não se movem. O tamanho do texto vale para o texto contínuo.",
-    "printOffline": "Esta página impressa precisa de internet na primeira vez; o texto contínuo é mostrado."
+    "printOffline": "Esta página impressa precisa de internet na primeira vez; o texto contínuo é mostrado.",
+    "backTo": "Voltar à página {{page}}"
   },
   "quran": {
     "title": "Alcorão",

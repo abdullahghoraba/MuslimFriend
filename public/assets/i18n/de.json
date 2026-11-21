@@ -597,7 +597,8 @@
     "viewFlow": "Fließtext",
     "viewPrint": "Gedruckte Seite",
     "printZoomHint": "Die gedruckte Seite füllt immer den Bildschirm wie ein Papier-Mushaf, ihre Verse bleiben an ihrem Platz. Die Textgröße gilt für den Fließtext.",
-    "printOffline": "Diese gedruckte Seite braucht beim ersten Öffnen Internet, daher wird der Fließtext angezeigt."
+    "printOffline": "Diese gedruckte Seite braucht beim ersten Öffnen Internet, daher wird der Fließtext angezeigt.",
+    "backTo": "Zurück zu Seite {{page}}"
   },
   "quran": {
     "title": "Koran",

@@ -597,7 +597,8 @@
     "viewFlow": "Maandishi mfululizo",
     "viewPrint": "Ukurasa uliochapishwa",
     "printZoomHint": "Ukurasa uliochapishwa hujaza skrini kila wakati kama msahafu wa karatasi, na aya zake hazihami. Ukubwa wa maandishi ni kwa maandishi yanayofuatana.",
-    "printOffline": "Ukurasa huu uliochapishwa unahitaji intaneti mara ya kwanza, hivyo maandishi mfululizo yanaonyeshwa."
+    "printOffline": "Ukurasa huu uliochapishwa unahitaji intaneti mara ya kwanza, hivyo maandishi mfululizo yanaonyeshwa.",
+    "backTo": "Rudi ukurasa {{page}}"
   },
   "quran": {
     "title": "Kurani",

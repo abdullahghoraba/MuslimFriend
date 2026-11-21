@@ -29,6 +29,9 @@ export class QcfFitDirective implements AfterViewInit, OnDestroy {
     this.active = true;
     this.resize = new ResizeObserver(this.schedule);
     this.resize.observe(this.element);
+    // The room on the screen changes when the toolbar shows or hides: the page is fitted again.
+    const content = this.element.closest('ion-content');
+    if (content) this.resize.observe(content);
     this.mutation = new MutationObserver(this.schedule);
     this.mutation.observe(this.element, { childList: true, subtree: true });
     window.addEventListener('resize', this.schedule);
@@ -69,9 +72,18 @@ export class QcfFitDirective implements AfterViewInit, OnDestroy {
     const rows = el.querySelectorAll(':scope > .print-line, :scope > .print-basmala, :scope > .print-title').length;
     const content = el.closest('ion-content') as HTMLElement | null;
     const footer = el.parentElement?.querySelector<HTMLElement>(':scope > .page-footer');
+    // The page's own head (juz, sura) and its ornament (hizb, page number), with their margins.
+    const outer = (e: HTMLElement | null | undefined) => {
+      if (!e || e.classList.contains('sr-only')) return 0;
+      const cs = getComputedStyle(e);
+      return e.offsetHeight + parseFloat(cs.marginTop) + parseFloat(cs.marginBottom);
+    };
+    const head = outer(el.parentElement?.querySelector<HTMLElement>(':scope > .print-head'));
+    const folio = outer(el.parentElement?.querySelector<HTMLElement>(':scope > .folio'));
     const surface = el.parentElement;
     const pad = surface ? parseFloat(getComputedStyle(surface).paddingTop) + parseFloat(getComputedStyle(surface).paddingBottom) : 0;
-    const free = (content?.clientHeight || window.innerHeight) - (footer?.offsetHeight ?? PAGE_FOOTER) - pad - 8;
+    const bottom = footer && !footer.classList.contains('sr-only') ? footer.offsetHeight : folio ? 0 : PAGE_FOOTER;
+    const free = (content?.clientHeight || window.innerHeight) - bottom - head - folio - pad - 8;
     const byWidth = (REF * (width - 2)) / widest;
     // Rows at least 1.7 times the type size (the print's spacing; less and the marks of two lines touch).
     const byHeight = rows ? free / rows / 1.7 : byWidth;

@@ -597,7 +597,8 @@
     "viewFlow": "Flowing text",
     "viewPrint": "Printed page",
     "printZoomHint": "The printed page always fills the screen, as in a paper mushaf, and its ayat never move. The text size applies to the flowing view.",
-    "printOffline": "This printed page needs the internet the first time it opens, so the flowing text is shown."
+    "printOffline": "This printed page needs the internet the first time it opens, so the flowing text is shown.",
+    "backTo": "Back to page {{page}}"
   },
   "quran": {
     "title": "Quran",

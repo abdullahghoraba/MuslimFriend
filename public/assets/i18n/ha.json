@@ -597,7 +597,8 @@
     "viewFlow": "Rubutu a jere",
     "viewPrint": "Shafin bugu",
     "printZoomHint": "Shafin da aka buga koyaushe yana cika allo kamar Alƙur’ani na takarda, ayoyinsa ba sa motsi. Girman rubutu na rubutu mai ci gaba ne.",
-    "printOffline": "Wannan shafin bugu yana bukatar intanet a karon farko, don haka an nuna rubutu a jere."
+    "printOffline": "Wannan shafin bugu yana bukatar intanet a karon farko, don haka an nuna rubutu a jere.",
+    "backTo": "Koma shafi na {{page}}"
   },
   "quran": {
     "title": "Alƙur'ani",

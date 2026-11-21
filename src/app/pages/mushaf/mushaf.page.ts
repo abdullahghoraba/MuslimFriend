@@ -79,6 +79,15 @@ const READ_AFTER_MS = 3000;
  * Swipe to turn pages (RTL like a printed mushaf), tap an ayah for tafsir, recitation, bookmarks
  * (coloured), star, highlight, note, copy and share.
  */
+/** Arabic-Indic numerals (the print's): 502 -> ٥٠٢. */
+const indic = (n: number) => String(n).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[Number(d)]);
+
+/** The juz in words, as the print heads its pages («الجزء السادس والعشرون»). */
+const JUZ_WORDS = ['الأول', 'الثاني', 'الثالث', 'الرابع', 'الخامس', 'السادس', 'السابع', 'الثامن', 'التاسع', 'العاشر',
+  'الحادي عشر', 'الثاني عشر', 'الثالث عشر', 'الرابع عشر', 'الخامس عشر', 'السادس عشر', 'السابع عشر', 'الثامن عشر',
+  'التاسع عشر', 'العشرون', 'الحادي والعشرون', 'الثاني والعشرون', 'الثالث والعشرون', 'الرابع والعشرون',
+  'الخامس والعشرون', 'السادس والعشرون', 'السابع والعشرون', 'الثامن والعشرون', 'التاسع والعشرون', 'الثلاثون'];
+
 @Component({
   selector: 'app-mushaf',
   imports: [
@@ -280,6 +289,70 @@ export class MushafPage {
   });
 
   readonly pageLabel = computed(() => String(this.page()));
+
+  /**
+   * The printed page's frame, as Ayah and the print set it: above the page the juz (in words) and the sura, below it
+   * the hizb and the page number in one ornament (Arabic numerals in Arabic).
+   */
+  readonly frame = computed(() => this.frameOf(this.page()));
+  /** The same frame for the page underneath while the finger turns: the two pages look alike, nothing moves. */
+  readonly underFrame = computed(() => {
+    const u = this.under();
+    return u ? this.frameOf(u) : null;
+  });
+
+  /** From the page's number and its first ayah (no waiting for the page's text or font). */
+  frameOf(p: number): { juz: string; sura: string; hizb: string; page: string } | null {
+    const layout = this.layout();
+    if (!layout || !this.quran.ready()) return null;
+    const firstIndex = layout.pieces(p)[0]?.index;
+    if (firstIndex === undefined) return null;
+    const first = this.quran.ayahAt(firstIndex);
+    const ar = this.lang() === 'ar';
+    const juz = this.quran.juzOf(first);
+    const hizb = Math.ceil(this.quran.quarterOf(first) / 4);
+    return {
+      juz: ar ? 'الجزء ' + JUZ_WORDS[juz - 1] : 'Juz ' + juz,
+      sura: ar ? this.quran.sura(first.sura).name : this.quran.sura(first.sura).tname,
+      // The print's own numerals in Arabic (٥٠٢), as Ayah shows them.
+      hizb: ar ? 'الحزب ' + indic(hizb) : 'Hizb ' + hizb,
+      page: ar ? indic(p) : String(p),
+    };
+  }
+
+  /**
+   * Reading the printed page full screen (as in Ayah and Quran for Android): the toolbar and the page slider show on
+   * a tap and hide on the next; a long press selects an ayah.
+   */
+  readonly chrome = signal(false);
+  readonly immersive = computed(() => !!this.printRows() && !this.chrome() && !this.selected() && !this.settingsOpen());
+  /** The page the reader came from by the slider (to go back to it). */
+  readonly slidFrom = signal<number | null>(null);
+
+  /** A tap on the page, outside any ayah: closes a selection, or (printed page) shows / hides the toolbar. */
+  contentTap(): void {
+    if (this.rangeMode()) return;
+    if (this.selected()) this.selected.set(null);
+    else if (this.printRows()) this.toggleChrome();
+  }
+
+  toggleChrome(): void {
+    this.chrome.update((c) => !c);
+  }
+
+  /** The page slider: the page under the thumb while it moves, the page itself when it is let go. */
+  slideTo(value: unknown): void {
+    const p = Math.round(Number(value));
+    if (!p || p === this.page()) return;
+    if (this.slidFrom() === null) this.slidFrom.set(this.page());
+    this.goTo(p, 'none');
+  }
+
+  backToSlidFrom(): void {
+    const from = this.slidFrom();
+    this.slidFrom.set(null);
+    if (from) this.goTo(from, 'none');
+  }
   /** Bookmarks placed on this page (shown as coloured ribbons). */
   readonly pageBookmarks = computed(() => {
     const layout = this.layout();
@@ -567,6 +640,11 @@ export class MushafPage {
     event.stopPropagation();
     if (this.longPressed) {
       this.longPressed = false;
+      return;
+    }
+    // The printed page reads like a book: a tap shows or hides the toolbar; a long press selects the ayah.
+    if (this.printRows() && !this.selected()) {
+      this.toggleChrome();
       return;
     }
     this.haptics.tap();
