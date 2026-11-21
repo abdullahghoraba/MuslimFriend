@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Capacitor, CapacitorHttp } from '@capacitor/core';
 import { Preferences } from '@capacitor/preferences';
+import { App } from '@capacitor/app';
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 
 /**
  * Tajweed check after a tasmee' (the offline engine keeps each phrase's audio): each phrase is sent with the words it
@@ -204,6 +206,25 @@ export class TajweedService {
     return false;
   }
 
+  /**
+   * Test builds only (the app id ends in .dev, installed next to the Play version): each checked phrase is kept on the
+   * phone with the server's answer (files/tajweed-debug/), to study the check on a real voice. The Play build keeps
+   * nothing.
+   */
+  private debugBuild?: Promise<boolean>;
+  private async keepForStudy(phrases: { audio: Float32Array; parts: TajweedPart[] }[], replies: (TajweedReply | null)[]): Promise<void> {
+    if (!Capacitor.isNativePlatform()) return;
+    this.debugBuild ??= App.getInfo().then((i) => i.id.endsWith('.dev')).catch(() => false);
+    if (!(await this.debugBuild)) return;
+    const at = Date.now();
+    for (let i = 0; i < phrases.length; i++) {
+      await Filesystem.writeFile({
+        path: `tajweed-debug/${at}-${i}.json`, directory: Directory.Data, encoding: Encoding.UTF8, recursive: true,
+        data: JSON.stringify({ parts: phrases[i].parts, reply: replies[i], prefs: await this.prefs(), wav: wavBase64(phrases[i].audio) }),
+      }).catch(() => undefined);
+    }
+  }
+
   /** Checks phrases (their audio and the words each covers), a few per request; one result per phrase. */
   async check(phrases: { audio: Float32Array; parts: TajweedPart[] }[]): Promise<(TajweedReply | null)[]> {
     const p = await this.prefs();
@@ -221,6 +242,7 @@ export class TajweedService {
           if (r && !Array.isArray(r.errors)) console.warn('[tajweed] phrase not checked:', (r as { error?: string }).error);
           out.push(r && Array.isArray(r.errors) ? { errors: r.errors } : null);
         });
+        void this.keepForStudy(batch, out.slice(out.length - batch.length));
       } catch (e) {
         console.warn('[tajweed]', e);
         batch.forEach(() => out.push(null));
