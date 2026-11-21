@@ -37,7 +37,8 @@ ion-title { padding-inline: 4px; }
 
 // Turning pages: the neighbouring page lies beside this one (shown only while a finger drags) and both slide
 // together, with a soft shadow at the fold between them.
-.page-stack { position: relative; min-height: 100%; overflow-x: clip; }
+// Its background shows only in the gutter between two pages while they slide: a shade of the page's ink.
+.page-stack { position: relative; min-height: 100%; overflow-x: clip; background: color-mix(in srgb, var(--m-fg) 14%, var(--m-bg)); }
 .page-under {
   position: absolute;
   inset: 0;

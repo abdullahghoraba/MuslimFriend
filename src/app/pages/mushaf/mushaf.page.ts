@@ -479,7 +479,9 @@ export class MushafPage {
     const beside = () => this.host.nativeElement.querySelector<HTMLElement>('.page-under');
     const width = () => el.clientWidth || window.innerWidth;
     // Where the neighbouring page sits while the page is moved by dx: just off the edge it comes in from.
-    const besideAt = (dx: number) => `translateX(${dx > 0 ? dx - width() : dx + width()}px)`;
+    // A gutter between the two pages while they slide (as in Ayah: the spine between two sheets).
+    const GUTTER = 14;
+    const besideAt = (dx: number) => `translateX(${dx > 0 ? dx - width() - GUTTER : dx + width() + GUTTER}px)`;
     const move = (dx: number, turnable: boolean) => {
       el.style.transform = `translateX(${turnable ? dx : dx * 0.2}px)`;
       const b = beside();
@@ -492,11 +494,11 @@ export class MushafPage {
       const ease = reduced ? 'none' : 'transform 0.26s cubic-bezier(0.22, 0.8, 0.3, 1)';
       const b = beside();
       el.style.transition = ease;
-      el.style.transform = turn ? `translateX(${Math.sign(dx) * width()}px)` : 'translateX(0)';
+      el.style.transform = turn ? `translateX(${Math.sign(dx) * (width() + GUTTER)}px)` : 'translateX(0)';
       if (b) {
         b.style.transition = ease;
         // Turned: it takes the page's place. Not turned: back off the edge it came in from.
-        b.style.transform = turn ? 'translateX(0)' : `translateX(${dx > 0 ? -width() : width()}px)`;
+        b.style.transform = turn ? 'translateX(0)' : `translateX(${dx > 0 ? -width() - GUTTER : width() + GUTTER}px)`;
       }
       setTimeout(() => {
         el.style.transition = '';

@@ -202,7 +202,10 @@ test('turning the printed page with the finger: the next page slides in beside i
   await expect(page.locator('.page-under .print-page .qcf-word').first()).toBeVisible();
   const [surface, beside] = await Promise.all([page.locator('.page-surface').boundingBox(), page.locator('.page-under').boundingBox()]);
   expect(surface!.x).toBeGreaterThan(box.x + 40);
-  expect(Math.abs(beside!.x + beside!.width - surface!.x)).toBeLessThan(3);
+  // A gutter between the two pages (as in Ayah), about 14 px.
+  const gutter = surface!.x - (beside!.x + beside!.width);
+  expect(gutter).toBeGreaterThan(10);
+  expect(gutter).toBeLessThan(18);
   await page.mouse.move(box.x + box.width * 0.3 + 160, y, { steps: 4 });
   await page.screenshot({ path: 'test-results/mushaf-turning.png' });
   await page.mouse.move(box.x + box.width * 0.3 + 40, y, { steps: 20 });
