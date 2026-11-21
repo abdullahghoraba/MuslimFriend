@@ -14,6 +14,21 @@ import {
 
 const CONTENT_VERSION_KEY = 'contentVersion';
 
+/**
+ * The morning and evening athkar's default order before content version 7 (which follows the order of the widely
+ * used «أذكار المسلم» app): a list still in this order was never rearranged, and moves to the new one.
+ */
+const PREVIOUS_DEFAULT_ORDER: Record<string, string[]> = {
+  morning: ['ayat-al-kursi', 'ikhlas', 'falaq', 'nas', 'asbahna-wa-asbaha-al-mulk', 'bika-asbahna', 'sayyid-al-istighfar', 'ushhiduka',
+    'ma-asbaha-bi', 'afini-fi-badani', 'hasbiyallah', 'al-afiyah', 'alim-al-ghayb', 'bismillah-la-yadurr', 'raditu', 'ya-hayyu-ya-qayyum',
+    'fathahu-wa-nasrahu', 'fitrat-al-islam', 'shirk-khafi', 'al-hamm-wal-hazan', 'jalal-wajhik', 'abu-ad-darda', 'subhanallahi-wa-bihamdih-100',
+    'tahlil-10', 'adada-khalqih', 'ilman-nafian', 'astaghfirullah-100', 'salawat-10'].map((id) => 'morning-' + id),
+  evening: ['ayat-al-kursi', 'baqarah-285-286', 'ikhlas', 'falaq', 'nas', 'amsayna-wa-amsa-al-mulk', 'bika-amsayna', 'sayyid-al-istighfar',
+    'ushhiduka', 'ma-amsa-bi', 'afini-fi-badani', 'hasbiyallah', 'al-afiyah', 'alim-al-ghayb', 'bismillah-la-yadurr', 'raditu',
+    'ya-hayyu-ya-qayyum', 'fathaha-wa-nasraha', 'fitrat-al-islam', 'shirk-khafi', 'al-hamm-wal-hazan', 'jalal-wajhik', 'abu-ad-darda',
+    'subhanallahi-wa-bihamdih-100', 'tahlil-10', 'audhu-bikalimat', 'salawat-10'].map((id) => 'evening-' + id),
+};
+
 interface AthkarRow {
   id: string;
   category_id: string;
@@ -159,6 +174,21 @@ export class AthkarRepository {
         });
       }
     });
+    // A new default order reaches the lists the reader never rearranged (still in the previous default order, with
+    // no athkar of their own added); a list they arranged themselves keeps their order.
+    for (const [category, previous] of Object.entries(PREVIOUS_DEFAULT_ORDER)) {
+      const rows = await this.db.query<{ id: string; is_custom: number }>(
+        'SELECT id, is_custom FROM athkar WHERE category_id = ? ORDER BY sort_order, created_at',
+        [category],
+      );
+      const untouched = rows.length === previous.length && rows.every((r, i) => !Number(r.is_custom) && r.id === previous[i]);
+      if (!untouched) continue;
+      dataset.items.forEach((item, index) => {
+        if (item.categoryId === category && existing.has(item.id)) {
+          statements.push({ sql: 'UPDATE athkar SET sort_order = ? WHERE id = ?', params: [index, item.id] });
+        }
+      });
+    }
     for (const id of existing) {
       if (!bundledIds.has(id)) {
         statements.push({ sql: 'DELETE FROM dhikr_daily WHERE dhikr_id = ?', params: [id] });
