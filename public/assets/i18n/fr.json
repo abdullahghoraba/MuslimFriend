@@ -1525,7 +1525,7 @@
     "mistakes": "{{n}} à revoir",
     "skipped": "sauté",
     "history": "Séances récentes",
-    "note": "Vérifie les mots, pas le tajwid. La reconnaissance peut mal entendre : écoutez le verset en cas de doute.",
+    "note": "Les mots sont vérifiés pendant la récitation ; les voyelles et le tajwid, si vous les choisissez, par IA à la fin. Il peut mal entendre : écoutez le verset en cas de doute.",
     "engineOffline": "Correcteur intelligent (hors ligne, plus précis)",
     "offlineAbout": "Un modèle entraîné sur la récitation du Coran, y compris celle de personnes ordinaires récitant dans leur téléphone, tourne sur votre téléphone : plus besoin d’internet après un téléchargement de 40 Mo.",
     "offlineReady": "Le correcteur intelligent est prêt et fonctionne hors ligne.",

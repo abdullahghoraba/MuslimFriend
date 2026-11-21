@@ -37,6 +37,11 @@ android {
         }
     }
     buildTypes {
+        // Debug builds install next to the Play version, to try a build on a phone without touching its data.
+        debug {
+            applicationIdSuffix ".dev"
+            if (keystorePropsFile.exists()) signingConfig signingConfigs.release
+        }
         release {
             if (keystorePropsFile.exists()) signingConfig signingConfigs.release
             minifyEnabled true

@@ -1525,7 +1525,7 @@
     "mistakes": "{{n}} untuk diulang kaji",
     "skipped": "tertinggal",
     "history": "Sesi terkini",
-    "note": "Ia menyemak perkataan, bukan tajwid. Pengecaman boleh tersalah dengar: dengar ayat itu jika ragu.",
+    "note": "Perkataan disemak semasa anda membaca; baris dan tajwid, jika dipilih, oleh AI apabila selesai. Kadangkala ia tersalah dengar: dengar ayat itu jika ragu.",
     "engineOffline": "Penyemak pintar (luar talian, lebih tepat)",
     "offlineAbout": "Model yang dilatih dengan bacaan al-Quran, termasuk orang biasa membaca ke telefon mereka, berjalan pada telefon anda: tanpa internet selepas sekali muat turun 40 MB.",
     "offlineReady": "Penyemak pintar sedia dan berfungsi luar talian.",

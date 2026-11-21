@@ -1525,7 +1525,7 @@
     "mistakes": "{{n}} untuk diulang",
     "skipped": "terlewat",
     "history": "Sesi terakhir",
-    "note": "Yang diperiksa adalah kata-katanya, bukan tajwid. Pengenalan bisa salah dengar: dengarkan ayatnya bila ragu.",
+    "note": "Kata diperiksa saat Anda membaca; harakat dan tajwid, jika dipilih, oleh AI saat selesai. Kadang bisa salah dengar: dengarkan ayatnya bila ragu.",
     "engineOffline": "Korektor pintar (offline, lebih akurat)",
     "offlineAbout": "Model yang dilatih dengan bacaan Al-Qur’an, termasuk orang biasa yang membaca ke ponselnya, berjalan di ponsel Anda: tanpa internet setelah sekali unduh 40 MB.",
     "offlineReady": "Korektor pintar siap dan bekerja offline.",

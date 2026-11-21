@@ -43,7 +43,7 @@
 
         <!-- What counts as a mistake: the words, or also the harakat, or the harakat and tajweed. -->
         <h2>{{ 'tasmee.checkLevel' | translate }}</h2>
-        <ion-segment class="check-level" [value]="tasmee.prefs().check" (ionChange)="tasmee.setPrefs({ check: $any($event.detail.value) })">
+        <ion-segment class="check-level" [value]="tasmee.prefs().check" (ionChange)="setCheck($any($event.detail.value))">
           <ion-segment-button value="words"><ion-label>{{ 'tasmee.checkWords' | translate }}</ion-label></ion-segment-button>
           <ion-segment-button value="tashkeel"><ion-label>{{ 'tasmee.checkTashkeel' | translate }}</ion-label></ion-segment-button>
           <ion-segment-button value="tajweed"><ion-label>{{ 'tasmee.checkTajweed' | translate }}</ion-label></ion-segment-button>

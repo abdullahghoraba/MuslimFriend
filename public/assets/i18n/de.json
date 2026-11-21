@@ -1525,7 +1525,7 @@
     "mistakes": "{{n}} zum Wiederholen",
     "skipped": "ausgelassen",
     "history": "Letzte Sitzungen",
-    "note": "Geprüft werden die Wörter, nicht das Tadschwid. Die Erkennung kann sich verhören: im Zweifel den Vers anhören.",
+    "note": "Die Wörter werden beim Rezitieren geprüft; Harakat und Tadschwid, wenn gewählt, am Ende von KI. Sie kann sich verhören: Hör dir im Zweifel den Vers an.",
     "engineOffline": "Intelligenter Prüfer (offline, genauer)",
     "offlineAbout": "Ein auf Koranrezitation trainiertes Modell – auch auf ganz normale Menschen, die ins Handy rezitieren – läuft auf deinem Telefon: nach einem Download von 40 MB ohne Internet.",
     "offlineReady": "Der intelligente Prüfer ist bereit und funktioniert offline.",

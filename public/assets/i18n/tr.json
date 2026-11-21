@@ -1525,7 +1525,7 @@
     "mistakes": "{{n}} tekrar edilecek",
     "skipped": "atlandı",
     "history": "Son oturumlar",
-    "note": "Kelimeleri kontrol eder, tecvidi değil. Tanıma yanlış duyabilir: şüphede ayeti dinleyin.",
+    "note": "Kelimeler okurken kontrol edilir; hareke ve tecvid, seçerseniz, sonunda yapay zekâ ile. Bazen yanlış duyabilir: şüphede ayeti dinleyin.",
     "engineOffline": "Akıllı düzeltici (çevrimdışı, daha isabetli)",
     "offlineAbout": "Kur’an tilavetiyle, telefonuna okuyan sıradan insanlar dahil, eğitilmiş bir model telefonunuzda çalışır: 40 MB’lık tek bir indirmeden sonra internet gerekmez.",
     "offlineReady": "Akıllı düzeltici hazır, çevrimdışı çalışır.",

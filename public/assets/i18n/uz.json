@@ -1525,7 +1525,7 @@
     "mistakes": "Takrorlash uchun: {{n}}",
     "skipped": "tashlab ketilgan",
     "history": "So‘nggi mashg‘ulotlar",
-    "note": "So‘zlarni tekshiradi, tajvidni emas. Tanish noto‘g‘ri eshitishi mumkin: shubha bo‘lsa oyatni tinglang.",
+    "note": "So‘zlar o‘qish paytida tekshiriladi; harakat va tajvid, tanlasangiz, oxirida sun’iy intellekt bilan. Ba’zan noto‘g‘ri eshitishi mumkin: shubhada oyatni tinglang.",
     "engineOffline": "Aqlli tekshiruvchi (oflayn, aniqroq)",
     "offlineAbout": "Qur’on tilovatida, jumladan oddiy odamlarning telefonga qilgan tilovatida o‘qitilgan model telefoningizda ishlaydi: 40 MB bir marta yuklangach internet kerak emas.",
     "offlineReady": "Aqlli tekshiruvchi tayyor, oflayn ishlaydi.",

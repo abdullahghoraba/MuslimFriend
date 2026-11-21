@@ -7,7 +7,7 @@ import {
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { HeardSource, WordResult, alignRecitation, alignWithCost, bestAlternative, heardWords, rescue, score, similarity, wordKey } from '../../core/tasmee/align';
 import { forcedGap, modelLetters } from '../../core/tasmee/ctc-score';
-import { TasmeeEngine, TasmeeService, dropOpenings } from '../../core/tasmee/tasmee.service';
+import { TasmeeCheck, TasmeeEngine, TasmeeService, dropOpenings } from '../../core/tasmee/tasmee.service';
 import { QuranSpeech } from '../../core/tasmee/quran-speech';
 import { TajweedError, TajweedPart, TajweedPrefs, TajweedService, pauseArtifact, splitAtPauses } from '../../core/tasmee/tajweed.service';
 
@@ -561,8 +561,28 @@ export class TasmeeComponent implements OnInit, OnDestroy {
   }
 
   /** Visible text of a word: hidden until reached in memorisation mode. */
+  /**
+   * In memorisation mode a word appears once it is recited. A word counted as skipped appears only when the reader
+   * went on past it, two words said right in a row after it: one word matched further on (a word the ayat repeat,
+   * such as «الله») must not uncover the ayat in between before they are recited.
+   */
   shown(i: number): boolean {
-    return !this.tasmee.prefs().hideText || this.results()[i]?.status !== 'pending' || this.state() === 'done';
+    if (!this.tasmee.prefs().hideText || this.state() === 'done') return true;
+    const results = this.results();
+    const status = results[i]?.status;
+    if (!status || status === 'pending') return false;
+    if (status !== 'skipped') return true;
+    for (let k = i + 1; k < results.length; k++) {
+      if (results[k].status === 'skipped') continue;
+      return results[k].status === 'correct' && results[k + 1]?.status === 'correct';
+    }
+    return false;
+  }
+
+  /** What counts as a mistake. Choosing harakat or tajweed shows that they are checked by AI (the line under it). */
+  async setCheck(check: TasmeeCheck): Promise<void> {
+    await this.tasmee.setPrefs({ check });
+    if (check !== 'words') await this.tajweed.setPrefs({ noticeSeen: true });
   }
 
   /**

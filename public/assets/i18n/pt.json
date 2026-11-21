@@ -1525,7 +1525,7 @@
     "mistakes": "{{n}} para revisar",
     "skipped": "pulada",
     "history": "Sessões recentes",
-    "note": "Verifica as palavras, não o tajwid. O reconhecimento pode ouvir mal: escute o versículo em caso de dúvida.",
+    "note": "As palavras são verificadas enquanto você recita; as harakat e o tajwid, se escolhidos, por IA no fim. Pode ouvir errado às vezes: ouça o versículo na dúvida.",
     "engineOffline": "Corretor inteligente (offline, mais preciso)",
     "offlineAbout": "Um modelo treinado com recitação do Alcorão, incluindo pessoas comuns recitando no celular, funciona no seu telefone: sem internet após um único download de 40 MB.",
     "offlineReady": "O corretor inteligente está pronto e funciona offline.",

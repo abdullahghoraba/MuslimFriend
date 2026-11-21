@@ -1525,7 +1525,7 @@
     "mistakes": "{{n}} para repasar",
     "skipped": "omitida",
     "history": "Sesiones recientes",
-    "note": "Comprueba las palabras, no el tajwid. El reconocimiento puede oír mal: escucha la aleya si tienes dudas.",
+    "note": "Las palabras se revisan mientras recitas; las harakat y el tajwid, si los eliges, con IA al terminar. Puede oír mal a veces: escucha la aleya si dudas.",
     "engineOffline": "Corrector inteligente (sin conexión, más preciso)",
     "offlineAbout": "Un modelo entrenado con recitación del Corán, incluida la de personas corrientes que recitan al teléfono, funciona en tu móvil: sin internet tras una única descarga de 40 MB.",
     "offlineReady": "El corrector inteligente está listo y funciona sin conexión.",

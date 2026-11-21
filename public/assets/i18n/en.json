@@ -1525,7 +1525,7 @@
     "mistakes": "{{n}} to review",
     "skipped": "skipped",
     "history": "Recent sessions",
-    "note": "It checks the words (which word was said), not tajweed. Speech recognition can mishear: listen to the ayah when in doubt.",
+    "note": "Words are checked as you recite; harakat and tajweed, if you choose them, by AI when you finish. It can mishear at times: listen to the ayah when in doubt.",
     "engineOffline": "Smart corrector (offline, more accurate)",
     "offlineAbout": "A model trained on Quran recitation, including ordinary people reciting into their phones, runs on your phone: no internet needed after one 40 MB download.",
     "offlineReady": "The smart corrector is ready and works offline.",
