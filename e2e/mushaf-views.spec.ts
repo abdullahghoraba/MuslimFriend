@@ -241,3 +241,24 @@ test('the printed page in the night theme and on a tablet', async ({ page }) => 
   const width = await page.locator('.print-page').evaluate((el) => el.getBoundingClientRect().width);
   expect(width).toBeLessThanOrEqual(600);
 });
+
+test('opened on an ayah («continue reading», a link): it lights up for a moment, no bar over the page; ✕ closes a bar', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('CapacitorStorage.onboarded', 'true');
+    localStorage.setItem('CapacitorStorage.mushafView', JSON.stringify({ theme: 'paper', scale: 1, view: 'print' }));
+  });
+  await page.goto('/mushaf/50?sura=3&aya=7');
+  await expect(page.locator('.print-page .qcf-word[data-ayah="3:7"].flash').first()).toBeVisible();
+  await expect(page.locator('.ayah-actions')).toHaveCount(0);
+  await expect(page.locator('.print-page .qcf-word.flash')).toHaveCount(0, { timeout: 5000 });
+  // A long press opens an ayah's bar; its ✕ closes it.
+  const word = page.locator('.print-page .qcf-word[data-ayah="3:2"]').first();
+  const box = (await word.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.waitForTimeout(700);
+  await page.mouse.up();
+  await expect(page.locator('.ayah-actions')).toBeVisible();
+  await page.locator('.close-ayah').click();
+  await expect(page.locator('.ayah-actions')).toHaveCount(0);
+});

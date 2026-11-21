@@ -156,7 +156,7 @@
               }
             } @else {
               <div class="print-line">@for (w of row.words; track $index) {<span class="ayah qcf-word" [attr.data-ayah]="w.ayah.sura + ':' + w.ayah.aya"
-                    [class.selected]="isSelected(w.ayah)" [class.playing]="isPlaying(w.ayah)"
+                    [class.selected]="isSelected(w.ayah)" [class.flash]="isFlash(w.ayah)" [class.playing]="isPlaying(w.ayah)"
                     [style.--hl]="highlightColor(w.ayah)" [class.hl]="!!highlightColor(w.ayah)"
                     [style.--hifz]="hifzColor(w.ayah)" [class.hifz]="!!hifzColor(w.ayah)"
                     (click)="select(w.ayah, $event)"
@@ -194,7 +194,7 @@
             }
           }
           <span class="ayah" role="button" tabindex="0" [attr.data-ayah]="b.ayah.sura + ':' + b.ayah.aya"
-                [class.selected]="isSelected(b.ayah)" [class.playing]="isPlaying(b.ayah)"
+                [class.selected]="isSelected(b.ayah)" [class.flash]="isFlash(b.ayah)" [class.playing]="isPlaying(b.ayah)"
                 [style.--hl]="highlightColor(b.ayah)" [class.hl]="!!highlightColor(b.ayah)"
                 [style.--hifz]="hifzColor(b.ayah)" [class.hifz]="!!hifzColor(b.ayah)"
                 (click)="select(b.ayah, $event)" (keydown.enter)="select(b.ayah, $event)"
@@ -240,6 +240,8 @@
         </div>
         <p class="range-hint">{{ 'mushaf.rangeHint' | translate }}</p>
       }
+      <!-- Closes the ayah's bar (the back button does too), back to the page. -->
+      <button type="button" class="close-ayah" (click)="selected.set(null)" [attr.aria-label]="'common.close' | translate">✕</button>
       <div class="ayah-actions" role="toolbar" [attr.aria-label]="'mushaf.ayahActions' | translate">
         <button type="button" (click)="openTafsir()"><ion-icon name="book-outline" aria-hidden="true" /><span>{{ 'mushaf.tafsir' | translate }}</span></button>
         <button type="button" (click)="openWords()"><ion-icon name="language-outline" aria-hidden="true" /><span>{{ 'mushaf.wordByWord' | translate }}</span></button>

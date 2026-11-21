@@ -24,6 +24,7 @@ import {
   RangeCustomEvent,
   ToastController,
   NavController,
+  Platform,
   createGesture,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -156,6 +157,20 @@ export class MushafPage {
 
   readonly page = signal(1);
   readonly selected = signal<AyahRef | null>(null);
+  /** The ayah opened on (continue reading, a link, «go to»): lit up for a moment to show where it is. */
+  readonly flash = signal<AyahRef | null>(null);
+  private flashTimer?: ReturnType<typeof setTimeout>;
+
+  flashAyah(a: AyahRef): void {
+    clearTimeout(this.flashTimer);
+    this.flash.set(a);
+    this.flashTimer = setTimeout(() => this.flash.set(null), 2600);
+  }
+
+  isFlash(a: AyahRef): boolean {
+    const f = this.flash();
+    return !!f && f.sura === a.sura && f.aya === a.aya;
+  }
   readonly settingsOpen = signal(false);
   readonly theme = signal<MushafTheme>('paper');
   readonly quranScale = signal(1);
@@ -400,9 +415,11 @@ export class MushafPage {
     this.goTo(p, 'none');
     if (sura && aya) {
       const ref = { sura, aya };
-      this.selected.set(ref);
-      // From a hifz plan: mark today's portion (within this sura) as a range.
+      // From a hifz plan: today's portion (within this sura) is selected as a range; otherwise («continue reading», a
+      // link) the ayah only lights up for a moment: a selection opened its bar, which hid the page until it was closed.
       const planId = Number(this.hifzPlan());
+      if (!planId) this.flashAyah(ref);
+      else this.selected.set(ref);
       if (planId) {
         const portion = this.hifz.today(planId).newPortion.filter((r) => r.sura === sura);
         const last = portion[portion.length - 1];
@@ -539,6 +556,20 @@ export class MushafPage {
 
   ionViewWillLeave(): void {
     clearTimeout(this.readTimer);
+    this.backSub?.unsubscribe();
+  }
+
+  private readonly platform = inject(Platform);
+  private backSub?: { unsubscribe(): void };
+
+  ionViewDidEnter(): void {
+    // The back button first closes what is open on the page (an ayah's bar, the toolbar), then leaves the mushaf.
+    this.backSub?.unsubscribe();
+    this.backSub = this.platform.backButton.subscribeWithPriority(20, (next) => {
+      if (this.selected()) this.selected.set(null);
+      else if (this.settingsOpen()) this.settingsOpen.set(false);
+      else next();
+    });
   }
 
   next(): void {
@@ -1019,7 +1050,7 @@ export class MushafPage {
               const aya = Math.min(this.quran.sura(sura).ayas, Math.max(1, +m[2]));
               const ref = { sura, aya };
               this.goTo(this.pageOfRef(ref), 'none');
-              this.selected.set(ref);
+              this.flashAyah(ref);
               setTimeout(() => this.scrollToAyah(ref), 200);
             } else if (/^\d+$/.test(q)) {
               this.goTo(+q, 'none');

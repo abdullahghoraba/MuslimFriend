@@ -421,3 +421,23 @@ ion-footer.page-slider {
 // The page-turn buttons kept for screen readers on the printed page: out of the way (at the bottom they made the
 // page taller than the screen by their height, and it scrolled).
 .page-footer.sr-only { top: 0; padding: 0; }
+
+// The ayah opened on lights up for a moment, then fades (no selection, no bar over the page).
+@keyframes ayah-flash { 0%, 55% { background: color-mix(in srgb, var(--ion-color-primary) 28%, transparent); } 100% { background: transparent; } }
+:is(.qcf-word, .ayah).flash { animation: ayah-flash 2.6s ease-out forwards; }
+@media (prefers-reduced-motion: reduce) { :is(.qcf-word, .ayah).flash { animation-duration: 0.01s; } }
+
+.close-ayah {
+  position: absolute;
+  top: -40px;
+  inset-inline-end: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--m-muted);
+  background: var(--m-bg);
+  color: var(--m-fg);
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+ion-footer:has(.close-ayah) { overflow: visible; }
