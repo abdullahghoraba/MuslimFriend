@@ -1,4 +1,4 @@
-import { TajweedError, parseEvents, pauseArtifact, silentBetween, splitAtPauses, wavBase64 } from './tajweed.service';
+import { TajweedError, parseEvents, pauseArtifact, quietestIn, silenceIn, silentBetween, splitAtPauses, wavBase64 } from './tajweed.service';
 
 describe('tajweed: sending a phrase', () => {
   it('writes 16 kHz mono 16-bit WAV', () => {
@@ -113,5 +113,19 @@ describe('tajweed: a pause is a real silence', () => {
     const words = [{ start: 0, end: 0.9 * sec }, { start: 1.5 * sec, end: 1.9 * sec }, { start: 2.5 * sec, end: 3 * sec }];
     const parts = splitAtPauses(words, 3 * sec, 3 * sec, 0.3, Infinity, (a, b) => silentBetween(audio, a, b));
     expect(parts.map((p) => [p.first, p.last])).toEqual([[0, 0], [1, 2]]);
+  });
+
+  it('cuts in the silence, not in the middle of the gap the recogniser left (a word sounds on after its last letter)', () => {
+    const sec = 16000;
+    // The first word's last letter was marked at 0.5 s, but its sound goes on to 1.0 s; silence at 1.0-1.4 s.
+    const at = silenceIn(audio, 0.5 * sec, 1.5 * sec);
+    expect(at / sec).toBeGreaterThan(1.1);
+    expect(at / sec).toBeLessThan(1.3);
+    expect(silenceIn(audio, 1.9 * sec, 2.5 * sec)).toBe(-1);
+    const words = [{ start: 0, end: 0.5 * sec }, { start: 1.5 * sec, end: 1.9 * sec }];
+    const parts = splitAtPauses(words, 3 * sec, 3 * sec, 0.3, Infinity, (a, b) => silenceIn(audio, a, b));
+    expect(parts[0].to).toBe(at);
+    expect(quietestIn(audio, 0.5 * sec, 1.5 * sec) / sec).toBeGreaterThan(1);
+    expect(quietestIn(audio, 0.5 * sec, 1.5 * sec) / sec).toBeLessThan(1.4);
   });
 });

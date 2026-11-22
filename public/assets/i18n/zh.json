@@ -1550,7 +1550,14 @@
     "checkedSoFar": "已检查元音符号：{{n}} 个词",
     "wordsPerfect": "词语全部正确；元音符号与诵读规则的提示见下方。",
     "hint": "提示",
-    "tapWord": "点按任何有颜色的词，查看它的错误。"
+    "tapWord": "点按任何有颜色的词，查看它的错误。",
+    "wsOf": "第 {{n}} 个，共 {{total}} 个",
+    "wsWrongWord": "您读成了另一个词",
+    "wsRight": "正确",
+    "wsHeard": "您的诵读",
+    "wsSkipped": "您漏读了这个词",
+    "wsPrev": "上一个错误",
+    "wsNext": "下一个错误"
   },
   "ruqyah": {
     "title": "合法的鲁格耶（诵经祈护）",
@@ -1849,6 +1856,7 @@
     "expectedHeard": "应为“{{expected}}”，您读成“{{heard}}”",
     "partial": "有些片段无法检查（{{n}}）；结果仅针对其余部分。",
     "coverage": "已检查 {{total}} 个词中的 {{n}} 个。",
-    "nothingChecked": "未能检查任何内容：没有一段听得足够清楚。请稍大声诵读，并在每节结尾稍作停顿。"
+    "nothingChecked": "未能检查任何内容：没有一段听得足够清楚。请稍大声诵读，并在每节结尾稍作停顿。",
+    "noMadd": "此处未拉长；应为 {{expected}} 拍"
   }
 }

@@ -1550,7 +1550,14 @@
     "checkedSoFar": "Harakat verificadas até agora: {{n}} palavras",
     "wordsPerfect": "As palavras estão todas certas; veja abaixo as notas de harakat e tajwid.",
     "hint": "Dica",
-    "tapWord": "Toque em qualquer palavra colorida para ver o erro."
+    "tapWord": "Toque em qualquer palavra colorida para ver o erro.",
+    "wsOf": "{{n}} de {{total}}",
+    "wsWrongWord": "Você disse outra palavra",
+    "wsRight": "Correto",
+    "wsHeard": "Sua recitação",
+    "wsSkipped": "Você omitiu esta palavra",
+    "wsPrev": "Erro anterior",
+    "wsNext": "Próximo erro"
   },
   "ruqyah": {
     "title": "Ruqya",
@@ -1849,6 +1856,7 @@
     "expectedHeard": "O certo é “{{expected}}”, você disse “{{heard}}”",
     "partial": "Alguns trechos não puderam ser verificados ({{n}}); o resultado cobre só o restante.",
     "coverage": "{{n}} de {{total}} palavras verificadas.",
-    "nothingChecked": "Nada pôde ser verificado: nenhum trecho foi ouvido com clareza suficiente. Recite um pouco mais alto e faça uma pausa curta no fim de cada versículo."
+    "nothingChecked": "Nada pôde ser verificado: nenhum trecho foi ouvido com clareza suficiente. Recite um pouco mais alto e faça uma pausa curta no fim de cada versículo.",
+    "noMadd": "Não prolongado aqui; deveria ser {{expected}} tempos"
   }
 }

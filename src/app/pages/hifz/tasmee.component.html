@@ -248,31 +248,62 @@
     }
     <p class="note">{{ 'tasmee.note' | translate }}</p>
 
-    <!-- A tapped word: what was wrong with it, right over the ayat (no need to scroll to the list). -->
+    <!-- A tapped word: what was wrong with it, in a sheet over the ayat (no need to scroll to the list). -->
     @if (openWord() !== null && words()[openWord()!]; as w) {
       @let i = openWord()!;
       @let r = results()[i];
+      @let list = mistakeWords();
+      @let at = list.indexOf(i);
       <div class="sheet-backdrop" (click)="openWord.set(null)"></div>
-      <section class="card word-sheet" role="dialog" aria-modal="true" [attr.aria-label]="w.text">
-        <div class="ws-head">
-          <strong lang="ar" dir="rtl">{{ w.text }}</strong>
-          <span class="where">﴿{{ ayahNumber(w.ref.aya) }}﴾</span>
-        </div>
+      <section class="word-sheet" role="dialog" aria-modal="true" [attr.aria-label]="w.text">
+        <div class="ws-grip" aria-hidden="true"></div>
+        <header class="ws-top">
+          <span class="ws-where">{{ quran.ready() ? quran.sura(w.ref.sura).name : '' }} ﴿{{ ayahNumber(w.ref.aya) }}﴾</span>
+          @if (list.length > 1) {
+            <span class="ws-count">{{ 'tasmee.wsOf' | translate: { n: ayahNumber(at + 1), total: ayahNumber(list.length) } }}</span>
+          }
+          <button type="button" class="ws-x" (click)="openWord.set(null)" [attr.aria-label]="'common.close' | translate"><ion-icon name="close-outline" aria-hidden="true" /></button>
+        </header>
+
+        <div class="ws-word" lang="ar" dir="rtl" [class.bad]="r?.status === 'wrong'" [class.left]="r?.status === 'skipped'">{{ w.text }}</div>
+
         @if (r?.status === 'wrong') {
-          <p class="ws-word">{{ 'tasmee.heard' | translate: { word: r?.heard ?? '' } }}</p>
+          <div class="ws-card bad">
+            <div class="ws-label"><span class="dot"></span>{{ 'tasmee.wsWrongWord' | translate }}</div>
+            <div class="ws-compare" lang="ar" dir="rtl">
+              <div class="right"><small>{{ 'tasmee.wsRight' | translate }}</small><b>{{ w.text }}</b></div>
+              <div class="said"><small>{{ 'tasmee.wsHeard' | translate }}</small><b>{{ r?.heard || '—' }}</b></div>
+            </div>
+          </div>
         } @else if (r?.status === 'skipped') {
-          <p class="ws-word">{{ 'tasmee.skipped' | translate }}</p>
+          <div class="ws-card left">
+            <div class="ws-label"><span class="dot"></span>{{ 'tasmee.wsSkipped' | translate }}</div>
+          </div>
         }
+
         @for (e of tajweedIssues().get(i) ?? []; track $index) {
           @let d = tajweedText(e);
-          <p class="tj-line"><b>{{ d.title }}</b>@if (d.detail) {: {{ d.detail }}}</p>
+          @let pair = letterPair(e);
+          <div class="ws-card" [class.tj]="e.type === 'tajweed'" [class.tk]="e.type !== 'tajweed'">
+            <div class="ws-label"><span class="dot"></span>{{ d.title }}</div>
+            @if (pair) {
+              <div class="ws-compare" lang="ar" dir="rtl">
+                <div class="right"><small>{{ 'tasmee.wsRight' | translate }}</small><b>{{ pair.right }}</b></div>
+                <div class="said"><small>{{ 'tasmee.wsHeard' | translate }}</small><b>{{ pair.heard }}</b></div>
+              </div>
+            } @else if (d.detail) {
+              <p class="ws-detail">{{ d.detail }}</p>
+            }
+          </div>
         }
         @if (tajweedIssues().has(i)) {
-          <p class="hint">{{ 'tajweed.disclaimer' | translate }}</p>
+          <p class="ws-note">{{ 'tajweed.disclaimer' | translate }}</p>
         }
-        <div class="row-buttons">
-          <ion-button fill="outline" (click)="listen(w.ref)"><ion-icon slot="start" name="play" aria-hidden="true" />{{ 'mushaf.listen' | translate }}</ion-button>
-          <ion-button (click)="openWord.set(null)">{{ 'common.close' | translate }}</ion-button>
+
+        <div class="ws-actions">
+          <button type="button" class="ws-step" [disabled]="at <= 0" (click)="stepWord(-1)" [attr.aria-label]="'tasmee.wsPrev' | translate"><ion-icon name="chevron-forward" aria-hidden="true" /></button>
+          <button type="button" class="ws-listen" (click)="listen(w.ref)"><ion-icon name="play" aria-hidden="true" />{{ 'mushaf.listen' | translate }}</button>
+          <button type="button" class="ws-step" [disabled]="at < 0 || at >= list.length - 1" (click)="stepWord(1)" [attr.aria-label]="'tasmee.wsNext' | translate"><ion-icon name="chevron-back" aria-hidden="true" /></button>
         </div>
       </section>
     }

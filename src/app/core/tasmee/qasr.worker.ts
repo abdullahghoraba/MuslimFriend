@@ -6,14 +6,15 @@
  * jsDelivr, also checked) and kept in the browser cache, so after the download it works without internet. Only the
  * runtime's small loader ships with the app (assets/ort). Nothing is uploaded.
  *
- * Messages in:  {type:'load'} | {type:'transcribe', id, audio: Float32Array (16 kHz mono)} | {type:'remove'}
+ * Messages in:  {type:'load'} | {type:'transcribe', id, audio: Float32Array (16 kHz mono), quick?} | {type:'remove'}
  * Messages out: {type:'progress', loaded, total} | {type:'ready'} | {type:'error', id?, message}
  *   | {type:'text', id, text, words: [{text, start, end}], lp: Float32Array [frames * vocab], frames, vocab}
  *   (the words with their frames and the letter probabilities, so tasmee' can check the audio of a mistake)
  */
 import * as ort from 'onnxruntime-web/wasm';
 import { NUM_BINS, fbank } from './qasr-features';
-import { HeardSpan, greedyWords } from './ctc-score';
+import { greedyWords } from './ctc-score';
+import { Reading, readPhrase } from './qasr-split';
 
 const REVISION = '004f898639f3127a74eac1b898a2cb3ef0b5268d';
 export const QASR_MODEL_URL = `https://huggingface.co/Abdou/quran-asr-small/resolve/${REVISION}/model.int8.onnx`;
@@ -89,14 +90,6 @@ function load(): Promise<ort.InferenceSession> {
   return session;
 }
 
-interface Reading {
-  text: string;
-  words: HeardSpan[];
-  lp: Float32Array;
-  frames: number;
-  vocab: number;
-}
-
 async function transcribe(audio: Float32Array): Promise<Reading> {
   const s = await load();
   const { data, frames } = fbank(audio);
@@ -111,85 +104,14 @@ async function transcribe(audio: Float32Array): Promise<Reading> {
   return { text: words.map((w) => w.text).join(' '), words, lp, frames: t.dims[1], vocab: t.dims[2] };
 }
 
-/**
- * Seconds of voice in samples [from, to) of [audio]: 20 ms windows louder than a sixth of the recitation's level (the
- * 90th percentile of the whole phrase), so a breath or the room is not counted.
- */
-function voicedSeconds(audio: Float32Array, from: number, to: number): number {
-  const W = 320;
-  const levels: number[] = [];
-  for (let at = 0; at + W <= audio.length; at += W) {
-    let p = 0;
-    for (let i = at; i < at + W; i++) p += audio[i] * audio[i];
-    levels.push(Math.sqrt(p / W));
-  }
-  if (!levels.length) return 0;
-  const loud = [...levels].sort((a, b) => a - b)[Math.floor(levels.length * 0.9)] / 6;
-  let n = 0;
-  for (let k = Math.floor(from / W); k < Math.min(levels.length, Math.ceil(to / W)); k++) if (levels[k] > loud) n++;
-  return (n * W) / 16000;
-}
-
-/** The quietest 100 ms of samples [from, to) (where to cut between two words). */
-function quietestAt(audio: Float32Array, from: number, to: number): number {
-  const W = 1600;
-  let best = Math.round((from + to) / 2);
-  let least = Infinity;
-  for (let at = Math.max(0, from); at + W <= Math.min(to, audio.length); at += 160) {
-    let p = 0;
-    for (let i = at; i < at + W; i++) p += audio[i] * audio[i];
-    if (p < least) {
-      least = p;
-      best = at + W / 2;
-    }
-  }
-  return best;
-}
-
-/** Two readings of consecutive pieces of audio as one (frames, letter probabilities and word frames run on). */
-function joinReadings(a: Reading, b: Reading): Reading {
-  if (!a.frames) return b;
-  if (!b.frames) return a;
-  const lp = new Float32Array(a.lp.length + b.lp.length);
-  lp.set(a.lp);
-  lp.set(b.lp, a.lp.length);
-  const words = [...a.words, ...b.words.map((w) => ({ ...w, start: w.start + a.frames, end: w.end + a.frames }))];
-  return { text: words.map((w) => w.text).join(' '), words, lp, frames: a.frames + b.frames, vocab: a.vocab || b.vocab };
-}
-
-/**
- * Reads a phrase; if a second or more of recitation before its first word or after its last came back without any
- * word, that part is read again on its own and the two readings joined. The model was trained on one ayah at a time:
- * given two ayat said with only a short stop between them (the basmala and al-Hamd in one breath), it can write the
- * second and nothing of the first, and the reader was told the first was skipped.
- */
-async function readPhrase(audio: Float32Array, depth = 0): Promise<Reading> {
-  const r = await transcribe(audio);
-  if (depth >= 2 || !r.words.length || audio.length < 3 * 16000) return r;
-  const spf = audio.length / r.frames;
-  const head = Math.round(r.words[0].start * spf);
-  const tail = Math.round(r.words[r.words.length - 1].end * spf);
-  const MIN = 1;
-  if (voicedSeconds(audio, 0, head) >= MIN) {
-    // Cut in the quietest moment just before the first word heard (the stop between the two ayat).
-    const cut = quietestAt(audio, head - Math.round(0.7 * 16000), head + Math.round(0.1 * 16000));
-    const first = await readPhrase(audio.subarray(0, cut), depth + 1);
-    if (first.words.length) return joinReadings(first, await readPhrase(audio.subarray(cut), depth + 1));
-  } else if (voicedSeconds(audio, tail, audio.length) >= MIN) {
-    const cut = quietestAt(audio, tail - Math.round(0.1 * 16000), tail + Math.round(0.7 * 16000));
-    const last = await readPhrase(audio.subarray(cut), depth + 1);
-    if (last.words.length) return joinReadings(await readPhrase(audio.subarray(0, cut), depth + 1), last);
-  }
-  return r;
-}
-
-addEventListener('message', async (e: MessageEvent<{ type: string; id?: number; audio?: Float32Array }>) => {
+addEventListener('message', async (e: MessageEvent<{ type: string; id?: number; audio?: Float32Array; quick?: boolean }>) => {
   try {
     if (e.data.type === 'load') {
       await load();
       postMessage({ type: 'ready' });
     } else if (e.data.type === 'transcribe' && e.data.audio) {
-      const r = await readPhrase(e.data.audio);
+      // Re-read where the model left some of the recitation without a word (two ayat said in one breath).
+      const r = e.data.quick ? await transcribe(e.data.audio) : await readPhrase(e.data.audio, transcribe);
       postMessage({ type: 'text', id: e.data.id, ...r }, { transfer: [r.lp.buffer] });
     } else if (e.data.type === 'remove') {
       session = null;

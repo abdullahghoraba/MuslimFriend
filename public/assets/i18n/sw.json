@@ -1550,7 +1550,14 @@
     "checkedSoFar": "Harakati zilizokaguliwa hadi sasa: maneno {{n}}",
     "wordsPerfect": "Maneno yote ni sahihi; tazama maelezo ya harakati na tajwidi hapa chini.",
     "hint": "Kidokezo",
-    "tapWord": "Gusa neno lolote lenye rangi kuona kosa lake."
+    "tapWord": "Gusa neno lolote lenye rangi kuona kosa lake.",
+    "wsOf": "{{n}} kati ya {{total}}",
+    "wsWrongWord": "Ulisoma neno jingine",
+    "wsRight": "Sahihi",
+    "wsHeard": "Usomaji wako",
+    "wsSkipped": "Uliacha neno hili",
+    "wsPrev": "Kosa lililotangulia",
+    "wsNext": "Kosa linalofuata"
   },
   "ruqyah": {
     "title": "Ruqya ya kisheria",
@@ -1849,6 +1856,7 @@
     "expectedHeard": "Sahihi ni “{{expected}}”, wewe ulisoma “{{heard}}”",
     "partial": "Baadhi ya vipande havikuweza kukaguliwa ({{n}}); matokeo ni ya vilivyobaki tu.",
     "coverage": "Maneno {{n}} kati ya {{total}} yamekaguliwa.",
-    "nothingChecked": "Hakuna kilichoweza kukaguliwa: hakuna sehemu iliyosikika wazi vya kutosha. Soma kwa sauti kubwa kidogo na usimame kidogo mwishoni mwa kila aya."
+    "nothingChecked": "Hakuna kilichoweza kukaguliwa: hakuna sehemu iliyosikika wazi vya kutosha. Soma kwa sauti kubwa kidogo na usimame kidogo mwishoni mwa kila aya.",
+    "noMadd": "Hapa hukurefusha; sahihi ni harakat {{expected}}"
   }
 }

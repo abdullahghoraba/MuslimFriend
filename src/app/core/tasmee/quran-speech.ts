@@ -393,7 +393,8 @@ export class QuranSpeech {
         const id = this.nextId++;
         this.partialId = id;
         partials.set(id, this.phrase);
-        worker.postMessage({ type: 'transcribe', id, audio: pcm }, [pcm.buffer]);
+        // A live read only shows the words as they are said: read once, not again where words are missing.
+        worker.postMessage({ type: 'transcribe', id, audio: pcm, quick: true }, [pcm.buffer]);
       }
     }, SAMPLE_RATE);
     // ScriptProcessor: simple, and needs no extra script file (the app's security policy allows none from blobs).

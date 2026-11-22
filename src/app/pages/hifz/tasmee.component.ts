@@ -9,7 +9,7 @@ import { HeardSource, WordResult, alignRecitation, alignWithCost, bestAlternativ
 import { forcedGap, modelLetters } from '../../core/tasmee/ctc-score';
 import { TasmeeCheck, TasmeeEngine, TasmeeService, dropOpenings } from '../../core/tasmee/tasmee.service';
 import { QuranSpeech } from '../../core/tasmee/quran-speech';
-import { TajweedError, TajweedPart, TajweedPrefs, TajweedReply, TajweedService, pauseArtifact, silentBetween, splitAtPauses } from '../../core/tasmee/tajweed.service';
+import { TajweedError, TajweedPart, TajweedPrefs, TajweedReply, TajweedService, pauseArtifact, quietestIn, silenceIn, splitAtPauses } from '../../core/tasmee/tajweed.service';
 
 import { PhoneSpeech, PhraseReading, SpeechCallbacks } from '../../native/speech';
 import { QuranService } from '../../core/quran/quran.service';
@@ -502,19 +502,22 @@ export class TasmeeComponent implements OnInit, OnDestroy {
         const first = spans[0].start;
         const lastEnd = spans[spans.length - 1].end;
         if (!(lastEnd > first)) continue;
-        // The run's audio: from halfway after the word heard before it to halfway before the word heard after it, so
-        // no other word is in it.
+        // The run's audio: from the quietest moment after the word heard before it to the quietest before the word heard
+        // after it, so no other word is in it, and none of its own is cut (a word goes on after its last letter's frame).
         const before = heardSpans.filter((h) => h.end <= first + 1).reduce((m, h) => Math.max(m, h.end), -1);
         const after = heardSpans.filter((h) => h.start >= lastEnd - 1).reduce((m, h) => Math.min(m, h.start), Infinity);
-        const from = before >= 0 ? Math.round((before + first) / 2) : 0;
-        const to = after < Infinity ? Math.round((after + lastEnd) / 2) : total;
+        const from = before >= 0 ? quietestIn(audio, before, first) : 0;
+        const to = after < Infinity ? quietestIn(audio, lastEnd, after) : total;
         // Every word heard in it must be one of the run's (a word may be heard in two pieces where a phrase was cut).
         if (heardSpans.filter((h) => h.start >= from - 1 && h.end <= to + 1).length > run.length + group.length) continue;
         // Cut where the reciter paused (waqf): each part then ends at a stop, as the server expects; read as one
         // breath, a stop's sukun or longer madd would be counted as mistakes. A part still too long for the server
         // (20 s) is cut between words.
         const local = spans.map((s) => ({ start: s.start - from, end: s.end - from }));
-        for (const p of splitAtPauses(local, to - from, to - from, 0.3, 18 * 16000, (a, b) => silentBetween(audio, from + a, from + b))) {
+        for (const p of splitAtPauses(local, to - from, to - from, 0.3, 18 * 16000, (a, b) => {
+          const at = silenceIn(audio, from + a, from + b);
+          return at < 0 ? -1 : at - from;
+        })) {
           if (p.to - p.from > 20 * 16000 || p.to - p.from < 0.3 * 16000) continue;
           const parts: TajweedPart[] = [];
           for (const k of run.slice(p.first, p.last + 1)) {
@@ -668,6 +671,11 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     if (e.type === 'tajweed' && e.expectedLen != null && e.heardLen != null && e.expectedLen !== e.heardLen) {
       return { title: rule || t('madd'), detail: t('length', { heard: this.harakat(e.heardLen), expected: this.harakat(e.expectedLen) }) };
     }
+    // A madd (its length is written as that many letters) not made at all.
+    const madd = (x: string) => (x.match(/[اۦۥىو]/g) ?? []).length;
+    if (e.type === 'tajweed' && /^[اۦۥىو]+$/.test(e.expected ?? '') && !madd(e.heard ?? '')) {
+      return { title: rule || t('madd'), detail: t('noMadd', { expected: this.harakat(madd(e.expected), false) }) };
+    }
     if (e.type === 'tajweed') {
       return { title: rule || t('rule'), detail: e.kind === 'delete' ? t('missing') : e.kind === 'insert' ? t('extra') : t('notRight') };
     }
@@ -736,10 +744,37 @@ export class TasmeeComponent implements OnInit, OnDestroy {
 
   /** A tapped word: its mistake (the word said, or left out) and its harakat/tajweed findings, in a sheet over the ayat. */
   tapWord(i: number): void {
+    if (this.hasMistake(i)) this.openWord.set(i);
+  }
+
+  private hasMistake(i: number): boolean {
     const status = this.results()[i]?.status;
     const issue = status === 'wrong' || status === 'skipped' || this.tajweedIssues().has(i);
-    if (issue && (this.shown(i) || this.state() === 'done')) this.openWord.set(i);
+    return issue && (this.shown(i) || this.state() === 'done');
   }
+
+  /** The words with a mistake, in order (the sheet goes from one to the next). */
+  readonly mistakeWords = computed(() => this.results().map((_, i) => i).filter((i) => this.hasMistake(i)));
+
+  stepWord(d: 1 | -1): void {
+    const list = this.mistakeWords();
+    const next = list[list.indexOf(this.openWord() ?? -1) + d];
+    if (next !== undefined) this.openWord.set(next);
+  }
+
+  /**
+   * A haraka or letter mistake as the right letter beside the one heard (دُ and دَ), when both are a plain letter with
+   * its harakat; the server's own marks (qalqalah ڇ, ghunnah ں, a madd's length as repeated letters) are said in words.
+   */
+  letterPair(e: TajweedError): { right: string; heard: string } | null {
+    if (e.type === 'tajweed' || !e.expected || !e.heard) return null;
+    const plain = /^[ء-ي][ً-ْ]{0,2}$/;
+    if (!plain.test(e.expected) || !plain.test(e.heard)) return null;
+    // A letter heard with no vowel was said with a sukun: shown with one, so it reads as a haraka like the other.
+    const mark = (x: string) => (x.length === 1 ? x + 'ْ' : x);
+    return { right: mark(e.expected), heard: mark(e.heard) };
+  }
+
 
   /** Where the reader had got to when the tasmee' ended. */
   readonly reachedAt = signal(0);

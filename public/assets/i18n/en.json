@@ -1550,7 +1550,14 @@
     "checkedSoFar": "Harakat checked so far: {{n}} words",
     "wordsPerfect": "The words are all right; see the harakat and tajweed notes below.",
     "hint": "Hint",
-    "tapWord": "Tap any coloured word to see its mistake."
+    "tapWord": "Tap any coloured word to see its mistake.",
+    "wsOf": "{{n}} of {{total}}",
+    "wsWrongWord": "You said another word",
+    "wsRight": "Correct",
+    "wsHeard": "You said",
+    "wsSkipped": "You left this word out",
+    "wsPrev": "Previous mistake",
+    "wsNext": "Next mistake"
   },
   "ruqyah": {
     "title": "Ruqyah",
@@ -1849,6 +1856,7 @@
     "expectedHeard": "Should be “{{expected}}”, you said “{{heard}}”",
     "partial": "Some phrases could not be checked ({{n}}); the result covers the rest only.",
     "coverage": "Checked {{n}} of {{total}} words.",
-    "nothingChecked": "Nothing could be checked: no phrase was heard clearly enough. Recite a little louder and pause briefly at the end of each ayah."
+    "nothingChecked": "Nothing could be checked: no phrase was heard clearly enough. Recite a little louder and pause briefly at the end of each ayah.",
+    "noMadd": "Not lengthened here; it should be {{expected}} counts"
   }
 }

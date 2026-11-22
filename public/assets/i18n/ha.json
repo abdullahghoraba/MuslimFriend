@@ -1550,7 +1550,14 @@
     "checkedSoFar": "Wasalin da aka duba zuwa yanzu: kalmomi {{n}}",
     "wordsPerfect": "Duk kalmomi daidai ne; duba bayanan wasali da tajwidi a ƙasa.",
     "hint": "Alama",
-    "tapWord": "Taɓa kowace kalma mai launi don ganin kuskurenta."
+    "tapWord": "Taɓa kowace kalma mai launi don ganin kuskurenta.",
+    "wsOf": "{{n}} cikin {{total}}",
+    "wsWrongWord": "Kun karanta wata kalma dabam",
+    "wsRight": "Daidai",
+    "wsHeard": "Karatunku",
+    "wsSkipped": "Kun tsallake wannan kalma",
+    "wsPrev": "Kuskuren baya",
+    "wsNext": "Kuskure na gaba"
   },
   "ruqyah": {
     "title": "Ruƙiyya ta shari'a",
@@ -1849,6 +1856,7 @@
     "expectedHeard": "Daidai shi ne “{{expected}}”, kai ka karanta “{{heard}}”",
     "partial": "Ba a iya duba wasu sassa ba ({{n}}); sakamakon na sauran ne kawai.",
     "coverage": "An duba kalmomi {{n}} cikin {{total}}.",
-    "nothingChecked": "Ba a iya duba komai ba: ba a ji wani yanki sosai ba. Ka ɗaga murya kaɗan, ka ɗan tsaya a ƙarshen kowace aya."
+    "nothingChecked": "Ba a iya duba komai ba: ba a ji wani yanki sosai ba. Ka ɗaga murya kaɗan, ka ɗan tsaya a ƙarshen kowace aya.",
+    "noMadd": "Ba ku ja nan ba; daidai shi ne harakat {{expected}}"
   }
 }

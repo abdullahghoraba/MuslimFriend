@@ -1550,7 +1550,14 @@
     "checkedSoFar": "Harakat bisher geprüft: {{n}} Wörter",
     "wordsPerfect": "Die Wörter sind alle richtig; die Hinweise zu Harakat und Tadschwid stehen unten.",
     "hint": "Tipp",
-    "tapWord": "Tippe auf ein farbiges Wort, um seinen Fehler zu sehen."
+    "tapWord": "Tippe auf ein farbiges Wort, um seinen Fehler zu sehen.",
+    "wsOf": "{{n}} von {{total}}",
+    "wsWrongWord": "Du hast ein anderes Wort gesagt",
+    "wsRight": "Richtig",
+    "wsHeard": "Deine Rezitation",
+    "wsSkipped": "Du hast dieses Wort ausgelassen",
+    "wsPrev": "Vorheriger Fehler",
+    "wsNext": "Nächster Fehler"
   },
   "ruqyah": {
     "title": "Ruqya",
@@ -1849,6 +1856,7 @@
     "expectedHeard": "Richtig: „{{expected}}“, gesagt: „{{heard}}“",
     "partial": "Einige Abschnitte konnten nicht geprüft werden ({{n}}); das Ergebnis gilt nur für die übrigen.",
     "coverage": "{{n}} von {{total}} Wörtern geprüft.",
-    "nothingChecked": "Nichts konnte geprüft werden: kein Abschnitt war deutlich genug zu hören. Rezitiere etwas lauter und mache am Ende jedes Verses eine kurze Pause."
+    "nothingChecked": "Nichts konnte geprüft werden: kein Abschnitt war deutlich genug zu hören. Rezitiere etwas lauter und mache am Ende jedes Verses eine kurze Pause.",
+    "noMadd": "Hier nicht gedehnt; richtig sind {{expected}} Zählzeiten"
   }
 }

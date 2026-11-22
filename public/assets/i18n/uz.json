@@ -1550,7 +1550,14 @@
     "checkedSoFar": "Hozircha harakati tekshirilgan: {{n}} so‘z",
     "wordsPerfect": "So‘zlarning hammasi to‘g‘ri; harakat va tajvid izohlari quyida.",
     "hint": "Ishora",
-    "tapWord": "Xatosini ko‘rish uchun rangli so‘zga bosing."
+    "tapWord": "Xatosini ko‘rish uchun rangli so‘zga bosing.",
+    "wsOf": "{{total}} tadan {{n}}",
+    "wsWrongWord": "Boshqa soʻz oʻqidingiz",
+    "wsRight": "Toʻgʻrisi",
+    "wsHeard": "Sizning tilovatingiz",
+    "wsSkipped": "Bu soʻzni tashlab ketdingiz",
+    "wsPrev": "Oldingi xato",
+    "wsNext": "Keyingi xato"
   },
   "ruqyah": {
     "title": "Shar'iy ruqya",
@@ -1849,6 +1856,7 @@
     "expectedHeard": "To‘g‘risi «{{expected}}», siz «{{heard}}» dedingiz",
     "partial": "Ba’zi qismlarni tekshirib bo‘lmadi ({{n}}); natija faqat qolganlari uchun.",
     "coverage": "{{total}} so‘zdan {{n}} tasi tekshirildi.",
-    "nothingChecked": "Hech narsa tekshirilmadi: birorta bo‘lak yetarlicha aniq eshitilmadi. Biroz balandroq o‘qing va har oyat oxirida qisqa to‘xtang."
+    "nothingChecked": "Hech narsa tekshirilmadi: birorta bo‘lak yetarlicha aniq eshitilmadi. Biroz balandroq o‘qing va har oyat oxirida qisqa to‘xtang.",
+    "noMadd": "Bu yerda mad qilinmadi; toʻgʻrisi {{expected}} harakat"
   }
 }

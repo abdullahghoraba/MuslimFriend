@@ -163,7 +163,23 @@ for (const [name, wav, expectMistakes] of [['Hafs (Husary), correct', WAV, false
     const none = await card.getByText(ar.tajweed.none).count();
     const text = (await card.locator('.tj').allInnerTexts()).join(' || ').replace(/\s+/g, ' ').slice(0, 900);
     console.log('tajweed', name, none ? 'no mistakes' : text);
-    if (expectMistakes) expect(none, 'the Warsh reading should be caught').toBe(0);
+    if (expectMistakes) {
+      expect(none, 'the Warsh reading should be caught').toBe(0);
+      // A tap on a coloured word opens its mistake in a sheet, and the arrows go to the next one.
+      await page.locator('.recital .w.tajweed').first().click();
+      const sheet = page.locator('.word-sheet');
+      await expect(sheet).toBeVisible();
+      await expect(sheet.locator('.ws-card').first()).toBeVisible();
+      await page.waitForTimeout(300);
+      await page.screenshot({ path: 'test-results/tasmee-word-sheet.png' });
+      const first = await sheet.locator('.ws-word').innerText();
+      if ((await page.locator('.recital .w.tajweed, .recital .w.wrong, .recital .w.skipped').count()) > 1) {
+        await sheet.getByRole('button', { name: ar.tasmee.wsNext }).click();
+        await expect(sheet.locator('.ws-word')).not.toHaveText(first);
+      }
+      await sheet.getByRole('button', { name: ar.common.close }).click();
+      await expect(sheet).toHaveCount(0);
+    }
     else expect(none, 'a correct reading should have no harakat/tajweed mistakes: ' + text).toBe(1);
     await browser.close();
   });

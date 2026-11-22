@@ -1550,7 +1550,14 @@
     "checkedSoFar": "Voyelles vérifiées jusqu’ici : {{n}} mots",
     "wordsPerfect": "Les mots sont tous justes ; voyez les remarques de voyelles et de tajwid ci-dessous.",
     "hint": "Indice",
-    "tapWord": "Touchez un mot coloré pour voir son erreur."
+    "tapWord": "Touchez un mot coloré pour voir son erreur.",
+    "wsOf": "{{n}} sur {{total}}",
+    "wsWrongWord": "Vous avez dit un autre mot",
+    "wsRight": "Correct",
+    "wsHeard": "Votre lecture",
+    "wsSkipped": "Vous avez omis ce mot",
+    "wsPrev": "Erreur précédente",
+    "wsNext": "Erreur suivante"
   },
   "ruqyah": {
     "title": "Roqya",
@@ -1849,6 +1856,7 @@
     "expectedHeard": "Il faut « {{expected}} », vous avez dit « {{heard}} »",
     "partial": "Certains passages n'ont pas pu être vérifiés ({{n}}) ; le résultat ne couvre que les autres.",
     "coverage": "{{n}} mots vérifiés sur {{total}}.",
-    "nothingChecked": "Rien n’a pu être vérifié : aucun passage n’a été entendu assez clairement. Récitez un peu plus fort et marquez une courte pause à la fin de chaque verset."
+    "nothingChecked": "Rien n’a pu être vérifié : aucun passage n’a été entendu assez clairement. Récitez un peu plus fort et marquez une courte pause à la fin de chaque verset.",
+    "noMadd": "Pas allongé ici ; il faut {{expected}} temps"
   }
 }

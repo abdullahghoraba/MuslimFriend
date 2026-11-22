@@ -1550,7 +1550,14 @@
     "checkedSoFar": "Baris yang telah disemak: {{n}} perkataan",
     "wordsPerfect": "Semua perkataan betul; lihat catatan baris dan tajwid di bawah.",
     "hint": "Petunjuk",
-    "tapWord": "Ketik perkataan berwarna untuk melihat kesilapannya."
+    "tapWord": "Ketik perkataan berwarna untuk melihat kesilapannya.",
+    "wsOf": "{{n}} daripada {{total}}",
+    "wsWrongWord": "Anda membaca perkataan lain",
+    "wsRight": "Yang betul",
+    "wsHeard": "Bacaan anda",
+    "wsSkipped": "Anda tertinggal perkataan ini",
+    "wsPrev": "Kesilapan sebelumnya",
+    "wsNext": "Kesilapan seterusnya"
   },
   "ruqyah": {
     "title": "Ruqyah",
@@ -1849,6 +1856,7 @@
     "expectedHeard": "Sepatutnya “{{expected}}”, anda membaca “{{heard}}”",
     "partial": "Beberapa petikan tidak dapat disemak ({{n}}); keputusan hanya untuk yang lain.",
     "coverage": "{{n}} daripada {{total}} perkataan disemak.",
-    "nothingChecked": "Tiada apa yang dapat disemak: tiada bahagian yang didengar dengan cukup jelas. Bacalah sedikit lebih kuat dan berhenti sebentar di hujung setiap ayat."
+    "nothingChecked": "Tiada apa yang dapat disemak: tiada bahagian yang didengar dengan cukup jelas. Bacalah sedikit lebih kuat dan berhenti sebentar di hujung setiap ayat.",
+    "noMadd": "Tidak dipanjangkan di sini; sepatutnya {{expected}} harakat"
   }
 }

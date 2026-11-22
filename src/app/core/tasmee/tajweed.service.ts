@@ -85,7 +85,8 @@ export function parseEvents(text: string): { results?: ({ errors?: TajweedError[
  */
 export function splitAtPauses(
   words: { start: number; end: number }[], frames: number, samples: number, minGap = 0.3, maxLen = Infinity,
-  silent: (from: number, to: number) => boolean = () => true,
+  /** Where the reciter was silent between two samples (see silenceIn): -1 if not, or true for "in the middle". */
+  silent: (from: number, to: number) => number | boolean = () => true,
 ): { from: number; to: number; first: number; last: number }[] {
   if (!words.length || frames <= 0) return [];
   const spf = samples / frames;
@@ -96,8 +97,11 @@ export function splitAtPauses(
     const gap = ((words[i].start - words[i - 1].end) * spf) / 16000;
     // A gap in the recogniser's timing is not always a pause (a word's last vowel or a madd can fall outside it):
     // only a gap the reciter was really silent in is a stop.
-    if (gap >= minGap && silent(Math.round(words[i - 1].end * spf), Math.round(words[i].start * spf))) {
-      const cut = Math.round(((words[i - 1].end + words[i].start) / 2) * spf);
+    const stop = gap >= minGap ? silent(Math.round(words[i - 1].end * spf), Math.round(words[i].start * spf)) : false;
+    if (stop !== false && stop !== -1) {
+      // In the silence itself: the recogniser marks a word's end at its last letter, before the sound of it ends, and
+      // the middle of the gap can still be in that word (the check then heard «من تفا» for «من تفاوت»).
+      const cut = typeof stop === 'number' ? stop : Math.round(((words[i - 1].end + words[i].start) / 2) * spf);
       parts.push({ from, to: cut, first, last: i - 1 });
       from = cut;
       first = i;
@@ -134,6 +138,11 @@ export function splitAtPauses(
 const quietLevels = new WeakMap<Float32Array, number>();
 
 export function silentBetween(audio: Float32Array, from: number, to: number, minSilence = 0.25): boolean {
+  return silenceIn(audio, from, to, minSilence) >= 0;
+}
+
+/** The middle of the first silence of at least [minSilence] seconds between samples [from] and [to], or -1. */
+export function silenceIn(audio: Float32Array, from: number, to: number, minSilence = 0.25): number {
   const F = 320;
   const level = (at: number) => {
     let p = 0;
@@ -144,16 +153,40 @@ export function silentBetween(audio: Float32Array, from: number, to: number, min
   if (quiet === undefined) {
     const all: number[] = [];
     for (let at = 0; at + F <= audio.length; at += F) all.push(level(at));
-    if (!all.length) return false;
+    if (!all.length) return -1;
     quiet = [...all].sort((a, b) => a - b)[Math.floor(all.length * 0.9)] * 0.1;
     quietLevels.set(audio, quiet);
   }
   let run = 0;
-  for (let at = Math.max(0, from); at + F <= Math.min(to, audio.length); at += F) {
+  let at = Math.max(0, from);
+  for (; at + F <= Math.min(to, audio.length); at += F) {
     run = level(at) < quiet ? run + 1 : 0;
-    if (run * F >= minSilence * 16000) return true;
+    if (run * F >= minSilence * 16000) break;
   }
-  return false;
+  if (run * F < minSilence * 16000) return -1;
+  // The whole silence (it may go on past [minSilence]), and its middle.
+  const start = at - (run - 1) * F;
+  while (at + 2 * F <= Math.min(to, audio.length) && level(at + F) < quiet) at += F;
+  return Math.round((start + at + F) / 2);
+}
+
+/** The middle of the quietest 100 ms between samples [from] and [to] of [audio] (where to cut between two words). */
+export function quietestIn(audio: Float32Array, from: number, to: number): number {
+  const W = 1600;
+  from = Math.max(0, Math.round(from));
+  to = Math.min(audio.length, Math.round(to));
+  if (to - from <= W) return Math.round((from + to) / 2);
+  let best = from;
+  let least = Infinity;
+  for (let at = from; at + W <= to; at += 160) {
+    let p = 0;
+    for (let i = at; i < at + W; i++) p += audio[i] * audio[i];
+    if (p < least) {
+      least = p;
+      best = at;
+    }
+  }
+  return best + W / 2;
 }
 
 /** A word's letters only: no harakat or Quranic marks, one form of alif and ya. */

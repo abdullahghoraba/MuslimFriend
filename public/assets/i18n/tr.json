@@ -1550,7 +1550,14 @@
     "checkedSoFar": "Şu ana kadar harekesi kontrol edilen: {{n}} kelime",
     "wordsPerfect": "Kelimelerin hepsi doğru; hareke ve tecvid notları aşağıda.",
     "hint": "İpucu",
-    "tapWord": "Hatasını görmek için renkli bir kelimeye dokunun."
+    "tapWord": "Hatasını görmek için renkli bir kelimeye dokunun.",
+    "wsOf": "{{n}} / {{total}}",
+    "wsWrongWord": "Başka bir kelime okudunuz",
+    "wsRight": "Doğrusu",
+    "wsHeard": "Sizin okuyuşunuz",
+    "wsSkipped": "Bu kelimeyi atladınız",
+    "wsPrev": "Önceki hata",
+    "wsNext": "Sonraki hata"
   },
   "ruqyah": {
     "title": "Rukye",
@@ -1849,6 +1856,7 @@
     "expectedHeard": "Doğrusu “{{expected}}”, siz “{{heard}}” dediniz",
     "partial": "Bazı bölümler kontrol edilemedi ({{n}}); sonuç yalnızca diğerlerini kapsar.",
     "coverage": "{{total}} kelimeden {{n}} tanesi kontrol edildi.",
-    "nothingChecked": "Hiçbir şey kontrol edilemedi: hiçbir bölüm yeterince net duyulmadı. Biraz daha yüksek sesle okuyun ve her ayetin sonunda kısa bir durak yapın."
+    "nothingChecked": "Hiçbir şey kontrol edilemedi: hiçbir bölüm yeterince net duyulmadı. Biraz daha yüksek sesle okuyun ve her ayetin sonunda kısa bir durak yapın.",
+    "noMadd": "Burada med yapılmadı; doğrusu {{expected}} elif"
   }
 }
