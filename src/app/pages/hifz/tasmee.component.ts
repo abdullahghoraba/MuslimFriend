@@ -266,7 +266,8 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     const s = Number(v) || 1;
     this.sura.set(s);
     this.from.set(1);
-    this.to.set(Math.min(this.quran.sura(s).ayas, 10));
+    // The whole sura (it was cut at ayah 10, to be set again each time); «to» shortens it.
+    this.to.set(this.quran.sura(s).ayas);
     this.reset();
   }
 

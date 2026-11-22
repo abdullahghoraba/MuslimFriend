@@ -235,3 +235,17 @@ ion-toolbar ion-buttons ion-button.in-toolbar.in-buttons.button-has-icon-only {
 /* Shared decorative list/header rhythm, including RTL lists. */
 ion-item > ion-icon[slot='start'] { font-size: 22px; color: var(--ion-color-primary); flex-shrink: 0; }
 ion-title > ion-icon, h2 > ion-icon { vertical-align: middle; margin-inline-end: .35em; }
+
+// A segment's choices are read whole, on two lines if need be, never cut («حسب ال...», «أول حرف م...»).
+ion-segment-button {
+  min-height: 48px;
+  white-space: normal;
+  --padding-start: 6px;
+  --padding-end: 6px;
+}
+ion-segment-button ion-label {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  line-height: 1.3;
+}

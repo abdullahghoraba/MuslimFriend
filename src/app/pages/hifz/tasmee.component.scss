@@ -61,6 +61,19 @@ ion-progress-bar.top { position: sticky; top: 0; z-index: 2; border-radius: 4px;
 
 .row-buttons, .controls { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 .controls { flex-direction: row; margin-top: 12px; }
+// The controls (start, pause, hint, finish) stay at the bottom of the screen while the page scrolls.
+.controls {
+  position: sticky; bottom: 0; z-index: 2;
+  padding: 14px 0 calc(10px + var(--ion-safe-area-bottom, 0px));
+  background: linear-gradient(to bottom, transparent, var(--ion-background-color) 30%);
+}
+.start {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: min(100%, 420px); height: 56px;
+  border: 0; border-radius: 28px; background: var(--ion-color-primary); color: var(--ion-color-primary-contrast, #fff);
+  font: inherit; font-size: 1.1rem; font-weight: 700; box-shadow: 0 6px 18px color-mix(in srgb, var(--ion-color-primary) 35%, transparent);
+  ion-icon { font-size: 1.5rem; }
+  &:disabled { opacity: 0.5; }
+}
 
 // A long range (up to a whole sura): the ayat scroll in their own card, which follows the reciter (the component
 // keeps the next word in view), and the controls stay within reach at the bottom of the screen.

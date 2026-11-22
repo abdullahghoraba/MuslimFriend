@@ -24,12 +24,15 @@
       <p role="alert">{{ error() | translate }}</p>
     }
     @if (ready()) {
-      <ion-button (click)="open()" [disabled]="busy()">{{ 'hifz.create' | translate }}</ion-button>
       @if (!service.list().length) {
+        <!-- No plan yet: what a plan is, and the button to make one right under it. -->
         <section>
           <h2>{{ 'hifz.emptyTitle' | translate }}</h2>
           <p>{{ 'hifz.emptyBody' | translate }}</p>
+          <ion-button expand="block" (click)="open()" [disabled]="busy()"><ion-icon slot="start" name="add-outline" aria-hidden="true" />{{ 'hifz.create' | translate }}</ion-button>
         </section>
+      } @else {
+        <ion-button (click)="open()" [disabled]="busy()"><ion-icon slot="start" name="add-outline" aria-hidden="true" />{{ 'hifz.create' | translate }}</ion-button>
       }
       @for (p of service.plans(); track p.id) {
         <section>

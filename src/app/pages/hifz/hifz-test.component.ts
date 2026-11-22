@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
-import { IonSelect, IonSelectOption, IonSpinner } from '@ionic/angular';
+import { IonSpinner } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
 import { intlLocale } from '../../core/models';
 import { RecallSegment } from '../../core/quran/recall-test';
@@ -7,7 +7,7 @@ import { QuranService } from '../../core/quran/quran.service';
 import { splitBasmala } from '../../core/quran/quran-utils';
 import { SettingsService } from '../../core/services/settings.service';
 import { RecallTestComponent } from '../../shared/recall-test.component';
-import { SelectTextsDirective } from '../../shared/select-texts.directive';
+import { SearchSelectComponent, numberOptions, suraSearchOptions } from '../../shared/search-select.component';
 
 /**
  * «Test yourself» (اختبر حفظك), the Hifz page's third tab: the ayat hidden, recite from memory and reveal them to
@@ -15,22 +15,16 @@ import { SelectTextsDirective } from '../../shared/select-texts.directive';
  */
 @Component({
   selector: 'app-hifz-test',
-  imports: [TranslatePipe, RecallTestComponent, IonSelect, SelectTextsDirective, IonSelectOption, IonSpinner],
+  imports: [TranslatePipe, RecallTestComponent, SearchSelectComponent, IonSpinner],
   template: `
     <div class="ion-padding">
       @if (!quran.ready()) {
         <ion-spinner />
       } @else {
         <div class="pick">
-          <ion-select [label]="'hifz.fromSura' | translate" interface="action-sheet" [value]="sura()" (ionChange)="setSura(+$event.detail.value)">
-            @for (s of quran.suras; track s.index) { <ion-select-option [value]="s.index">{{ suraName(s.index) }}</ion-select-option> }
-          </ion-select>
-          <ion-select [label]="'hifz.fromAya' | translate" interface="popover" [value]="from()" (ionChange)="setFrom(+$event.detail.value)">
-            @for (a of ayat(); track a) { <ion-select-option [value]="a">{{ number(a) }}</ion-select-option> }
-          </ion-select>
-          <ion-select [label]="'hifz.toAya' | translate" interface="popover" [value]="to()" (ionChange)="to.set(+$event.detail.value)">
-            @for (a of ayat(); track a) { @if (a >= from()) { <ion-select-option [value]="a">{{ number(a) }}</ion-select-option> } }
-          </ion-select>
+          <app-search-select class="sura" [label]="'hifz.fromSura' | translate" [value]="sura()" [options]="suraPick()" (changed)="setSura(+$event)" />
+          <app-search-select [label]="'hifz.fromAya' | translate" [value]="from()" [options]="ayahPick()" (changed)="setFrom(+$event)" />
+          <app-search-select [label]="'hifz.toAya' | translate" [value]="to()" [options]="ayahPick()" (changed)="to.set(Math.max(from(), +$event))" />
         </div>
         <p class="note">{{ 'recall.intro' | translate }}</p>
         <app-recall-test [segments]="segments()" [quran]="true" />
@@ -39,7 +33,7 @@ import { SelectTextsDirective } from '../../shared/select-texts.directive';
   `,
   styles: `
     .pick { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
-    .pick ion-select:first-child { grid-column: 1 / -1; }
+    .pick .sura { grid-column: 1 / -1; }
     .note { font-size: 0.85rem; color: var(--app-muted); }
   `,
 })
@@ -56,6 +50,9 @@ export class HifzTestComponent {
   readonly sura = signal(67);
   readonly from = signal(1);
   readonly to = signal(5);
+  readonly suraPick = computed(() => (this.quran.ready() ? suraSearchOptions(this.quran.suras, (s: { index: number }) => this.suraName(s.index)) : []));
+  readonly ayahPick = computed(() => numberOptions(this.ayat().length, (n: number) => this.number(n)));
+  readonly Math = Math;
   readonly ayat = computed(() => (this.quran.ready() ? Array.from({ length: this.quran.sura(this.sura()).ayas }, (_, i) => i + 1) : []));
 
   readonly segments = computed<RecallSegment[]>(() => {
@@ -90,7 +87,8 @@ export class HifzTestComponent {
   setSura(sura: number): void {
     this.sura.set(sura);
     this.from.set(1);
-    this.to.set(Math.min(this.quran.sura(sura).ayas, 10));
+    // The whole sura (it was cut at ayah 10, to be set again each time); «to» shortens it.
+    this.to.set(this.quran.sura(sura).ayas);
   }
 
   setFrom(from: number): void {

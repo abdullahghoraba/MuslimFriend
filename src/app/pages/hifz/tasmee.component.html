@@ -117,10 +117,10 @@
         <ion-button (click)="start()"><ion-icon slot="start" name="refresh-outline" aria-hidden="true" />{{ 'tasmee.again' | translate }}</ion-button>
         <ion-button fill="outline" (click)="reset()">{{ 'tasmee.other' | translate }}</ion-button>
       } @else {
-        <button type="button" class="mic" (click)="start()" [disabled]="downloading() !== null" [attr.aria-label]="'tasmee.start' | translate">
-          <ion-icon name="mic-outline" aria-hidden="true" />
+        <!-- Always in reach at the bottom of the screen, whatever the settings above (it was below them and the ayat). -->
+        <button type="button" class="start" (click)="start()" [disabled]="downloading() !== null">
+          <ion-icon name="mic-outline" aria-hidden="true" />{{ 'tasmee.start' | translate }}
         </button>
-        <p class="hint center">{{ 'tasmee.startHint' | translate }}</p>
       }
     </section>
     }
