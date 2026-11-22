@@ -55,7 +55,7 @@
           <ion-segment-button value="tajweed"><ion-label>{{ 'tasmee.checkTajweed' | translate }}</ion-label></ion-segment-button>
         </ion-segment>
         @if (tasmee.prefs().check !== 'words') {
-          <p class="hint">{{ (tasmee.prefs().engine === 'offline' ? 'tasmee.checkHint' : 'tasmee.checkNeedsSmart') | translate }}</p>
+          <p class="hint" [class.warn]="checkMissing()">{{ (checkMissing() ? 'tasmee.checkNeedsModel' : 'tasmee.checkHint') | translate }}</p>
         }
         @if (best() !== null) {
           <p class="hint">{{ 'tasmee.best' | translate: { pct: ((best() ?? 0) * 100).toFixed(0) } }}</p>
@@ -88,6 +88,12 @@
       </div>
       @if (quiet()) {
         <p class="hint center">{{ 'tasmee.noVoice' | translate }}</p>
+      }
+      @if (checkMissing()) {
+        <p class="hint center warn">{{ 'tasmee.checkNeedsModel' | translate }}</p>
+      } @else if (checkOn() && tajweedChecked().size) {
+        <!-- While reciting: how many words the harakat/tajweed check has heard back on (it runs a phrase behind). -->
+        <p class="hint center">{{ 'tasmee.checkedSoFar' | translate: { n: tajweedChecked().size } }}</p>
       }
     }
 
@@ -126,8 +132,10 @@
     @if (state() === 'done') {
       <section class="card summary">
         <p class="score" [class.good]="scorePct() >= 90">{{ scorePct() }}%</p>
-        @if (!mistakes().length) {
+        @if (!mistakes().length && !(checkOn() && tajweedIssues().size)) {
           <p>{{ 'tasmee.perfect' | translate }}</p>
+        } @else if (!mistakes().length) {
+          <p>{{ 'tasmee.wordsPerfect' | translate }}</p>
         } @else {
           <h2>{{ 'tasmee.mistakes' | translate: { n: mistakes().length } }}</h2>
           @for (m of mistakes(); track m.i) {
@@ -146,7 +154,7 @@
     }
 
     <!-- Tajweed: the phrases' audio checked by the tajweed server (AI), after the words. -->
-    @if (state() === 'done' && tajweedPhrases().length) {
+    @if (state() === 'done' && (tajweedPhrases().length || (checkOn() && !checkMissing()))) {
       <section class="card tajweed-card">
         <h2><ion-icon name="sparkles-outline" aria-hidden="true" /> {{ (tasmee.prefs().check === 'tashkeel' ? 'tasmee.tashkeelTitle' : 'tajweed.title') | translate }}</h2>
         @switch (tajweedState()) {
@@ -174,7 +182,11 @@
             @if (tajweedFailed()) {
               <p class="error">{{ 'tajweed.partial' | translate: { n: tajweedFailed() } }}</p>
             }
-            @if (!tajweedList().length) {
+            <!-- How much was checked: a short recitation heard unclearly may be checked only in part, or not at all. -->
+            <p class="hint">{{ 'tajweed.coverage' | translate: { n: tajweedChecked().size, total: reachedAt() } }}</p>
+            @if (!tajweedChecked().size) {
+              <p class="error">{{ 'tajweed.nothingChecked' | translate }}</p>
+            } @else if (!tajweedList().length) {
               <p>{{ 'tajweed.none' | translate }}</p>
             } @else {
               <p class="hint">{{ 'tajweed.count' | translate: { n: tajweedList().length } }}</p>
@@ -213,8 +225,8 @@
         }
         <p class="credit">{{ 'tajweed.credit' | translate }}</p>
       </section>
-    } @else if (state() === 'done' && tasmee.prefs().engine === 'phone') {
-      <p class="hint center">{{ 'tajweed.onlyOffline' | translate }}</p>
+    } @else if (state() === 'done' && checkMissing()) {
+      <p class="hint center warn">{{ 'tasmee.checkNeedsModel' | translate }}</p>
     }
 
     @if (state() === 'idle' && tasmee.history().length) {

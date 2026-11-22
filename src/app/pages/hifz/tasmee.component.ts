@@ -9,7 +9,7 @@ import { HeardSource, WordResult, alignRecitation, alignWithCost, bestAlternativ
 import { forcedGap, modelLetters } from '../../core/tasmee/ctc-score';
 import { TasmeeCheck, TasmeeEngine, TasmeeService, dropOpenings } from '../../core/tasmee/tasmee.service';
 import { QuranSpeech } from '../../core/tasmee/quran-speech';
-import { TajweedError, TajweedPart, TajweedPrefs, TajweedReply, TajweedService, pauseArtifact, splitAtPauses } from '../../core/tasmee/tajweed.service';
+import { TajweedError, TajweedPart, TajweedPrefs, TajweedReply, TajweedService, pauseArtifact, silentBetween, splitAtPauses } from '../../core/tasmee/tajweed.service';
 
 import { PhoneSpeech, PhraseReading, SpeechCallbacks } from '../../native/speech';
 import { QuranService } from '../../core/quran/quran.service';
@@ -105,6 +105,15 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     [...this.tajweedIssues().entries()].sort((a, b) => a[0] - b[0]).map(([i, errors]) => ({ i, w: this.words()[i], errors })),
   );
   readonly tajweedPrefs = signal<TajweedPrefs | null>(null);
+  /** The words (indexes in words()) the server has checked and answered for: how much of the recitation was checked. */
+  readonly tajweedChecked = signal<Set<number>>(new Set());
+  /** Harakat (or harakat and tajweed) chosen. */
+  readonly checkOn = computed(() => this.tasmee.prefs().check !== 'words');
+  /**
+   * Chosen, but it cannot run: it needs the Quran AI (which keeps each phrase's audio), not downloaded yet or not the
+   * engine chosen. Said plainly, before and while reciting: before, only the words were checked and nothing said so.
+   */
+  readonly checkMissing = computed(() => this.checkOn() && !(this.tasmee.prefs().engine === 'offline' && this.offlineReady()));
   /** Phrases whose audio can be checked: their words, read once and in order. */
   readonly tajweedPhrases = computed(() => this.phrasesForTajweed());
   private notified = new Set<number>();
@@ -400,12 +409,13 @@ export class TasmeeComponent implements OnInit, OnDestroy {
         .map((m) => ({ aya: m.w.ref.aya, word: m.w.text, heard: m.r.heard, kind: m.r.status as 'wrong' | 'skipped' })),
     });
     // Checked on harakat (or harakat and tajweed): what was not checked while reciting is checked now.
-    if (this.tasmee.prefs().check !== 'words' && (this.tajweedPhrases().length || this.tajweedSent.size)) void this.checkTajweed();
+    if (this.checkOn() && !this.checkMissing()) void this.checkTajweed();
   }
 
   reset(): void {
     this.tajweedState.set('idle');
     this.tajweedIssues.set(new Map());
+    this.tajweedChecked.set(new Set());
     this.tajweedSent.clear();
     this.tajweedTotal.set(0);
     this.tajweedDone.set(0);
@@ -453,9 +463,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
       const readings = group.map((ph) => finals[ph]?.reading);
       if (readings.some((r) => !r?.audio || !r.frames)) continue;
       const list = [...new Set(group.flatMap((ph) => byPhrase.get(ph) ?? []))].sort((a, b) => a - b);
-      if (!list.length || list[list.length - 1] - list[0] + 1 !== list.length) continue;
-      // Every word heard must be one of these (no isti'adha or basmala before them, nothing said twice).
-      if (readings.reduce((n, r) => n + r!.words.length, 0) > list.length + group.length) continue;
+      if (!list.length) continue;
       const offsets: number[] = [];
       let total = 0;
       for (const r of readings) {
@@ -472,22 +480,50 @@ export class TasmeeComponent implements OnInit, OnDestroy {
         const r = readings[i]!;
         return offsets[i] + (src[edge] * r.audio!.length) / r.frames;
       };
-      const spans = list.map((k) => {
-        const h = results[k].h ?? [];
-        return { start: at(h.length ? sources[h[0]] : undefined, 'start'), end: at(h.length ? sources[h[h.length - 1]] : undefined, 'end') };
-      });
-      // Cut where the reciter paused (waqf): each part then ends at a stop, as the server expects; read as one breath,
-      // a stop's sukun or longer madd would be counted as mistakes.
-      for (const p of splitAtPauses(spans, total, total)) {
-        if (p.to - p.from > 20 * 16000 || p.to - p.from < 0.3 * 16000) continue;
-        const parts: TajweedPart[] = [];
-        for (const k of list.slice(p.first, p.last + 1)) {
-          const w = words[k];
-          const last = parts[parts.length - 1];
-          if (last && last[1] === w.ref.aya) last[3] = w.n;
-          else parts.push([w.ref.sura, w.ref.aya, w.n, w.n]);
+      // Every word heard in this audio (the ayat's and any other: a word said twice, the isti'adha...), in samples.
+      const heardSpans = readings.flatMap((r, i) =>
+        r!.words.map((w) => ({ start: offsets[i] + (w.start * r!.audio!.length) / r!.frames, end: offsets[i] + (w.end * r!.audio!.length) / r!.frames })),
+      );
+      // The ayat's words in runs read in order: a skipped word or a word said again splits the phrase there, and each
+      // run is checked on its own audio (before, the whole phrase was left unchecked).
+      const runs: number[][] = [];
+      for (const k of list) {
+        const run = runs[runs.length - 1];
+        if (run && k === run[run.length - 1] + 1) run.push(k);
+        else runs.push([k]);
+      }
+      for (const run of runs) {
+        // A word's heard words are h = [from, to): it ends where the heard word before [to] ends.
+        const spans = run.map((k) => {
+          const h = results[k].h;
+          return { start: at(h ? sources[h[0]] : undefined, 'start'), end: at(h ? sources[h[1] - 1] : undefined, 'end') };
+        });
+        const first = spans[0].start;
+        const lastEnd = spans[spans.length - 1].end;
+        if (!(lastEnd > first)) continue;
+        // The run's audio: from halfway after the word heard before it to halfway before the word heard after it, so
+        // no other word is in it.
+        const before = heardSpans.filter((h) => h.end <= first + 1).reduce((m, h) => Math.max(m, h.end), -1);
+        const after = heardSpans.filter((h) => h.start >= lastEnd - 1).reduce((m, h) => Math.min(m, h.start), Infinity);
+        const from = before >= 0 ? Math.round((before + first) / 2) : 0;
+        const to = after < Infinity ? Math.round((after + lastEnd) / 2) : total;
+        // Every word heard in it must be one of the run's (a word may be heard in two pieces where a phrase was cut).
+        if (heardSpans.filter((h) => h.start >= from - 1 && h.end <= to + 1).length > run.length + group.length) continue;
+        // Cut where the reciter paused (waqf): each part then ends at a stop, as the server expects; read as one
+        // breath, a stop's sukun or longer madd would be counted as mistakes. A part still too long for the server
+        // (20 s) is cut between words.
+        const local = spans.map((s) => ({ start: s.start - from, end: s.end - from }));
+        for (const p of splitAtPauses(local, to - from, to - from, 0.3, 18 * 16000, (a, b) => silentBetween(audio, from + a, from + b))) {
+          if (p.to - p.from > 20 * 16000 || p.to - p.from < 0.3 * 16000) continue;
+          const parts: TajweedPart[] = [];
+          for (const k of run.slice(p.first, p.last + 1)) {
+            const w = words[k];
+            const last = parts[parts.length - 1];
+            if (last && last[1] === w.ref.aya) last[3] = w.n;
+            else parts.push([w.ref.sura, w.ref.aya, w.n, w.n]);
+          }
+          out.push({ audio: audio.subarray(from + p.from, from + p.to), parts, open: !!readings[readings.length - 1]?.cut && from + p.to >= total });
         }
-        out.push({ audio: audio.subarray(p.from, p.to), parts, open: !!readings[readings.length - 1]?.cut });
       }
     }
     return out;
@@ -542,6 +578,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     const words = this.words();
     const results = this.results();
     const issues = new Map(this.tajweedIssues());
+    const checked = new Set(this.tajweedChecked());
     let failed = 0;
     replies.forEach((reply, n) => {
       const covered = words
@@ -552,6 +589,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
         failed++;
         return;
       }
+      covered.forEach(({ k }) => checked.add(k));
       for (const e of reply.errors) {
         const k = words.findIndex((w) => w.ref.aya === e.aya && w.n === e.word && w.ref.sura === phrases[n].parts[0][0]);
         // The server's mushaf and the app's split the ayah the same way; if a word differs, it is not shown.
@@ -567,6 +605,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
       }
     });
     this.tajweedIssues.set(issues);
+    this.tajweedChecked.set(checked);
     this.tajweedFailed.update((n) => n + failed);
   }
 
@@ -588,7 +627,11 @@ export class TasmeeComponent implements OnInit, OnDestroy {
       this.tajweedState.set('notice');
       return;
     }
-    if (!this.tajweedPhrases().length && !this.tajweedSent.size) return;
+    // Nothing could be checked (no phrase heard clearly enough, in order): said so, not «no mistakes».
+    if (!this.tajweedPhrases().length && !this.tajweedSent.size) {
+      this.tajweedState.set('done');
+      return;
+    }
     this.tajweedState.set(this.tajweedAwake ? 'checking' : 'waking');
     this.tajweed.progress = undefined;
     // What was checked while reciting stays; what is left is checked now.
@@ -678,7 +721,9 @@ export class TasmeeComponent implements OnInit, OnDestroy {
 
   /** What counts as a mistake. Choosing harakat or tajweed shows that they are checked by AI (the line under it). */
   async setCheck(check: TasmeeCheck): Promise<void> {
-    await this.tasmee.setPrefs({ check });
+    // Harakat and tajweed are checked on the recitation's audio, which only the Quran AI keeps: choosing them chooses
+    // it (its download button shows if it is not on the phone yet).
+    await this.tasmee.setPrefs(check === 'words' ? { check } : { check, engine: 'offline' });
     if (check !== 'words') await this.tajweed.setPrefs({ noticeSeen: true });
   }
 

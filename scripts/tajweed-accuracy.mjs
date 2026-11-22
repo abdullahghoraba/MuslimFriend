@@ -1,4 +1,5 @@
-// Usage: node scripts/tajweed-accuracy.mjs [1:1,1:2,...]   (CHROME_PATH=... to use a given Chrome for decoding)
+// Usage: node scripts/tajweed-accuracy.mjs [1:1,1:2,...]   (CHROME_PATH=... to use a given Chrome for decoding;
+// SNR=20 adds room noise at that signal-to-noise ratio in dB, to hear the check as a phone in a room would)
 // Accuracy of the harakat / tajweed check: correct Hafs recitations (mistakes flagged = false alarms) and Warsh
 // recitations of the same ayat (they differ from Hafs in known harakat and madd: these should be caught).
 // Each ayah is decoded to 16 kHz mono (as the app sends it) and sent to the tajweed server as the app does.
@@ -23,7 +24,7 @@ await page.goto('about:blank');
 
 async function decode(mp3) {
   const b64 = Buffer.from(mp3).toString('base64');
-  return page.evaluate(async (b64) => {
+  return page.evaluate(async ([b64, snr]) => {
     const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
     const ctx = new AudioContext();
     const buf = await ctx.decodeAudioData(bytes.buffer);
@@ -31,12 +32,20 @@ async function decode(mp3) {
     const src = off.createBufferSource(); src.buffer = buf; src.connect(off.destination); src.start();
     const out = await off.startRendering();
     const s = out.getChannelData(0);
+    if (snr) {
+      // Pink-ish room noise at [snr] dB under the voice's level.
+      let p = 0; for (let i = 0; i < s.length; i++) p += s[i] * s[i];
+      const amp = Math.sqrt(p / s.length / Math.pow(10, snr / 10));
+      const n = new Float32Array(s.length); let b = 0, q = 0;
+      for (let i = 0; i < s.length; i++) { b = 0.97 * b + (Math.random() * 2 - 1); n[i] = b; q += b * b; }
+      const k = amp / Math.sqrt(q / s.length); for (let i = 0; i < s.length; i++) s[i] += k * n[i];
+    }
     const pcm = new Int16Array(s.length);
     for (let i = 0; i < s.length; i++) pcm[i] = Math.max(-1, Math.min(1, s[i])) * 0x7fff;
     let bin = ''; const u8 = new Uint8Array(pcm.buffer);
     for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode(...u8.subarray(i, i + 0x8000));
     return btoa(bin);
-  }, b64);
+  }, [b64, Number(process.env.SNR) || 0]);
 }
 
 function wav(pcmB64) {
@@ -106,7 +115,7 @@ function pauseArtifact(e, word, next) {
 
 
 const QURAN = Object.fromEntries(fs.readFileSync('content/tanzil/quran-uthmani.txt', 'utf8').split(/\r?\n/).filter((l) => /^\d+\|/.test(l)).map((l) => { const [s, a, x] = l.split('|'); let w = []; for (const tok of x.trim().split(/\s+/)) { if (/^[ۖ-ۭ]+$/.test(tok) && w.length) w[w.length - 1] += ' ' + tok; else w.push(tok); } if (a === '1' && s !== '1' && s !== '9') w = w.slice(4); return [s + ':' + a, w]; }));
-for (const k of Object.keys(WORDS)) if (QURAN[k]) WORDS[k] = QURAN[k].length;
+for (const k of new Set([...Object.keys(WORDS), ...AYAT])) if (QURAN[k]) WORDS[k] = QURAN[k].length;
 const summary = {}; const shown = {};
 for (const [name, dir] of Object.entries(RECITERS)) {
   const phrases = [];

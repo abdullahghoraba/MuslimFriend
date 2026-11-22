@@ -386,7 +386,7 @@
     "mediaTitle": "Mikrofon und Kamera",
     "mediaText": "Nur angefragt, wenn du im Studio deine Rezitation aufnimmst oder der App zur Prüfung vorträgst. Rauschentfernung und der intelligente Prüfer laufen auf deinem Telefon und laden nichts hoch. Wählst du für Tasmee' die Erkennung „Telefon“, geht deine Stimme an den Spracherkennungsdienst deines Telefons (meist Google), nach dessen eigener Datenschutzerklärung. Aufnahmen bleiben in der App, bis du sie teilst, speicherst oder löschst.",
     "tajweedTitle": "Tadschwid-Prüfung",
-    "tajweedText": "Nur wenn du nach dem Rezitieren „Mein Tadschwid prüfen“ tippst: Ton und Versnummern gehen an den eigenen Tadschwid-Server der App (bei Hugging Face), werden von einem KI-Modell geprüft und dann gelöscht; nichts wird gespeichert oder weitergegeben."
+    "tajweedText": "Nur wenn du im Tasmee die Prüfung von Harakat oder Tadschwid wählst: beim Rezitieren werden der Ton jedes Abschnitts und seine Versnummern an den eigenen Tadschwid-Server der App (bei Hugging Face) gesendet, von einem KI-Modell geprüft und danach gelöscht; nichts wird gespeichert oder weitergegeben."
   },
   "prayer": {
     "fajr": "Fajr",
@@ -1536,7 +1536,7 @@
     "checkWords": "Wörter",
     "checkTashkeel": "Wörter + Harakat",
     "checkTajweed": "Harakat + Tadschwid",
-    "checkHint": "Harakat (und Tadschwid) werden am Ende des Tasmee von KI geprüft; dafür braucht es Internet. Ihre Fehler zählen zur Bewertung.",
+    "checkHint": "Harakat (und Tadschwid) werden beim Rezitieren von KI geprüft, jeder Abschnitt, sobald du pausierst; dafür braucht es Internet. Ihre Fehler zählen zur Bewertung.",
     "checkNeedsSmart": "Die Prüfung von Harakat und Tadschwid funktioniert nur mit dem intelligenten Korrektor, der den Ton deiner Rezitation behält.",
     "tashkeelTitle": "Harakat",
     "modeMemory": "Auswendig",
@@ -1544,7 +1544,10 @@
     "tjHaraka": "Vokal",
     "tjLetter": "Buchstabe",
     "tjRule": "Tadschwid",
-    "tjMadd": "Madd"
+    "tjMadd": "Madd",
+    "checkNeedsModel": "Die Prüfung von Harakat und Tadschwid braucht den intelligenten Prüfer: lade ihn zuerst oben herunter. Bis dahin werden nur die Wörter geprüft.",
+    "checkedSoFar": "Harakat bisher geprüft: {{n}} Wörter",
+    "wordsPerfect": "Die Wörter sind alle richtig; die Hinweise zu Harakat und Tadschwid stehen unten."
   },
   "ruqyah": {
     "title": "Ruqya",
@@ -1841,6 +1844,8 @@
     "haraka": "Vokalfehler",
     "letter": "Buchstabe falsch ausgesprochen",
     "expectedHeard": "Richtig: „{{expected}}“, gesagt: „{{heard}}“",
-    "partial": "Einige Abschnitte konnten nicht geprüft werden ({{n}}); das Ergebnis gilt nur für die übrigen."
+    "partial": "Einige Abschnitte konnten nicht geprüft werden ({{n}}); das Ergebnis gilt nur für die übrigen.",
+    "coverage": "{{n}} von {{total}} Wörtern geprüft.",
+    "nothingChecked": "Nichts konnte geprüft werden: kein Abschnitt war deutlich genug zu hören. Rezitiere etwas lauter und mache am Ende jedes Verses eine kurze Pause."
   }
 }

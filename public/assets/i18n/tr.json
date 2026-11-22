@@ -386,7 +386,7 @@
     "mediaTitle": "Mikrofon ve kamera",
     "mediaText": "Yalnızca stüdyoda tilavetinizi kaydederken veya kontrol için uygulamaya okurken istenir. Gürültü giderme ve akıllı düzeltici telefonunuzda çalışır ve hiçbir şey yüklemez. Tesmî için \"Telefon\" motorunu seçerseniz sesiniz, kendi gizlilik politikasına göre telefonunuzun konuşma tanıma hizmetine (genellikle Google) gider. Kayıtlar siz paylaşana, kaydedene veya silene kadar uygulamada kalır.",
     "tajweedTitle": "Tecvid kontrolü",
-    "tajweedText": "Yalnızca ezber kontrolünden sonra “Tecvidimi kontrol et”e dokunursanız: okuyuşunuzun sesi ve ayet numaraları uygulamanın kendi tecvid sunucusuna (Hugging Face üzerinde) yapay zekâ modelince kontrol edilmek üzere gönderilir, sonra silinir; saklanmaz ve kimseyle paylaşılmaz."
+    "tajweedText": "Yalnızca ezber kontrolünde hareke veya tecvid kontrolünü seçerseniz: okurken her bölümün sesi ve ayet numaraları, bir yapay zekâ modeli kontrol etsin diye uygulamanın kendi tecvid sunucusuna (Hugging Face üzerinde) gönderilir, sonra silinir; saklanmaz, kimseyle paylaşılmaz."
   },
   "prayer": {
     "fajr": "Sabah",
@@ -1536,7 +1536,7 @@
     "checkWords": "Kelimeler",
     "checkTashkeel": "Kelimeler + harekeler",
     "checkTajweed": "Harekeler + tecvid",
-    "checkHint": "Harekeler (ve tecvid) ezber kontrolü bitince yapay zekâ ile kontrol edilir; internet gerekir. Hataları puana sayılır.",
+    "checkHint": "Harekeler (ve tecvid) okurken yapay zekâ ile kontrol edilir; her bölüm, siz durduktan sonra. İnternet gerekir. Hataları puana sayılır.",
     "checkNeedsSmart": "Hareke ve tecvid kontrolü yalnızca okumanızın sesini saklayan akıllı düzeltici ile çalışır.",
     "tashkeelTitle": "Harekeler",
     "modeMemory": "Ezberden",
@@ -1544,7 +1544,10 @@
     "tjHaraka": "Hareke",
     "tjLetter": "Harf",
     "tjRule": "Tecvid",
-    "tjMadd": "Med"
+    "tjMadd": "Med",
+    "checkNeedsModel": "Hareke ve tecvid kontrolü için akıllı düzeltici gerekir: önce yukarıdan indirin. O zamana kadar yalnızca kelimeler kontrol edilir.",
+    "checkedSoFar": "Şu ana kadar harekesi kontrol edilen: {{n}} kelime",
+    "wordsPerfect": "Kelimelerin hepsi doğru; hareke ve tecvid notları aşağıda."
   },
   "ruqyah": {
     "title": "Rukye",
@@ -1841,6 +1844,8 @@
     "haraka": "Hareke hatası",
     "letter": "Harf yanlış okundu",
     "expectedHeard": "Doğrusu “{{expected}}”, siz “{{heard}}” dediniz",
-    "partial": "Bazı bölümler kontrol edilemedi ({{n}}); sonuç yalnızca diğerlerini kapsar."
+    "partial": "Bazı bölümler kontrol edilemedi ({{n}}); sonuç yalnızca diğerlerini kapsar.",
+    "coverage": "{{total}} kelimeden {{n}} tanesi kontrol edildi.",
+    "nothingChecked": "Hiçbir şey kontrol edilemedi: hiçbir bölüm yeterince net duyulmadı. Biraz daha yüksek sesle okuyun ve her ayetin sonunda kısa bir durak yapın."
   }
 }

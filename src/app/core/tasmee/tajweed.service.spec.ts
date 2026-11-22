@@ -1,4 +1,4 @@
-import { TajweedError, parseEvents, pauseArtifact, splitAtPauses, wavBase64 } from './tajweed.service';
+import { TajweedError, parseEvents, pauseArtifact, silentBetween, splitAtPauses, wavBase64 } from './tajweed.service';
 
 describe('tajweed: sending a phrase', () => {
   it('writes 16 kHz mono 16-bit WAV', () => {
@@ -73,5 +73,45 @@ describe('tajweed: a phrase is cut where the reciter paused', () => {
   it('keeps a phrase read in one breath whole', () => {
     expect(splitAtPauses([{ start: 0, end: 10 }, { start: 13, end: 20 }], 50, 32000)).toEqual([{ from: 0, to: 32000, first: 0, last: 1 }]);
     expect(splitAtPauses([], 50, 32000)).toEqual([]);
+  });
+
+  it('cuts a long ayah read in one breath at its widest gaps until every part fits the server (20 s)', () => {
+    // 41 s, one frame a sample: ten 3.9 s words 0.1 s apart (no pause), the widest gap (0.25 s) after the fourth.
+    const sec = 16000;
+    const words = Array.from({ length: 10 }, (_, i) => {
+      const start = i * 4 * sec + (i >= 4 ? 0.15 * sec : 0);
+      return { start, end: start + 3.9 * sec };
+    });
+    const parts = splitAtPauses(words, 41 * sec, 41 * sec, 0.3, 18 * sec);
+    expect(parts.length).toBeGreaterThan(1);
+    for (const p of parts) expect(p.to - p.from).toBeLessThanOrEqual(18 * sec);
+    // Every word in exactly one part, in order, and the parts cover the audio end to end.
+    expect(parts.map((p) => [p.first, p.last]).flat()).toEqual(parts.flatMap((p, i) => [i ? parts[i - 1].last + 1 : 0, p.last]));
+    expect(parts[parts.length - 1].last).toBe(9);
+    parts.forEach((p, i) => i && expect(p.from).toBe(parts[i - 1].to));
+    // The first cut is at the widest gap (between the fourth and fifth word).
+    expect(parts[0].last).toBe(3);
+  });
+});
+
+describe('tajweed: a pause is a real silence', () => {
+  // 3 s: voice, then 0.4 s of near silence at 1.0-1.4 s, then a quiet madd (a fifth of the voice) at 2.0-2.4 s.
+  const audio = Float32Array.from({ length: 48000 }, (_, i) => {
+    const t = i / 16000;
+    const amp = t >= 1 && t < 1.4 ? 0.001 : t >= 2 && t < 2.4 ? 0.06 : 0.3;
+    return amp * Math.sin(i / 5);
+  });
+
+  it('finds the silence, and not a soft sound the recogniser left between two words', () => {
+    expect(silentBetween(audio, 0.9 * 16000, 1.5 * 16000)).toBe(true);
+    expect(silentBetween(audio, 1.9 * 16000, 2.5 * 16000)).toBe(false);
+    expect(silentBetween(audio, 0.2 * 16000, 0.8 * 16000)).toBe(false);
+  });
+
+  it('cuts a phrase only where the gap between two words is silent', () => {
+    const sec = 16000;
+    const words = [{ start: 0, end: 0.9 * sec }, { start: 1.5 * sec, end: 1.9 * sec }, { start: 2.5 * sec, end: 3 * sec }];
+    const parts = splitAtPauses(words, 3 * sec, 3 * sec, 0.3, Infinity, (a, b) => silentBetween(audio, a, b));
+    expect(parts.map((p) => [p.first, p.last])).toEqual([[0, 0], [1, 2]]);
   });
 });

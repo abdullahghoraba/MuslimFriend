@@ -386,7 +386,7 @@
     "mediaTitle": "Microphone and camera",
     "mediaText": "Asked only when you record your recitation in the studio or recite to the app to be checked. Noise removal and the smart corrector run on your phone and upload nothing. If you choose the Phone engine for tasmee', your voice goes to your phone's speech service (usually Google) under its own privacy policy. Recordings stay in the app until you share, save or delete them.",
     "tajweedTitle": "Tajweed check",
-    "tajweedText": "Only if you tap “Check my tajweed” after a tasmee': your recitation's audio and its ayah numbers are sent to the app's own tajweed server (on Hugging Face) to be checked by an AI model, then deleted; it is not stored or shared with anyone."
+    "tajweedText": "Only if you choose to check harakat or tajweed in tasmee': as you recite, each phrase's audio and its ayah numbers are sent to the app's own tajweed server (on Hugging Face) to be checked by an AI model, then deleted; it is not stored or shared with anyone."
   },
   "prayer": {
     "fajr": "Fajr",
@@ -1536,7 +1536,7 @@
     "checkWords": "Words",
     "checkTashkeel": "Words + harakat",
     "checkTajweed": "Harakat + tajweed",
-    "checkHint": "Harakat (and tajweed) are checked by AI when the tasmee' ends; this needs internet. Their mistakes count in the score.",
+    "checkHint": "Harakat (and tajweed) are checked by AI as you recite, each phrase once you pause after it; this needs internet. Their mistakes count in the score.",
     "checkNeedsSmart": "The harakat and tajweed check works with the smart corrector only, which keeps your recitation's audio.",
     "tashkeelTitle": "Harakat",
     "modeMemory": "From memory",
@@ -1544,7 +1544,10 @@
     "tjHaraka": "Haraka",
     "tjLetter": "Letter",
     "tjRule": "Tajweed",
-    "tjMadd": "Madd"
+    "tjMadd": "Madd",
+    "checkNeedsModel": "The harakat and tajweed check needs the smart corrector: download it above first. Until then only the words are checked.",
+    "checkedSoFar": "Harakat checked so far: {{n}} words",
+    "wordsPerfect": "The words are all right; see the harakat and tajweed notes below."
   },
   "ruqyah": {
     "title": "Ruqyah",
@@ -1841,6 +1844,8 @@
     "haraka": "Vowel (haraka) mistake",
     "letter": "Letter pronounced wrongly",
     "expectedHeard": "Should be “{{expected}}”, you said “{{heard}}”",
-    "partial": "Some phrases could not be checked ({{n}}); the result covers the rest only."
+    "partial": "Some phrases could not be checked ({{n}}); the result covers the rest only.",
+    "coverage": "Checked {{n}} of {{total}} words.",
+    "nothingChecked": "Nothing could be checked: no phrase was heard clearly enough. Recite a little louder and pause briefly at the end of each ayah."
   }
 }

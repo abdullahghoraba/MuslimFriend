@@ -386,7 +386,7 @@
     "mediaTitle": "Mikrofon dan kamera",
     "mediaText": "Hanya diminta saat Anda merekam tilawah di studio atau menyetorkan bacaan ke aplikasi untuk dikoreksi. Penghilang bising dan korektor pintar berjalan di ponsel Anda dan tidak mengunggah apa pun. Jika Anda memilih mesin \"Ponsel\" untuk tasmi', suara Anda dikirim ke layanan pengenalan suara ponsel (biasanya Google) sesuai kebijakan privasinya sendiri. Rekaman tetap di aplikasi sampai Anda membagikan, menyimpan, atau menghapusnya.",
     "tajweedTitle": "Pemeriksaan tajwid",
-    "tajweedText": "Hanya jika Anda mengetuk “Periksa tajwid saya” setelah setoran: suara bacaan dan nomor ayatnya dikirim ke server tajwid milik aplikasi (di Hugging Face) untuk diperiksa model AI, lalu dihapus; tidak disimpan dan tidak dibagikan kepada siapa pun."
+    "tajweedText": "Hanya jika Anda memilih memeriksa harakat atau tajwid saat setoran: selama membaca, audio tiap bagian dan nomor ayatnya dikirim ke server tajwid milik aplikasi (di Hugging Face) untuk diperiksa model AI, lalu dihapus; tidak disimpan dan tidak dibagikan kepada siapa pun."
   },
   "prayer": {
     "fajr": "Subuh",
@@ -1536,7 +1536,7 @@
     "checkWords": "Kata",
     "checkTashkeel": "Kata + harakat",
     "checkTajweed": "Harakat + tajwid",
-    "checkHint": "Harakat (dan tajwid) diperiksa AI saat setoran selesai; perlu internet. Kesalahannya dihitung dalam nilai.",
+    "checkHint": "Harakat (dan tajwid) diperiksa AI saat Anda membaca, tiap bagian begitu Anda berhenti sejenak; perlu internet. Kesalahannya dihitung dalam nilai.",
     "checkNeedsSmart": "Pemeriksaan harakat dan tajwid hanya bekerja dengan korektor pintar, yang menyimpan suara bacaan Anda.",
     "tashkeelTitle": "Harakat",
     "modeMemory": "Dari hafalan",
@@ -1544,7 +1544,10 @@
     "tjHaraka": "Harakat",
     "tjLetter": "Huruf",
     "tjRule": "Tajwid",
-    "tjMadd": "Mad"
+    "tjMadd": "Mad",
+    "checkNeedsModel": "Pemeriksaan harakat dan tajwid memerlukan korektor pintar: unduh dulu di atas. Sampai saat itu hanya kata-kata yang diperiksa.",
+    "checkedSoFar": "Harakat yang sudah diperiksa: {{n}} kata",
+    "wordsPerfect": "Semua kata sudah benar; lihat catatan harakat dan tajwid di bawah."
   },
   "ruqyah": {
     "title": "Ruqyah",
@@ -1841,6 +1844,8 @@
     "haraka": "Kesalahan harakat",
     "letter": "Huruf salah diucapkan",
     "expectedHeard": "Seharusnya “{{expected}}”, Anda membaca “{{heard}}”",
-    "partial": "Beberapa potongan tidak dapat diperiksa ({{n}}); hasil hanya untuk sisanya."
+    "partial": "Beberapa potongan tidak dapat diperiksa ({{n}}); hasil hanya untuk sisanya.",
+    "coverage": "{{n}} dari {{total}} kata diperiksa.",
+    "nothingChecked": "Tidak ada yang bisa diperiksa: tidak ada bagian yang terdengar cukup jelas. Bacalah sedikit lebih keras dan berhentilah sejenak di akhir setiap ayat."
   }
 }

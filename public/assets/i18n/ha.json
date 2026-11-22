@@ -386,7 +386,7 @@
     "mediaTitle": "Makirofo da kyamara",
     "mediaText": "Ana nema ne kawai idan ka yi rikodin karatunka a ɗakin rikodi ko ka karanta wa manhajar don ta gyara. Cire hayaniya da mai gyara mai basira suna aiki a wayarka; ba sa tura komai. Idan ka zaɓi injin \"Waya\" don tasmi'i, muryarka na zuwa sabis na gane magana na wayarka (yawanci Google) bisa ga manufar sirrinsa. Rikodi na zama a manhajar har sai ka raba, ka adana ko ka goge.",
     "tajweedTitle": "Duba tajwidi",
-    "tajweedText": "Sai kawai idan ka danna “Duba tajwidina” bayan karatun haddace: ana aika sautin karatunka da lambobin ayoyinsa zuwa sabar tajwidi ta manhajar kanta (a Hugging Face) don samfurin AI ya duba, sannan a goge; ba a ajiye ba kuma ba a raba da kowa."
+    "tajweedText": "Sai idan ka zaɓi duba wasali ko tajwidi a tasmi‘: yayin karatu, ana aika sautin kowane yanki da lambobin ayoyinsa zuwa sabar tajwidi ta manhajar kanta (a Hugging Face) don samfurin AI ya duba, sannan a goge; ba a adanawa ko raba shi da kowa."
   },
   "prayer": {
     "fajr": "Asuba",
@@ -1536,7 +1536,7 @@
     "checkWords": "Kalmomi",
     "checkTashkeel": "Kalmomi + wasali",
     "checkTajweed": "Wasali + tajwidi",
-    "checkHint": "Ana duba wasali (da tajwidi) da AI bayan an gama tasmi‘; yana bukatar intanet. Kurakuransu suna ƙirguwa a maki.",
+    "checkHint": "Ana duba wasali (da tajwidi) da AI yayin da kake karatu, kowane yanki bayan ka ɗan tsaya; yana bukatar intanet. Kurakuransu suna ƙirguwa a maki.",
     "checkNeedsSmart": "Duba wasali da tajwidi yana aiki ne kawai da mai gyara mai wayo, wanda ke ajiye sautin karatunka.",
     "tashkeelTitle": "Wasali (harakat)",
     "modeMemory": "Daga haddace",
@@ -1544,7 +1544,10 @@
     "tjHaraka": "Wasali",
     "tjLetter": "Harafi",
     "tjRule": "Tajwidi",
-    "tjMadd": "Madd"
+    "tjMadd": "Madd",
+    "checkNeedsModel": "Duba wasali da tajwidi yana bukatar mai gyara mai basira: ka sauke shi a sama tukuna. Kafin nan kalmomi kaɗai ake dubawa.",
+    "checkedSoFar": "Wasalin da aka duba zuwa yanzu: kalmomi {{n}}",
+    "wordsPerfect": "Duk kalmomi daidai ne; duba bayanan wasali da tajwidi a ƙasa."
   },
   "ruqyah": {
     "title": "Ruƙiyya ta shari'a",
@@ -1841,6 +1844,8 @@
     "haraka": "Kuskuren wasali",
     "letter": "An furta harafi ba daidai ba",
     "expectedHeard": "Daidai shi ne “{{expected}}”, kai ka karanta “{{heard}}”",
-    "partial": "Ba a iya duba wasu sassa ba ({{n}}); sakamakon na sauran ne kawai."
+    "partial": "Ba a iya duba wasu sassa ba ({{n}}); sakamakon na sauran ne kawai.",
+    "coverage": "An duba kalmomi {{n}} cikin {{total}}.",
+    "nothingChecked": "Ba a iya duba komai ba: ba a ji wani yanki sosai ba. Ka ɗaga murya kaɗan, ka ɗan tsaya a ƙarshen kowace aya."
   }
 }

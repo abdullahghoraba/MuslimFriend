@@ -23,7 +23,7 @@ ion-progress-bar.top { position: sticky; top: 0; z-index: 2; border-radius: 4px;
   h2 { font-size: 0.95rem; color: var(--app-muted); margin: 16px 4px 6px; font-weight: 600; }
 }
 
-.hint { color: var(--app-muted); font-size: 0.85rem; line-height: 1.5; margin: 8px 4px; &.center { text-align: center; } }
+.hint { color: var(--app-muted); font-size: 0.85rem; line-height: 1.5; margin: 8px 4px; &.center { text-align: center; } &.warn { color: var(--ion-color-danger); font-weight: 600; } }
 .link { border: 0; background: none; color: var(--ion-color-danger); font: inherit; text-decoration: underline; }
 .error { color: var(--ion-color-danger); text-align: center; }
 

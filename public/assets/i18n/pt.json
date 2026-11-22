@@ -386,7 +386,7 @@
     "mediaTitle": "Microfone e câmera",
     "mediaText": "Pedidos apenas quando você grava sua recitação no estúdio ou recita para o app corrigir. A remoção de ruído e o corretor inteligente funcionam no seu telefone e não enviam nada. Se você escolher o mecanismo \"Telefone\" para o tasmee', sua voz vai para o serviço de reconhecimento de fala do telefone (geralmente o Google), conforme a política de privacidade dele. As gravações ficam no app até você compartilhar, salvar ou excluir.",
     "tajweedTitle": "Verificação do tajwid",
-    "tajweedText": "Só se você tocar em “Verificar meu tajwid” depois de recitar: o áudio e os números dos versículos vão para o servidor de tajwid do próprio app (no Hugging Face) para um modelo de IA verificar, e depois são apagados; nada é guardado nem compartilhado."
+    "tajweedText": "Só se você escolher verificar harakat ou tajwid no tasmee: enquanto você recita, o áudio de cada trecho e os números dos seus versículos são enviados ao servidor de tajwid do próprio app (no Hugging Face) para um modelo de IA verificar, e depois apagados; nada é guardado nem compartilhado."
   },
   "prayer": {
     "fajr": "Fajr",
@@ -1536,7 +1536,7 @@
     "checkWords": "Palavras",
     "checkTashkeel": "Palavras + harakat",
     "checkTajweed": "Harakat + tajwid",
-    "checkHint": "As harakat (e o tajwid) são verificados por IA no fim do tasmee; precisa de internet. Os erros contam na nota.",
+    "checkHint": "As harakat (e o tajwid) são verificadas por IA enquanto você recita, cada trecho assim que você faz uma pausa; precisa de internet. Os erros contam na nota.",
     "checkNeedsSmart": "A verificação de harakat e tajwid só funciona com o corretor inteligente, que guarda o áudio da sua recitação.",
     "tashkeelTitle": "Harakat",
     "modeMemory": "De memória",
@@ -1544,7 +1544,10 @@
     "tjHaraka": "Haraka",
     "tjLetter": "Letra",
     "tjRule": "Tajwid",
-    "tjMadd": "Madd"
+    "tjMadd": "Madd",
+    "checkNeedsModel": "A verificação de harakat e tajwid precisa do corretor inteligente: baixe-o acima primeiro. Até lá, só as palavras são verificadas.",
+    "checkedSoFar": "Harakat verificadas até agora: {{n}} palavras",
+    "wordsPerfect": "As palavras estão todas certas; veja abaixo as notas de harakat e tajwid."
   },
   "ruqyah": {
     "title": "Ruqya",
@@ -1841,6 +1844,8 @@
     "haraka": "Erro de vogal",
     "letter": "Letra pronunciada errado",
     "expectedHeard": "O certo é “{{expected}}”, você disse “{{heard}}”",
-    "partial": "Alguns trechos não puderam ser verificados ({{n}}); o resultado cobre só o restante."
+    "partial": "Alguns trechos não puderam ser verificados ({{n}}); o resultado cobre só o restante.",
+    "coverage": "{{n}} de {{total}} palavras verificadas.",
+    "nothingChecked": "Nada pôde ser verificado: nenhum trecho foi ouvido com clareza suficiente. Recite um pouco mais alto e faça uma pausa curta no fim de cada versículo."
   }
 }

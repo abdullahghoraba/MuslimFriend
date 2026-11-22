@@ -78,9 +78,14 @@ export function parseEvents(text: string): { results?: ({ errors?: TajweedError[
  * at a stop and the tajweed server reads its last word as a waqf. [words] are the phrase's words in order with
  * their frames in the recogniser's output ([frames] for the whole phrase, [samples] of audio). Returns, per part,
  * the words' positions in [words] and the part's audio range in samples.
+ *
+ * A part longer than [maxLen] samples (the server takes up to 20 s; a long ayah read in one breath is longer) is
+ * cut again between the two words with the widest gap, until every part fits: before, such a part was not checked
+ * at all, and its mistakes were never shown.
  */
 export function splitAtPauses(
-  words: { start: number; end: number }[], frames: number, samples: number, minGap = 0.3,
+  words: { start: number; end: number }[], frames: number, samples: number, minGap = 0.3, maxLen = Infinity,
+  silent: (from: number, to: number) => boolean = () => true,
 ): { from: number; to: number; first: number; last: number }[] {
   if (!words.length || frames <= 0) return [];
   const spf = samples / frames;
@@ -89,7 +94,9 @@ export function splitAtPauses(
   let first = 0;
   for (let i = 1; i < words.length; i++) {
     const gap = ((words[i].start - words[i - 1].end) * spf) / 16000;
-    if (gap >= minGap) {
+    // A gap in the recogniser's timing is not always a pause (a word's last vowel or a madd can fall outside it):
+    // only a gap the reciter was really silent in is a stop.
+    if (gap >= minGap && silent(Math.round(words[i - 1].end * spf), Math.round(words[i].start * spf))) {
       const cut = Math.round(((words[i - 1].end + words[i].start) / 2) * spf);
       parts.push({ from, to: cut, first, last: i - 1 });
       from = cut;
@@ -97,7 +104,56 @@ export function splitAtPauses(
     }
   }
   parts.push({ from, to: samples, first, last: words.length - 1 });
-  return parts;
+  const fit = (p: { from: number; to: number; first: number; last: number }): typeof parts => {
+    if (p.to - p.from <= maxLen || p.last <= p.first) return [p];
+    // The widest gap between two of its words (a breath, or the end of an ayah), not too near either end.
+    let at = -1;
+    let widest = -Infinity;
+    for (let i = p.first + 1; i <= p.last; i++) {
+      const cut = ((words[i - 1].end + words[i].start) / 2) * spf;
+      if (cut - p.from < 0.15 * (p.to - p.from) || p.to - cut < 0.15 * (p.to - p.from)) continue;
+      const gap = words[i].start - words[i - 1].end;
+      if (gap > widest) {
+        widest = gap;
+        at = i;
+      }
+    }
+    if (at < 0) at = Math.ceil((p.first + p.last + 1) / 2);
+    const cut = Math.round(((words[at - 1].end + words[at].start) / 2) * spf);
+    return [...fit({ from: p.from, to: cut, first: p.first, last: at - 1 }), ...fit({ from: cut, to: p.to, first: at, last: p.last })];
+  };
+  return parts.flatMap(fit);
+}
+
+/**
+ * Whether the reciter was silent for at least [minSilence] seconds somewhere between samples [from] and [to] of
+ * [audio]: a run of 20 ms frames each much quieter than the voice (a tenth of the loud frames' level, the 90th
+ * percentile of the whole [audio]).
+ */
+/** Per audio (a phrase is looked at again on every new word heard): its silence level. */
+const quietLevels = new WeakMap<Float32Array, number>();
+
+export function silentBetween(audio: Float32Array, from: number, to: number, minSilence = 0.25): boolean {
+  const F = 320;
+  const level = (at: number) => {
+    let p = 0;
+    for (let i = at; i < at + F && i < audio.length; i++) p += audio[i] * audio[i];
+    return Math.sqrt(p / F);
+  };
+  let quiet = quietLevels.get(audio);
+  if (quiet === undefined) {
+    const all: number[] = [];
+    for (let at = 0; at + F <= audio.length; at += F) all.push(level(at));
+    if (!all.length) return false;
+    quiet = [...all].sort((a, b) => a - b)[Math.floor(all.length * 0.9)] * 0.1;
+    quietLevels.set(audio, quiet);
+  }
+  let run = 0;
+  for (let at = Math.max(0, from); at + F <= Math.min(to, audio.length); at += F) {
+    run = level(at) < quiet ? run + 1 : 0;
+    if (run * F >= minSilence * 16000) return true;
+  }
+  return false;
 }
 
 /** A word's letters only: no harakat or Quranic marks, one form of alif and ya. */

@@ -386,7 +386,7 @@
     "mediaTitle": "Micrófono y cámara",
     "mediaText": "Solo se piden al grabar tu recitación en el estudio o al recitar a la app para que la corrija. La eliminación de ruido y el corrector inteligente funcionan en tu teléfono y no suben nada. Si eliges el motor «Teléfono» para el tasmee', tu voz va al servicio de reconocimiento de voz del teléfono (normalmente Google), según su propia política de privacidad. Las grabaciones quedan en la app hasta que las compartas, guardes o elimines.",
     "tajweedTitle": "Revisión del tajwid",
-    "tajweedText": "Solo si pulsas «Revisar mi tajwid» tras recitar: el audio y los números de las aleyas se envían al servidor de tajwid de la app (en Hugging Face) para que un modelo de IA los revise, y luego se borran; no se guardan ni se comparten."
+    "tajweedText": "Solo si eliges revisar harakat o tajwid en el tasmee: mientras recitas, el audio de cada frase y los números de sus aleyas se envían al servidor de tajwid de la app (en Hugging Face) para que lo revise un modelo de IA, y luego se borra; no se guarda ni se comparte con nadie."
   },
   "prayer": {
     "fajr": "Fajr",
@@ -1536,7 +1536,7 @@
     "checkWords": "Palabras",
     "checkTashkeel": "Palabras + harakat",
     "checkTajweed": "Harakat + tajwid",
-    "checkHint": "Las harakat (y el tajwid) se revisan con IA al terminar el tasmee; necesita internet. Sus errores cuentan en la puntuación.",
+    "checkHint": "Las harakat (y el tajwid) se revisan con IA mientras recitas, cada frase en cuanto haces una pausa; necesita internet. Sus errores cuentan en la puntuación.",
     "checkNeedsSmart": "La revisión de harakat y tajwid solo funciona con el corrector inteligente, que guarda el audio de tu recitación.",
     "tashkeelTitle": "Harakat",
     "modeMemory": "De memoria",
@@ -1544,7 +1544,10 @@
     "tjHaraka": "Haraka",
     "tjLetter": "Letra",
     "tjRule": "Tajwid",
-    "tjMadd": "Madd"
+    "tjMadd": "Madd",
+    "checkNeedsModel": "La revisión de harakat y tajwid necesita el corrector inteligente: descárgalo arriba primero. Mientras tanto solo se revisan las palabras.",
+    "checkedSoFar": "Harakat revisadas hasta ahora: {{n}} palabras",
+    "wordsPerfect": "Las palabras están todas bien; mira abajo las notas de harakat y tajwid."
   },
   "ruqyah": {
     "title": "Ruqya",
@@ -1841,6 +1844,8 @@
     "haraka": "Error de vocal",
     "letter": "Letra mal pronunciada",
     "expectedHeard": "Debe ser «{{expected}}», dijiste «{{heard}}»",
-    "partial": "No se pudieron revisar algunos fragmentos ({{n}}); el resultado cubre solo el resto."
+    "partial": "No se pudieron revisar algunos fragmentos ({{n}}); el resultado cubre solo el resto.",
+    "coverage": "Se revisaron {{n}} de {{total}} palabras.",
+    "nothingChecked": "No se pudo revisar nada: ninguna frase se oyó con suficiente claridad. Recita un poco más alto y haz una pausa breve al final de cada aleya."
   }
 }

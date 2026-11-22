@@ -386,7 +386,7 @@
     "mediaTitle": "Mikrofon va kamera",
     "mediaText": "Faqat studiyada tilovatingizni yozganda yoki tekshirish uchun ilovaga o‘qib berganda so‘raladi. Shovqinni tozalash va aqlli tekshiruvchi telefoningizda ishlaydi va hech narsa yuklamaydi. Tasmi’ uchun “Telefon” dvigatelini tanlasangiz, ovozingiz telefonning nutqni aniqlash xizmatiga (odatda Google) uning o‘z maxfiylik siyosati asosida yuboriladi. Yozuvlar siz ulashmaguningizcha, saqlamaguningizcha yoki o‘chirmaguningizcha ilovada qoladi.",
     "tajweedTitle": "Tajvidni tekshirish",
-    "tajweedText": "Faqat yod tekshiruvidan so‘ng «Tajvidimni tekshir»ni bossangiz: tilovat ovozi va oyat raqamlari ilovaning o‘z tajvid serveriga (Hugging Face’da) sun’iy intellekt modeli tekshirishi uchun yuboriladi, so‘ng o‘chiriladi; saqlanmaydi va hech kimga berilmaydi."
+    "tajweedText": "Faqat tasmi‘da harakat yoki tajvid tekshiruvini tanlasangiz: o‘qish paytida har bir bo‘lakning ovozi va oyat raqamlari ilovaning o‘z tajvid serveriga (Hugging Face’da) sun’iy intellekt modeli tekshirishi uchun yuboriladi, so‘ng o‘chiriladi; saqlanmaydi va hech kimga berilmaydi."
   },
   "prayer": {
     "fajr": "Bomdod",
@@ -1536,7 +1536,7 @@
     "checkWords": "So‘zlar",
     "checkTashkeel": "So‘zlar + harakatlar",
     "checkTajweed": "Harakatlar + tajvid",
-    "checkHint": "Tasmi‘ tugagach harakatlar (va tajvid) sun’iy intellekt bilan tekshiriladi; internet kerak. Xatolari ballga hisoblanadi.",
+    "checkHint": "Harakatlar (va tajvid) o‘qiyotganingizda sun’iy intellekt bilan tekshiriladi, har bir bo‘lak to‘xtaganingizdan keyin; internet kerak. Xatolari ballga hisoblanadi.",
     "checkNeedsSmart": "Harakat va tajvid tekshiruvi faqat tilovatingiz ovozini saqlaydigan aqlli tuzatuvchi bilan ishlaydi.",
     "tashkeelTitle": "Harakatlar",
     "modeMemory": "Yoddan",
@@ -1544,7 +1544,10 @@
     "tjHaraka": "Harakat",
     "tjLetter": "Harf",
     "tjRule": "Tajvid",
-    "tjMadd": "Madd"
+    "tjMadd": "Madd",
+    "checkNeedsModel": "Harakat va tajvid tekshiruvi uchun aqlli tekshiruvchi kerak: avval yuqoridan yuklab oling. Ungacha faqat so‘zlar tekshiriladi.",
+    "checkedSoFar": "Hozircha harakati tekshirilgan: {{n}} so‘z",
+    "wordsPerfect": "So‘zlarning hammasi to‘g‘ri; harakat va tajvid izohlari quyida."
   },
   "ruqyah": {
     "title": "Shar'iy ruqya",
@@ -1841,6 +1844,8 @@
     "haraka": "Harakat xatosi",
     "letter": "Harf noto‘g‘ri talaffuz qilindi",
     "expectedHeard": "To‘g‘risi «{{expected}}», siz «{{heard}}» dedingiz",
-    "partial": "Ba’zi qismlarni tekshirib bo‘lmadi ({{n}}); natija faqat qolganlari uchun."
+    "partial": "Ba’zi qismlarni tekshirib bo‘lmadi ({{n}}); natija faqat qolganlari uchun.",
+    "coverage": "{{total}} so‘zdan {{n}} tasi tekshirildi.",
+    "nothingChecked": "Hech narsa tekshirilmadi: birorta bo‘lak yetarlicha aniq eshitilmadi. Biroz balandroq o‘qing va har oyat oxirida qisqa to‘xtang."
   }
 }

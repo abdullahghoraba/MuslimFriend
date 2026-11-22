@@ -51,7 +51,9 @@ test('tasmee\' can check the harakat, or the harakat and tajweed, and remembers 
   await expect(level.first()).toHaveClass(/segment-button-checked/); // the words only, by default
   await expect(tasmee.getByText(ar.tasmee.checkHint)).toHaveCount(0);
   await tasmee.locator('ion-segment.check-level ion-segment-button[value=tashkeel]').click();
-  await expect(tasmee.getByText(ar.tasmee.checkHint)).toBeVisible();
+  // It needs the Quran AI (not downloaded here): said plainly, with its download button, instead of checking words only.
+  await expect(tasmee.getByText(ar.tasmee.checkNeedsModel)).toBeVisible();
+  await expect(tasmee.getByRole('button', { name: ar.tasmee.download })).toBeVisible();
   await page.screenshot({ path: 'test-results/tasmee-check-level.png' });
   await page.reload();
   await expect(page.locator('app-hifz:not(.ion-page-hidden) app-tasmee ion-segment.check-level ion-segment-button[value=tashkeel]')).toHaveClass(/segment-button-checked/);
