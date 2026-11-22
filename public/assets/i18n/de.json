@@ -576,7 +576,7 @@
     "rangeFrom": "Von",
     "rangeTo": "Bis",
     "rangeCount": "{{n}} Verse",
-    "rangeHint": "Tippe auf einen anderen Vers, um das Ende des Abschnitts festzulegen, oder ändere Von und Bis. Teilen, Kopieren, Färben und Anhören gelten für alle ausgewählten Verse.",
+    "rangeHint": "Lange auf einen anderen Vers drücken, um die Auswahl bis dorthin zu erweitern; auf den ersten oder letzten tippen, um ihn herauszunehmen. Teilen, Kopieren, Markieren und Anhören gelten für alle gewählten Verse.",
     "readingMark": "Lesemarke",
     "readingMarkSet": "Lesemarke hier gespeichert. Du findest sie im Tab Koran.",
     "hifz": "Hifz",

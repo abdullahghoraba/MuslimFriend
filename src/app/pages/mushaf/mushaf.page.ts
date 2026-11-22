@@ -167,7 +167,7 @@ export class MushafPage {
     this.glance.set(null);
     // One ayah (a long press selects a range of one); a longer range has no single tafsir to show.
     const r = this.range();
-    if (!sel || this.lang() !== 'ar' || (this.rangeMode() && r && r.from !== r.to)) return;
+    if (!sel || this.lang() !== 'ar' || (r && r.from !== r.to)) return;
     void this.quran.tafsir('muyassar', sel).then((text) => {
       const now = this.selected();
       if (now && now.sura === sel.sura && now.aya === sel.aya) this.glance.set(text || null);
@@ -356,13 +356,14 @@ export class MushafPage {
    * a tap and hide on the next; a long press selects an ayah.
    */
   readonly chrome = signal(false);
-  readonly immersive = computed(() => !!this.printRows() && !this.chrome() && !this.selected() && !this.settingsOpen());
+  // A selection keeps the page full screen: the toolbar over the page hid the first ayah chosen (the bar below, or
+  // above, and the back button close it).
+  readonly immersive = computed(() => !!this.printRows() && !this.chrome() && !this.settingsOpen());
   /** The page the reader came from by the slider (to go back to it). */
   readonly slidFrom = signal<number | null>(null);
 
   /** A tap on the page, outside any ayah: closes a selection, or (printed page) shows / hides the toolbar. */
   contentTap(): void {
-    if (this.rangeMode()) return;
     if (this.selected()) this.selected.set(null);
     else if (this.printRows()) this.toggleChrome();
   }
@@ -684,7 +685,11 @@ export class MushafPage {
     return !!r && a.sura === r.sura && a.aya >= r.from && a.aya <= r.to;
   }
 
-  /** Tap: select one ayah (or, while marking a range, move the range's end to it). */
+  /**
+   * Tap: another ayah is selected instead; the selected ayah is unselected; in a range, a tap on its first or last
+   * ayah takes it out of the range, and on one inside it selects that ayah alone. (A long press on another ayah
+   * makes a range up to it.)
+   */
   select(a: AyahRef, event: Event): void {
     event.stopPropagation();
     if (this.longPressed) {
@@ -697,15 +702,43 @@ export class MushafPage {
       return;
     }
     this.haptics.tap();
-    const s = this.selected();
-    if (this.rangeMode() && s && s.sura === a.sura) {
-      this.rangeTo.set(a.aya);
+    const r = this.range();
+    if (r && this.isSelected(a)) {
+      if (r.from === r.to) this.selected.set(null);
+      else if (a.aya === r.from) this.selectRange(r.sura, r.from + 1, r.to);
+      else if (a.aya === r.to) this.selectRange(r.sura, r.from, r.to - 1);
+      else this.selectRange(a.sura, a.aya, a.aya);
       return;
     }
-    const same = this.isSelected(a) && !this.isRange();
-    this.rangeMode.set(false);
-    this.rangeTo.set(null);
-    this.selected.set(same ? null : { sura: a.sura, aya: a.aya });
+    this.selectRange(a.sura, a.aya, a.aya);
+  }
+
+  /**
+   * On the printed page (it never scrolls), the ayah's bar goes to the top of the screen when the selection is in the
+   * lower part of the page, so the bar never hides the ayah chosen nor the ayat after it.
+   */
+  readonly barOnTop = signal(false);
+  private readonly placeBar = effect(() => {
+    const r = this.range();
+    const print = !!this.printRows();
+    untracked(() => {
+      if (!r || !print) return this.barOnTop.set(false);
+      requestAnimationFrame(() => {
+        const els = [...this.host.nativeElement.querySelectorAll<HTMLElement>('.page-surface .print-page .qcf-word.selected')];
+        if (!els.length) return;
+        const rects = els.map((e) => e.getBoundingClientRect());
+        const middle = (Math.min(...rects.map((x) => x.top)) + Math.max(...rects.map((x) => x.bottom))) / 2;
+        this.barOnTop.set(middle > window.innerHeight * 0.5);
+      });
+    });
+  });
+
+  /** Selects ayat [from..to] of a sura (one ayah when from = to). */
+  private selectRange(sura: number, from: number, to: number): void {
+    this.chrome.set(false);
+    this.selected.set({ sura, aya: from });
+    this.rangeTo.set(to > from ? to : null);
+    this.rangeMode.set(to > from);
   }
 
   // ---- range selection: long-press an ayah, then tap another (or use the From/To lists) ----
@@ -747,14 +780,10 @@ export class MushafPage {
     this.pressTimer = setTimeout(() => {
       this.longPressed = true;
       this.haptics.tap();
-      const s = this.selected();
-      if (this.rangeMode() && s && s.sura === a.sura) {
-        this.rangeTo.set(a.aya);
-      } else {
-        this.selected.set({ sura: a.sura, aya: a.aya });
-        this.rangeTo.set(a.aya);
-        this.rangeMode.set(true);
-      }
+      // With an ayah (or a range) selected, a long press on another ayah of the sura makes a range up to it.
+      const r = this.range();
+      if (r && r.sura === a.sura && !this.isSelected(a)) this.selectRange(a.sura, Math.min(r.from, a.aya), Math.max(r.to, a.aya));
+      else this.selectRange(a.sura, a.aya, a.aya);
     }, 450);
   }
 

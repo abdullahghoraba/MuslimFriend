@@ -576,7 +576,7 @@
     "rangeFrom": "De",
     "rangeTo": "Até",
     "rangeCount": "{{n}} versículos",
-    "rangeHint": "Toque em outro versículo para definir o fim do trecho, ou mude De e Até. Compartilhar, copiar, colorir e ouvir valem para todos os versículos selecionados.",
+    "rangeHint": "Pressione longamente outro versículo para estender a seleção até ele; toque no primeiro ou no último para retirá-lo. Partilhar, copiar, colorir e ouvir abrangem todos os versículos escolhidos.",
     "readingMark": "Marca de leitura",
     "readingMarkSet": "Marca de leitura salva aqui. Você a encontrará na aba Alcorão.",
     "hifz": "Hifz",

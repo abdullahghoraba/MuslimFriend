@@ -576,7 +576,7 @@
     "rangeFrom": "De",
     "rangeTo": "À",
     "rangeCount": "{{n}} versets",
-    "rangeHint": "Touchez un autre verset pour fixer la fin du passage, ou changez De et À. Partager, copier, colorer et écouter s'appliquent à tous les versets sélectionnés.",
+    "rangeHint": "Appui long sur un autre verset pour étendre la sélection jusqu’à lui ; touchez le premier ou le dernier pour le retirer. Partage, copie, couleur et écoute portent sur tous les versets choisis.",
     "readingMark": "Marque de lecture",
     "readingMarkSet": "Marque de lecture enregistrée ici. Vous la trouverez dans l'onglet Coran.",
     "hifz": "Hifz",

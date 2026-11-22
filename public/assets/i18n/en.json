@@ -576,7 +576,7 @@
     "rangeFrom": "From",
     "rangeTo": "To",
     "rangeCount": "{{n}} ayat",
-    "rangeHint": "Tap another ayah to set the end of the passage, or change From and To. Share, copy, colour and listen apply to all selected ayat.",
+    "rangeHint": "Long-press another ayah to extend the selection to it; tap its first or last ayah to take that one out. Sharing, copying, colouring and listening cover all the selected ayat.",
     "readingMark": "Reading mark",
     "readingMarkSet": "Reading mark saved here. You'll find it on the Quran tab.",
     "hifz": "Hifz",

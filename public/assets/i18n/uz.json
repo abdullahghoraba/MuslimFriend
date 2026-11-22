@@ -576,7 +576,7 @@
     "rangeFrom": "Dan",
     "rangeTo": "Gacha",
     "rangeCount": "{{n}} oyat",
-    "rangeHint": "Qism oxirini belgilash uchun boshqa oyatni bosing yoki \"Dan\" va \"Gacha\"ni o'zgartiring. Ulashish, nusxalash, bo'yash va tinglash barcha tanlangan oyatlarga qo'llaniladi.",
+    "rangeHint": "Tanlovni kengaytirish uchun boshqa oyatni uzoq bosing; chiqarish uchun birinchi yoki oxirgi oyatga teging. Ulashish, nusxalash, boʻyash va tinglash barcha tanlangan oyatlarga tegishli.",
     "readingMark": "O'qish belgisi",
     "readingMarkSet": "O'qish belgisi shu yerga saqlandi. Uni Qur'on bo'limida topasiz.",
     "hifz": "Yodlash",

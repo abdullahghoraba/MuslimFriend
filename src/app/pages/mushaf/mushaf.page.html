@@ -225,9 +225,9 @@
 </ion-content>
 
 @if (selected() || recitation.current()) {
-  <ion-footer [class]="'theme-' + theme()">
+  <ion-footer [class]="'theme-' + theme()" [class.on-top]="barOnTop() && !!selected()">
     @if (selected(); as sel) {
-      @if (rangeMode() && range(); as r) {
+      @if (isRange() && range(); as r) {
         <div class="range-bar" role="group" [attr.aria-label]="'mushaf.range' | translate">
           <ion-select interface="popover" [label]="'mushaf.rangeFrom' | translate" [value]="r.from" (ionChange)="setRangeFrom($event.detail.value)">
             @for (n of suraAyat(); track n) { <ion-select-option [value]="n">{{ ayahNumber(n) }}</ion-select-option> }

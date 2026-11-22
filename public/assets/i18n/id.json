@@ -576,7 +576,7 @@
     "rangeFrom": "Dari",
     "rangeTo": "Sampai",
     "rangeCount": "{{n}} ayat",
-    "rangeHint": "Ketuk ayat lain untuk menetapkan akhir bacaan, atau ubah Dari dan Sampai. Bagikan, salin, warnai, dan dengarkan berlaku untuk semua ayat yang dipilih.",
+    "rangeHint": "Tekan lama ayat lain untuk memperluas pilihan sampai ke sana; ketuk ayat pertama atau terakhir untuk mengeluarkannya. Bagikan, salin, warnai, dan dengarkan berlaku untuk semua ayat terpilih.",
     "readingMark": "Tanda baca",
     "readingMarkSet": "Tanda baca disimpan di sini. Anda akan menemukannya di tab Al-Qur'an.",
     "hifz": "Hafalan",

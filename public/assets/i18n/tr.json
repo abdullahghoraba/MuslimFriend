@@ -576,7 +576,7 @@
     "rangeFrom": "Başlangıç",
     "rangeTo": "Bitiş",
     "rangeCount": "{{n}} ayet",
-    "rangeHint": "Pasajın sonunu belirlemek için başka bir ayete dokunun veya Başlangıç ve Bitiş'i değiştirin. Paylaş, kopyala, renklendir ve dinle seçili tüm ayetlere uygulanır.",
+    "rangeHint": "Seçimi genişletmek için başka bir âyete uzun basın; çıkarmak için ilk veya son âyete dokunun. Paylaşma, kopyalama, renklendirme ve dinleme seçili tüm âyetleri kapsar.",
     "readingMark": "Okuma işareti",
     "readingMarkSet": "Okuma işareti buraya kaydedildi. Kuran sekmesinde bulacaksınız.",
     "hifz": "Hıfz",

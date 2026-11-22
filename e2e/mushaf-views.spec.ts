@@ -286,3 +286,78 @@ test('a selected ayah shows its whole tafsir, scrolling when long; «تفسير�
   await page.locator('.ayah-actions button').first().click();
   await expect(page.locator('app-tafsir-sheet')).toBeVisible();
 });
+
+test('choosing ayat on the printed page: a tap moves the selection or unselects, a long press makes a range', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('CapacitorStorage.onboarded', 'true');
+    localStorage.setItem('CapacitorStorage.mushafView', JSON.stringify({ theme: 'paper', scale: 1, view: 'print' }));
+  });
+  await page.goto('/mushaf/50');
+  const word = (n: number) => page.locator(`.print-page .qcf-word[data-ayah="3:${n}"]`).first();
+  const selected = async () => [...new Set(await page.locator('.print-page .qcf-word.selected').evaluateAll((els) => els.map((e) => e.getAttribute('data-ayah'))))];
+  const longPress = async (n: number) => {
+    const box = (await word(n).boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.waitForTimeout(700);
+    await page.mouse.up();
+  };
+  await expect(word(2)).toBeVisible();
+  await longPress(2);
+  await expect.poll(selected).toEqual(['3:2']);
+  // The bar leaves most of the page in sight.
+  const bar = (await page.locator('ion-footer').boundingBox())!;
+  expect(bar.height).toBeLessThan(page.viewportSize()!.height * 0.45);
+  await page.screenshot({ path: 'test-results/mushaf-select-one.png' });
+  // A tap on another ayah selects it instead; a tap on the selected one unselects it.
+  await word(3).click();
+  await expect.poll(selected).toEqual(['3:3']);
+  await word(3).click();
+  await expect.poll(selected).toEqual([]);
+  await expect(page.locator('.ayah-actions')).toHaveCount(0);
+  // A long press, then a long press on another ayah: a range; a tap on its last or first ayah takes it out.
+  await longPress(2);
+  await longPress(4);
+  await expect.poll(selected).toEqual(['3:2', '3:3', '3:4']);
+  await expect(page.locator('.range-bar')).toBeVisible();
+  await page.screenshot({ path: 'test-results/mushaf-select-range.png' });
+  await word(4).click();
+  await expect.poll(selected).toEqual(['3:2', '3:3']);
+  await word(2).click();
+  await expect.poll(selected).toEqual(['3:3']);
+  await expect(page.locator('.range-bar')).toHaveCount(0);
+});
+
+test('the first ayah of a printed page chosen: no toolbar over it; an ayah low on the page: the bar goes to the top', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('CapacitorStorage.onboarded', 'true');
+    localStorage.setItem('CapacitorStorage.mushafView', JSON.stringify({ theme: 'paper', scale: 1, view: 'print' }));
+  });
+  await page.goto('/mushaf/3');
+  const longPress = async (key: string) => {
+    const box = (await page.locator(`.print-page .qcf-word[data-ayah="${key}"]`).first().boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.waitForTimeout(700);
+    await page.mouse.up();
+    return box;
+  };
+  await expect(page.locator('.print-page .qcf-word').first()).toBeVisible();
+  // The toolbar shown by a tap, then the page's first ayah chosen: the toolbar goes, the ayah is in sight.
+  await page.locator('.print-page .qcf-word[data-ayah="2:6"]').first().click();
+  await expect(page.getByRole('button', { name: ar.mushaf.viewSettings })).toBeVisible();
+  const first = page.locator('.print-page .qcf-word').first();
+  const key = (await first.getAttribute('data-ayah'))!;
+  await longPress(key);
+  await expect(page.locator('.ayah-actions')).toBeVisible();
+  await expect(page.locator('app-mushaf:not(.ion-page-hidden) ion-header')).toBeHidden();
+  await expect(page.locator('ion-footer.on-top')).toHaveCount(0);
+  // An ayah at the bottom of the page: the bar at the top, the ayah below it in sight.
+  await page.locator('.close-ayah').click();
+  const last = page.locator('.print-page .qcf-word').last();
+  const box = await longPress((await last.getAttribute('data-ayah'))!);
+  await expect(page.locator('ion-footer.on-top')).toBeVisible();
+  const bar = (await page.locator('ion-footer.on-top').boundingBox())!;
+  expect(bar.y + bar.height).toBeLessThan(box.y);
+  await page.screenshot({ path: 'test-results/mushaf-bar-on-top.png' });
+});

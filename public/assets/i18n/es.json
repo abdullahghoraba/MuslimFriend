@@ -576,7 +576,7 @@
     "rangeFrom": "Desde",
     "rangeTo": "Hasta",
     "rangeCount": "{{n}} aleyas",
-    "rangeHint": "Toca otra aleya para marcar el final del pasaje, o cambia Desde y Hasta. Compartir, copiar, colorear y escuchar se aplican a todas las aleyas seleccionadas.",
+    "rangeHint": "Mantén pulsada otra aleya para ampliar la selección hasta ella; toca la primera o la última para quitarla. Compartir, copiar, colorear y escuchar abarcan todas las aleyas elegidas.",
     "readingMark": "Marca de lectura",
     "readingMarkSet": "Marca de lectura guardada aquí. La encontrarás en la pestaña Corán.",
     "hifz": "Hifz",

@@ -441,10 +441,16 @@ ion-footer.page-slider {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 ion-footer:has(.close-ayah) { overflow: visible; }
+// The bar at the top of the printed page (the selection is in its lower part): under the status bar, its ✕ below it.
+:host:has(ion-content.print) ion-footer.on-top {
+  inset: 0 0 auto; padding-top: var(--ion-safe-area-top, 0px); padding-bottom: 4px;
+  border-radius: 0 0 18px 18px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  .close-ayah { top: auto; bottom: -44px; }
+}
 
-// The selected ayah's tafsir, whole, in at most a third of the screen; a longer one scrolls in its box.
+// The selected ayah's tafsir, whole, in about three lines (the ayat stay in sight); a longer one scrolls in its box.
 .tafsir-glance {
-  max-height: min(33vh, 12em); overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch;
+  max-height: 5.4em; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch;
   box-sizing: border-box; width: calc(100% - 24px); margin: 8px 12px 0; padding: 8px 12px; border: 0; border-radius: 12px; text-align: start;
   font-family: inherit; font-size: 0.95rem; line-height: 1.7; color: var(--m-fg);
   background: color-mix(in srgb, var(--ion-color-primary) 9%, transparent);
