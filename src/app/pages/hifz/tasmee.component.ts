@@ -9,7 +9,7 @@ import { HeardSource, WordResult, alignRecitation, alignWithCost, bestAlternativ
 import { forcedGap, modelLetters } from '../../core/tasmee/ctc-score';
 import { TasmeeCheck, TasmeeEngine, TasmeeService, dropOpenings } from '../../core/tasmee/tasmee.service';
 import { QuranSpeech } from '../../core/tasmee/quran-speech';
-import { TajweedError, TajweedPart, TajweedPrefs, TajweedReply, TajweedService, pauseArtifact, quietestIn, silenceIn, splitAtPauses } from '../../core/tasmee/tajweed.service';
+import { TajweedError, TajweedPart, TajweedPrefs, TajweedReply, TajweedService, leftOut, pauseArtifact, quietestIn, silenceIn, splitAtPauses } from '../../core/tasmee/tajweed.service';
 
 import { PhoneSpeech, PhraseReading, SpeechCallbacks } from '../../native/speech';
 import { QuranService } from '../../core/quran/quran.service';
@@ -173,8 +173,15 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     return rescue(alignRecitation(expected, texts, done), expected, sources, this.audioGap, done);
   }
 
-  /** What is shown: the finished phrases and the one being recited. */
-  readonly results = computed<WordResult[]>(() => this.resultsOf(true));
+  /** The words as the offline recogniser heard them (the finished phrases and the one being recited). */
+  private readonly aligned = computed<WordResult[]>(() => this.resultsOf(true));
+  /** Words the recogniser wrote but the tajweed server found not said at all (see leftOut). */
+  readonly omitted = signal<Set<number>>(new Set());
+  /** What is shown: the words heard, with those the tajweed check found left out. */
+  readonly results = computed<WordResult[]>(() => {
+    const omitted = this.omitted();
+    return this.aligned().map((r, i) => (omitted.has(i) && r.status !== 'skipped' ? { ...r, status: 'skipped' as const } : r));
+  });
   /** What mistakes are announced from: the finished phrases only. */
   private readonly confirmed = computed<WordResult[]>(() => this.resultsOf(false));
   /** Index of the next word to recite. */
@@ -417,6 +424,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     this.tajweedState.set('idle');
     this.tajweedIssues.set(new Map());
     this.tajweedChecked.set(new Set());
+    this.omitted.set(new Set());
     this.tajweedSent.clear();
     this.tajweedTotal.set(0);
     this.tajweedDone.set(0);
@@ -433,7 +441,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
    * read once and in order (a phrase where the reciter went back has no single reference to compare with).
    */
   private phrasesForTajweed(): { audio: Float32Array; parts: TajweedPart[]; open: boolean }[] {
-    const results = this.results();
+    const results = this.aligned();
     const words = this.words();
     const { sources } = this.heard(false);
     const byPhrase = new Map<number, number[]>();
@@ -583,21 +591,35 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     const results = this.results();
     const issues = new Map(this.tajweedIssues());
     const checked = new Set(this.tajweedChecked());
+    const omitted = new Set(this.omitted());
     let failed = 0;
     replies.forEach((reply, n) => {
       const covered = words
         .map((w, k) => ({ w, k }))
         .filter(({ w }) => phrases[n].parts.some(([s, a, f, l]) => w.ref.sura === s && w.ref.aya === a && w.n >= f && w.n <= l));
-      covered.forEach(({ k }) => issues.delete(k));
+      covered.forEach(({ k }) => {
+        issues.delete(k);
+        omitted.delete(k);
+      });
       if (!reply) {
         failed++;
         return;
       }
       covered.forEach(({ k }) => checked.add(k));
+      const at = (e: TajweedError) => words.findIndex((w) => w.ref.aya === e.aya && w.n === e.word && w.ref.sura === phrases[n].parts[0][0]);
+      // A word whose letters were all found missing was left out (the recogniser wrote it anyway).
+      const deleted = new Map<number, string[]>();
       for (const e of reply.errors) {
-        const k = words.findIndex((w) => w.ref.aya === e.aya && w.n === e.word && w.ref.sura === phrases[n].parts[0][0]);
+        const k = at(e);
+        if (k >= 0 && e.kind === 'delete' && e.type !== 'tashkeel') deleted.set(k, [...(deleted.get(k) ?? []), e.expected]);
+      }
+      for (const [k, letters] of deleted) if (leftOut(words[k].text, letters)) omitted.add(k);
+      for (const e of reply.errors) {
+        const k = at(e);
         // The server's mushaf and the app's split the ayah the same way; if a word differs, it is not shown.
         if (k < 0 || (e.wordText && similarity(wordKey(e.wordText), wordKey(words[k].text)) < 0.7)) continue;
+        // A word left out has no letters to correct.
+        if (omitted.has(k)) continue;
         // A letter said wrongly is shown only if the word check heard a wrong word too: when the word was recognised
         // as said right, a changed letter is most often the tajweed model mishearing (madd, ghunnah, harakat stay).
         if (e.type === 'normal' && results[k]?.status === 'correct') continue;
@@ -610,6 +632,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     });
     this.tajweedIssues.set(issues);
     this.tajweedChecked.set(checked);
+    this.omitted.set(omitted);
     this.tajweedFailed.update((n) => n + failed);
   }
 

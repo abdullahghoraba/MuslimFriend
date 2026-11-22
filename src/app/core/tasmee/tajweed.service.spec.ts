@@ -1,4 +1,4 @@
-import { TajweedError, parseEvents, pauseArtifact, quietestIn, silenceIn, silentBetween, splitAtPauses, wavBase64 } from './tajweed.service';
+import { TajweedError, leftOut, parseEvents, pauseArtifact, quietestIn, silenceIn, silentBetween, splitAtPauses, wavBase64 } from './tajweed.service';
 
 describe('tajweed: sending a phrase', () => {
   it('writes 16 kHz mono 16-bit WAV', () => {
@@ -127,5 +127,24 @@ describe('tajweed: a pause is a real silence', () => {
     expect(parts[0].to).toBe(at);
     expect(quietestIn(audio, 0.5 * sec, 1.5 * sec) / sec).toBeGreaterThan(1);
     expect(quietestIn(audio, 0.5 * sec, 1.5 * sec) / sec).toBeLessThan(1.4);
+  });
+});
+
+describe('tajweed: a word left out, which the offline recogniser wrote anyway', () => {
+  // What the server found missing in Husary's al-Fatihah 7 with words cut out of it.
+  it('every sounded letter of the word missing', () => {
+    expect(leftOut('غَيْرِ', ['غَ', 'ي', 'رِ'])).toBe(true);
+    expect(leftOut('وَلَا', ['وَ', 'لَ'])).toBe(true);
+    expect(leftOut('ٱلضَّآلِّينَ', ['ضضَ', 'اااااا', 'للِ', 'ۦۦۦۦ', 'ن'])).toBe(true);
+    expect(leftOut('ٱلَّذِينَ', ['للَ', 'ذِ', 'ۦۦ', 'نَ'])).toBe(true);
+  });
+
+  it('a letter or a vowel lost (a stop, a quick reading) is not a word left out', () => {
+    expect(leftOut('قُلْ', ['قُ'])).toBe(false);
+    expect(leftOut('وَمِن', ['وَ'])).toBe(false);
+    expect(leftOut('إِلَّا', ['ءِ'])).toBe(false);
+    expect(leftOut('أَنتُمْ', ['ءَ'])).toBe(false);
+    expect(leftOut('خَزَنَتُهَآ', ['تُ', 'اااا'])).toBe(false);
+    expect(leftOut('و', ['وَ'])).toBe(false);
   });
 });

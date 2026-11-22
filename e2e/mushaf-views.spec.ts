@@ -266,16 +266,13 @@ test('opened on an ayah («continue reading», a link): it lights up for a momen
 test('a selected ayah shows its whole tafsir, scrolling when long; «تفسير» opens the tafsir panel', async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem('CapacitorStorage.onboarded', 'true');
-    localStorage.setItem('CapacitorStorage.mushafView', JSON.stringify({ theme: 'paper', scale: 1, view: 'print' }));
+    localStorage.setItem('CapacitorStorage.mushafView', JSON.stringify({ theme: 'paper', scale: 1, view: 'flow' }));
   });
   await page.goto('/mushaf/50');
-  const word = page.locator('.print-page .qcf-word[data-ayah="3:2"]').first();
+  // The flowing view: a tap selects (the printed page has its floating bar, without the tafsir).
+  const word = page.locator('.ayah[data-ayah="3:2"]').first();
   await expect(word).toBeVisible();
-  const box = (await word.boundingBox())!;
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-  await page.mouse.down();
-  await page.waitForTimeout(700);
-  await page.mouse.up();
+  await word.click();
   const glance = page.locator('.tafsir-glance');
   // Al-Muyassar on Al Imran 2 (God, none is worshipped but Him, the Ever-Living...).
   await expect(glance).toContainText(ar.mushaf.glanceTitle);
@@ -305,9 +302,9 @@ test('choosing ayat on the printed page: a tap moves the selection or unselects,
   await expect(word(2)).toBeVisible();
   await longPress(2);
   await expect.poll(selected).toEqual(['3:2']);
-  // The bar leaves most of the page in sight.
-  const bar = (await page.locator('ion-footer').boundingBox())!;
-  expect(bar.height).toBeLessThan(page.viewportSize()!.height * 0.45);
+  // A small bar beside the ayah (as in Quran for Android): most of the page stays in sight.
+  const bar = (await page.locator('.ayah-pop').boundingBox())!;
+  expect(bar.height).toBeLessThan(page.viewportSize()!.height * 0.15);
   await page.screenshot({ path: 'test-results/mushaf-select-one.png' });
   // A tap on another ayah selects it instead; a tap on the selected one unselects it.
   await word(3).click();
@@ -319,45 +316,54 @@ test('choosing ayat on the printed page: a tap moves the selection or unselects,
   await longPress(2);
   await longPress(4);
   await expect.poll(selected).toEqual(['3:2', '3:3', '3:4']);
-  await expect(page.locator('.range-bar')).toBeVisible();
+  await expect(page.locator('.ayah-pop .pop-range')).toBeVisible();
   await page.screenshot({ path: 'test-results/mushaf-select-range.png' });
   await word(4).click();
   await expect.poll(selected).toEqual(['3:2', '3:3']);
   await word(2).click();
   await expect.poll(selected).toEqual(['3:3']);
-  await expect(page.locator('.range-bar')).toHaveCount(0);
+  await expect(page.locator('.ayah-pop .pop-range')).toHaveCount(0);
 });
 
-test('the first ayah of a printed page chosen: no toolbar over it; an ayah low on the page: the bar goes to the top', async ({ page }) => {
+test('the printed page: the ayah bar floats beside it, below the first ayah of the page and above the last, never over it', async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem('CapacitorStorage.onboarded', 'true');
     localStorage.setItem('CapacitorStorage.mushafView', JSON.stringify({ theme: 'paper', scale: 1, view: 'print' }));
   });
   await page.goto('/mushaf/3');
+  const words = page.locator('.print-page .qcf-word');
+  await expect(words.first()).toBeVisible();
   const longPress = async (key: string) => {
     const box = (await page.locator(`.print-page .qcf-word[data-ayah="${key}"]`).first().boundingBox())!;
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.down();
     await page.waitForTimeout(700);
     await page.mouse.up();
-    return box;
   };
-  await expect(page.locator('.print-page .qcf-word').first()).toBeVisible();
-  // The toolbar shown by a tap, then the page's first ayah chosen: the toolbar goes, the ayah is in sight.
-  await page.locator('.print-page .qcf-word[data-ayah="2:6"]').first().click();
+  const span = async () => {
+    const boxes = await page.locator('.print-page .qcf-word.selected').evaluateAll((els) => els.map((e) => e.getBoundingClientRect()).map((r) => [r.top, r.bottom]));
+    return { top: Math.min(...boxes.map((b) => b[0])), bottom: Math.max(...boxes.map((b) => b[1])) };
+  };
+  const pop = page.locator('.ayah-pop.placed');
+  // The toolbar shown by a tap, then the page's first ayah chosen: the toolbar goes, the bar is under the ayah.
+  await words.nth(20).click();
   await expect(page.getByRole('button', { name: ar.mushaf.viewSettings })).toBeVisible();
-  const first = page.locator('.print-page .qcf-word').first();
-  const key = (await first.getAttribute('data-ayah'))!;
-  await longPress(key);
-  await expect(page.locator('.ayah-actions')).toBeVisible();
+  await longPress((await words.first().getAttribute('data-ayah'))!);
+  await expect(pop).toBeVisible();
   await expect(page.locator('app-mushaf:not(.ion-page-hidden) ion-header')).toBeHidden();
-  await expect(page.locator('ion-footer.on-top')).toHaveCount(0);
-  // An ayah at the bottom of the page: the bar at the top, the ayah below it in sight.
-  await page.locator('.close-ayah').click();
-  const last = page.locator('.print-page .qcf-word').last();
-  const box = await longPress((await last.getAttribute('data-ayah'))!);
-  await expect(page.locator('ion-footer.on-top')).toBeVisible();
-  const bar = (await page.locator('ion-footer.on-top').boundingBox())!;
-  expect(bar.y + bar.height).toBeLessThan(box.y);
-  await page.screenshot({ path: 'test-results/mushaf-bar-on-top.png' });
+  let sel = await span();
+  let bar = (await pop.boundingBox())!;
+  expect(bar.y).toBeGreaterThanOrEqual(sel.bottom);
+  await page.screenshot({ path: 'test-results/mushaf-pop-below.png' });
+  // The page's last ayah: the bar above it.
+  await page.locator('.ayah-pop .close-ayah').click();
+  await longPress((await words.last().getAttribute('data-ayah'))!);
+  await expect(pop).toBeVisible();
+  sel = await span();
+  bar = (await pop.boundingBox())!;
+  expect(bar.y + bar.height).toBeLessThanOrEqual(sel.top);
+  await page.screenshot({ path: 'test-results/mushaf-pop-above.png' });
+  // The colours open in the bar.
+  await pop.getByRole('button', { name: ar.mushaf.highlight }).click();
+  await expect(pop.locator('.swatch').first()).toBeVisible();
 });

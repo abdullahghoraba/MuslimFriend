@@ -189,6 +189,38 @@ export function quietestIn(audio: Float32Array, from: number, to: number): numbe
   return best + W / 2;
 }
 
+/**
+ * The letters of a word that are said as consonants: no harakat or marks, no alif (a madd, or the hamzat al-wasl of
+ * «ٱل» that is not said in the middle of a phrase), a doubled letter (shaddah, or a lam assimilated into the next
+ * letter) once.
+ */
+function sounded(s: string): string[] {
+  return [...s.replace(/[ً-ٰٟۖ-ۭـۦۥڇ]/g, '').replace(/[أإٔ]/g, 'ء').replace(/ى/g, 'ي').replace(/ں/g, 'ن').replace(/[ٱاآ\s]/g, '').replace(/(.)\1+/g, '$1')];
+}
+
+/**
+ * Whether a word was left out, from the letters the tajweed server found missing in it ([deleted]: the expected text
+ * of its "delete" findings). The offline recogniser knows the Quran too well: where a word is left out in the middle of
+ * an ayah (or its end), it often writes it anyway, squeezed between the words around it; the tajweed server hears
+ * letters, and finds every letter of that word missing. Three quarters of the word's sounded letters, and at least
+ * two, so a letter or a vowel lost at a stop is not taken for a word left out.
+ */
+export function leftOut(word: string, deleted: string[]): boolean {
+  // A madd letter (a ya or waw with no mark of its own) is a length, which the server reports as a madd, not a letter.
+  const want = sounded(word.replace(/^[ٱا]ل(?=.)/, '').replace(/[يوى](?![ً-ْٰۡ])/g, ''));
+  if (want.length < 2) return false;
+  const gone = sounded(deleted.join(' '));
+  let found = 0;
+  for (const c of want) {
+    const i = gone.indexOf(c);
+    if (i >= 0) {
+      found++;
+      gone.splice(i, 1);
+    }
+  }
+  return found / want.length >= 0.75;
+}
+
 /** A word's letters only: no harakat or Quranic marks, one form of alif and ya. */
 function letters(s: string): string {
   return s

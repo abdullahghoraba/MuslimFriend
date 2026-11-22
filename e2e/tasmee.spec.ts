@@ -15,7 +15,44 @@ const WAV_SKIP = join(tmpdir(), 'al-uns-billah-fatiha-husary-no4.wav');
 const WAV_NOISY = join(tmpdir(), 'al-uns-billah-fatiha-husary-noisy.wav');
 /** Al-Fatihah read in Warsh (Ibrahim al-Dosary): it differs from Hafs in harakat and madd, which the check must find. */
 const WAV_WARSH = join(tmpdir(), 'al-uns-billah-fatiha-warsh.wav');
+/** The same recitation with two words cut out of the middle of their ayat: «رَبِّ» (ayah 2) and «غَيْرِ» (ayah 7). */
+const WAV_WORDS = join(tmpdir(), 'al-uns-billah-fatiha-husary-no-words.wav');
 const BASE = 'http://localhost:4321';
+
+/**
+ * Cuts stretches of [src] out (seconds; each cut at the quietest 100 ms near the given edge, between two words).
+ * The words' times are the offline model's reading of Husary's al-Fatihah (rabbi at 9.9-10.3 s, ghayri at 45.4-45.9 s).
+ */
+function cutWords(src: string, dst: string, cuts: [number, number][]): void {
+  const b = readFileSync(src);
+  const rate = 48000;
+  const n = (b.length - 44) / 2;
+  const at = (i: number) => b.readInt16LE(44 + 2 * i);
+  const quietest = (from: number, to: number) => {
+    const W = rate / 10;
+    let best = Math.round(from * rate);
+    let least = Infinity;
+    for (let i = Math.round(from * rate); i + W <= Math.round(to * rate); i += rate / 100) {
+      let p = 0;
+      for (let j = i; j < i + W; j += 4) p += at(j) * at(j);
+      if (p < least) [least, best] = [p, i + W / 2];
+    }
+    return best;
+  };
+  const drop = cuts.map(([a, z]) => [quietest(a - 0.3, a + 0.05), quietest(z - 0.05, z + 0.25)] as const);
+  const keep: Buffer[] = [];
+  let from = 0;
+  for (const [a, z] of drop) {
+    keep.push(b.subarray(44 + 2 * from, 44 + 2 * a));
+    from = z;
+  }
+  keep.push(b.subarray(44 + 2 * from, 44 + 2 * n));
+  const data = Buffer.concat(keep);
+  const head = Buffer.from(b.subarray(0, 44));
+  head.writeUInt32LE(36 + data.length, 4);
+  head.writeUInt32LE(data.length, 40);
+  writeFileSync(dst, Buffer.concat([head, data]));
+}
 
 function makeNoisy(src: string, dst: string): void {
   if (existsSync(dst)) return;
@@ -114,6 +151,7 @@ test('prepares recitations of al-Fatihah as the microphone', async () => {
   await makeWav(WAV_SKIP, [1, 2, 3, 5, 6, 7]);
   makeNoisy(WAV, WAV_NOISY);
   await makeWav(WAV_WARSH, [1, 2, 3, 4, 5, 6, 7], 'warsh/warsh_ibrahim_aldosary_128kbps');
+  cutWords(WAV, WAV_WORDS, [[9.9, 10.27], [45.44, 45.92]]);
 });
 
 for (const [name, wav] of [['clean', WAV], ['noisy', WAV_NOISY]] as const) {
@@ -184,3 +222,30 @@ for (const [name, wav, expectMistakes] of [['Hafs (Husary), correct', WAV, false
     await browser.close();
   });
 }
+
+test('a word left out in the middle of an ayah is caught, and the harakat/tajweed of the rest are still checked', async () => {
+  const { browser, page } = await openTasmee(WAV_WORDS);
+  await page.locator('ion-segment.check-level ion-segment-button[value=tajweed]').click();
+  await page.getByRole('button', { name: ar.tasmee.start }).click();
+  await expect(page.locator('.summary .score')).toBeVisible({ timeout: 120_000 });
+  const card = page.locator('.tajweed-card');
+  await expect(card.getByText(ar.tajweed.none).or(card.locator('.tj').first()).or(card.getByText(ar.tajweed.failed))).toBeVisible({ timeout: 240_000 });
+  await page.screenshot({ path: 'test-results/tasmee-words-left-out.png', fullPage: true });
+  // Exactly the two words cut out are marked as left out.
+  const skipped = (await page.locator('.recital .w.skipped').allInnerTexts()).map((t) => t.trim());
+  console.log('left out:', skipped.join(' | '));
+  // (Compared by their letters: the mushaf text and the test may order a shaddah and its vowel differently.)
+  const bare = (w: string) => w.replace(/[ً-ٰٟۖ-ۭ]/g, '');
+  expect(skipped.map(bare)).toEqual(['رب', 'غير']);
+  expect(await page.locator('.recital .w.wrong').count()).toBe(0);
+  expect(await card.getByText(ar.tajweed.failed).count(), 'the tajweed server did not answer').toBe(0);
+  // The check reached the rest of the recitation (it says how much it checked).
+  const coverage = await card.innerText();
+  console.log('tajweed card:', coverage.replace(/s+/g, ' ').slice(0, 400));
+  const m = coverage.match(/فُحص (d+) من (d+)/);
+  if (m) expect(Number(m[1])).toBeGreaterThanOrEqual(Number(m[2]) - 6);
+  // A tap on a word left out says so.
+  await page.locator('.recital .w.skipped').first().click();
+  await expect(page.locator('.word-sheet')).toContainText(ar.tasmee.wsSkipped);
+  await browser.close();
+});

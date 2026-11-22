@@ -441,12 +441,29 @@ ion-footer.page-slider {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 ion-footer:has(.close-ayah) { overflow: visible; }
-// The bar at the top of the printed page (the selection is in its lower part): under the status bar, its ✕ below it.
-:host:has(ion-content.print) ion-footer.on-top {
-  inset: 0 0 auto; padding-top: var(--ion-safe-area-top, 0px); padding-bottom: 4px;
-  border-radius: 0 0 18px 18px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
-  .close-ayah { top: auto; bottom: -44px; }
+// The printed page's floating actions beside the selected ayah (as Quran for Android's ayah toolbar).
+.ayah-pop {
+  position: fixed; inset-inline: 8px; z-index: 20; visibility: hidden;
+  border-radius: 16px; background: var(--m-bg); color: var(--m-fg);
+  border: 1px solid color-mix(in srgb, var(--m-muted) 35%, transparent);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22);
+  &.placed { visibility: visible; animation: pop-in 0.14s ease-out; }
+  .ayah-actions { padding: 4px; }
+  .ayah-actions button.on ion-icon { color: var(--m-fg); }
+  .close-ayah { position: static; width: auto; height: auto; border: 0; border-radius: 0; box-shadow: none; font-size: 0.72rem; background: transparent; }
+  .colors { padding: 10px 0 4px; }
+  .pop-range { text-align: center; font-size: 0.8rem; color: var(--m-muted); padding-top: 6px; }
+  // The arrow, pointing at the ayah: under the bar when it is above the ayah, over it when below.
+  &::after {
+    content: ''; position: absolute; left: clamp(14px, var(--arrow-x, 50%), calc(100% - 28px)); width: 14px; height: 14px;
+    background: var(--m-bg); transform: rotate(45deg); bottom: -8px;
+    border-right: 1px solid color-mix(in srgb, var(--m-muted) 35%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--m-muted) 35%, transparent);
+  }
+  &.below::after { bottom: auto; top: -8px; transform: rotate(225deg); }
+  &.no-arrow::after { display: none; }
 }
+@keyframes pop-in { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: none; } }
 
 // The selected ayah's tafsir, whole, in about three lines (the ayat stay in sight); a longer one scrolls in its box.
 .tafsir-glance {

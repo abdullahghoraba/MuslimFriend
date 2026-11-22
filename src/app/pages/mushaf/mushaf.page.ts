@@ -714,24 +714,53 @@ export class MushafPage {
   }
 
   /**
-   * On the printed page (it never scrolls), the ayah's bar goes to the top of the screen when the selection is in the
-   * lower part of the page, so the bar never hides the ayah chosen nor the ayat after it.
+   * On the printed page, as in Quran for Android: the selected ayah's actions are a small bar floating beside it,
+   * above the ayah when there is room and below it otherwise, its arrow pointing at the ayah; the rest of the page
+   * stays in sight (a bar across the bottom of the screen hid the ayat after the one chosen). A selection that fills
+   * the page gets the bar at the top, over the page's heading.
    */
-  readonly barOnTop = signal(false);
-  private readonly placeBar = effect(() => {
+  readonly pop = signal<{ top: number; below: boolean; arrow: number | null } | null>(null);
+  readonly popColors = signal(false);
+  private readonly placePop = effect(() => {
     const r = this.range();
     const print = !!this.printRows();
+    this.recitation.current();
+    this.popColors();
     untracked(() => {
-      if (!r || !print) return this.barOnTop.set(false);
-      requestAnimationFrame(() => {
-        const els = [...this.host.nativeElement.querySelectorAll<HTMLElement>('.page-surface .print-page .qcf-word.selected')];
-        if (!els.length) return;
-        const rects = els.map((e) => e.getBoundingClientRect());
-        const middle = (Math.min(...rects.map((x) => x.top)) + Math.max(...rects.map((x) => x.bottom))) / 2;
-        this.barOnTop.set(middle > window.innerHeight * 0.5);
-      });
+      if (!r || !print) return this.pop.set(null);
+      requestAnimationFrame(() => requestAnimationFrame(() => this.measurePop()));
     });
   });
+  private readonly resetPopColors = effect(() => {
+    this.selected();
+    untracked(() => this.popColors.set(false));
+  });
+
+  private measurePop(): void {
+    const root = this.host.nativeElement;
+    const els = [...root.querySelectorAll<HTMLElement>('.page-surface .print-page .qcf-word.selected')];
+    if (!els.length) return this.pop.set(null);
+    const rects = els.map((e) => e.getBoundingClientRect());
+    const top = Math.min(...rects.map((x) => x.top));
+    const bottom = Math.max(...rects.map((x) => x.bottom));
+    const height = root.querySelector<HTMLElement>('.ayah-pop')?.offsetHeight || 72;
+    const safe = (name: string) => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
+    const minTop = safe('--ion-safe-area-top') + 6;
+    // Above the player when it is showing, else above the navigation bar.
+    const footer = root.querySelector<HTMLElement>('ion-footer');
+    const maxBottom = (footer ? footer.getBoundingClientRect().top : window.innerHeight - safe('--ion-safe-area-bottom')) - 6;
+    const gap = 12;
+    // The arrow points at the middle of the selection's first line (above) or last line (below).
+    const line = (y: number) => rects.filter((x) => Math.abs(x.top - y) < x.height / 2);
+    const middle = (xs: DOMRect[]) => (Math.min(...xs.map((x) => x.left)) + Math.max(...xs.map((x) => x.right))) / 2;
+    if (top - gap - height >= minTop) {
+      this.pop.set({ top: top - gap - height, below: false, arrow: middle(line(top)) });
+    } else if (bottom + gap + height <= maxBottom) {
+      this.pop.set({ top: bottom + gap, below: true, arrow: middle(line(Math.max(...rects.map((x) => x.top)))) });
+    } else {
+      this.pop.set({ top: minTop, below: false, arrow: null });
+    }
+  }
 
   /** Selects ayat [from..to] of a sura (one ayah when from = to). */
   private selectRange(sura: number, from: number, to: number): void {

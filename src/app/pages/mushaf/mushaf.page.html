@@ -224,9 +224,45 @@
   }
 </ion-content>
 
-@if (selected() || recitation.current()) {
-  <ion-footer [class]="'theme-' + theme()" [class.on-top]="barOnTop() && !!selected()">
-    @if (selected(); as sel) {
+@if (printRows() && selected(); as sel) {
+  <!-- The printed page: the ayah's actions float beside it (as in Quran for Android), the page stays in sight. -->
+  <div class="ayah-pop" [class]="'ayah-pop theme-' + theme()" [class.below]="!!pop()?.below" [class.placed]="!!pop()"
+       [style.top.px]="pop()?.top ?? 0" [style.--arrow-x]="pop()?.arrow != null ? pop()!.arrow! - 8 + 'px' : null"
+       [class.no-arrow]="pop()?.arrow == null">
+    @if (isRange() && range(); as r) {
+      <div class="pop-range">{{ 'mushaf.rangeCount' | translate: { n: ayahNumber(r.to - r.from + 1) } }}</div>
+    }
+    @if (popColors()) {
+      <div class="colors" role="group" [attr.aria-label]="'mushaf.highlight' | translate">
+        @for (c of colors; track c.id) {
+          <button type="button" class="swatch" [style.background]="c.hex" (click)="highlight(c.id)"
+                  [attr.aria-label]="('mushaf.highlight' | translate) + ': ' + ('mushaf.colors.' + c.id | translate)"></button>
+        }
+        <button type="button" class="swatch clear" (click)="highlight(null)" [attr.aria-label]="'mushaf.clearHighlight' | translate">✕</button>
+      </div>
+    }
+    <div class="ayah-actions" role="toolbar" [attr.aria-label]="'mushaf.ayahActions' | translate">
+      <button type="button" class="close-ayah" (click)="selected.set(null)" [attr.aria-label]="'common.close' | translate"><ion-icon name="close-outline" aria-hidden="true" /><span>{{ 'common.close' | translate }}</span></button>
+      <button type="button" (click)="openTafsir()"><ion-icon name="book-outline" aria-hidden="true" /><span>{{ 'mushaf.tafsir' | translate }}</span></button>
+      <button type="button" (click)="playFromSelected()"><ion-icon name="play" aria-hidden="true" /><span>{{ 'mushaf.listen' | translate }}</span></button>
+      <button type="button" (click)="popColors.set(!popColors())" [class.on]="popColors()"><ion-icon name="color-palette-outline" aria-hidden="true" /><span>{{ 'mushaf.highlight' | translate }}</span></button>
+      <button type="button" (click)="copy()"><ion-icon name="copy-outline" aria-hidden="true" /><span>{{ 'mushaf.copy' | translate }}</span></button>
+      <button type="button" (click)="shareAyah()"><ion-icon name="share-social-outline" aria-hidden="true" /><span>{{ 'common.share' | translate }}</span></button>
+      <button type="button" (click)="openWords()"><ion-icon name="language-outline" aria-hidden="true" /><span>{{ 'mushaf.wordByWord' | translate }}</span></button>
+      <button type="button" (click)="repeatSelected()"><ion-icon name="repeat-outline" aria-hidden="true" /><span>{{ 'mushaf.repeatAction' | translate }}</span></button>
+      <button type="button" (click)="bookmark()"><ion-icon name="bookmark-outline" aria-hidden="true" /><span>{{ 'mushaf.bookmark' | translate }}</span></button>
+      <button type="button" (click)="markReading()"><ion-icon name="bookmark" aria-hidden="true" /><span>{{ 'mushaf.readingMark' | translate }}</span></button>
+      <button type="button" (click)="toggleStar()"><ion-icon [name]="isStarred(sel) ? 'star' : 'star-outline'" aria-hidden="true" /><span>{{ 'mushaf.star' | translate }}</span></button>
+      <button type="button" (click)="editNote()"><ion-icon name="document-text-outline" aria-hidden="true" /><span>{{ 'mushaf.note' | translate }}</span></button>
+      <button type="button" (click)="hifzAction()"><ion-icon name="school-outline" aria-hidden="true" /><span>{{ 'mushaf.hifz' | translate }}</span></button>
+      <button type="button" (click)="openTasmee()"><ion-icon name="ear-outline" aria-hidden="true" /><span>{{ 'tasmee.short' | translate }}</span></button>
+    </div>
+  </div>
+}
+
+@if ((selected() && !printRows()) || recitation.current()) {
+  <ion-footer [class]="'theme-' + theme()">
+    @if (!printRows() && selected(); as sel) {
       @if (isRange() && range(); as r) {
         <div class="range-bar" role="group" [attr.aria-label]="'mushaf.range' | translate">
           <ion-select interface="popover" [label]="'mushaf.rangeFrom' | translate" [value]="r.from" (ionChange)="setRangeFrom($event.detail.value)">
