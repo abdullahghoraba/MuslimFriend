@@ -263,7 +263,7 @@ test('opened on an ayah («continue reading», a link): it lights up for a momen
   await expect(page.locator('.ayah-actions')).toHaveCount(0);
 });
 
-test('a selected ayah shows its tafsir at a glance; a tap on it opens the tafsir panel', async ({ page }) => {
+test('a selected ayah shows its whole tafsir, scrolling when long; «تفسير» opens the tafsir panel', async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem('CapacitorStorage.onboarded', 'true');
     localStorage.setItem('CapacitorStorage.mushafView', JSON.stringify({ theme: 'paper', scale: 1, view: 'print' }));
@@ -281,6 +281,8 @@ test('a selected ayah shows its tafsir at a glance; a tap on it opens the tafsir
   await expect(glance).toContainText(ar.mushaf.glanceTitle);
   await expect(glance).toContainText('هو الله');
   await page.screenshot({ path: 'test-results/mushaf-tafsir-glance.png' });
-  await glance.click();
+  // Not cut off: the whole text is there, and the box scrolls when it is longer than it.
+  await expect(glance).toHaveCSS('overflow-y', 'auto');
+  await page.locator('.ayah-actions button').first().click();
   await expect(page.locator('app-tafsir-sheet')).toBeVisible();
 });

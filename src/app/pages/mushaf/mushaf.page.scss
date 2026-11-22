@@ -442,11 +442,11 @@ ion-footer.page-slider {
 }
 ion-footer:has(.close-ayah) { overflow: visible; }
 
-// The selected ayah's tafsir at a glance (three lines; a tap opens the panel).
+// The selected ayah's tafsir, whole, in at most a third of the screen; a longer one scrolls in its box.
 .tafsir-glance {
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-  width: calc(100% - 24px); margin: 8px 12px 0; padding: 8px 12px; border: 0; border-radius: 12px; text-align: start;
-  font: inherit; font-size: 0.95rem; line-height: 1.7; color: var(--m-fg);
+  max-height: min(33vh, 12em); overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; -webkit-overflow-scrolling: touch;
+  box-sizing: border-box; width: calc(100% - 24px); margin: 8px 12px 0; padding: 8px 12px; border: 0; border-radius: 12px; text-align: start;
+  font-family: inherit; font-size: 0.95rem; line-height: 1.7; color: var(--m-fg);
   background: color-mix(in srgb, var(--ion-color-primary) 9%, transparent);
   b { color: var(--ion-color-primary); }
 }
