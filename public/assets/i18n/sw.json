@@ -598,7 +598,8 @@
     "viewPrint": "Ukurasa uliochapishwa",
     "printZoomHint": "Ukurasa uliochapishwa hujaza skrini kila wakati kama msahafu wa karatasi, na aya zake hazihami. Ukubwa wa maandishi ni kwa maandishi yanayofuatana.",
     "printOffline": "Ukurasa huu uliochapishwa unahitaji intaneti mara ya kwanza, hivyo maandishi mfululizo yanaonyeshwa.",
-    "backTo": "Rudi ukurasa {{page}}"
+    "backTo": "Rudi ukurasa {{page}}",
+    "glanceTitle": "Tafsir al-Muyassar:"
   },
   "quran": {
     "title": "Kurani",
@@ -1547,7 +1548,9 @@
     "tjMadd": "Madd",
     "checkNeedsModel": "Ukaguzi wa harakati na tajwidi unahitaji kisahihishaji mahiri: kipakue juu kwanza. Hadi hapo maneno tu ndiyo hukaguliwa.",
     "checkedSoFar": "Harakati zilizokaguliwa hadi sasa: maneno {{n}}",
-    "wordsPerfect": "Maneno yote ni sahihi; tazama maelezo ya harakati na tajwidi hapa chini."
+    "wordsPerfect": "Maneno yote ni sahihi; tazama maelezo ya harakati na tajwidi hapa chini.",
+    "hint": "Kidokezo",
+    "tapWord": "Gusa neno lolote lenye rangi kuona kosa lake."
   },
   "ruqyah": {
     "title": "Ruqya ya kisheria",

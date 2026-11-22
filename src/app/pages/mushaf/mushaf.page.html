@@ -242,6 +242,12 @@
       }
       <!-- Closes the ayah's bar (the back button does too), back to the page. -->
       <button type="button" class="close-ayah" (click)="selected.set(null)" [attr.aria-label]="'common.close' | translate">✕</button>
+      @if (glance(); as g) {
+        <!-- The ayah's tafsir at a glance; a tap opens the whole tafsir panel. -->
+        <button type="button" class="tafsir-glance" (click)="openTafsir()" lang="ar" dir="rtl">
+          <b>{{ 'mushaf.glanceTitle' | translate }}</b> {{ g }}
+        </button>
+      }
       <div class="ayah-actions" role="toolbar" [attr.aria-label]="'mushaf.ayahActions' | translate">
         <button type="button" (click)="openTafsir()"><ion-icon name="book-outline" aria-hidden="true" /><span>{{ 'mushaf.tafsir' | translate }}</span></button>
         <button type="button" (click)="openWords()"><ion-icon name="language-outline" aria-hidden="true" /><span>{{ 'mushaf.wordByWord' | translate }}</span></button>

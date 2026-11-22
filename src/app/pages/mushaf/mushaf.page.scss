@@ -441,3 +441,12 @@ ion-footer.page-slider {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 ion-footer:has(.close-ayah) { overflow: visible; }
+
+// The selected ayah's tafsir at a glance (three lines; a tap opens the panel).
+.tafsir-glance {
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  width: calc(100% - 24px); margin: 8px 12px 0; padding: 8px 12px; border: 0; border-radius: 12px; text-align: start;
+  font: inherit; font-size: 0.95rem; line-height: 1.7; color: var(--m-fg);
+  background: color-mix(in srgb, var(--ion-color-primary) 9%, transparent);
+  b { color: var(--ion-color-primary); }
+}

@@ -598,7 +598,8 @@
     "viewPrint": "Halaman cetak",
     "printZoomHint": "Halaman cetak selalu memenuhi layar seperti mushaf kertas, dan ayat-ayatnya tidak berpindah. Ukuran teks berlaku untuk teks bersambung.",
     "printOffline": "Halaman cetak ini butuh internet saat pertama dibuka, jadi teks mengalir ditampilkan.",
-    "backTo": "Kembali ke halaman {{page}}"
+    "backTo": "Kembali ke halaman {{page}}",
+    "glanceTitle": "Tafsir al-Muyassar:"
   },
   "quran": {
     "title": "Al-Qur'an",
@@ -1547,7 +1548,9 @@
     "tjMadd": "Mad",
     "checkNeedsModel": "Pemeriksaan harakat dan tajwid memerlukan korektor pintar: unduh dulu di atas. Sampai saat itu hanya kata-kata yang diperiksa.",
     "checkedSoFar": "Harakat yang sudah diperiksa: {{n}} kata",
-    "wordsPerfect": "Semua kata sudah benar; lihat catatan harakat dan tajwid di bawah."
+    "wordsPerfect": "Semua kata sudah benar; lihat catatan harakat dan tajwid di bawah.",
+    "hint": "Petunjuk",
+    "tapWord": "Ketuk kata berwarna untuk melihat kesalahannya."
   },
   "ruqyah": {
     "title": "Ruqyah",

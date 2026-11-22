@@ -598,7 +598,8 @@
     "viewPrint": "Página impressa",
     "printZoomHint": "A página impressa sempre preenche a tela, como um mushaf de papel, e seus versículos não se movem. O tamanho do texto vale para o texto contínuo.",
     "printOffline": "Esta página impressa precisa de internet na primeira vez; o texto contínuo é mostrado.",
-    "backTo": "Voltar à página {{page}}"
+    "backTo": "Voltar à página {{page}}",
+    "glanceTitle": "Tafsir al-Muyassar:"
   },
   "quran": {
     "title": "Alcorão",
@@ -1547,7 +1548,9 @@
     "tjMadd": "Madd",
     "checkNeedsModel": "A verificação de harakat e tajwid precisa do corretor inteligente: baixe-o acima primeiro. Até lá, só as palavras são verificadas.",
     "checkedSoFar": "Harakat verificadas até agora: {{n}} palavras",
-    "wordsPerfect": "As palavras estão todas certas; veja abaixo as notas de harakat e tajwid."
+    "wordsPerfect": "As palavras estão todas certas; veja abaixo as notas de harakat e tajwid.",
+    "hint": "Dica",
+    "tapWord": "Toque em qualquer palavra colorida para ver o erro."
   },
   "ruqyah": {
     "title": "Ruqya",

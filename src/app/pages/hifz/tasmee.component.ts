@@ -413,6 +413,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
   }
 
   reset(): void {
+    this.openWord.set(null);
     this.tajweedState.set('idle');
     this.tajweedIssues.set(new Map());
     this.tajweedChecked.set(new Set());
@@ -700,6 +701,10 @@ export class TasmeeComponent implements OnInit, OnDestroy {
    */
   shown(i: number): boolean {
     if (!this.tasmee.prefs().hideText) return true;
+    // Before starting, the ayat chosen are shown (to look at them once more); they hide when the reciting starts.
+    if (this.state() === 'idle') return true;
+    // A hint: the next word, for a moment.
+    if (i === this.peek()) return true;
     // Finished: what was recited is shown (to see the mistakes), not the ayat after where the reader stopped.
     if (this.state() === 'done') return i < this.reachedAt();
     const results = this.results();
@@ -714,6 +719,26 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     let run = 0;
     for (let k = start; k < results.length && (results[k].status === 'correct' || results[k].status === 'wrong'); k++) run++;
     return run >= 4;
+  }
+
+  /** A hint asked for while reciting from memory: the word to say next, shown for a moment. */
+  readonly peek = signal<number | null>(null);
+  private peekTimer?: ReturnType<typeof setTimeout>;
+
+  hint(): void {
+    clearTimeout(this.peekTimer);
+    this.peek.set(this.position());
+    this.peekTimer = setTimeout(() => this.peek.set(null), 2500);
+  }
+
+  /** The word whose mistake is shown in the sheet (tapped in the ayat). */
+  readonly openWord = signal<number | null>(null);
+
+  /** A tapped word: its mistake (the word said, or left out) and its harakat/tajweed findings, in a sheet over the ayat. */
+  tapWord(i: number): void {
+    const status = this.results()[i]?.status;
+    const issue = status === 'wrong' || status === 'skipped' || this.tajweedIssues().has(i);
+    if (issue && (this.shown(i) || this.state() === 'done')) this.openWord.set(i);
   }
 
   /** Where the reader had got to when the tasmee' ended. */

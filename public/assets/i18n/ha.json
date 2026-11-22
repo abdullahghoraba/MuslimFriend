@@ -598,7 +598,8 @@
     "viewPrint": "Shafin bugu",
     "printZoomHint": "Shafin da aka buga koyaushe yana cika allo kamar Alƙur’ani na takarda, ayoyinsa ba sa motsi. Girman rubutu na rubutu mai ci gaba ne.",
     "printOffline": "Wannan shafin bugu yana bukatar intanet a karon farko, don haka an nuna rubutu a jere.",
-    "backTo": "Koma shafi na {{page}}"
+    "backTo": "Koma shafi na {{page}}",
+    "glanceTitle": "Tafsirin al-Muyassar:"
   },
   "quran": {
     "title": "Alƙur'ani",
@@ -1547,7 +1548,9 @@
     "tjMadd": "Madd",
     "checkNeedsModel": "Duba wasali da tajwidi yana bukatar mai gyara mai basira: ka sauke shi a sama tukuna. Kafin nan kalmomi kaɗai ake dubawa.",
     "checkedSoFar": "Wasalin da aka duba zuwa yanzu: kalmomi {{n}}",
-    "wordsPerfect": "Duk kalmomi daidai ne; duba bayanan wasali da tajwidi a ƙasa."
+    "wordsPerfect": "Duk kalmomi daidai ne; duba bayanan wasali da tajwidi a ƙasa.",
+    "hint": "Alama",
+    "tapWord": "Taɓa kowace kalma mai launi don ganin kuskurenta."
   },
   "ruqyah": {
     "title": "Ruƙiyya ta shari'a",

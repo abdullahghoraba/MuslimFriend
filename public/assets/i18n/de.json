@@ -598,7 +598,8 @@
     "viewPrint": "Gedruckte Seite",
     "printZoomHint": "Die gedruckte Seite füllt immer den Bildschirm wie ein Papier-Mushaf, ihre Verse bleiben an ihrem Platz. Die Textgröße gilt für den Fließtext.",
     "printOffline": "Diese gedruckte Seite braucht beim ersten Öffnen Internet, daher wird der Fließtext angezeigt.",
-    "backTo": "Zurück zu Seite {{page}}"
+    "backTo": "Zurück zu Seite {{page}}",
+    "glanceTitle": "Tafsir al-Muyassar:"
   },
   "quran": {
     "title": "Koran",
@@ -1547,7 +1548,9 @@
     "tjMadd": "Madd",
     "checkNeedsModel": "Die Prüfung von Harakat und Tadschwid braucht den intelligenten Prüfer: lade ihn zuerst oben herunter. Bis dahin werden nur die Wörter geprüft.",
     "checkedSoFar": "Harakat bisher geprüft: {{n}} Wörter",
-    "wordsPerfect": "Die Wörter sind alle richtig; die Hinweise zu Harakat und Tadschwid stehen unten."
+    "wordsPerfect": "Die Wörter sind alle richtig; die Hinweise zu Harakat und Tadschwid stehen unten.",
+    "hint": "Tipp",
+    "tapWord": "Tippe auf ein farbiges Wort, um seinen Fehler zu sehen."
   },
   "ruqyah": {
     "title": "Ruqya",

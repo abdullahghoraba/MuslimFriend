@@ -598,7 +598,8 @@
     "viewPrint": "Printed page",
     "printZoomHint": "The printed page always fills the screen, as in a paper mushaf, and its ayat never move. The text size applies to the flowing view.",
     "printOffline": "This printed page needs the internet the first time it opens, so the flowing text is shown.",
-    "backTo": "Back to page {{page}}"
+    "backTo": "Back to page {{page}}",
+    "glanceTitle": "Tafsir al-Muyassar:"
   },
   "quran": {
     "title": "Quran",
@@ -1547,7 +1548,9 @@
     "tjMadd": "Madd",
     "checkNeedsModel": "The harakat and tajweed check needs the smart corrector: download it above first. Until then only the words are checked.",
     "checkedSoFar": "Harakat checked so far: {{n}} words",
-    "wordsPerfect": "The words are all right; see the harakat and tajweed notes below."
+    "wordsPerfect": "The words are all right; see the harakat and tajweed notes below.",
+    "hint": "Hint",
+    "tapWord": "Tap any coloured word to see its mistake."
   },
   "ruqyah": {
     "title": "Ruqyah",

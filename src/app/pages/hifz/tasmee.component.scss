@@ -174,3 +174,19 @@ ion-progress-bar.top { position: sticky; top: 0; z-index: 2; border-radius: 4px;
   background: var(--ion-color-warning-shade);
   pointer-events: none;
 }
+
+/* Before starting, in memorisation mode: the ayat shown softly, to look at once more (they hide on start). */
+.recital.preview .w { opacity: 0.75; }
+.recital .w.wrong, .recital .w.skipped, .recital .w.tajweed { cursor: pointer; }
+
+/* The sheet of a tapped word, over the ayat. */
+.sheet-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.25); z-index: 40; }
+.word-sheet {
+  position: fixed; inset: auto 12px calc(12px + var(--ion-safe-area-bottom, 0px)) 12px; z-index: 41;
+  max-height: 60vh; overflow-y: auto; margin: 0; animation: sheet-up 0.18s ease-out;
+  .ws-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .ws-head strong { font-family: var(--quran-font, 'Amiri Quran', serif); font-size: 1.7rem; }
+  .ws-word { font-weight: 600; }
+  .tj-line { margin: 6px 0; line-height: 1.6; }
+}
+@keyframes sheet-up { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }

@@ -598,7 +598,8 @@
     "viewPrint": "Page imprimée",
     "printZoomHint": "La page imprimée remplit toujours l’écran, comme un moushaf papier, et ses versets ne bougent pas. La taille du texte s’applique au texte continu.",
     "printOffline": "Cette page imprimée a besoin d’Internet la première fois ; le texte continu est affiché.",
-    "backTo": "Revenir à la page {{page}}"
+    "backTo": "Revenir à la page {{page}}",
+    "glanceTitle": "Tafsir al-Muyassar :"
   },
   "quran": {
     "title": "Coran",
@@ -1547,7 +1548,9 @@
     "tjMadd": "Madd",
     "checkNeedsModel": "La vérification des voyelles et du tajwid demande le correcteur intelligent : téléchargez-le d’abord ci-dessus. D’ici là, seuls les mots sont vérifiés.",
     "checkedSoFar": "Voyelles vérifiées jusqu’ici : {{n}} mots",
-    "wordsPerfect": "Les mots sont tous justes ; voyez les remarques de voyelles et de tajwid ci-dessous."
+    "wordsPerfect": "Les mots sont tous justes ; voyez les remarques de voyelles et de tajwid ci-dessous.",
+    "hint": "Indice",
+    "tapWord": "Touchez un mot coloré pour voir son erreur."
   },
   "ruqyah": {
     "title": "Roqya",

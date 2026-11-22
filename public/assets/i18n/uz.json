@@ -598,7 +598,8 @@
     "viewPrint": "Bosma sahifa",
     "printZoomHint": "Bosma sahifa qog‘oz mushafdek har doim ekranni to‘ldiradi, oyatlari joyidan siljimaydi. Matn o‘lchami uzluksiz matnga tegishli.",
     "printOffline": "Bu bosma sahifa birinchi marta ochilganda internet talab qiladi, shuning uchun uzluksiz matn koʻrsatildi.",
-    "backTo": "{{page}}-sahifaga qaytish"
+    "backTo": "{{page}}-sahifaga qaytish",
+    "glanceTitle": "Tafsir al-Muyassar:"
   },
   "quran": {
     "title": "Qur'on",
@@ -1547,7 +1548,9 @@
     "tjMadd": "Madd",
     "checkNeedsModel": "Harakat va tajvid tekshiruvi uchun aqlli tekshiruvchi kerak: avval yuqoridan yuklab oling. Ungacha faqat so‘zlar tekshiriladi.",
     "checkedSoFar": "Hozircha harakati tekshirilgan: {{n}} so‘z",
-    "wordsPerfect": "So‘zlarning hammasi to‘g‘ri; harakat va tajvid izohlari quyida."
+    "wordsPerfect": "So‘zlarning hammasi to‘g‘ri; harakat va tajvid izohlari quyida.",
+    "hint": "Ishora",
+    "tapWord": "Xatosini ko‘rish uchun rangli so‘zga bosing."
   },
   "ruqyah": {
     "title": "Shar'iy ruqya",

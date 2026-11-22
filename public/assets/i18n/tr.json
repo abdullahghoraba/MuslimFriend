@@ -598,7 +598,8 @@
     "viewPrint": "Basılı sayfa",
     "printZoomHint": "Basılı sayfa, kâğıt mushaftaki gibi her zaman ekranı doldurur ve ayetleri yer değiştirmez. Yazı boyutu akan metinde geçerlidir.",
     "printOffline": "Bu basılı sayfa ilk açılışta internet gerektirir; akan metin gösteriliyor.",
-    "backTo": "{{page}}. sayfaya dön"
+    "backTo": "{{page}}. sayfaya dön",
+    "glanceTitle": "Tefsîr el-Müyesser:"
   },
   "quran": {
     "title": "Kuran",
@@ -1547,7 +1548,9 @@
     "tjMadd": "Med",
     "checkNeedsModel": "Hareke ve tecvid kontrolü için akıllı düzeltici gerekir: önce yukarıdan indirin. O zamana kadar yalnızca kelimeler kontrol edilir.",
     "checkedSoFar": "Şu ana kadar harekesi kontrol edilen: {{n}} kelime",
-    "wordsPerfect": "Kelimelerin hepsi doğru; hareke ve tecvid notları aşağıda."
+    "wordsPerfect": "Kelimelerin hepsi doğru; hareke ve tecvid notları aşağıda.",
+    "hint": "İpucu",
+    "tapWord": "Hatasını görmek için renkli bir kelimeye dokunun."
   },
   "ruqyah": {
     "title": "Rukye",

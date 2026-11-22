@@ -262,3 +262,25 @@ test('opened on an ayah («continue reading», a link): it lights up for a momen
   await page.locator('.close-ayah').click();
   await expect(page.locator('.ayah-actions')).toHaveCount(0);
 });
+
+test('a selected ayah shows its tafsir at a glance; a tap on it opens the tafsir panel', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('CapacitorStorage.onboarded', 'true');
+    localStorage.setItem('CapacitorStorage.mushafView', JSON.stringify({ theme: 'paper', scale: 1, view: 'print' }));
+  });
+  await page.goto('/mushaf/50');
+  const word = page.locator('.print-page .qcf-word[data-ayah="3:2"]').first();
+  await expect(word).toBeVisible();
+  const box = (await word.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.waitForTimeout(700);
+  await page.mouse.up();
+  const glance = page.locator('.tafsir-glance');
+  // Al-Muyassar on Al Imran 2 (God, none is worshipped but Him, the Ever-Living...).
+  await expect(glance).toContainText(ar.mushaf.glanceTitle);
+  await expect(glance).toContainText('هو الله');
+  await page.screenshot({ path: 'test-results/mushaf-tafsir-glance.png' });
+  await glance.click();
+  await expect(page.locator('app-tafsir-sheet')).toBeVisible();
+});

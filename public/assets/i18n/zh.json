@@ -598,7 +598,8 @@
     "viewPrint": "印刷页面",
     "printZoomHint": "印刷页始终像纸质经本一样铺满屏幕，经文位置不变。字体大小适用于连续文本视图。",
     "printOffline": "此印刷页面首次打开需要联网，因此显示连续文本。",
-    "backTo": "返回第 {{page}} 页"
+    "backTo": "返回第 {{page}} 页",
+    "glanceTitle": "简明经注："
   },
   "quran": {
     "title": "古兰经",
@@ -1547,7 +1548,9 @@
     "tjMadd": "延长音",
     "checkNeedsModel": "元音符号与诵读规则检查需要智能纠错：请先在上方下载。在此之前只检查词语。",
     "checkedSoFar": "已检查元音符号：{{n}} 个词",
-    "wordsPerfect": "词语全部正确；元音符号与诵读规则的提示见下方。"
+    "wordsPerfect": "词语全部正确；元音符号与诵读规则的提示见下方。",
+    "hint": "提示",
+    "tapWord": "点按任何有颜色的词，查看它的错误。"
   },
   "ruqyah": {
     "title": "合法的鲁格耶（诵经祈护）",

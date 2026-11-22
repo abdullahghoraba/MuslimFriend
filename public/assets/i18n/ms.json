@@ -598,7 +598,8 @@
     "viewPrint": "Halaman bercetak",
     "printZoomHint": "Halaman bercetak sentiasa memenuhi skrin seperti mushaf kertas, dan ayatnya tidak beralih. Saiz teks digunakan untuk teks bersambung.",
     "printOffline": "Halaman bercetak ini memerlukan internet kali pertama dibuka, jadi teks berterusan dipaparkan.",
-    "backTo": "Kembali ke halaman {{page}}"
+    "backTo": "Kembali ke halaman {{page}}",
+    "glanceTitle": "Tafsir al-Muyassar:"
   },
   "quran": {
     "title": "Al-Quran",
@@ -1547,7 +1548,9 @@
     "tjMadd": "Mad",
     "checkNeedsModel": "Semakan baris dan tajwid memerlukan penyemak pintar: muat turun di atas dahulu. Sehingga itu hanya perkataan yang disemak.",
     "checkedSoFar": "Baris yang telah disemak: {{n}} perkataan",
-    "wordsPerfect": "Semua perkataan betul; lihat catatan baris dan tajwid di bawah."
+    "wordsPerfect": "Semua perkataan betul; lihat catatan baris dan tajwid di bawah.",
+    "hint": "Petunjuk",
+    "tapWord": "Ketik perkataan berwarna untuk melihat kesilapannya."
   },
   "ruqyah": {
     "title": "Ruqyah",

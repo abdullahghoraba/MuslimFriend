@@ -68,14 +68,14 @@
     }
 
     <!-- The ayat: words appear as they are recited; mistakes in colour. -->
-    <section class="card recital" [class.long]="long()" lang="ar" dir="rtl" aria-live="polite">
+    <section class="card recital" [class.long]="long()" [class.preview]="state() === 'idle' && tasmee.prefs().hideText" lang="ar" dir="rtl" aria-live="polite">
       @if (long() && (words()[position()] ?? words()[words().length - 1]); as cur) {
         <!-- A long range scrolls inside this card, following the word to recite: where it is, at a glance. -->
         <div class="where-now">{{ quran.ready() ? quran.sura(cur.ref.sura).name : '' }} · ﴿{{ ayahNumber(cur.ref.aya) }}﴾ / {{ ayahNumber(to()) }}</div>
       }
       @for (w of words(); track $index; let i = $index) {
         @let r = results()[i];
-        <span class="w" [attr.data-i]="i" [class]="'w ' + (r?.status ?? 'pending')" [class.next]="i === position() && state() === 'listening'" [class.corrected]="!!r?.corrected" [class.tajweed]="tajweedIssues().has(i)"
+        <span class="w" [attr.data-i]="i" (click)="tapWord(i)" [class]="'w ' + (r?.status ?? 'pending')" [class.next]="i === position() && state() === 'listening'" [class.corrected]="!!r?.corrected" [class.tajweed]="tajweedIssues().has(i)"
               [class.hidden]="!shown(i)" [attr.title]="r?.heard ? ('tasmee.heard' | translate: { word: r.heard }) : null">{{ shown(i) ? w.text : '' }}@if (r?.status === 'wrong' && r?.heard) {<small class="heard">{{ r.heard }}</small>}@if (shown(i) && tajweedIssues().get(i); as errs) {<small class="tj-above">{{ tajweedShort(errs) }}</small>}</span>
         @if (w.end) { <span class="num">﴿{{ ayahNumber(w.ref.aya) }}﴾</span> }
         {{ ' ' }}
@@ -113,6 +113,10 @@
     <section class="controls">
       @if (state() === 'listening') {
         <ion-button color="medium" fill="outline" (click)="stop()"><ion-icon slot="start" name="pause" aria-hidden="true" />{{ 'studio.pause' | translate }}</ion-button>
+        @if (tasmee.prefs().hideText) {
+          <!-- Stuck: the next word, for a moment. -->
+          <ion-button color="medium" fill="outline" (click)="hint()"><ion-icon slot="start" name="bulb-outline" aria-hidden="true" />{{ 'tasmee.hint' | translate }}</ion-button>
+        }
         <ion-button (click)="finish()"><ion-icon slot="start" name="checkmark-done-outline" aria-hidden="true" />{{ 'tasmee.finish' | translate }}</ion-button>
       } @else if (state() === 'stopped') {
         <ion-button (click)="start()"><ion-icon slot="start" name="mic-outline" aria-hidden="true" />{{ 'studio.resume' | translate }}</ion-button>
@@ -132,6 +136,9 @@
     @if (state() === 'done') {
       <section class="card summary">
         <p class="score" [class.good]="scorePct() >= 90">{{ scorePct() }}%</p>
+        @if (mistakes().length || tajweedIssues().size) {
+          <p class="hint">{{ 'tasmee.tapWord' | translate }}</p>
+        }
         @if (!mistakes().length && !(checkOn() && tajweedIssues().size)) {
           <p>{{ 'tasmee.perfect' | translate }}</p>
         } @else if (!mistakes().length) {
@@ -240,4 +247,33 @@
       }
     }
     <p class="note">{{ 'tasmee.note' | translate }}</p>
+
+    <!-- A tapped word: what was wrong with it, right over the ayat (no need to scroll to the list). -->
+    @if (openWord() !== null && words()[openWord()!]; as w) {
+      @let i = openWord()!;
+      @let r = results()[i];
+      <div class="sheet-backdrop" (click)="openWord.set(null)"></div>
+      <section class="card word-sheet" role="dialog" aria-modal="true" [attr.aria-label]="w.text">
+        <div class="ws-head">
+          <strong lang="ar" dir="rtl">{{ w.text }}</strong>
+          <span class="where">﴿{{ ayahNumber(w.ref.aya) }}﴾</span>
+        </div>
+        @if (r?.status === 'wrong') {
+          <p class="ws-word">{{ 'tasmee.heard' | translate: { word: r?.heard ?? '' } }}</p>
+        } @else if (r?.status === 'skipped') {
+          <p class="ws-word">{{ 'tasmee.skipped' | translate }}</p>
+        }
+        @for (e of tajweedIssues().get(i) ?? []; track $index) {
+          @let d = tajweedText(e);
+          <p class="tj-line"><b>{{ d.title }}</b>@if (d.detail) {: {{ d.detail }}}</p>
+        }
+        @if (tajweedIssues().has(i)) {
+          <p class="hint">{{ 'tajweed.disclaimer' | translate }}</p>
+        }
+        <div class="row-buttons">
+          <ion-button fill="outline" (click)="listen(w.ref)"><ion-icon slot="start" name="play" aria-hidden="true" />{{ 'mushaf.listen' | translate }}</ion-button>
+          <ion-button (click)="openWord.set(null)">{{ 'common.close' | translate }}</ion-button>
+        </div>
+      </section>
+    }
 </main>

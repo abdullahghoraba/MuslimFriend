@@ -157,6 +157,22 @@ export class MushafPage {
 
   readonly page = signal(1);
   readonly selected = signal<AyahRef | null>(null);
+  /**
+   * The selected ayah's tafsir (al-Muyassar, in the app) at a glance in its bar: read without another tap; a tap on it
+   * opens the tafsir panel (other tafasir, translations, next and previous ayah).
+   */
+  readonly glance = signal<string | null>(null);
+  private readonly glanceLoad = effect(() => {
+    const sel = this.selected();
+    this.glance.set(null);
+    // One ayah (a long press selects a range of one); a longer range has no single tafsir to show.
+    const r = this.range();
+    if (!sel || this.lang() !== 'ar' || (this.rangeMode() && r && r.from !== r.to)) return;
+    void this.quran.tafsir('muyassar', sel).then((text) => {
+      const now = this.selected();
+      if (now && now.sura === sel.sura && now.aya === sel.aya) this.glance.set(text || null);
+    }).catch(() => undefined);
+  });
   /** The ayah opened on (continue reading, a link, «go to»): lit up for a moment to show where it is. */
   readonly flash = signal<AyahRef | null>(null);
   private flashTimer?: ReturnType<typeof setTimeout>;
