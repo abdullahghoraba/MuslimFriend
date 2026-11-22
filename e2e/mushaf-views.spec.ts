@@ -363,6 +363,11 @@ test('the printed page: the ayah bar floats beside it, below the first ayah of t
   bar = (await pop.boundingBox())!;
   expect(bar.y + bar.height).toBeLessThanOrEqual(sel.top);
   await page.screenshot({ path: 'test-results/mushaf-pop-above.png' });
+  // «More» opens the other actions in the bar, all in sight.
+  await pop.getByRole('button', { name: ar.tabs.more }).click();
+  await expect(pop.locator('.ayah-actions.rest button')).toHaveCount(8);
+  await expect(pop.getByRole('button', { name: ar.mushaf.note })).toBeInViewport();
+  await page.screenshot({ path: 'test-results/mushaf-pop-more.png' });
   // The colours open in the bar.
   await pop.getByRole('button', { name: ar.mushaf.highlight }).click();
   await expect(pop.locator('.swatch').first()).toBeVisible();

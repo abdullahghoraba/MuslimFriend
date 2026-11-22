@@ -31,7 +31,9 @@
     "smaller": "Smaller",
     "larger": "Larger",
     "off": "Off",
-    "mb": "MB"
+    "mb": "MB",
+    "search": "Search",
+    "noResults": "No results"
   },
   "home": {
     "title": "Al-Uns Billah",

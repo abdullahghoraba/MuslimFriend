@@ -31,7 +31,9 @@
     "smaller": "Lebih kecil",
     "larger": "Lebih besar",
     "off": "Mati",
-    "mb": "MB"
+    "mb": "MB",
+    "search": "Cari",
+    "noResults": "Tidak ada hasil"
   },
   "home": {
     "title": "Al-Uns Billah",

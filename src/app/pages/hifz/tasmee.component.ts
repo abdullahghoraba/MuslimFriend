@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import { SearchSelectComponent, numberOptions, suraSearchOptions } from '../../shared/search-select.component';
 import { LocalDatePipe } from '../../shared/local-date.pipe';
 import { KeepAwake } from '@capacitor-community/keep-awake';
 import {
@@ -9,13 +10,13 @@ import { HeardSource, WordResult, alignRecitation, alignWithCost, bestAlternativ
 import { forcedGap, modelLetters } from '../../core/tasmee/ctc-score';
 import { TasmeeCheck, TasmeeEngine, TasmeeService, dropOpenings } from '../../core/tasmee/tasmee.service';
 import { QuranSpeech } from '../../core/tasmee/quran-speech';
-import { TajweedError, TajweedPart, TajweedPrefs, TajweedReply, TajweedService, leftOut, pauseArtifact, quietestIn, silenceIn, splitAtPauses } from '../../core/tasmee/tajweed.service';
+import { TajweedError, TajweedPart, TajweedPrefs, TajweedReply, TajweedService, leftOut, pauseArtifact, unsureFinding, quietestIn, silenceIn, splitAtPauses } from '../../core/tasmee/tajweed.service';
 
 import { PhoneSpeech, PhraseReading, SpeechCallbacks } from '../../native/speech';
 import { QuranService } from '../../core/quran/quran.service';
 import { RecitationService } from '../../core/quran/recitation.service';
 import { AyahRef, splitBasmala } from '../../core/quran/quran-utils';
-import { ayahWords } from '../../core/quran/mushaf-layout';
+import { reciteWords } from '../../core/quran/mushaf-layout';
 import { HapticsService } from '../../core/services/haptics.service';
 import { SettingsService } from '../../core/services/settings.service';
 
@@ -46,6 +47,7 @@ interface Final {
 @Component({
   selector: 'app-tasmee',
   imports: [
+    SearchSelectComponent,
     TranslatePipe, LocalDatePipe, IonButton, IonIcon, IonSelect, IonSelectOption, IonToggle, IonSegment, IonSegmentButton, IonLabel,
     IonProgressBar,
   ],
@@ -119,6 +121,8 @@ export class TasmeeComponent implements OnInit, OnDestroy {
   private notified = new Set<number>();
 
   readonly suraOptions = computed(() => (this.quran.ready() ? this.quran.suras : []));
+  readonly suraPick = computed(() => suraSearchOptions(this.suraOptions()));
+  readonly ayahPick = computed(() => numberOptions(this.ayahNumbers().length));
   readonly ayahNumbers = computed(() => (this.quran.ready() ? Array.from({ length: this.quran.sura(this.sura()).ayas }, (_, i) => i + 1) : []));
 
   readonly words = computed<Word[]>(() => {
@@ -127,7 +131,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
     for (let aya = this.from(); aya <= this.to(); aya++) {
       const ref = { sura: this.sura(), aya };
       const a = this.quran.ayah(ref);
-      const ws = ayahWords(splitBasmala(a, a.text).text);
+      const ws = reciteWords(splitBasmala(a, a.text).text);
       ws.forEach((text, i) => out.push({ text, ref, end: i === ws.length - 1, n: i }));
     }
     return out;
@@ -625,6 +629,8 @@ export class TasmeeComponent implements OnInit, OnDestroy {
         if (e.type === 'normal' && results[k]?.status === 'correct') continue;
         // How a reciter pauses mid-phrase (sukun at a stop, madd 'arid...) is not a mistake.
         if (e.type !== 'normal' && pauseArtifact(e, words[k].text, words[k + 1]?.text)) continue;
+        // What the model is not sure of (a word's first vowel, a natural madd one count short) is not shown.
+        if (unsureFinding(e, words[k].text)) continue;
         // Checked on harakat only: the tajweed rules (madd, ghunnah, qalqalah...) are not shown.
         if (this.tasmee.prefs().check === 'tashkeel' && e.type === 'tajweed') continue;
         issues.set(k, [...(issues.get(k) ?? []), e]);

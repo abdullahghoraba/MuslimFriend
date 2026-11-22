@@ -449,6 +449,16 @@ ion-footer:has(.close-ayah) { overflow: visible; }
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22);
   &.placed { visibility: visible; animation: pop-in 0.14s ease-out; }
   .ayah-actions { padding: 4px; }
+  // One row that fits the screen (no scrolling sideways), and the others in a grid under it.
+  .ayah-actions.main { overflow: visible; justify-content: space-between; button { min-width: 0; flex: 1 1 0; } }
+  .ayah-actions.rest { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid color-mix(in srgb, var(--m-muted) 25%, transparent);
+    button { min-width: 0; } }
+  // «More»: a badge with how many more actions there are, so it is plain the bar has others.
+  .more-icon { position: relative; display: inline-flex; }
+  .ayah-actions button .more-icon .badge { position: absolute; top: -6px; inset-inline-end: -14px; min-width: 18px; padding: 0 4px; border-radius: 9px;
+    background: var(--m-accent); color: var(--m-bg); font-size: 0.62rem; font-weight: 700; line-height: 16px; text-align: center; max-width: none; overflow: visible; }
+  .ayah-actions button.more { color: var(--m-accent); font-weight: 600; }
+  .ayah-actions button > span:not(.more-icon) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
   .ayah-actions button.on ion-icon { color: var(--m-fg); }
   .close-ayah { position: static; width: auto; height: auto; border: 0; border-radius: 0; box-shadow: none; font-size: 0.72rem; background: transparent; }
   .colors { padding: 10px 0 4px; }
@@ -472,4 +482,15 @@ ion-footer:has(.close-ayah) { overflow: visible; }
   font-family: inherit; font-size: 0.95rem; line-height: 1.7; color: var(--m-fg);
   background: color-mix(in srgb, var(--ion-color-primary) 9%, transparent);
   b { color: var(--ion-color-primary); }
+}
+
+// The flowing view's bar: the same main actions and «more» as the printed page's floating bar.
+ion-footer {
+  .ayah-actions.main { overflow: visible; button { min-width: 0; flex: 1 1 0; } }
+  .ayah-actions.rest { display: grid; grid-template-columns: repeat(4, 1fr); button { min-width: 0; } }
+  .ayah-actions button > span:not(.more-icon) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .more-icon { position: relative; display: inline-flex; }
+  .more-icon .badge { position: absolute; top: -6px; inset-inline-end: -14px; min-width: 18px; padding: 0 4px; border-radius: 9px;
+    background: var(--m-accent); color: var(--m-bg); font-size: 0.62rem; font-weight: 700; line-height: 16px; text-align: center; }
+  .ayah-actions button.more { color: var(--m-accent); font-weight: 600; }
 }

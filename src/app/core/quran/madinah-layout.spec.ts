@@ -153,3 +153,13 @@ describe('Madinah printed line layout', () => {
     expect(ends.size).toBe(6236);
   });
 });
+
+describe('the words of an ayah as recited', () => {
+  it('the mark of a quarter hizb is not a word of its own', async () => {
+    const { reciteWords, ayahWords } = await import('./mushaf-layout');
+    const text = '۞ إِنَّ ٱللَّهَ لَا يَسْتَحْىِۦٓ';
+    expect(ayahWords(text)[0]).toBe('۞');
+    expect(reciteWords(text)).toEqual(['۞ إِنَّ', 'ٱللَّهَ', 'لَا', 'يَسْتَحْىِۦٓ']);
+    expect(reciteWords('قُلْ هُوَ ٱللَّهُ أَحَدٌ')).toEqual(['قُلْ', 'هُوَ', 'ٱللَّهُ', 'أَحَدٌ']);
+  });
+});

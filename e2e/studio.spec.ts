@@ -42,8 +42,9 @@ test('records a video with the ayah shown over the picture', async ({ page }) =>
   await page.goto('/studio');
   await page.locator('ion-segment-button[value=video]').click();
   // Al-Fatihah, to show its ayat on the video.
-  await page.locator('section.ayat ion-select').first().click();
-  await page.locator('.action-sheet-button', { hasText: 'الفاتحة' }).first().click();
+  await page.locator('section.ayat app-search-select').first().click();
+  await page.locator('app-search-picker ion-searchbar input').fill('الفاتحة');
+  await page.locator('app-search-picker .row', { hasText: 'الفاتحة' }).first().click();
   await page.getByRole('button', { name: ar.studio.openCamera }).click();
   await expect(page.locator('.preview canvas')).toBeVisible();
   await page.getByRole('button', { name: ar.studio.record }).click();

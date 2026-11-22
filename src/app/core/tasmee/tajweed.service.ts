@@ -235,6 +235,25 @@ function letters(s: string): string {
 const voweled = (s: string) => /[ً-ِ]/.test(s);
 
 /**
+ * A finding the tajweed model is not sure enough of to show, seen on ordinary readers reciting at a normal pace:
+ * - the vowel of a word's first letter "missing" (عَهْدَ heard «ع», أَن heard «ء»): a word in Arabic never starts
+ *   without a vowel, the model lost it in the joined speech;
+ * - a natural madd one count short (2 heard as 1): at a quicker pace the model counts short; a madd not made at all
+ *   (heard 0) is still shown.
+ */
+export function unsureFinding(e: TajweedError, word: string): boolean {
+  const first = (x: string) => x.replace(/[ً-ٰٟۖ-ۭـۦۥڇ]/g, '').replace(/[أإٱآ]/g, 'ء')[0] ?? '';
+  if (e.type === 'tashkeel' && e.kind === 'delete' && e.expected && e.heard && !voweled(e.heard) && voweled(e.expected)) {
+    const letter = first(e.expected);
+    if (letter && letter === first(e.heard) && letter === first(word) && letters(e.expected).length === 1) return true;
+  }
+  if (e.type === 'tajweed' && e.rules?.some((r) => /المد الطبيعي/.test(r.ar)) && e.expectedLen != null && e.heardLen != null) {
+    if (e.heardLen >= 1 && e.expectedLen - e.heardLen === 1) return true;
+  }
+  return false;
+}
+
+/**
  * A finding that is only how a reciter pauses (waqf) in the middle of a phrase, which the server, reading the
  * phrase as one breath, counts as a mistake: the last letter said with sukun (or qalqalah) instead of its vowel,
  * a madd lengthened at the stop ('arid), a ghunnah or idgham with the next word not made across the pause, or the

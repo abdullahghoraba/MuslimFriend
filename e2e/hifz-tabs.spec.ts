@@ -84,3 +84,25 @@ test('the tab bar keeps every icon in the same place and fills the selected one'
   expect(room.bottom).toBeGreaterThanOrEqual(10);
   await page.screenshot({ path: 'test-results/tabbar-tasbih.png' });
 });
+
+test('tasmee: the sura is found by its name in any spelling or its number, the ayah by its number', async ({ page }) => {
+  await onboard(page);
+  await page.goto('/hifz?tab=tasmee');
+  const sura = page.locator('app-search-select').first();
+  await expect(sura).toBeVisible();
+  await sura.click();
+  const search = page.locator('app-search-picker ion-searchbar input');
+  await expect(search).toBeVisible();
+  await search.fill('yaseen');
+  await expect(page.locator('app-search-picker .row').first()).toContainText('يس');
+  await page.screenshot({ path: 'test-results/search-picker-sura.png' });
+  await page.locator('app-search-picker .row').first().click();
+  await expect(sura).toContainText('36');
+  // The ayah «to»: typed, Arabic digits too.
+  await page.locator('app-search-select').nth(2).click();
+  await expect(page.locator('app-search-picker .grid .num')).toHaveCount(83);
+  await page.locator('app-search-picker ion-searchbar input').fill('٨٢');
+  await expect(page.locator('app-search-picker .grid .num').first()).toHaveText('82');
+  await page.locator('app-search-picker .grid .num').first().click();
+  await expect(page.locator('app-search-select').nth(2)).toContainText('82');
+});

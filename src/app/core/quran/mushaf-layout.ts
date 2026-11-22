@@ -67,6 +67,15 @@ export function ayahWords(text: string): string[] {
 }
 
 /**
+ * An ayah's words as recited: the mark of a quarter hizb (۞) at its start is not a word (it is not read; it was counted
+ * as a word left out), it goes with the first word. The tajweed server numbers the words the same way.
+ */
+export function reciteWords(text: string): string[] {
+  const ws = ayahWords(text);
+  return ws.length > 1 && /^[ۖ-ۭ۞۩]+$/.test(ws[0]) ? [`${ws[0]} ${ws[1]}`, ...ws.slice(2)] : ws;
+}
+
+/**
  * The Shamarly layout from its page starts: starts[p - 1] = [sura, aya, word] where page p begins (null for the cover
  * page, which has no ayat). [indexOf] gives an ayah's global index.
  */

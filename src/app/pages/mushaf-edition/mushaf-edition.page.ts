@@ -1,11 +1,11 @@
 import { Location } from '@angular/common';
+import { SearchSelectComponent, suraSearchOptions } from '../../shared/search-select.component';
 import { Component, ElementRef, computed, inject, input, signal } from '@angular/core';
 import {
-  ActionSheetController, IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon, IonSelect,
-  IonSelectOption, IonSpinner, IonTitle, IonToolbar, ModalController, NavController, ToastController, createGesture,
+  ActionSheetController, IonBackButton, IonButton, IonButtons, IonContent, IonFooter, IonHeader, IonIcon,
+  IonSpinner, IonTitle, IonToolbar, ModalController, NavController, ToastController, createGesture,
 } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
-import { SelectTextsDirective } from '../../shared/select-texts.directive';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
   Edition, EditionId, MushafEditionsService, RiwayaAyah, RiwayaMushaf, ShamarlyArea, ShamarlyMap, edition, shamarlyAyahAt,
@@ -39,7 +39,8 @@ interface Mark {
  */
 @Component({
   selector: 'app-mushaf-edition',
-  imports: [TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonContent, IonSpinner, IonSelect, SelectTextsDirective, IonSelectOption, IonFooter],
+  imports: [
+    SearchSelectComponent,TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonContent, IonSpinner, IonFooter],
   templateUrl: './mushaf-edition.page.html',
   styleUrl: './mushaf-edition.page.scss',
 })
@@ -144,6 +145,7 @@ export class MushafEditionPage {
     return 1;
   });
 
+  readonly suraPick = computed(() => (this.quran.ready() ? suraSearchOptions(this.quran.suras) : []));
   readonly suraOptions = computed(() => (this.quran.ready() ? this.quran.suras.map((s) => ({ index: s.index, name: s.name })) : []));
 
   async ionViewWillEnter(): Promise<void> {

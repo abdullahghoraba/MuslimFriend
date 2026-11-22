@@ -23,21 +23,11 @@
   <main>
     <!-- What to recite: optional; read from the screen and shown on the video. -->
     <section class="card ayat" [class.compact]="state() !== 'idle'">
-      <ion-select interface="action-sheet" [label]="'studio.sura' | translate" [value]="sura()" (ionChange)="setSura($event.detail.value)"
-                  [disabled]="state() !== 'idle'">
-        <ion-select-option [value]="0">{{ 'studio.freeRecitation' | translate }}</ion-select-option>
-        @for (s of suraOptions(); track s.index) {
-          <ion-select-option [value]="s.index">{{ s.index }}. {{ s.name }}</ion-select-option>
-        }
-      </ion-select>
+      <app-search-select [label]="'studio.sura' | translate" [value]="sura()" [options]="suraPick()" (changed)="setSura($event)" [disabled]="state() !== 'idle'" />
       @if (sura() && state() === 'idle') {
         <div class="range">
-          <ion-select interface="popover" [label]="'mushaf.rangeFrom' | translate" [value]="from()" (ionChange)="setFrom($event.detail.value)">
-            @for (n of ayahNumbers(); track n) { <ion-select-option [value]="n">{{ n }}</ion-select-option> }
-          </ion-select>
-          <ion-select interface="popover" [label]="'mushaf.rangeTo' | translate" [value]="to()" (ionChange)="setTo($event.detail.value)">
-            @for (n of ayahNumbers(); track n) { <ion-select-option [value]="n">{{ n }}</ion-select-option> }
-          </ion-select>
+          <app-search-select [label]="'mushaf.rangeFrom' | translate" [value]="from()" [options]="ayahPick()" (changed)="setFrom($event)" />
+          <app-search-select [label]="'mushaf.rangeTo' | translate" [value]="to()" [options]="ayahPick()" (changed)="setTo($event)" />
         </div>
       }
     </section>

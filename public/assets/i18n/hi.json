@@ -31,7 +31,9 @@
     "smaller": "छोटा",
     "larger": "बड़ा",
     "off": "बंद",
-    "mb": "MB"
+    "mb": "MB",
+    "search": "खोजें",
+    "noResults": "कोई परिणाम नहीं"
   },
   "home": {
     "title": "Al-Uns Billah",

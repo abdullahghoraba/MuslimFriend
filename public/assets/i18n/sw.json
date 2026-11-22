@@ -31,7 +31,9 @@
     "smaller": "Ndogo zaidi",
     "larger": "Kubwa zaidi",
     "off": "Imezimwa",
-    "mb": "MB"
+    "mb": "MB",
+    "search": "Tafuta",
+    "noResults": "Hakuna matokeo"
   },
   "home": {
     "title": "Al-Uns Billah",

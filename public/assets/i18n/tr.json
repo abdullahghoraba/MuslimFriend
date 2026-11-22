@@ -31,7 +31,9 @@
     "smaller": "Küçült",
     "larger": "Büyüt",
     "off": "Kapalı",
-    "mb": "MB"
+    "mb": "MB",
+    "search": "Ara",
+    "noResults": "Sonuç yok"
   },
   "home": {
     "title": "Al-Uns Billah",

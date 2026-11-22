@@ -1,10 +1,11 @@
 import { Component, ElementRef, OnDestroy, computed, inject, signal, viewChild } from '@angular/core';
+import { SearchSelectComponent, numberOptions, suraSearchOptions } from '../../shared/search-select.component';
 import { LocalDatePipe } from '../../shared/local-date.pipe';
 import { Preferences } from '@capacitor/preferences';
 import { KeepAwake } from '@capacitor-community/keep-awake';
 import {
   AlertController, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonLabel, IonSegment,
-  IonRange, IonSegmentButton, IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToggle, IonToolbar, ToastController,
+  IonRange, IonSegmentButton, IonSpinner, IonTitle, IonToggle, IonToolbar, ToastController,
 } from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CLARITY_DB, Denoise, REVERB_AMOUNT, Reverb, VOICE_DB } from '../../core/studio/audio-chain';
@@ -41,8 +42,9 @@ const inRange = (v: unknown, min: number, max: number): number | undefined =>
 @Component({
   selector: 'app-studio',
   imports: [
+    SearchSelectComponent,
     TranslatePipe, LocalDatePipe, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton, IonContent, IonSegment,
-    IonSegmentButton, IonLabel, IonIcon, IonSelect, IonSelectOption, IonToggle, IonButton, IonSpinner, IonRange,
+    IonSegmentButton, IonLabel, IonIcon, IonToggle, IonButton, IonSpinner, IonRange,
   ],
   templateUrl: './studio.page.html',
   styleUrl: './studio.page.scss',
@@ -98,6 +100,9 @@ export class StudioPage implements OnDestroy {
   private ticker = 0;
 
   readonly suraOptions = computed(() => (this.quran.ready() ? this.quran.suras : []));
+  /** Free recitation first, then the suras (found by name or number). */
+  readonly suraPick = computed(() => [{ value: 0, label: this.translate.instant('studio.freeRecitation') }, ...suraSearchOptions(this.suraOptions())]);
+  readonly ayahPick = computed(() => numberOptions(this.ayahNumbers().length));
   readonly ayahNumbers = computed(() => {
     const s = this.sura();
     return s && this.quran.ready() ? Array.from({ length: this.quran.sura(s).ayas }, (_, i) => i + 1) : [];

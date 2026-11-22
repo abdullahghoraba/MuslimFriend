@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { SearchSelectComponent } from '../../shared/search-select.component';
 import {
   ActionSheetController, IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel,
   IonList, IonListHeader, IonNote, IonSegment, IonSegmentButton, IonSelect, IonSelectOption, IonSpinner, IonTitle, IonToggle,
@@ -42,6 +43,7 @@ interface Saved {
 @Component({
   selector: 'app-zakat',
   imports: [
+    SearchSelectComponent,
     TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonInput,
     IonLabel, IonNote, IonSegment, IonSegmentButton, IonSelect, SelectTextsDirective, IonSelectOption, IonButton, IonIcon, IonSpinner,
     IonToggle,
@@ -78,6 +80,8 @@ export class ZakatPage {
     const p = this.prices();
     return p ? zakatOf(this.state().assets, p, this.state().nisab) : null;
   });
+  readonly countryPick = computed(() => this.countries().map((c) => ({ value: c.code, label: c.name, keys: [c.code] })));
+  readonly currencyPick = computed(() => this.currencies().map((c) => ({ value: c, label: c.toUpperCase(), keys: currencyNames(c, this.lang()) })));
   readonly currencies = computed(() => {
     const list = this.metals.currencies();
     return list.length ? list : [this.state().currency];
@@ -254,4 +258,16 @@ function toNumber(value: unknown): number {
 function round(x: number, digits = 0): number {
   const f = 10 ** digits;
   return Math.round(x * f) / f;
+}
+
+/** A currency's name in the reader's language and in English (to find «جنيه» or «pound» as well as EGP). */
+function currencyNames(code: string, lang: string): string[] {
+  const name = (l: string) => {
+    try {
+      return new Intl.DisplayNames([l], { type: 'currency' }).of(code.toUpperCase()) ?? '';
+    } catch {
+      return '';
+    }
+  };
+  return [name(lang), name('en')].filter(Boolean);
 }

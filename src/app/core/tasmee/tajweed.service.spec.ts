@@ -1,4 +1,4 @@
-import { TajweedError, leftOut, parseEvents, pauseArtifact, quietestIn, silenceIn, silentBetween, splitAtPauses, wavBase64 } from './tajweed.service';
+import { TajweedError, leftOut, parseEvents, pauseArtifact, unsureFinding, quietestIn, silenceIn, silentBetween, splitAtPauses, wavBase64 } from './tajweed.service';
 
 describe('tajweed: sending a phrase', () => {
   it('writes 16 kHz mono 16-bit WAV', () => {
@@ -146,5 +146,22 @@ describe('tajweed: a word left out, which the offline recogniser wrote anyway', 
     expect(leftOut('أَنتُمْ', ['ءَ'])).toBe(false);
     expect(leftOut('خَزَنَتُهَآ', ['تُ', 'اااا'])).toBe(false);
     expect(leftOut('و', ['وَ'])).toBe(false);
+  });
+});
+
+describe('tajweed: what the model is not sure of is not shown', () => {
+  const madd = (expectedLen: number, heardLen: number): TajweedError => ({ ...err('tajweed', 'replace', 'ۥۥ', 'ۥ', ['المد الطبيعي']), expectedLen, heardLen });
+  // A reader reciting al-Baqarah 26-29 at a normal pace.
+  it('the vowel of the first letter of a word, a natural madd one count short', () => {
+    expect(unsureFinding(err('tashkeel', 'delete', 'عَ', 'ع'), 'عَهْدَ')).toBe(true);
+    expect(unsureFinding(err('tashkeel', 'delete', 'ءَ', 'ء'), 'أَن')).toBe(true);
+    expect(unsureFinding(err('tashkeel', 'delete', 'يُ', 'ي'), 'يُضِلُّ')).toBe(true);
+    expect(unsureFinding(madd(2, 1), 'وَيَقْطَعُونَ')).toBe(true);
+  });
+  it('real mistakes stay: another vowel, a madd not made, a vowel lost inside the word', () => {
+    expect(unsureFinding(err('tashkeel', 'replace', 'دُ', 'دَ'), 'ٱلْحَمْدُ')).toBe(false);
+    expect(unsureFinding(madd(2, 0), 'مَـٰلِكِ')).toBe(false);
+    expect(unsureFinding({ ...err('tajweed', 'replace', 'اااا', 'اا', ['المد المتصل']), expectedLen: 4, heardLen: 2 }, 'أُو۟لَـٰٓئِكَ')).toBe(false);
+    expect(unsureFinding(err('tashkeel', 'delete', 'تُ', 'ت'), 'خَزَنَتُهَآ')).toBe(false);
   });
 });

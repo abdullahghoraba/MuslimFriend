@@ -241,22 +241,28 @@
         <button type="button" class="swatch clear" (click)="highlight(null)" [attr.aria-label]="'mushaf.clearHighlight' | translate">✕</button>
       </div>
     }
-    <div class="ayah-actions" role="toolbar" [attr.aria-label]="'mushaf.ayahActions' | translate">
+    <!-- The actions used most, then «more» for the others: a grid that opens in the bar (nothing hidden off its edge). -->
+    <div class="ayah-actions main" role="toolbar" [attr.aria-label]="'mushaf.ayahActions' | translate">
       <button type="button" class="close-ayah" (click)="selected.set(null)" [attr.aria-label]="'common.close' | translate"><ion-icon name="close-outline" aria-hidden="true" /><span>{{ 'common.close' | translate }}</span></button>
       <button type="button" (click)="openTafsir()"><ion-icon name="book-outline" aria-hidden="true" /><span>{{ 'mushaf.tafsir' | translate }}</span></button>
       <button type="button" (click)="playFromSelected()"><ion-icon name="play" aria-hidden="true" /><span>{{ 'mushaf.listen' | translate }}</span></button>
       <button type="button" (click)="popColors.set(!popColors())" [class.on]="popColors()"><ion-icon name="color-palette-outline" aria-hidden="true" /><span>{{ 'mushaf.highlight' | translate }}</span></button>
       <button type="button" (click)="copy()"><ion-icon name="copy-outline" aria-hidden="true" /><span>{{ 'mushaf.copy' | translate }}</span></button>
       <button type="button" (click)="shareAyah()"><ion-icon name="share-social-outline" aria-hidden="true" /><span>{{ 'common.share' | translate }}</span></button>
-      <button type="button" (click)="openWords()"><ion-icon name="language-outline" aria-hidden="true" /><span>{{ 'mushaf.wordByWord' | translate }}</span></button>
-      <button type="button" (click)="repeatSelected()"><ion-icon name="repeat-outline" aria-hidden="true" /><span>{{ 'mushaf.repeatAction' | translate }}</span></button>
-      <button type="button" (click)="bookmark()"><ion-icon name="bookmark-outline" aria-hidden="true" /><span>{{ 'mushaf.bookmark' | translate }}</span></button>
-      <button type="button" (click)="markReading()"><ion-icon name="bookmark" aria-hidden="true" /><span>{{ 'mushaf.readingMark' | translate }}</span></button>
-      <button type="button" (click)="toggleStar()"><ion-icon [name]="isStarred(sel) ? 'star' : 'star-outline'" aria-hidden="true" /><span>{{ 'mushaf.star' | translate }}</span></button>
-      <button type="button" (click)="editNote()"><ion-icon name="document-text-outline" aria-hidden="true" /><span>{{ 'mushaf.note' | translate }}</span></button>
-      <button type="button" (click)="hifzAction()"><ion-icon name="school-outline" aria-hidden="true" /><span>{{ 'mushaf.hifz' | translate }}</span></button>
-      <button type="button" (click)="openTasmee()"><ion-icon name="ear-outline" aria-hidden="true" /><span>{{ 'tasmee.short' | translate }}</span></button>
+      <button type="button" class="more" (click)="popMore.set(!popMore())" [class.on]="popMore()" [attr.aria-expanded]="popMore()"><span class="more-icon"><ion-icon [name]="popMore() ? 'chevron-up' : 'grid-outline'" aria-hidden="true" />@if (!popMore()) {<span class="badge" aria-hidden="true">+8</span>}</span><span>{{ 'tabs.more' | translate }}</span></button>
     </div>
+    @if (popMore()) {
+      <div class="ayah-actions rest" role="group">
+        <button type="button" (click)="openWords()"><ion-icon name="language-outline" aria-hidden="true" /><span>{{ 'mushaf.wordByWord' | translate }}</span></button>
+        <button type="button" (click)="repeatSelected()"><ion-icon name="repeat-outline" aria-hidden="true" /><span>{{ 'mushaf.repeatAction' | translate }}</span></button>
+        <button type="button" (click)="bookmark()"><ion-icon name="bookmark-outline" aria-hidden="true" /><span>{{ 'mushaf.bookmark' | translate }}</span></button>
+        <button type="button" (click)="markReading()"><ion-icon name="bookmark" aria-hidden="true" /><span>{{ 'mushaf.readingMark' | translate }}</span></button>
+        <button type="button" (click)="toggleStar()"><ion-icon [name]="isStarred(sel) ? 'star' : 'star-outline'" aria-hidden="true" /><span>{{ 'mushaf.star' | translate }}</span></button>
+        <button type="button" (click)="editNote()"><ion-icon name="document-text-outline" aria-hidden="true" /><span>{{ 'mushaf.note' | translate }}</span></button>
+        <button type="button" (click)="hifzAction()"><ion-icon name="school-outline" aria-hidden="true" /><span>{{ 'mushaf.hifz' | translate }}</span></button>
+        <button type="button" (click)="openTasmee()"><ion-icon name="ear-outline" aria-hidden="true" /><span>{{ 'tasmee.short' | translate }}</span></button>
+      </div>
+    }
   </div>
 }
 
@@ -265,12 +271,8 @@
     @if (!printRows() && selected(); as sel) {
       @if (isRange() && range(); as r) {
         <div class="range-bar" role="group" [attr.aria-label]="'mushaf.range' | translate">
-          <ion-select interface="popover" [label]="'mushaf.rangeFrom' | translate" [value]="r.from" (ionChange)="setRangeFrom($event.detail.value)">
-            @for (n of suraAyat(); track n) { <ion-select-option [value]="n">{{ ayahNumber(n) }}</ion-select-option> }
-          </ion-select>
-          <ion-select interface="popover" [label]="'mushaf.rangeTo' | translate" [value]="r.to" (ionChange)="setRangeTo($event.detail.value)">
-            @for (n of suraAyat(); track n) { <ion-select-option [value]="n">{{ ayahNumber(n) }}</ion-select-option> }
-          </ion-select>
+          <app-search-select [label]="'mushaf.rangeFrom' | translate" [value]="r.from" [options]="ayahPick()" (changed)="setRangeFrom($event)" />
+          <app-search-select [label]="'mushaf.rangeTo' | translate" [value]="r.to" [options]="ayahPick()" (changed)="setRangeTo($event)" />
           <span class="range-count">{{ 'mushaf.rangeCount' | translate: { n: ayahNumber(r.to - r.from + 1) } }}</span>
           <button type="button" class="range-close" (click)="selected.set(null)" [attr.aria-label]="'common.close' | translate">✕</button>
         </div>
@@ -284,27 +286,33 @@
           <b>{{ 'mushaf.glanceTitle' | translate }}</b> {{ g }}
         </div>
       }
-      <div class="ayah-actions" role="toolbar" [attr.aria-label]="'mushaf.ayahActions' | translate">
+      <!-- The actions used most, then «more» for the others and the colours (nothing hidden off the edge). -->
+      <div class="ayah-actions main" role="toolbar" [attr.aria-label]="'mushaf.ayahActions' | translate">
         <button type="button" (click)="openTafsir()"><ion-icon name="book-outline" aria-hidden="true" /><span>{{ 'mushaf.tafsir' | translate }}</span></button>
-        <button type="button" (click)="openWords()"><ion-icon name="language-outline" aria-hidden="true" /><span>{{ 'mushaf.wordByWord' | translate }}</span></button>
         <button type="button" (click)="playFromSelected()"><ion-icon name="play" aria-hidden="true" /><span>{{ 'mushaf.listen' | translate }}</span></button>
-        <button type="button" (click)="repeatSelected()"><ion-icon name="repeat-outline" aria-hidden="true" /><span>{{ 'mushaf.repeatAction' | translate }}</span></button>
-        <button type="button" (click)="bookmark()"><ion-icon name="bookmark-outline" aria-hidden="true" /><span>{{ 'mushaf.bookmark' | translate }}</span></button>
-        <button type="button" (click)="hifzAction()"><ion-icon name="school-outline" aria-hidden="true" /><span>{{ 'mushaf.hifz' | translate }}</span></button>
-        <button type="button" (click)="openTasmee()"><ion-icon name="ear-outline" aria-hidden="true" /><span>{{ 'tasmee.short' | translate }}</span></button>
-        <button type="button" (click)="markReading()"><ion-icon name="bookmark" aria-hidden="true" /><span>{{ 'mushaf.readingMark' | translate }}</span></button>
-        <button type="button" (click)="toggleStar()"><ion-icon [name]="isStarred(sel) ? 'star' : 'star-outline'" aria-hidden="true" /><span>{{ 'mushaf.star' | translate }}</span></button>
-        <button type="button" (click)="editNote()"><ion-icon name="document-text-outline" aria-hidden="true" /><span>{{ 'mushaf.note' | translate }}</span></button>
         <button type="button" (click)="copy()"><ion-icon name="copy-outline" aria-hidden="true" /><span>{{ 'mushaf.copy' | translate }}</span></button>
         <button type="button" (click)="shareAyah()"><ion-icon name="share-social-outline" aria-hidden="true" /><span>{{ 'common.share' | translate }}</span></button>
+        <button type="button" class="more" (click)="popMore.set(!popMore())" [class.on]="popMore()" [attr.aria-expanded]="popMore()"><span class="more-icon"><ion-icon [name]="popMore() ? 'chevron-down' : 'grid-outline'" aria-hidden="true" />@if (!popMore()) {<span class="badge" aria-hidden="true">+8</span>}</span><span>{{ 'tabs.more' | translate }}</span></button>
       </div>
-      <div class="colors" role="group" [attr.aria-label]="'mushaf.highlight' | translate">
-        @for (c of colors; track c.id) {
-          <button type="button" class="swatch" [style.background]="c.hex" (click)="highlight(c.id)"
-                  [attr.aria-label]="('mushaf.highlight' | translate) + ': ' + ('mushaf.colors.' + c.id | translate)"></button>
-        }
-        <button type="button" class="swatch clear" (click)="highlight(null)" [attr.aria-label]="'mushaf.clearHighlight' | translate">✕</button>
-      </div>
+      @if (popMore()) {
+        <div class="ayah-actions rest" role="group">
+          <button type="button" (click)="openWords()"><ion-icon name="language-outline" aria-hidden="true" /><span>{{ 'mushaf.wordByWord' | translate }}</span></button>
+          <button type="button" (click)="repeatSelected()"><ion-icon name="repeat-outline" aria-hidden="true" /><span>{{ 'mushaf.repeatAction' | translate }}</span></button>
+          <button type="button" (click)="bookmark()"><ion-icon name="bookmark-outline" aria-hidden="true" /><span>{{ 'mushaf.bookmark' | translate }}</span></button>
+          <button type="button" (click)="hifzAction()"><ion-icon name="school-outline" aria-hidden="true" /><span>{{ 'mushaf.hifz' | translate }}</span></button>
+          <button type="button" (click)="openTasmee()"><ion-icon name="ear-outline" aria-hidden="true" /><span>{{ 'tasmee.short' | translate }}</span></button>
+          <button type="button" (click)="markReading()"><ion-icon name="bookmark" aria-hidden="true" /><span>{{ 'mushaf.readingMark' | translate }}</span></button>
+          <button type="button" (click)="toggleStar()"><ion-icon [name]="isStarred(sel) ? 'star' : 'star-outline'" aria-hidden="true" /><span>{{ 'mushaf.star' | translate }}</span></button>
+          <button type="button" (click)="editNote()"><ion-icon name="document-text-outline" aria-hidden="true" /><span>{{ 'mushaf.note' | translate }}</span></button>
+        </div>
+        <div class="colors" role="group" [attr.aria-label]="'mushaf.highlight' | translate">
+          @for (c of colors; track c.id) {
+            <button type="button" class="swatch" [style.background]="c.hex" (click)="highlight(c.id)"
+                    [attr.aria-label]="('mushaf.highlight' | translate) + ': ' + ('mushaf.colors.' + c.id | translate)"></button>
+          }
+          <button type="button" class="swatch clear" (click)="highlight(null)" [attr.aria-label]="'mushaf.clearHighlight' | translate">✕</button>
+        </div>
+      }
     }
     @if (recitation.current(); as cur) {
       <div class="player" role="group" [attr.aria-label]="'mushaf.player' | translate">

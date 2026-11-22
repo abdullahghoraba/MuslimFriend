@@ -50,12 +50,16 @@ test('the setup screen keeps each language button in place when the language fli
 test('language changes survive reloads with the matching document direction', async ({ page }) => {
   await onboard(page);
   await open(page, '/settings');
-  await page.locator('ion-segment-button[value="en"]').click();
+  await page.locator('app-search-select').first().click();
+  await page.locator('app-search-picker ion-searchbar input').fill('English');
+  await page.locator('app-search-picker .row').first().click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  await page.locator('ion-segment-button[value="ar"]').click();
+  await page.locator('app-search-select').first().click();
+  await page.locator('app-search-picker ion-searchbar input').fill('العربية');
+  await page.locator('app-search-picker .row').first().click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
@@ -138,14 +142,17 @@ test('evening reorder mode exposes handles and exits cleanly', async ({ page }) 
   await expect(page.locator('app-category article.card')).toHaveCount(total);
 });
 
-test('choosing Cairo calculates all six prayer times', async ({ page }) => {
+test('choosing Cairo calculates the prayer times, midnight and the last third of the night', async ({ page }) => {
   await onboard(page);
   await open(page, '/reminders');
   await page.getByText(ar.reminders.chooseCity, { exact: true }).click();
+  // The country first, then its city.
+  await page.locator('ion-modal ion-searchbar input').fill('مصر');
+  await page.locator('ion-modal').getByText('مصر', { exact: true }).click();
   await page.locator('ion-modal').getByText('القاهرة', { exact: true }).click();
   await expect(page.locator('ion-modal')).not.toBeVisible();
   const list = page.locator('app-reminders ion-list').filter({ has: page.getByText(ar.reminders.todayTimes, { exact: true }) });
-  await expect(list.locator('ion-item')).toHaveCount(6);
+  await expect(list.locator('ion-item')).toHaveCount(8);
   for (const row of await list.locator('ion-item').all()) {
     await expect(row.locator('.time')).toHaveText(/\d{1,2}:\d{2}/);
   }

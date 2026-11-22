@@ -31,7 +31,9 @@
     "smaller": "Ƙarami",
     "larger": "Babba",
     "off": "A kashe",
-    "mb": "MB"
+    "mb": "MB",
+    "search": "Nema",
+    "noResults": "Babu sakamako"
   },
   "home": {
     "title": "Al-Uns Billah",

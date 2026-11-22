@@ -31,7 +31,9 @@
     "smaller": "缩小",
     "larger": "放大",
     "off": "关",
-    "mb": "MB"
+    "mb": "MB",
+    "search": "搜索",
+    "noResults": "没有结果"
   },
   "home": {
     "title": "Al-Uns Billah",

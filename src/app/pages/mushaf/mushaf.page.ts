@@ -1,4 +1,5 @@
 import { Location } from '@angular/common';
+import { SearchSelectComponent, numberOptions } from '../../shared/search-select.component';
 import { Component, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import {
@@ -92,6 +93,7 @@ const JUZ_WORDS = ['الأول', 'الثاني', 'الثالث', 'الرابع',
 @Component({
   selector: 'app-mushaf',
   imports: [
+    SearchSelectComponent,
     TranslatePipe, IonHeader, IonToolbar, IonButtons, IonBackButton, IonTitle, IonButton, IonIcon, IonContent,
     IonFooter, IonRange, IonSegment, IonSegmentButton, IonLabel, IonSelect, SelectTextsDirective, IonSelectOption, IonSpinner, QcfFitDirective, SuraBannerComponent,
   ],
@@ -721,11 +723,14 @@ export class MushafPage {
    */
   readonly pop = signal<{ top: number; below: boolean; arrow: number | null } | null>(null);
   readonly popColors = signal(false);
+  /** The bar's other actions, opened by «more». */
+  readonly popMore = signal(false);
   private readonly placePop = effect(() => {
     const r = this.range();
     const print = !!this.printRows();
     this.recitation.current();
     this.popColors();
+    this.popMore();
     untracked(() => {
       if (!r || !print) return this.pop.set(null);
       requestAnimationFrame(() => requestAnimationFrame(() => this.measurePop()));
@@ -733,7 +738,10 @@ export class MushafPage {
   });
   private readonly resetPopColors = effect(() => {
     this.selected();
-    untracked(() => this.popColors.set(false));
+    untracked(() => {
+      this.popColors.set(false);
+      this.popMore.set(false);
+    });
   });
 
   private measurePop(): void {
@@ -785,6 +793,7 @@ export class MushafPage {
     const r = this.range();
     return !!r && r.to > r.from;
   });
+  readonly ayahPick = computed(() => numberOptions(this.suraAyat().length, (n: number) => this.ayahNumber(n)));
   /** Ayah numbers of the selected sura, for the From/To lists. */
   readonly suraAyat = computed(() => {
     const r = this.range();

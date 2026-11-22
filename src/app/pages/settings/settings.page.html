@@ -9,11 +9,7 @@
     <ion-list-header>{{ 'settings.appearance' | translate }}</ion-list-header>
 
     <ion-item><ion-icon slot="start" name="language-outline" aria-hidden="true" />
-      <ion-select [label]="'settings.language' | translate" [value]="settings().language" (ionChange)="setLanguage($event.detail.value)">
-        @for (l of languages; track l.code) {
-          <ion-select-option [value]="l.code">{{ l.name }}</ion-select-option>
-        }
-      </ion-select>
+      <app-search-select [label]="'settings.language' | translate" [value]="settings().language" [options]="languagePick" (changed)="setLanguage($event)" />
     </ion-item>
 
     <ion-item lines="none"><ion-icon slot="start" name="moon-outline" aria-hidden="true" />

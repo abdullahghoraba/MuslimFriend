@@ -31,7 +31,9 @@
     "smaller": "Kichikroq",
     "larger": "Kattaroq",
     "off": "O'chiq",
-    "mb": "MB"
+    "mb": "MB",
+    "search": "Qidirish",
+    "noResults": "Natija yoʻq"
   },
   "home": {
     "title": "Al-Uns Billah",

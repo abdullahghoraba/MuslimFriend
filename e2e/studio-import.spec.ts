@@ -64,10 +64,9 @@ test('imports a video from the phone and makes it a studio video, with the ayah 
 
   await page.locator('ion-segment-button[value=video]').first().click();
   // An ayah range, so the caption is drawn over the picture.
-  await page.locator('section.ayat ion-select').first().evaluate((el: HTMLElement & { value: unknown }) => {
-    el.value = 1;
-    el.dispatchEvent(new CustomEvent('ionChange', { detail: { value: 1 } }));
-  });
+  await page.locator('section.ayat app-search-select').first().click();
+  await page.locator('app-search-picker ion-searchbar input').fill('1');
+  await page.locator('app-search-picker .row', { hasText: 'الفاتحة' }).first().click();
 
   await expect(page.getByRole('button', { name: ar.studio.importVideo })).toBeVisible();
   await page.locator('input[type=file]').setInputFiles({ name: 'my-recitation.webm', mimeType: 'video/webm', buffer: clip });

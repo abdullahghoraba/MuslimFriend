@@ -1,4 +1,5 @@
-import { Component, inject, input, signal, viewChild } from '@angular/core';
+import { Component, computed, inject, input, signal, viewChild } from '@angular/core';
+import { SearchSelectComponent, numberOptions, suraSearchOptions } from '../../shared/search-select.component';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -39,6 +40,7 @@ import { HifzTestComponent } from './hifz-test.component';
   selector: 'app-hifz',
   standalone: true,
   imports: [
+    SearchSelectComponent,
     FormsModule,
     TranslatePipe,
     IonHeader,
@@ -157,6 +159,11 @@ export class HifzPage {
     return refs.length
       ? this.range({ from: refs[0], to: refs[refs.length - 1] })
       : this.translate.instant('hifz.none');
+  }
+  /** The suras to choose from, found by name or number (the reader's language's names). */
+  readonly suraPick = computed(() => (this.quran.ready() ? suraSearchOptions(this.quran.suras, (s: { index: number }) => this.suraName(s.index)) : []));
+  ayahPick(sura: number) {
+    return numberOptions(this.quran.sura(sura).ayas, (n: number) => this.number(n));
   }
   ayas(sura: number): number[] {
     return Array.from({ length: this.quran.sura(sura).ayas }, (_, i) => i + 1);

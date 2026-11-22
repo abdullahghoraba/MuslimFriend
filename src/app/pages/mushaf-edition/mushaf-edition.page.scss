@@ -148,15 +148,15 @@ ion-footer {
   }
 }
 
+// All the actions in sight (they share the width; nothing hidden off the edge).
 .ayah-actions {
   display: flex;
-  overflow-x: auto;
   gap: 2px;
   padding: 0 6px 6px;
 
   button {
-    flex: 0 0 auto;
-    min-width: 66px;
+    flex: 1 1 0;
+    min-width: 0;
     min-height: 52px;
     display: flex;
     flex-direction: column;
@@ -170,5 +170,6 @@ ion-footer {
     font-size: 0.72rem;
 
     ion-icon { font-size: 1.3rem; color: var(--m-accent); }
+    span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   }
 }

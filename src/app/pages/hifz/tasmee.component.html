@@ -4,18 +4,10 @@
     }
     @if (state() === 'idle') {
       <section class="card setup">
-        <ion-select interface="action-sheet" [label]="'studio.sura' | translate" [value]="sura()" (ionChange)="setSura($event.detail.value)">
-          @for (s of suraOptions(); track s.index) {
-            <ion-select-option [value]="s.index">{{ s.index }}. {{ s.name }}</ion-select-option>
-          }
-        </ion-select>
+        <app-search-select [label]="'studio.sura' | translate" [value]="sura()" [options]="suraPick()" (changed)="setSura($event)" />
         <div class="range">
-          <ion-select interface="popover" [label]="'mushaf.rangeFrom' | translate" [value]="from()" (ionChange)="setFrom($event.detail.value)">
-            @for (n of ayahNumbers(); track n) { <ion-select-option [value]="n">{{ n }}</ion-select-option> }
-          </ion-select>
-          <ion-select interface="popover" [label]="'mushaf.rangeTo' | translate" [value]="to()" (ionChange)="setTo($event.detail.value)">
-            @for (n of ayahNumbers(); track n) { <ion-select-option [value]="n">{{ n }}</ion-select-option> }
-          </ion-select>
+          <app-search-select [label]="'mushaf.rangeFrom' | translate" [value]="from()" [options]="ayahPick()" (changed)="setFrom($event)" />
+          <app-search-select [label]="'mushaf.rangeTo' | translate" [value]="to()" [options]="ayahPick()" (changed)="setTo($event)" />
         </div>
         <!-- Two ways: from memory (the words appear as they are recited) or reading from the mushaf (the text shown);
              both are checked the same way, words and (if chosen) harakat and tajweed. -->

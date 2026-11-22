@@ -178,34 +178,10 @@
               }}</ion-select-option>
             }
           </ion-select>
-          <ion-select
-            [label]="'hifz.fromSura' | translate"
-            [(ngModel)]="draft.from.sura"
-            (ionChange)="draft.from.aya = 1"
-          >
-            @for (s of quran.suras; track s.index) {
-              <ion-select-option [value]="s.index">{{ suraName(s.index) }}</ion-select-option>
-            }
-          </ion-select>
-          <ion-select [label]="'hifz.fromAya' | translate" [(ngModel)]="draft.from.aya">
-            @for (a of ayas(draft.from.sura); track a) {
-              <ion-select-option [value]="a">{{ number(a) }}</ion-select-option>
-            }
-          </ion-select>
-          <ion-select
-            [label]="'hifz.toSura' | translate"
-            [(ngModel)]="draft.to.sura"
-            (ionChange)="draft.to.aya = quran.sura(draft.to.sura).ayas"
-          >
-            @for (s of quran.suras; track s.index) {
-              <ion-select-option [value]="s.index">{{ suraName(s.index) }}</ion-select-option>
-            }
-          </ion-select>
-          <ion-select [label]="'hifz.toAya' | translate" [(ngModel)]="draft.to.aya">
-            @for (a of ayas(draft.to.sura); track a) {
-              <ion-select-option [value]="a">{{ number(a) }}</ion-select-option>
-            }
-          </ion-select>
+          <app-search-select [label]="'hifz.fromSura' | translate" [value]="draft.from.sura" [options]="suraPick()" (changed)="draft.from.sura = +$event; draft.from.aya = 1" />
+          <app-search-select [label]="'hifz.fromAya' | translate" [value]="draft.from.aya" [options]="ayahPick(draft.from.sura)" (changed)="draft.from.aya = +$event" />
+          <app-search-select [label]="'hifz.toSura' | translate" [value]="draft.to.sura" [options]="suraPick()" (changed)="draft.to.sura = +$event; draft.to.aya = quran.sura(draft.to.sura).ayas" />
+          <app-search-select [label]="'hifz.toAya' | translate" [value]="draft.to.aya" [options]="ayahPick(draft.to.sura)" (changed)="draft.to.aya = +$event" />
           <ion-select [label]="'hifz.dailyNew' | translate" [(ngModel)]="draft.dailyNew">
             @for (n of quotas; track n) {
               <ion-select-option [value]="n">{{ number(n) }}</ion-select-option>

@@ -51,10 +51,7 @@
               @for (k of karats; track k) { <ion-select-option [value]="k">{{ number(k) }}</ion-select-option> }
             </ion-select>
           } @else if (!isMetal(a)) {
-            <ion-select [label]="'zakat.currency' | translate" labelPlacement="stacked" interface="action-sheet" [value]="a.currency || s.currency"
-                        (ionChange)="edit(a.id, { currency: $event.detail.value })">
-              @for (c of currencies(); track c) { <ion-select-option [value]="c">{{ c.toUpperCase() }}</ion-select-option> }
-            </ion-select>
+            <app-search-select [stacked]="true" [label]="'zakat.currency' | translate" [value]="a.currency || s.currency" [options]="currencyPick()" (changed)="edit(a.id, { currency: '' + $event })" />
           }
         </div>
       </div>
@@ -71,14 +68,10 @@
   <ion-list inset>
     <ion-list-header>{{ 'zakat.pricesTitle' | translate }}</ion-list-header>
     <ion-item>
-      <ion-select [label]="'zakat.country' | translate" interface="alert" [value]="s.country" (ionChange)="setCountry($event.detail.value)">
-        @for (c of countries(); track c.code) { <ion-select-option [value]="c.code">{{ c.name }}</ion-select-option> }
-      </ion-select>
+      <app-search-select [label]="'zakat.country' | translate" [value]="s.country" [options]="countryPick()" (changed)="setCountry('' + $event)" />
     </ion-item>
     <ion-item>
-      <ion-select [label]="'zakat.currency' | translate" interface="action-sheet" [value]="s.currency" (ionChange)="setCurrency($event.detail.value)">
-        @for (c of currencies(); track c) { <ion-select-option [value]="c">{{ c.toUpperCase() }}</ion-select-option> }
-      </ion-select>
+      <app-search-select [label]="'zakat.currency' | translate" [value]="s.currency" [options]="currencyPick()" (changed)="setCurrency('' + $event)" />
     </ion-item>
     @if (prices(); as p) {
       <ion-item>

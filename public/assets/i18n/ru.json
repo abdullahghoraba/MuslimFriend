@@ -31,7 +31,9 @@
     "smaller": "Меньше",
     "larger": "Больше",
     "off": "Выкл.",
-    "mb": "МБ"
+    "mb": "МБ",
+    "search": "Поиск",
+    "noResults": "Ничего не найдено"
   },
   "home": {
     "title": "Al-Uns Billah",

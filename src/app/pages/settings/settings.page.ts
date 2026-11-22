@@ -1,4 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
+import { SearchSelectComponent } from '../../shared/search-select.component';
 import { RouterLink } from '@angular/router';
 import {
   IonContent,
@@ -13,8 +14,6 @@ import {
   IonRange,
   IonSegment,
   IonSegmentButton,
-  IonSelect,
-  IonSelectOption,
   IonTitle,
   IonToggle,
   IonToolbar,
@@ -28,13 +27,13 @@ import { ShareService } from '../../core/services/share.service';
 import { AthkarOverlay } from '../../native/athkar-overlay';
 import packageJson from '../../../../package.json';
 import { DataSectionComponent } from './data-section.component';
-import { SelectTextsDirective } from '../../shared/select-texts.directive';
 
 @Component({
   selector: 'app-settings',
   imports: [
+    SearchSelectComponent,
     RouterLink, TranslatePipe, IonHeader, IonButton, IonIcon, IonToolbar, IonTitle, IonContent, IonList, IonListHeader, IonItem, IonLabel,
-    IonNote, IonSegment, IonSegmentButton, IonSelect, SelectTextsDirective, IonSelectOption, IonToggle, IonRange, DataSectionComponent,
+    IonNote, IonSegment, IonSegmentButton, IonToggle, IonRange, DataSectionComponent,
   ],
   templateUrl: './settings.page.html',
   styleUrl: './settings.page.scss',
@@ -52,6 +51,7 @@ export class SettingsPage {
   readonly swatches = STYLE_SWATCHES;
   readonly colorStyle = this.appearance.colorStyle;
   readonly languages = LANGUAGES;
+  readonly languagePick = LANGUAGES.map((l) => ({ value: l.code, label: l.name, keys: [l.code] }));
 
   styleName(s: ColorStyle): string {
     return { calm: 'settings.styleCalm', night: 'settings.styleNight', rose: 'settings.styleRose', classic: 'settings.styleClassic' }[s];

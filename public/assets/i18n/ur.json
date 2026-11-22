@@ -31,7 +31,9 @@
     "smaller": "چھوٹا",
     "larger": "بڑا",
     "off": "بند",
-    "mb": "MB"
+    "mb": "MB",
+    "search": "تلاش",
+    "noResults": "کوئی نتیجہ نہیں"
   },
   "home": {
     "title": "الأُنس بالله",

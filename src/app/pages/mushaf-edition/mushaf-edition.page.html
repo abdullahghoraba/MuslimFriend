@@ -20,12 +20,7 @@
   </ion-toolbar>
   @if (suraOptions().length) {
     <ion-toolbar class="sura-bar">
-      <ion-select interface="action-sheet" [label]="'editions.sura' | translate" [value]="pageSura()"
-                  (ionChange)="goToSura(+$event.detail.value)">
-        @for (s of suraOptions(); track s.index) {
-          <ion-select-option [value]="s.index">{{ s.index }}. {{ s.name }}</ion-select-option>
-        }
-      </ion-select>
+      <app-search-select [label]="'editions.sura' | translate" [value]="pageSura()" [options]="suraPick()" (changed)="goToSura(+$event)" />
     </ion-toolbar>
   }
 </ion-header>
