@@ -350,7 +350,24 @@ export class MushafEditionsService {
    * 120 KB) and kept on the device, so a page that was opened once opens again offline.
    */
   qcfFont(page: number, url: string): Promise<string> {
-    return this.savedFont(qcfFamily(page), url.replace('{page}', String(page)), `${DIR}/qcf/p${page}.woff2`);
+    this.oldQcfFonts ??= this.dropOldQcfFonts();
+    // Kept apart from the 1421 print's fonts (qcf/), saved by versions before 1.0.29.
+    return this.savedFont(qcfFamily(page), url.replace('{page}', String(page)), `${DIR}/qcf1/p${page}.woff2`);
+  }
+
+  private oldQcfFonts?: Promise<void>;
+
+  /** The 1421 print's page fonts, kept by versions before 1.0.29 (up to 70 MB): no page uses them any more. */
+  private async dropOldQcfFonts(): Promise<void> {
+    if (!Capacitor.isNativePlatform()) return;
+    try {
+      const { files } = await Filesystem.readdir({ path: `${DIR}/qcf`, directory: Directory.Data });
+      for (const f of files) {
+        if (/^p\d+\.woff2$/.test(f.name)) await Filesystem.deleteFile({ path: `${DIR}/qcf/${f.name}`, directory: Directory.Data }).catch(() => undefined);
+      }
+    } catch {
+      /* none */
+    }
   }
 
   /** The font that writes «سورة …» in the print's calligraphy (about 210 KB, kept like the page fonts). */

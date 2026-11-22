@@ -2,7 +2,10 @@
 // the app's (Tanzil) ayah words. Line numbers come from the Quran.com API word data (fetch.mjs) and are checked
 // against the King Fahd Complex (KFGQPC) Hafs data: every ayah must start and end on the same page and lines.
 //
-// Usage: node scripts/madinah-lines/build.mjs <cacheDir> <hafsData_v18.json> [mushafId=1]
+// Usage: node scripts/madinah-lines/build.mjs <cacheDir> <hafsData_v18.json> [mushafId=2]
+//   mushafId 2 = the 1405 King Fahd print (QCF v1), the one most mushafs and apps (Ayah, Quran Android) follow; 1 = the
+//   1421 print (QCF v2), whose page breaks differ on 25 pages (al-Qalam 16 ends page 564 there, begins page 565 in 1405).
+//   The KFGQPC Hafs data follows the 1421 print: with the 1405 print its page and line differences are notes.
 //
 // Outputs:
 //   madinah-lines.json  the lines as runs of the app's (Tanzil) words, for the coloured tajweed pages
@@ -18,7 +21,8 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const [dir, kfgqpcFile, mushaf = '1'] = process.argv.slice(2);
+const [dir, kfgqpcFile, mushaf = '2'] = process.argv.slice(2);
+const PRINT = mushaf === '1' ? 'the 1421 King Fahd print' : 'the 1405 King Fahd print';
 if (!dir || !kfgqpcFile) throw new Error('usage: build.mjs <cacheDir> <hafsData_v18.json> [mushafId]');
 
 const root = new URL('../../', import.meta.url);
@@ -111,7 +115,7 @@ for (let p = 1; p <= 604; p++) {
     if (qc.some((w) => w[1] !== p)) problems.push(`${v.key}: word on another page`);
     // The app's old page table (Tanzil) differs from the print on a few pages; the lines file replaces it.
     if (appPage[index] !== p) notes.push(`${v.key}: Tanzil page ${appPage[index]}, printed page ${p}`);
-    if (k.page !== p) problems.push(`${v.key}: KFGQPC page ${k.page} != ${p}`);
+    if (k.page !== p) (mushaf === '1' ? problems : notes).push(`${v.key}: KFGQPC page ${k.page} != ${p}`);
     const app = wordsOf(sura, aya, texts[index]);
     const aligned = align(app, qc);
     const words = aligned?.lines;
@@ -187,7 +191,7 @@ if (problems.length) {
 if (problems.length) process.exit(1);
 const isText = (line) => Array.isArray(line[0]);
 const file = new URL('public/assets/quran/madinah-lines.json', root);
-writeFileSync(file, JSON.stringify({ source: 'Quran.com API word line numbers, checked against KFGQPC Hafs v18', pages }));
+writeFileSync(file, JSON.stringify({ source: `Quran.com API word line numbers (mushaf ${mushaf}, ${PRINT}), checked against KFGQPC Hafs v18`, pages }));
 console.log('wrote', file.pathname, readFileSync(file).length, 'bytes');
 // Text lines hold only the QPC words of each run: the ayah and its end come from madinah-lines.json, line by line.
 const qpcPages = pages.map((lines) => lines.map((line) => (isText(line) ? line.map((r) => r.qpc) : line)));

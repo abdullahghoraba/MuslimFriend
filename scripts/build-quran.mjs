@@ -2,7 +2,7 @@
 //   content/tanzil/quran-uthmani.txt          Uthmani text (CC BY 3.0)
 //   content/quran-sources/quran-data.xml      metadata: suras, juz, hizb quarters, 604 Madani pages, sajdas
 //   content/quran-sources/ar.muyassar.txt     Tafsir al-Muyassar (King Fahd Complex) — Tanzil, non-commercial
-//   public/assets/quran/madinah-lines.json    the 15 lines of each page of the 1421 Madinah print
+//   public/assets/quran/madinah-lines.json    the 15 lines of each page of the 1405 Madinah print
 //                                             (scripts/madinah-lines); its page starts replace Tanzil's, which
 //                                             follow the older 1405 print (about 70 ayat sit on another page)
 // Output (public/assets/quran/):
@@ -71,7 +71,7 @@ try {
     if (run[1] !== 0) errors.push(`page starts inside an ayah: ${JSON.stringify(run)}`);
     return at(run[0]);
   });
-  meta.sources.pages = 'Pages of the 1421 Madinah print (King Fahd Complex): Quran.com word lines, checked against KFGQPC Hafs data';
+  meta.sources.pages = 'Pages of the 1405 Madinah print (King Fahd Complex), as in most mushafs: Quran.com word lines, checked against KFGQPC Hafs data';
 } catch (e) {
   errors.push(`madinah-lines.json: ${e.message}`);
 }

@@ -199,8 +199,12 @@ export type QcfLine = ['s', number] | ['b'] | QcfRun[];
 /** madinah-qcf.json (scripts/madinah-qcf/build.mjs). */
 export interface MadinahQcfData { source: unknown; font: string; pages: QcfLine[][] }
 
-/** The font family of a page of the printed Madinah mushaf (one font per page). */
-export const qcfFamily = (page: number) => `qcf-p${page}`;
+/**
+ * The font family of a page of the printed Madinah mushaf (one font per page): the 1405 print's fonts (QCF v1).
+ * Named apart from the 1421 print's (qcf-p…), which phones that opened the mushaf before 1.0.29 keep: those draw
+ * other glyphs.
+ */
+export const qcfFamily = (page: number) => `qcf1-p${page}`;
 
 /** The surah-name font of the same set: draws «سورة …» in the print's calligraphy from the sura's number ("003"). */
 export const QCF_SURAH_NAMES_URL = 'https://static.qurancdn.com/fonts/quran/surah-names/v2/sura_names.woff2';

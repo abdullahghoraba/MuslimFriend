@@ -24,7 +24,13 @@ describe('Madinah printed line layout', () => {
     expect(layout.pages).toBe(604);
     expect(refAt(meta, layout.pieces(3)[0].index)).toEqual({ sura: 2, aya: 6 });
     expect(refAt(meta, layout.pieces(604).at(-1)!.index)).toEqual({ sura: 114, aya: 6 });
-    expect(layout.pageOf(indexOf(100, 6))).toBe(600);
+    // The 1405 print (as in most mushafs and apps), not the 1421 one: al-Qalam 16 «سَنَسِمُهُۥ عَلَى ٱلْخُرْطُومِ» begins
+    // page 565 (1421: ends 564), at-Takwir begins page 586, al-'Adiyat 6 is on 599 (1421: 600).
+    expect(layout.pageOf(indexOf(68, 15))).toBe(564);
+    expect(layout.pageOf(indexOf(68, 16))).toBe(565);
+    expect(refAt(meta, layout.pieces(565)[0].index)).toEqual({ sura: 68, aya: 16 });
+    expect(refAt(meta, layout.pieces(586)[0].index)).toEqual({ sura: 81, aya: 1 });
+    expect(layout.pageOf(indexOf(100, 6))).toBe(599);
     expect(data.pages.slice(2).every((lines) => lines.length === 15)).toBe(true);
     expect(layout.lines!(1)[0]).toEqual(['s', 1]);
     expect(layout.lines!(1).some((line) => line[0] === 'b')).toBe(false);

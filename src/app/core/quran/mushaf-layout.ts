@@ -25,7 +25,7 @@ export type MadinahRun = [index: number, from: number, to: number];
 export type MadinahLine = ['s', number] | ['b'] | MadinahRun[];
 export interface MadinahLinesData { source: unknown; pages: MadinahLine[][] }
 
-/** The verified 1421 print is the authority for both rows and page membership. */
+/** The print's lines (madinah-lines.json, the 1405 King Fahd print) are the authority for both rows and page membership. */
 export function madinahLayout(data: MadinahLinesData): MushafLayout {
   const firstPage = new Map<number, number>();
   const pieces = data.pages.map((lines, page) => {

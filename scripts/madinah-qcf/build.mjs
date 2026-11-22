@@ -1,11 +1,11 @@
 // Builds public/assets/quran/madinah-qcf.json: every word of the 604 Madinah pages as its glyph in the King Fahd
-// Complex's page fonts (QCF v2, one font per page: p1.woff2 … p604.woff2), for the «صفحة كالمطبوع» view. In those
+// Complex's page fonts (QCF v1, one font per page: p1.woff2 … p604.woff2), for the «صفحة كالمطبوع» view. In those
 // fonts each word is drawn the way that page prints it, so a line set in them is the printed line: no kashida or
 // spacing has to be invented, and nothing in the text is changed.
 //
 // Usage: node scripts/madinah-qcf/build.mjs <cacheDir>
-//   Downloads the word glyph codes of each page from the Quran.com API (mushaf 1 = the 1421 King Fahd print, the same
-//   one madinah-lines.json follows) into <cacheDir>, then checks every page against madinah-lines.json: the same ayat on
+//   Downloads the word glyph codes of each page from the Quran.com API (mushaf 2 = the 1405 King Fahd print, the one
+//   most mushafs and apps follow, and madinah-lines.json too; the 1421 print, QCF v2, breaks 25 pages differently) into <cacheDir>, then checks every page against madinah-lines.json: the same ayat on
 //   the same lines, in the same order, with the ayah ends where its runs end.
 //
 // madinah-qcf.json: { source, font, pages: [[line, ...] x 604] } where a line is
@@ -30,10 +30,10 @@ const indexOf = (key) => {
 };
 
 const url = (p) =>
-  `https://api.qurancdn.com/api/qdc/verses/by_page/${p}?words=true&word_fields=code_v2,line_number,page_number,v2_page&per_page=300&mushaf=1`;
+  `https://api.qurancdn.com/api/qdc/verses/by_page/${p}?words=true&word_fields=code_v1,line_number,page_number,v1_page&per_page=300&mushaf=2`;
 
 async function fetchPage(p) {
-  const file = join(dir, `qcf-${p}.json`);
+  const file = join(dir, `qcf1-${p}.json`);
   if (existsSync(file)) return JSON.parse(readFileSync(file, 'utf8'));
   for (let attempt = 1; ; attempt++) {
     try {
@@ -42,7 +42,7 @@ async function fetchPage(p) {
       const j = await r.json();
       const verses = j.verses.map((v) => ({
         key: v.verse_key,
-        words: v.words.map((w) => ({ line: w.line_number, page: w.page_number, v2: w.v2_page, end: w.char_type_name === 'end', code: w.code_v2 })),
+        words: v.words.map((w) => ({ line: w.line_number, page: w.page_number, v1: w.v1_page, end: w.char_type_name === 'end', code: w.code_v1 })),
       }));
       writeFileSync(file, JSON.stringify(verses));
       return verses;
@@ -56,18 +56,13 @@ async function fetchPage(p) {
 /**
  * Corrections to the API data, each checked by rendering the page in its font (every full line of a page measures the
  * same, within about 1%):
- * - 2:181 (page 27): its last glyph is the ayah's number but is marked as a word, and the last word of line 14
- *   («فَإِنَّمَآ») belongs on line 15. Fixed, lines 14 and 15 measure 630 and 626 like the page's other lines (618–633);
- *   as delivered, 697 and 558.
+ * - 2:181 (page 27): its last glyph is the ayah's number but is marked as a word. (In the 1421 print's data the last
+ *   word of its line 14 also belonged on line 15; the 1405 print's lines are right, as madinah-lines.json has them.)
  */
 function correct(p, verses) {
   if (p === 27) {
     const v = verses.find((x) => x.key === '2:181');
-    if (v) {
-      v.words[v.words.length - 1].end = true;
-      const lastOn14 = v.words.filter((w) => w.line === 14).at(-1);
-      if (lastOn14) lastOn14.line = 15;
-    }
+    if (v) v.words[v.words.length - 1].end = true;
   }
   return verses;
 }
@@ -93,7 +88,7 @@ const pages = raw.map((verses, i) => {
   for (const v of verses) {
     const index = indexOf(v.key);
     for (const w of v.words) {
-      if (w.page !== p || w.v2 !== p) errors.push(`${v.key}: word on page ${w.page}/${w.v2}, expected ${p}`);
+      if (w.page !== p || w.v1 !== p) errors.push(`${v.key}: word on page ${w.page}/${w.v1}, expected ${p}`);
       if (!w.code?.trim()) errors.push(`${v.key}: missing glyph`);
       const lineNo = w.line - LINE_OFFSET(p);
       const runs = byLine.get(lineNo) ?? [];
@@ -127,8 +122,8 @@ if (errors.length) {
 }
 
 const out = {
-  source: 'Quran.com API (mushaf 1, the 1421 King Fahd Complex print): word glyph codes for the QCF v2 page fonts',
-  font: 'https://static.qurancdn.com/fonts/quran/hafs/v2/woff2/p{page}.woff2',
+  source: 'Quran.com API (mushaf 2, the 1405 King Fahd Complex print): word glyph codes for the QCF v1 page fonts',
+  font: 'https://static.qurancdn.com/fonts/quran/hafs/v1/woff2/p{page}.woff2',
   pages,
 };
 writeFileSync(new URL('public/assets/quran/madinah-qcf.json', root), JSON.stringify(out));
