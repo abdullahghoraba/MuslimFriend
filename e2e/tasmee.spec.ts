@@ -17,6 +17,8 @@ const WAV_NOISY = join(tmpdir(), 'al-uns-billah-fatiha-husary-noisy.wav');
 const WAV_WARSH = join(tmpdir(), 'al-uns-billah-fatiha-warsh.wav');
 /** The same recitation with two words cut out of the middle of their ayat: «رَبِّ» (ayah 2) and «غَيْرِ» (ayah 7). */
 const WAV_WORDS = join(tmpdir(), 'al-uns-billah-fatiha-husary-no-words.wav');
+/** Al-Baqarah 26-27 (Husary): long ayat read with no pause long enough to end a phrase, so they are cut for length. */
+const WAV_LONG = join(tmpdir(), 'al-uns-billah-baqara-26-27-husary.wav');
 const BASE = 'http://localhost:4321';
 
 /**
@@ -102,11 +104,11 @@ async function openTasmee(wav: string) {
 
 test.describe.configure({ mode: 'serial', timeout: 600_000 });
 
-async function makeWav(path: string, ayat: number[], reciter = 'Husary_128kbps'): Promise<void> {
+async function makeWav(path: string, ayat: number[], reciter = 'Husary_128kbps', sura = 1): Promise<void> {
   if (existsSync(path)) return;
   const parts: string[] = [];
   for (const aya of ayat) {
-    const res = await fetch(`https://everyayah.com/data/${reciter}/001${String(aya).padStart(3, '0')}.mp3`);
+    const res = await fetch(`https://everyayah.com/data/${reciter}/${String(sura).padStart(3, '0')}${String(aya).padStart(3, '0')}.mp3`);
     expect(res.ok).toBe(true);
     parts.push(Buffer.from(await res.arrayBuffer()).toString('base64'));
   }
@@ -247,5 +249,18 @@ test('a word left out in the middle of an ayah is caught, and the harakat/tajwee
   // A tap on a word left out says so.
   await page.locator('.recital .w.skipped').first().click();
   await expect(page.locator('.word-sheet')).toContainText(ar.tasmee.wsSkipped);
+  await browser.close();
+});
+
+test('a long ayah read without a pause is cut between words, never in one (al-Baqarah 26-27)', async () => {
+  await makeWav(WAV_LONG, [26, 27], 'Husary_128kbps', 2);
+  const { browser, page } = await openTasmee(WAV_LONG);
+  await page.goto(BASE + '/tasmee?sura=2&from=26&to=27');
+  await page.getByRole('button', { name: ar.tasmee.start }).click();
+  await expect(page.locator('.summary .score')).toBeVisible({ timeout: 180_000 });
+  const bad = await page.locator('.recital .w.wrong, .recital .w.skipped').evaluateAll((els) => els.map((e) => e.className + ': ' + e.textContent));
+  console.log('long ayah: score', await page.locator('.summary .score').textContent(), bad.join(' | '));
+  // (Before, a word the cut fell in came back in two pieces: «بهذا» as «ا» and «هذا», «ويقطعون» as «ويقر» and «قطعون».)
+  expect(bad).toEqual([]);
   await browser.close();
 });

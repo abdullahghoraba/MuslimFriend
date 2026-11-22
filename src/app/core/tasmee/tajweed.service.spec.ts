@@ -33,7 +33,7 @@ describe('tajweed: reading the server reply', () => {
   });
 });
 
-// Findings the tajweed server returned on real recitations (Husary, Minshawi, Alafasy in Hafs; al-Dosary in Warsh).
+// Findings the tajweed server returned on real recitations (Husary and Minshawi in Hafs; al-Dosary in Warsh).
 const err = (type: TajweedError['type'], kind: TajweedError['kind'], expected: string, heard: string, rules: string[] = []): TajweedError =>
   ({ aya: 1, word: 0, text: '', type, kind, expected, heard, rules: rules.map((ar) => ({ ar, en: '' })) });
 

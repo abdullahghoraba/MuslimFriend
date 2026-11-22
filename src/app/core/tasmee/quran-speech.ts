@@ -39,6 +39,10 @@ export class PhraseSplitter {
   /** Samples of the current 20 ms frame. */
   private readonly frame: Float32Array;
   private frameFill = 0;
+  /** Samples at the start of the phrase that repeat the end of the phrase cut before it. */
+  private lead = 0;
+  /** How much of a cut phrase's end the next phrase starts with (a word cut in two is then whole in one of them). */
+  static readonly OVERLAP_SEC = 3;
   /** Audio kept from before speech starts. */
   private readonly preRoll: Float32Array;
   private preFill = 0;
@@ -47,8 +51,11 @@ export class PhraseSplitter {
   level = 0;
 
   constructor(
-    /** [cut]: the phrase was cut for its length (no pause): the recitation goes on, maybe mid-word, in the next one. */
-    private readonly onPhrase: (audio: Float32Array, final: boolean, cut?: boolean) => void,
+    /**
+     * [cut]: the phrase was cut for its length (no pause): the recitation goes on, maybe mid-word, in the next one.
+     * [lead]: samples at the start of this phrase that are the end of the cut phrase before it (see cutLong).
+     */
+    private readonly onPhrase: (audio: Float32Array, final: boolean, cut?: boolean, lead?: number) => void,
     private readonly rate = SAMPLE_RATE,
     private readonly pauseSec = 0.55,
     private readonly maxSec = 14,
@@ -136,7 +143,7 @@ export class PhraseSplitter {
     else if (this.length / this.rate >= this.maxSec) this.cutLong();
     else if (this.sinceUpdate >= this.updateSec && this.silentFor < 0.2) {
       this.sinceUpdate = 0;
-      this.onPhrase(this.buf.slice(0, this.length), false);
+      this.onPhrase(this.buf.slice(0, this.length), false, false, this.lead);
     }
   }
 
@@ -180,10 +187,14 @@ export class PhraseSplitter {
         at = i + (win >> 1);
       }
     }
-    this.onPhrase(this.buf.slice(0, at), true, true);
-    const rest = this.buf.slice(at, this.length);
+    this.onPhrase(this.buf.slice(0, at), true, true, this.lead);
+    // The next phrase starts a little before the cut, so the word the cut fell in is whole in it (the reader of the
+    // two phrases drops it from the first, see QuranSpeech).
+    const lead = Math.min(at, Math.round(this.rate * PhraseSplitter.OVERLAP_SEC));
+    const rest = this.buf.slice(at - lead, this.length);
     this.length = 0;
     this.append(rest);
+    this.lead = lead;
     this.voicedSec = rest.length / this.rate;
     this.sinceUpdate = 0;
   }
@@ -193,13 +204,17 @@ export class PhraseSplitter {
     return this.speaking;
   }
 
-  /** Sends the phrase (a pause, or the reader pressed stop). A click or a cough (under 0.25 s of voice) is dropped. */
+  /**
+   * Sends the phrase (a pause, or the reader pressed stop). A click or a cough (under 0.25 s of voice) is dropped,
+   * but not the rest of a cut phrase (it has the word the cut fell in).
+   */
   flush(): void {
-    if (this.speaking && this.voicedSec >= 0.25) {
+    if (this.speaking && (this.voicedSec >= 0.25 || this.lead > 0)) {
       // Up to 0.3 s of the pause stays with the phrase (the end of its last word).
       const tail = Math.max(0, this.silentFor - 0.3);
-      this.onPhrase(this.buf.slice(0, Math.max(0, this.length - Math.round(tail * this.rate))), true);
+      this.onPhrase(this.buf.slice(0, Math.max(0, this.length - Math.round(tail * this.rate))), true, false, this.lead);
     }
+    this.lead = 0;
     this.length = 0;
     this.speaking = false;
     this.onset = 0;
@@ -322,6 +337,9 @@ export class QuranSpeech {
     const reading = (d: WorkerOut, phrase?: number, audio?: Float32Array, cut?: boolean) => ({
       phrase, words: d.words ?? [], lp: d.lp ?? new Float32Array(0), frames: d.frames ?? 0, vocab: d.vocab ?? 0, audio, cut,
     });
+    // A phrase cut for its length: where the next phrase should start (samples of its lead to skip), once it is read.
+    let boundary: ReturnType<typeof deferred> | null = null;
+    const boundaryOf = new Map<number, ReturnType<typeof deferred>>(); // id of a cut phrase -> its boundary
     worker.onmessage = (e: MessageEvent<WorkerOut>) => {
       const id = e.data.id ?? 0;
       if (joins.has(id)) {
@@ -342,7 +360,19 @@ export class QuranSpeech {
         audioOf.delete(id);
         const cut = cutOf.get(id);
         cutOf.delete(id);
-        if (e.data.type === 'text' && e.data.text && e.data.words && e.data.lp) cb.onFinal(e.data.text, undefined, reading(e.data, phrase, audio, cut));
+        let d = e.data;
+        let kept = audio;
+        if (cut && audio) {
+          // The word the cut fell in is read whole at the start of the next phrase: it is taken off this one, which
+          // then ends in the quiet before that word, where the next phrase starts.
+          const t = trimCut(d, audio.length);
+          d = t.data;
+          kept = audio.subarray(0, t.keep);
+          if (this.group?.phrases[this.group.phrases.length - 1] === phrase) this.group = { ...this.group, audio: kept };
+          boundaryOf.get(id)?.resolve(t.skip);
+          boundaryOf.delete(id);
+        }
+        if (d.type === 'text' && d.text && d.words && d.lp) cb.onFinal(d.text, undefined, reading(d, phrase, kept, cut));
         else if (e.data.type === 'error') cb.onError(e.data.message ?? 'error');
         if (!this.pendingFinals.size) cb.onPartial('');
       } else if (partials.has(id)) {
@@ -362,13 +392,40 @@ export class QuranSpeech {
     const source = this.ctx.createMediaStreamSource(this.stream);
     // The microphone (48 kHz on most phones) to the recogniser's 16 kHz as it comes, with a proper low-pass.
     const resampler = new StreamResampler(this.ctx.sampleRate, SAMPLE_RATE);
-    this.splitter = new PhraseSplitter((pcm, final, cut) => {
+    this.splitter = new PhraseSplitter((whole, final, cut, lead = 0) => {
+      if (final && lead > 0) {
+        // The phrase after a cut: it starts where the cut phrase's last whole word ended (known once that is read).
+        const id = this.nextId++;
+        this.pendingFinals.add(id);
+        const wait = boundary?.promise ?? Promise.resolve(lead);
+        const mine = cut ? deferred() : null;
+        boundary = mine;
+        void wait.then((skip) => {
+          this.pendingFinals.delete(id);
+          send(whole.slice(Math.min(skip, lead)), cut, mine);
+        });
+        return;
+      }
       if (final) {
+        boundary = cut ? deferred() : null;
+        send(whole, cut, boundary);
+      } else if (!this.partialId && !this.pendingFinals.size) {
+        const id = this.nextId++;
+        this.partialId = id;
+        partials.set(id, this.phrase);
+        // A live read only shows the words as they are said: read once, not again where words are missing; the
+        // start a phrase has in common with a cut one before it is not shown again.
+        worker.postMessage({ type: 'transcribe', id, audio: whole.subarray(lead), quick: true });
+      }
+    }, SAMPLE_RATE);
+    const send = (pcm: Float32Array, cut?: boolean, cutBoundary?: ReturnType<typeof deferred> | null) => {
+      {
         const id = this.nextId++;
         const phrase = this.phrase;
         finals.set(id, phrase);
         audioOf.set(id, pcm.slice());
         if (cut) cutOf.set(id, true);
+        if (cut && cutBoundary) boundaryOf.set(id, cutBoundary);
         this.pendingFinals.add(id);
         this.partialPhrase = phrase; // its live reads are now out of date
         this.phrase++;
@@ -377,7 +434,8 @@ export class QuranSpeech {
         // Silence between two phrases read as one, except where one was cut mid-speech (it may be mid-word).
         const gap = before?.cut ? 0 : Math.round(SAMPLE_RATE * 0.25);
         this.group = { phrases: [phrase], audio: pcm.slice(), cut };
-        if (cb.onJoin && before && before.audio.length + gap + pcm.length <= QuranSpeech.JOIN_SECONDS * SAMPLE_RATE) {
+        // A cut phrase is not joined yet: its last word may be cut in two (it is read whole with the next phrase).
+        if (cb.onJoin && before && !cut && before.audio.length + gap + pcm.length <= QuranSpeech.JOIN_SECONDS * SAMPLE_RATE) {
           const audio = new Float32Array(before.audio.length + gap + pcm.length);
           audio.set(before.audio);
           audio.set(pcm, before.audio.length + gap);
@@ -389,14 +447,8 @@ export class QuranSpeech {
           return;
         }
         worker.postMessage({ type: 'transcribe', id, audio: pcm }, [pcm.buffer]);
-      } else if (!this.partialId && !this.pendingFinals.size) {
-        const id = this.nextId++;
-        this.partialId = id;
-        partials.set(id, this.phrase);
-        // A live read only shows the words as they are said: read once, not again where words are missing.
-        worker.postMessage({ type: 'transcribe', id, audio: pcm, quick: true }, [pcm.buffer]);
       }
-    }, SAMPLE_RATE);
+    };
     // ScriptProcessor: simple, and needs no extra script file (the app's security policy allows none from blobs).
     this.node = this.ctx.createScriptProcessor(4096, 1, 1);
     this.node.onaudioprocess = (e) => this.splitter?.push(resampler.push(e.inputBuffer.getChannelData(0)));
@@ -421,4 +473,39 @@ export class QuranSpeech {
     this.ctx = undefined;
     this.stream = undefined;
   }
+}
+
+function deferred(): { promise: Promise<number>; resolve: (n: number) => void } {
+  let resolve!: (n: number) => void;
+  const promise = new Promise<number>((r) => (resolve = r));
+  return { promise, resolve };
+}
+
+/**
+ * A phrase cut for its length, as read: its last word, if it began in the stretch the next phrase starts with (the
+ * last OVERLAP_SEC), is taken off (it may be cut in two; the next phrase has it whole). [keep]: samples of the phrase
+ * kept (up to the quiet before that word); [skip]: samples of the next phrase's lead to skip, so it starts there.
+ */
+export function trimCut<T extends { text?: string; words?: { text: string; start: number; end: number }[]; lp?: Float32Array; frames?: number; vocab?: number }>(
+  d: T, samples: number, rate = SAMPLE_RATE,
+): { data: T; keep: number; skip: number } {
+  const lead = Math.min(samples, Math.round(PhraseSplitter.OVERLAP_SEC * rate));
+  const from = samples - lead;
+  const words = d.words ?? [];
+  const frames = d.frames ?? 0;
+  if (words.length < 2 || !frames || !d.lp) return { data: d, keep: samples, skip: lead };
+  const spf = samples / frames;
+  const last = words[words.length - 1];
+  const prev = words[words.length - 2];
+  if (last.start * spf < from) return { data: d, keep: samples, skip: lead };
+  // Between the two words, not before the next phrase's start: the end of the word before and the start of the last.
+  const keepFrame = Math.max(Math.ceil(from / spf), Math.min(last.start - 1, Math.round((prev.end + last.start) / 2) + 1));
+  const keep = Math.min(samples, Math.round(keepFrame * spf));
+  const vocab = d.vocab ?? 0;
+  const kept = words.slice(0, -1);
+  return {
+    data: { ...d, words: kept, text: kept.map((w) => w.text).join(' '), frames: keepFrame, lp: d.lp.slice(0, keepFrame * vocab) },
+    keep,
+    skip: keep - from,
+  };
 }

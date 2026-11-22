@@ -13,7 +13,7 @@ const WORDS = { '1:1': 4, '1:2': 4, '1:3': 2, '1:4': 3, '1:5': 4, '1:6': 3, '1:7
 const RECITERS = {
   'Husary (Hafs)': 'Husary_128kbps',
   'Minshawi (Hafs)': 'Minshawy_Murattal_128kbps',
-  'Alafasy (Hafs)': 'Alafasy_128kbps',
+  'Hudhaify (Hafs)': 'Hudhaify_128kbps',
   'Ibrahim al-Dosary (Warsh)': 'warsh/warsh_ibrahim_aldosary_128kbps',
 };
 const AYAT = process.argv[2] ? process.argv[2].split(',') : Object.keys(WORDS);
@@ -88,7 +88,7 @@ const voweled = (s) => /[ً-ِ]/.test(s);
  * phrase as one breath, counts as a mistake: the last letter said with sukun (or qalqalah) instead of its vowel,
  * a madd lengthened at the stop ('arid), a ghunnah or idgham with the next word not made across the pause, or the
  * next word's first letter heard at the end of this one. Real mistakes are kept: a different vowel, an added vowel,
- * a missing madd. Checked on recitations by Husary, Minshawi and Alafasy (no false mistakes left) and a Warsh
+ * a missing madd. Checked on recitations by Husary and Minshawi (no false mistakes left) and a Warsh
  * recitation (its differences from Hafs still found).
  */
 function pauseArtifact(e, word, next) {

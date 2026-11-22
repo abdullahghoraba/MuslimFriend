@@ -258,7 +258,7 @@ export function unsureFinding(e: TajweedError, word: string): boolean {
  * phrase as one breath, counts as a mistake: the last letter said with sukun (or qalqalah) instead of its vowel,
  * a madd lengthened at the stop ('arid), a ghunnah or idgham with the next word not made across the pause, or the
  * next word's first letter heard at the end of this one. Real mistakes are kept: a different vowel, an added vowel,
- * a missing madd. Checked on recitations by Husary, Minshawi and Alafasy (no false mistakes left) and a Warsh
+ * a missing madd. Checked on recitations by Husary and Minshawi (no false mistakes left) and a Warsh
  * recitation (its differences from Hafs still found).
  */
 export function pauseArtifact(e: TajweedError, word: string, next?: string): boolean {

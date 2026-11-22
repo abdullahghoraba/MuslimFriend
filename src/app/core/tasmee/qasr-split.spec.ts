@@ -69,3 +69,27 @@ describe('qasr: a re-read is taken only when it adds words', () => {
     expect(r.lp.length).toBe(r.frames * 2);
   });
 });
+
+describe('qasr: a phrase cut for its length', () => {
+  it('its last word, begun in the stretch the next phrase starts with, is left to the next phrase', async () => {
+    const { trimCut } = await import('./quran-speech');
+    // 12 s, 25 frames a second; the next phrase starts with the last 3 s (from 9 s, frame 225).
+    const words = [{ text: 'واما', start: 10, end: 40 }, { text: 'الذين', start: 200, end: 230 }, { text: 'ا', start: 290, end: 299 }];
+    const d = { text: 'واما الذين ا', words, lp: new Float32Array(300 * 2), frames: 300, vocab: 2 };
+    const t = trimCut(d, 12 * 16000);
+    expect(t.data.words!.map((w) => w.text)).toEqual(['واما', 'الذين']);
+    expect(t.data.frames).toBeGreaterThan(230);
+    expect(t.data.frames).toBeLessThan(290);
+    expect(t.data.lp!.length).toBe(t.data.frames! * 2);
+    expect(t.keep).toBe(Math.round(t.data.frames! * 640));
+    expect(t.skip).toBe(t.keep - 9 * 16000);
+  });
+
+  it('a last word begun before that stretch stays (the next phrase does not have its start)', async () => {
+    const { trimCut } = await import('./quran-speech');
+    const words = [{ text: 'واما', start: 10, end: 40 }, { text: 'الضالين', start: 150, end: 299 }];
+    const t = trimCut({ text: '', words, lp: new Float32Array(600), frames: 300, vocab: 2 }, 12 * 16000);
+    expect(t.data.words!.length).toBe(2);
+    expect(t.skip).toBe(3 * 16000);
+  });
+});
