@@ -70,6 +70,8 @@ export class PhraseSplitter {
   static readonly MIN_VOICE = 0.002;
   /** Zero crossings per second above which a sound is a hiss rather than a voiced sound. */
   static readonly HISS = 2800;
+  /** Within a phrase, a hiss this loud (a share of the voice) is a fricative being said, not a pause. */
+  static HISS_IN_PHRASE = 0.12;
 
   push(samples: Float32Array): void {
     for (let i = 0; i < samples.length; ) {
@@ -116,8 +118,11 @@ export class PhraseSplitter {
     const sec = frame.length / this.rate;
     // Hysteresis: speech has to rise well above the background to start, and fall near it to count as a pause.
     const loud = rms > Math.max(PhraseSplitter.MIN_VOICE, floor * (this.speaking ? 2 : 3));
-    // A hiss (breath, a fricative on its own) counts only when it is about as loud as the recitation.
-    const voice = loud && (crossingsPerSec < PhraseSplitter.HISS || rms > this.speech * 0.35);
+    // A hiss (breath, a fricative on its own) starts a phrase only when it is about as loud as the recitation. Within a
+    // phrase, a hiss up to 18 dB below the voice is a fricative of the word being said (Husary's «فَصَلِّ», «خُسْرٍ»:
+    // their «ص» / «س» / «خ» about 10 dB below, counted as silence, ended the phrase mid-ayah and left the word alone,
+    // misheard without the words around it); a breath is quieter.
+    const voice = loud && (crossingsPerSec < PhraseSplitter.HISS || rms > this.speech * (this.speaking ? PhraseSplitter.HISS_IN_PHRASE : 0.35));
     if (voice) this.speech = Math.max(rms, this.speech);
     this.speech *= 0.9995;
     if (!this.speaking) {
@@ -334,6 +339,7 @@ export class QuranSpeech {
     joins.clear();
     const audioOf = new Map<number, Float32Array>(); // id -> the audio read (kept for the tajweed check)
     const cutOf = new Map<number, boolean>(); // id -> the phrase was cut for its length
+    const contextOf = new Map<number, { skip: number; samples: number }>(); // id -> read with this much before it
     const reading = (d: WorkerOut, phrase?: number, audio?: Float32Array, cut?: boolean) => ({
       phrase, words: d.words ?? [], lp: d.lp ?? new Float32Array(0), frames: d.frames ?? 0, vocab: d.vocab ?? 0, audio, cut,
     });
@@ -361,6 +367,9 @@ export class QuranSpeech {
         const cut = cutOf.get(id);
         cutOf.delete(id);
         let d = e.data;
+        const context = contextOf.get(id);
+        contextOf.delete(id);
+        if (context) d = trimLead(d, context.skip, context.samples);
         let kept = audio;
         if (cut && audio) {
           // The word the cut fell in is read whole at the start of the next phrase: it is taken off this one, which
@@ -402,7 +411,10 @@ export class QuranSpeech {
         boundary = mine;
         void wait.then((skip) => {
           this.pendingFinals.delete(id);
-          send(whole.slice(Math.min(skip, lead)), cut, mine);
+          // Read from the lead's start, with the words before the cut as context (the model knows a word by the words
+          // around it: Husary's «وَيُبَشِّرَ» read alone at a phrase's start was «يوي ر»); those words, already in the
+          // cut phrase, are then taken off (trimLead), and the audio kept starts where the cut phrase ends.
+          send(whole.slice(Math.min(skip, lead)), cut, mine, whole);
         });
         return;
       }
@@ -418,9 +430,10 @@ export class QuranSpeech {
         worker.postMessage({ type: 'transcribe', id, audio: whole.subarray(lead), quick: true });
       }
     }, SAMPLE_RATE);
-    const send = (pcm: Float32Array, cut?: boolean, cutBoundary?: ReturnType<typeof deferred> | null) => {
+    const send = (pcm: Float32Array, cut?: boolean, cutBoundary?: ReturnType<typeof deferred> | null, withContext?: Float32Array) => {
       {
         const id = this.nextId++;
+        if (withContext && withContext.length > pcm.length) contextOf.set(id, { skip: withContext.length - pcm.length, samples: withContext.length });
         const phrase = this.phrase;
         finals.set(id, phrase);
         audioOf.set(id, pcm.slice());
@@ -442,11 +455,11 @@ export class QuranSpeech {
           const jid = this.nextId++;
           joins.set(jid, { phrases: [...before.phrases, phrase], audio, cut });
           this.pendingFinals.add(jid);
-          worker.postMessage({ type: 'transcribe', id, audio: pcm }, [pcm.buffer]);
+          worker.postMessage({ type: 'transcribe', id, audio: withContext ?? pcm });
           worker.postMessage({ type: 'transcribe', id: jid, audio: audio.slice() });
           return;
         }
-        worker.postMessage({ type: 'transcribe', id, audio: pcm }, [pcm.buffer]);
+        worker.postMessage({ type: 'transcribe', id, audio: withContext ?? pcm });
       }
     };
     // ScriptProcessor: simple, and needs no extra script file (the app's security policy allows none from blobs).
@@ -475,6 +488,22 @@ export class QuranSpeech {
   }
 }
 
+/**
+ * A phrase read with [skip] samples of audio before it (the end of the cut phrase before, as context; [samples] in
+ * all): the words heard in those samples are taken off, and the rest made to start at [skip] (frames and
+ * probabilities from there), as if only the phrase itself had been read.
+ */
+export function trimLead<T extends { text?: string; words?: { text: string; start: number; end: number }[]; lp?: Float32Array; frames?: number; vocab?: number }>(
+  d: T, skip: number, samples: number,
+): T {
+  const frames = d.frames ?? 0;
+  const vocab = d.vocab ?? 0;
+  if (!frames || !d.lp || skip <= 0) return d;
+  const k = Math.min(frames, Math.round(skip / (samples / frames)));
+  const words = (d.words ?? []).filter((w) => w.start >= k).map((w) => ({ ...w, start: w.start - k, end: w.end - k }));
+  return { ...d, words, text: words.map((w) => w.text).join(' '), frames: frames - k, lp: d.lp.slice(k * vocab) };
+}
+
 function deferred(): { promise: Promise<number>; resolve: (n: number) => void } {
   let resolve!: (n: number) => void;
   const promise = new Promise<number>((r) => (resolve = r));
@@ -482,9 +511,11 @@ function deferred(): { promise: Promise<number>; resolve: (n: number) => void } 
 }
 
 /**
- * A phrase cut for its length, as read: its last word, if it began in the stretch the next phrase starts with (the
- * last OVERLAP_SEC), is taken off (it may be cut in two; the next phrase has it whole). [keep]: samples of the phrase
- * kept (up to the quiet before that word); [skip]: samples of the next phrase's lead to skip, so it starts there.
+ * A phrase cut for its length, as read: the words it ends with that began in the stretch the next phrase starts with
+ * (the last OVERLAP_SEC) are taken off: the last may be cut in two, and the model often writes a word cut in two as
+ * several pieces (Husary's «أَيْدِيهِمْ» cut: «ايدي ي ه»), so taking off only the last left the others. The next phrase
+ * has them all whole, with the words around them. [keep]: samples of the phrase kept (up to the quiet before the
+ * first of them); [skip]: samples of the next phrase's lead to skip, so it starts there.
  */
 export function trimCut<T extends { text?: string; words?: { text: string; start: number; end: number }[]; lp?: Float32Array; frames?: number; vocab?: number }>(
   d: T, samples: number, rate = SAMPLE_RATE,
@@ -495,14 +526,18 @@ export function trimCut<T extends { text?: string; words?: { text: string; start
   const frames = d.frames ?? 0;
   if (words.length < 2 || !frames || !d.lp) return { data: d, keep: samples, skip: lead };
   const spf = samples / frames;
-  const last = words[words.length - 1];
-  const prev = words[words.length - 2];
-  if (last.start * spf < from) return { data: d, keep: samples, skip: lead };
-  // Between the two words, not before the next phrase's start: the end of the word before and the start of the last.
-  const keepFrame = Math.max(Math.ceil(from / spf), Math.min(last.start - 1, Math.round((prev.end + last.start) / 2) + 1));
+  // The first word begun in the next phrase's stretch (one word at least is kept).
+  let at = words.length;
+  while (at > 1 && words[at - 1].start * spf >= from) at--;
+  if (at === words.length) return { data: d, keep: samples, skip: lead };
+  const first = words[at];
+  const prev = words[at - 1];
+  // Just after the word before (not before the next phrase's start): the model hears a word a little after it begins,
+  // and a cut halfway to that lost a soft start (Husary's «وَيُبَشِّرَ» read from its «بشر»).
+  const keepFrame = Math.max(Math.ceil(from / spf), Math.min(first.start - 1, prev.end + 2));
   const keep = Math.min(samples, Math.round(keepFrame * spf));
   const vocab = d.vocab ?? 0;
-  const kept = words.slice(0, -1);
+  const kept = words.slice(0, at);
   return {
     data: { ...d, words: kept, text: kept.map((w) => w.text).join(' '), frames: keepFrame, lp: d.lp.slice(0, keepFrame * vocab) },
     keep,

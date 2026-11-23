@@ -85,6 +85,29 @@ describe('qasr: a phrase cut for its length', () => {
     expect(t.skip).toBe(t.keep - 9 * 16000);
   });
 
+  it('takes off every word begun in that stretch: a word cut in two is often written as several pieces', async () => {
+    const { trimCut } = await import('./quran-speech');
+    // «يعلم ما بين ايدي ي ه»: the cut fell in «أيديهم», written «ايدي ي ه».
+    const words = [{ text: 'يعلم', start: 150, end: 170 }, { text: 'ايدي', start: 240, end: 262 }, { text: 'ي', start: 268, end: 272 }, { text: 'ه', start: 290, end: 299 }];
+    const t = trimCut({ text: '', words, lp: new Float32Array(600), frames: 300, vocab: 2 }, 12 * 16000);
+    expect(t.data.words!.map((w) => w.text)).toEqual(['يعلم']);
+    expect(t.data.frames).toBeGreaterThanOrEqual(225);
+    expect(t.data.frames).toBeLessThan(240);
+    expect(t.skip).toBe(t.keep - 9 * 16000);
+  });
+
+  it('the phrase after a cut, read with the words before it as context, keeps only its own words', async () => {
+    const { trimLead } = await import('./quran-speech');
+    // 6 s read (150 frames), of which the first 2 s (50 frames) are the end of the cut phrase: «لدنه» there.
+    const words = [{ text: 'لدنه', start: 20, end: 45 }, { text: 'ويبشر', start: 55, end: 80 }, { text: 'المؤمنين', start: 90, end: 140 }];
+    const d = trimLead({ text: '', words, lp: new Float32Array(150 * 2), frames: 150, vocab: 2 }, 2 * 16000, 6 * 16000);
+    expect(d.words!.map((w) => w.text)).toEqual(['ويبشر', 'المؤمنين']);
+    expect(d.words![0].start).toBe(5);
+    expect(d.frames).toBe(100);
+    expect(d.lp!.length).toBe(200);
+    expect(d.text).toBe('ويبشر المؤمنين');
+  });
+
   it('a last word begun before that stretch stays (the next phrase does not have its start)', async () => {
     const { trimCut } = await import('./quran-speech');
     const words = [{ text: 'واما', start: 10, end: 40 }, { text: 'الضالين', start: 150, end: 299 }];

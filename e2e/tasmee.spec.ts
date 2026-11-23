@@ -85,10 +85,26 @@ function makeNoisy(src: string, dst: string): void {
   writeFileSync(dst, b);
 }
 
+/**
+ * The recitation, then 4 s of quiet: Chrome's fake microphone plays its file again and again, and a reader stops after
+ * the last ayah (with only the usual pause, the recitation would start again before the last phrase is read).
+ */
+function withQuietEnd(wav: string): string {
+  const out = wav.replace(/\.wav$/, '-end.wav');
+  const b = readFileSync(wav);
+  const rate = b.readUInt32LE(24);
+  const data = Buffer.concat([b.subarray(44), Buffer.alloc(2 * rate * 4)]);
+  const head = Buffer.from(b.subarray(0, 44));
+  head.writeUInt32LE(36 + data.length, 4);
+  head.writeUInt32LE(data.length, 40);
+  writeFileSync(out, Buffer.concat([head, data]));
+  return out;
+}
+
 async function openTasmee(wav: string) {
   const browser = await chromium.launch({
     channel: 'chrome',
-    args: ['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream', `--use-file-for-fake-audio-capture=${wav}`],
+    args: ['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream', `--use-file-for-fake-audio-capture=${withQuietEnd(wav)}`],
   });
   const page = await browser.newPage({ locale: 'ar', viewport: { width: 412, height: 915 } });
   page.on('console', (m) => (m.type() === 'error' || m.type() === 'warning' || m.text().includes('tasmee')) && console.log('console:', m.type(), m.text().slice(0, 300)));

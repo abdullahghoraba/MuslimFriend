@@ -445,7 +445,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
    * Each finished phrase with its audio and the words it covers ([sura, aya, first, last] parts), when its words were
    * read once and in order (a phrase where the reciter went back has no single reference to compare with).
    */
-  private phrasesForTajweed(): { audio: Float32Array; parts: TajweedPart[]; open: boolean }[] {
+  private phrasesForTajweed(): { audio: Float32Array; parts: TajweedPart[]; open: boolean; whole?: { start: boolean; end: boolean } }[] {
     const results = this.aligned();
     const words = this.words();
     const { sources } = this.heard(false);
@@ -458,7 +458,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
       if (!list.includes(k)) list.push(k);
       byPhrase.set(src.phrase, list);
     });
-    const out: { audio: Float32Array; parts: TajweedPart[]; open: boolean }[] = [];
+    const out: { audio: Float32Array; parts: TajweedPart[]; open: boolean; whole?: { start: boolean; end: boolean } }[] = [];
     const finals = this.finals();
     // A phrase cut for its length (a long ayah read without a pause) goes on in the next one, maybe in the middle of a
     // word: the two are put back together as recited, so the check hears whole words.
@@ -539,7 +539,10 @@ export class TasmeeComponent implements OnInit, OnDestroy {
             if (last && last[1] === w.ref.aya) last[3] = w.n;
             else parts.push([w.ref.sura, w.ref.aya, w.n, w.n]);
           }
-          out.push({ audio: audio.subarray(from + p.from, from + p.to), parts, open: !!readings[readings.length - 1]?.cut && from + p.to >= total });
+          out.push({
+            audio: audio.subarray(from + p.from, from + p.to), parts, open: !!readings[readings.length - 1]?.cut && from + p.to >= total,
+            whole: { start: !!p.wholeStart, end: !!p.wholeEnd },
+          });
         }
       }
     }
@@ -591,7 +594,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
   }
 
   /** The server's findings for [phrases], on the words they cover (replacing earlier findings on those words). */
-  private applyTajweed(phrases: { parts: TajweedPart[]; audio?: Float32Array }[], replies: (TajweedReply | null)[]): void {
+  private applyTajweed(phrases: { parts: TajweedPart[]; audio?: Float32Array; whole?: { start: boolean; end: boolean } }[], replies: (TajweedReply | null)[]): void {
     const words = this.words();
     const results = this.results();
     const issues = new Map(this.tajweedIssues());
@@ -616,8 +619,9 @@ export class TasmeeComponent implements OnInit, OnDestroy {
       const audio = phrases[n].audio;
       const unjudged = new Set<number>();
       if (audio && covered.length) {
-        if (voicedEdge(audio, 'start')) unjudged.add(covered[0].k);
-        if (voicedEdge(audio, 'end')) unjudged.add(covered[covered.length - 1].k);
+        // (Not where the phrase was cut between two words for the server's length: the word there is whole.)
+        if (!phrases[n].whole?.start && voicedEdge(audio, 'start')) unjudged.add(covered[0].k);
+        if (!phrases[n].whole?.end && voicedEdge(audio, 'end')) unjudged.add(covered[covered.length - 1].k);
       }
       const at = (e: TajweedError) => words.findIndex((w) => w.ref.aya === e.aya && w.n === e.word && w.ref.sura === phrases[n].parts[0][0]);
       // A word whose letters were all found missing was left out (the recogniser wrote it anyway).

@@ -37,6 +37,13 @@ describe('tasmee: listening', () => {
     expect(p).toHaveLength(2);
   });
 
+  it('does not end a phrase on a fricative said in the middle of it (a hiss some 10 dB below the voice)', () => {
+    // Husary's «فَصَلِّ»: «ص» and «لّ» hiss for over half a second, about 10 dB below his voice.
+    const hiss = noise(0.7, 0.03);
+    const pause = (s: number) => noise(s, 0.0003);
+    expect(phrasesOf([pause(0.5), tone(1.5, 0.1), hiss, tone(1.5, 0.1), pause(1)])).toHaveLength(1);
+  });
+
   it('cuts a very long phrase at its quietest moment, not in the middle of a word', () => {
     const word = () => tone(0.6, 0.1);
     const gap = (s: number) => noise(s, 0.003);
@@ -112,6 +119,19 @@ describe("tasmee: checking a mistake against the audio", () => {
     const check = (expected: string[]) =>
       rescue(alignRecitation(expected, heard.map((w) => w.text), true), expected, sources, gap, true).map((r) => r.status);
     expect(heard.map((w) => w.text)).toEqual(['بسم', 'اله', 'الرحمن']);
+    expect(check(['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَـٰنِ'])).toEqual(['correct', 'correct', 'correct']);
+    expect(check(['بِسْمِ', 'رَبِّكَ', 'ٱلرَّحْمَـٰنِ'])[1]).not.toBe('correct');
+  });
+
+  it('checks a word heard alone in a phrase of its own against that phrase', () => {
+    // Phrase 1 holds only «الله», written a little differently by the model (one ل), between two other phrases.
+    const lps = [frames('_ب_س_م_'), frames('_ا_ل__ه_', { 5: 'ل' }), frames('_ا_ل_ر_ح_م_ن_')];
+    const heard = lps.flatMap((lp, phrase) => greedyWords(lp, lp.length / V).map((w) => ({ ...w, phrase })));
+    expect(heard.map((w) => w.text)).toEqual(['بسم', 'اله', 'الرحمن']);
+    const sources = heard.map((w) => ({ phrase: w.phrase, start: w.start, end: w.end }));
+    const gap = (p: number, a: number, b: number, ws: string[]) => forcedGap(lps[p], lps[p].length / V, V, a, b, ws.map(modelLetters));
+    const check = (expected: string[]) =>
+      rescue(alignRecitation(expected, heard.map((w) => w.text), true), expected, sources, gap, true).map((r) => r.status);
     expect(check(['بِسْمِ', 'ٱللَّهِ', 'ٱلرَّحْمَـٰنِ'])).toEqual(['correct', 'correct', 'correct']);
     expect(check(['بِسْمِ', 'رَبِّكَ', 'ٱلرَّحْمَـٰنِ'])[1]).not.toBe('correct');
   });

@@ -88,7 +88,17 @@ describe('tajweed: a phrase is cut where the reciter paused', () => {
     // Every word in exactly one part, in order, and the parts cover the audio end to end.
     expect(parts.map((p) => [p.first, p.last]).flat()).toEqual(parts.flatMap((p, i) => [i ? parts[i - 1].last + 1 : 0, p.last]));
     expect(parts[parts.length - 1].last).toBe(9);
-    parts.forEach((p, i) => i && expect(p.from).toBe(parts[i - 1].to));
+    // Cut in the voice, the parts overlap a little: each runs on to where the next word is heard, and starts where the
+    // word before was last heard, so the word on each side is whole in its part (and is judged).
+    parts.forEach((p, i) => {
+      if (!i) return;
+      expect(p.from).toBe(words[p.first - 1].end);
+      expect(parts[i - 1].to).toBe(words[p.first].start);
+      expect(p.wholeStart).toBe(true);
+      expect(parts[i - 1].wholeEnd).toBe(true);
+    });
+    expect(parts[0].wholeStart).toBeFalsy();
+    expect(parts[parts.length - 1].wholeEnd).toBeFalsy();
     // The first cut is at the widest gap (between the fourth and fifth word).
     expect(parts[0].last).toBe(3);
   });

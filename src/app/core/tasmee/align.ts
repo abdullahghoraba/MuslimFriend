@@ -284,6 +284,14 @@ export function rescue(
       if (b && (!withOwn || withOwn[0].phrase === b[0].phrase)) ok = fits(b, b[0].start - 2, (withOwn ?? b)[(withOwn ?? b).length - 1].end + 1e6, before, j, n);
       if (!ok && a && (!withOwn || withOwn[0].phrase === a[0].phrase)) ok = fits(a, 0, a[a.length - 1].end + 2, i, after, n);
     }
+    // The run's words heard in a phrase of their own (a pause on each side, as at a held shaddah: «فَصَلِّ» alone,
+    // heard «واصل»): its own audio, from the phrase's start to its end.
+    if (!ok && own.length) {
+      const withOwn = span(ownFrom, ownTo);
+      const phrase = withOwn?.[0].phrase;
+      const alone = withOwn && sources.every((x, k) => k >= ownFrom && k < ownTo ? true : x?.phrase !== phrase);
+      if (withOwn && alone) ok = fits(withOwn, 0, withOwn[withOwn.length - 1].end + 1e6, i, j, n);
+    }
     if (ok) for (let k = i; k <= j; k++) results[k] = { ...results[k], status: 'correct', heard: undefined, rescued: true };
     i = j;
   }

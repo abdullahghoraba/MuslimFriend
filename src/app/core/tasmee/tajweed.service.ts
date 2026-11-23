@@ -87,10 +87,11 @@ export function splitAtPauses(
   words: { start: number; end: number }[], frames: number, samples: number, minGap = 0.3, maxLen = Infinity,
   /** Where the reciter was silent between two samples (see silenceIn): -1 if not, or true for "in the middle". */
   silent: (from: number, to: number) => number | boolean = () => true,
-): { from: number; to: number; first: number; last: number }[] {
+): { from: number; to: number; first: number; last: number; wholeStart?: boolean; wholeEnd?: boolean }[] {
   if (!words.length || frames <= 0) return [];
   const spf = samples / frames;
-  const parts: { from: number; to: number; first: number; last: number }[] = [];
+  type Part = { from: number; to: number; first: number; last: number; wholeStart?: boolean; wholeEnd?: boolean };
+  const parts: Part[] = [];
   let from = 0;
   let first = 0;
   for (let i = 1; i < words.length; i++) {
@@ -108,7 +109,7 @@ export function splitAtPauses(
     }
   }
   parts.push({ from, to: samples, first, last: words.length - 1 });
-  const fit = (p: { from: number; to: number; first: number; last: number }): typeof parts => {
+  const fit = (p: Part): Part[] => {
     if (p.to - p.from <= maxLen || p.last <= p.first) return [p];
     // The widest gap between two of its words (a breath, or the end of an ayah), not too near either end.
     let at = -1;
@@ -123,8 +124,15 @@ export function splitAtPauses(
       }
     }
     if (at < 0) at = Math.ceil((p.first + p.last + 1) / 2);
-    const cut = Math.round(((words[at - 1].end + words[at].start) / 2) * spf);
-    return [...fit({ from: p.from, to: cut, first: p.first, last: at - 1 }), ...fit({ from: cut, to: p.to, first: at, last: p.last })];
+    // Cut between the two words, the two parts overlapping a little: the first goes on to where the next word is heard,
+    // the second starts where the word before it was last heard, so the word on each side of the cut is whole in its
+    // part, and is judged (wholeEnd / wholeStart), though the cut is in the voice.
+    const aEnd = Math.min(p.to, Math.round(words[at].start * spf));
+    const bStart = Math.max(p.from, Math.round(words[at - 1].end * spf));
+    return [
+      ...fit({ from: p.from, to: aEnd, first: p.first, last: at - 1, wholeStart: p.wholeStart, wholeEnd: true }),
+      ...fit({ from: bStart, to: p.to, first: at, last: p.last, wholeStart: true, wholeEnd: p.wholeEnd }),
+    ];
   };
   return parts.flatMap(fit);
 }
