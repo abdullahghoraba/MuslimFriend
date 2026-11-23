@@ -108,6 +108,16 @@ describe('qasr: a phrase cut for its length', () => {
     expect(d.text).toBe('ويبشر المؤمنين');
   });
 
+  it('a word begun just before the cut but mostly after it is kept (the phrase before heard only its start)', async () => {
+    const { trimLead } = await import('./quran-speech');
+    // Husary's 4:1, cut in «ونساء»: the lead is 74 frames, «كثيرا» wholly in it, «ونساء» from 58 to 121.
+    const words = [{ text: 'كسيرا', start: 1, end: 33 }, { text: 'ونساء', start: 58, end: 121 }];
+    const d = trimLead({ text: '', words, lp: new Float32Array(130 * 2), frames: 130, vocab: 2 }, 74 * 640, 130 * 640);
+    expect(d.words!.map((w) => w.text)).toEqual(['ونساء']);
+    expect(d.words![0].start).toBe(0);
+    expect(d.words![0].end).toBe(47);
+  });
+
   it('a last word begun before that stretch stays (the next phrase does not have its start)', async () => {
     const { trimCut } = await import('./quran-speech');
     const words = [{ text: 'واما', start: 10, end: 40 }, { text: 'الضالين', start: 150, end: 299 }];

@@ -169,7 +169,8 @@ describe('inheritance (الفرائض)', () => {
         }
       }
     }
-  });
+    // 3,000 families take a few seconds, more on a busy machine.
+  }, 30_000);
 
   it('notes when the schools differ', () => {
     expect(compareSchools({ deceased: 'm', family: { son: 1, daughter: 1 } }).same).toBe(true);

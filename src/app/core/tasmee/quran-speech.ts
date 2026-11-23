@@ -500,7 +500,12 @@ export function trimLead<T extends { text?: string; words?: { text: string; star
   const vocab = d.vocab ?? 0;
   if (!frames || !d.lp || skip <= 0) return d;
   const k = Math.min(frames, Math.round(skip / (samples / frames)));
-  const words = (d.words ?? []).filter((w) => w.start >= k).map((w) => ({ ...w, start: w.start - k, end: w.end - k }));
+  // A word begun just before the cut but mostly after it is this phrase's: the phrase before heard only its start, and
+  // often as part of the word before (Husary's «كَثِيرًا وَنِسَآءً» cut in «نساء»: «كثيران» there, «ونساء» lost).
+  // Heard twice at worst, and a word heard again is not a mistake.
+  const words = (d.words ?? [])
+    .filter((w) => w.start >= k || w.start + w.end > 2 * k)
+    .map((w) => ({ ...w, start: Math.max(0, w.start - k), end: w.end - k }));
   return { ...d, words, text: words.map((w) => w.text).join(' '), frames: frames - k, lp: d.lp.slice(k * vocab) };
 }
 
