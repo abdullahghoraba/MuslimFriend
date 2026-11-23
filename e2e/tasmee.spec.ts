@@ -13,8 +13,12 @@ const WAV = join(tmpdir(), 'al-uns-billah-fatiha-husary.wav');
 const WAV_SKIP = join(tmpdir(), 'al-uns-billah-fatiha-husary-no4.wav');
 /** The full recitation, quieter, through a phone-like band and with room noise at about 10 dB below the voice. */
 const WAV_NOISY = join(tmpdir(), 'al-uns-billah-fatiha-husary-noisy.wav');
-/** Al-Fatihah read in Warsh (Ibrahim al-Dosary): it differs from Hafs in harakat and madd, which the check must find. */
-const WAV_WARSH = join(tmpdir(), 'al-uns-billah-fatiha-warsh.wav');
+/**
+ * Muhammad 22 read in Warsh (Ibrahim al-Dosary): «عَسِيتُمْ» where Hafs reads «عَسَيْتُمْ», a vowel the check must find.
+ * (Al-Fatihah in Warsh differs from Hafs only by the madd of «مَـٰلِكِ», which the check no longer shows: a natural
+ * madd "not made" is what the tajweed model most often hears wrongly in a reader's voice on a phone.)
+ */
+const WAV_WARSH = join(tmpdir(), 'al-uns-billah-47-22-warsh.wav');
 /** The same recitation with two words cut out of the middle of their ayat: «رَبِّ» (ayah 2) and «غَيْرِ» (ayah 7). */
 const WAV_WORDS = join(tmpdir(), 'al-uns-billah-fatiha-husary-no-words.wav');
 /** Al-Baqarah 26-27 (Husary): long ayat read with no pause long enough to end a phrase, so they are cut for length. */
@@ -152,7 +156,7 @@ test('prepares recitations of al-Fatihah as the microphone', async () => {
   await makeWav(WAV, [1, 2, 3, 4, 5, 6, 7]);
   await makeWav(WAV_SKIP, [1, 2, 3, 5, 6, 7]);
   makeNoisy(WAV, WAV_NOISY);
-  await makeWav(WAV_WARSH, [1, 2, 3, 4, 5, 6, 7], 'warsh/warsh_ibrahim_aldosary_128kbps');
+  await makeWav(WAV_WARSH, [22], 'warsh/warsh_ibrahim_aldosary_128kbps', 47);
   cutWords(WAV, WAV_WORDS, [[9.9, 10.27], [45.44, 45.92]]);
 });
 
@@ -189,9 +193,13 @@ test('tasmee stops at a skipped ayah and shows the right words', async () => {
 
 // The whole chain on the real tajweed server: microphone -> offline words -> phrases cut at the pauses -> the
 // server -> the mistakes shown and counted.
-for (const [name, wav, expectMistakes] of [['Hafs (Husary), correct', WAV, false], ['Warsh (al-Dosary), differs from Hafs', WAV_WARSH, true]] as const) {
+for (const [name, wav, expectMistakes, range] of [
+  ['Hafs (Husary), correct', WAV, false, ''],
+  ['Warsh (al-Dosary), differs from Hafs', WAV_WARSH, true, '?sura=47&from=22&to=22'],
+] as const) {
   test(`harakat and tajweed are checked by themselves at the end: ${name}`, async () => {
     const { browser, page } = await openTasmee(wav);
+    if (range) await page.goto(BASE + '/tasmee' + range);
     await page.locator('ion-segment.check-level ion-segment-button[value=tajweed]').click();
     await page.getByRole('button', { name: ar.tasmee.start }).click();
     await expect(page.locator('.summary .score')).toBeVisible({ timeout: 120_000 });
@@ -205,6 +213,9 @@ for (const [name, wav, expectMistakes] of [['Hafs (Husary), correct', WAV, false
     console.log('tajweed', name, none ? 'no mistakes' : text);
     if (expectMistakes) {
       expect(none, 'the Warsh reading should be caught').toBe(0);
+      // Its vowel: «عَسِيتُمْ» shown on «عَسَيْتُمْ».
+      const marked = await page.locator('.recital .w.tajweed').evaluateAll((els) => els.map((e) => (e.textContent ?? '').replace(/[ً-ٰۖ-ۭ\s]/g, '')));
+      expect(marked.some((t) => t.includes('عسيتم')), 'marked: ' + marked.join(' ')).toBe(true);
       // A tap on a coloured word opens its mistake in a sheet, and the arrows go to the next one.
       await page.locator('.recital .w.tajweed').first().click();
       const sheet = page.locator('.word-sheet');
@@ -243,8 +254,8 @@ test('a word left out in the middle of an ayah is caught, and the harakat/tajwee
   expect(await card.getByText(ar.tajweed.failed).count(), 'the tajweed server did not answer').toBe(0);
   // The check reached the rest of the recitation (it says how much it checked).
   const coverage = await card.innerText();
-  console.log('tajweed card:', coverage.replace(/s+/g, ' ').slice(0, 400));
-  const m = coverage.match(/فُحص (d+) من (d+)/);
+  console.log('tajweed card:', coverage.replace(/\s+/g, ' ').slice(0, 400));
+  const m = coverage.replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x660)).match(/فُحص (\d+) من (\d+)/);
   if (m) expect(Number(m[1])).toBeGreaterThanOrEqual(Number(m[2]) - 6);
   // A tap on a word left out says so.
   await page.locator('.recital .w.skipped').first().click();

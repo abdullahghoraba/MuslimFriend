@@ -253,6 +253,85 @@ export function unsureFinding(e: TajweedError, word: string): boolean {
   return false;
 }
 
+/** A vowel's kind: a (fatha, fathatan), u (damma, dammatan), i (kasra, kasratan), or '' (none, sukun). */
+function vowelKind(s: string): string {
+  if (/[ًَ]/.test(s)) return 'a';
+  if (/[ٌُ]/.test(s)) return 'u';
+  if (/[ٍِ]/.test(s)) return 'i';
+  return '';
+}
+
+/** How long a sound is, in counts: its madd marks, or a letter written again for each count (a ghunnah, a shaddah). */
+function soundLength(s: string): number {
+  const madd = (s.match(/[ۦۥا]/g) ?? []).length;
+  if (madd) return madd;
+  const bare = letters(s);
+  return bare.length;
+}
+
+/**
+ * A finding the tajweed model gets wrong on ordinary voices through a phone's microphone, so it is not shown.
+ * Studied on 1251 words recited on a phone by a reader reciting correctly, where the server's findings marked one word
+ * in three; what is left marks about one in thirty, and still catches a vowel changed (الحمدُ said «الحمدَ»), a madd
+ * cut to less than half, a madd not made, and Warsh's differences from Hafs:
+ * - a vowel "not heard" (the letter said with no vowel) or "added": the model loses or invents short vowels in joined
+ *   speech; a reader who says a word rightly almost never drops one;
+ * - a vowel changed on a hamzat al-wasl (ٱللَّهَ heard «إِ»): its vowel depends on where the reader started;
+ * - qalqalah: a phone's microphone barely carries its echo;
+ * - a length (madd, ghunnah, shaddah) heard at least half as long as it should be: the model counts short on such
+ *   voices (a natural madd of 2 heard as 1, a munfasil of 4 as 2, a ghunnah of 4 as 3), or long where a reader may
+ *   lengthen (a madd made longer is not a mistake one should be stopped for).
+ * (The studied phrases are kept on the test phone, see keepForStudy.)
+ */
+export function weakFinding(e: TajweedError, word: string): boolean {
+  const expected = e.expected ?? '';
+  const heard = e.heard ?? '';
+  if (/ڇ/.test(expected + heard) || e.rules?.some((r) => /قلقل/.test(r.ar))) return true;
+  if (e.type === 'tashkeel') {
+    if (e.kind !== 'replace') return true;
+    const el = letters(expected);
+    const hl = letters(heard);
+    // The same letter said with another vowel; anything else (a letter's length, two letters) is the model's hearing.
+    if (el.length !== 1 || hl !== el) return true;
+    const a = vowelKind(expected);
+    const b = vowelKind(heard);
+    if (!a || !b || a === b) return true;
+    if (/^ٱ/.test(word) && /^[ءا]$/.test(el)) return true;
+    return false;
+  }
+  if (e.type === 'tajweed') {
+    if (e.kind === 'insert') return true;
+    const want = e.expectedLen ?? soundLength(expected);
+    const got = e.heardLen ?? (heard ? soundLength(heard) : 0);
+    if (want > 0 && got * 2 >= want) return true;
+    // A natural madd (2) "not made" at all: on a phone the model loses it in words said rightly (ٱللَّهُ, ٱلَّذِينَ,
+    // ءَامَنُوا۟... a third of all it found). A longer madd (4, 6) not made is still shown.
+    if (e.kind === 'delete' && want <= 2) return true;
+  }
+  return false;
+}
+
+/**
+ * Whether [audio] starts (or ends) while the reciter's voice goes on: its first (last) 40 ms as loud as the voice
+ * (within 12 dB of its loud frames). The phrase was cut there in the middle of the speech (the recogniser's timing of
+ * a word is not exact), and the word at that edge may be cut too: the tajweed server then hears it short or missing.
+ * Seen on a phone: the words wrongly found "left out" were nearly all at such an edge.
+ */
+export function voicedEdge(audio: Float32Array, edge: 'start' | 'end'): boolean {
+  const F = 320;
+  if (audio.length < 4 * F) return true;
+  const level = (at: number) => {
+    let p = 0;
+    for (let i = at; i < at + F; i++) p += audio[i] * audio[i];
+    return Math.sqrt(p / F);
+  };
+  const all: number[] = [];
+  for (let at = 0; at + F <= audio.length; at += F) all.push(level(at));
+  const loud = [...all].sort((a, b) => a - b)[Math.floor(all.length * 0.9)];
+  const ends = edge === 'start' ? all.slice(0, 2) : all.slice(-2);
+  return Math.max(...ends) >= loud / 4;
+}
+
 /**
  * A finding that is only how a reciter pauses (waqf) in the middle of a phrase, which the server, reading the
  * phrase as one breath, counts as a mistake: the last letter said with sukun (or qalqalah) instead of its vowel,

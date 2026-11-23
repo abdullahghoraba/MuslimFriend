@@ -10,7 +10,7 @@ import { HeardSource, WordResult, alignRecitation, alignWithCost, bestAlternativ
 import { forcedGap, modelLetters } from '../../core/tasmee/ctc-score';
 import { TasmeeCheck, TasmeeEngine, TasmeeService, dropOpenings } from '../../core/tasmee/tasmee.service';
 import { QuranSpeech } from '../../core/tasmee/quran-speech';
-import { TajweedError, TajweedPart, TajweedPrefs, TajweedReply, TajweedService, leftOut, pauseArtifact, unsureFinding, quietestIn, silenceIn, splitAtPauses } from '../../core/tasmee/tajweed.service';
+import { TajweedError, TajweedPart, TajweedPrefs, TajweedReply, TajweedService, leftOut, pauseArtifact, unsureFinding, quietestIn, silenceIn, splitAtPauses, voicedEdge, weakFinding } from '../../core/tasmee/tajweed.service';
 
 import { PhoneSpeech, PhraseReading, SpeechCallbacks } from '../../native/speech';
 import { QuranService } from '../../core/quran/quran.service';
@@ -591,7 +591,7 @@ export class TasmeeComponent implements OnInit, OnDestroy {
   }
 
   /** The server's findings for [phrases], on the words they cover (replacing earlier findings on those words). */
-  private applyTajweed(phrases: { parts: TajweedPart[] }[], replies: (TajweedReply | null)[]): void {
+  private applyTajweed(phrases: { parts: TajweedPart[]; audio?: Float32Array }[], replies: (TajweedReply | null)[]): void {
     const words = this.words();
     const results = this.results();
     const issues = new Map(this.tajweedIssues());
@@ -611,6 +611,14 @@ export class TasmeeComponent implements OnInit, OnDestroy {
         return;
       }
       covered.forEach(({ k }) => checked.add(k));
+      // A word at an edge of the audio cut while the voice went on may be cut too: it is not judged (on a phone, the
+      // words wrongly found left out were nearly all there).
+      const audio = phrases[n].audio;
+      const unjudged = new Set<number>();
+      if (audio && covered.length) {
+        if (voicedEdge(audio, 'start')) unjudged.add(covered[0].k);
+        if (voicedEdge(audio, 'end')) unjudged.add(covered[covered.length - 1].k);
+      }
       const at = (e: TajweedError) => words.findIndex((w) => w.ref.aya === e.aya && w.n === e.word && w.ref.sura === phrases[n].parts[0][0]);
       // A word whose letters were all found missing was left out (the recogniser wrote it anyway).
       const deleted = new Map<number, string[]>();
@@ -618,20 +626,26 @@ export class TasmeeComponent implements OnInit, OnDestroy {
         const k = at(e);
         if (k >= 0 && e.kind === 'delete' && e.type !== 'tashkeel') deleted.set(k, [...(deleted.get(k) ?? []), e.expected]);
       }
-      for (const [k, letters] of deleted) if (leftOut(words[k].text, letters)) omitted.add(k);
+      // Words found left out up to an edge of the phrase: the server ran out of audio there (the phrase was cut short),
+      // more often than the reader stopped early: not counted. One left out between words said is.
+      const gone = new Set([...deleted].filter(([k, letters]) => !unjudged.has(k) && leftOut(words[k].text, letters)).map(([k]) => k));
+      const ks = covered.map(({ k }) => k);
+      for (let i = 0; i < ks.length && gone.has(ks[i]); i++) gone.delete(ks[i]);
+      for (let i = ks.length - 1; i >= 0 && gone.has(ks[i]); i--) gone.delete(ks[i]);
+      gone.forEach((k) => omitted.add(k));
       for (const e of reply.errors) {
         const k = at(e);
         // The server's mushaf and the app's split the ayah the same way; if a word differs, it is not shown.
         if (k < 0 || (e.wordText && similarity(wordKey(e.wordText), wordKey(words[k].text)) < 0.7)) continue;
-        // A word left out has no letters to correct.
-        if (omitted.has(k)) continue;
+        // A word left out has no letters to correct; one at a cut edge is not judged.
+        if (omitted.has(k) || unjudged.has(k)) continue;
         // A letter said wrongly is shown only if the word check heard a wrong word too: when the word was recognised
         // as said right, a changed letter is most often the tajweed model mishearing (madd, ghunnah, harakat stay).
         if (e.type === 'normal' && results[k]?.status === 'correct') continue;
         // How a reciter pauses mid-phrase (sukun at a stop, madd 'arid...) is not a mistake.
         if (e.type !== 'normal' && pauseArtifact(e, words[k].text, words[k + 1]?.text)) continue;
         // What the model is not sure of (a word's first vowel, a natural madd one count short) is not shown.
-        if (unsureFinding(e, words[k].text)) continue;
+        if (unsureFinding(e, words[k].text) || weakFinding(e, words[k].text)) continue;
         // Checked on harakat only: the tajweed rules (madd, ghunnah, qalqalah...) are not shown.
         if (this.tasmee.prefs().check === 'tashkeel' && e.type === 'tajweed') continue;
         issues.set(k, [...(issues.get(k) ?? []), e]);
